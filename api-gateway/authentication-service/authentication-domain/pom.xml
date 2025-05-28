@@ -5,17 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.poly</groupId>
-        <artifactId>hotel_management</artifactId>
+        <artifactId>authentication-service</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../../../pom.xml</relativePath>
     </parent>
 
     <artifactId>authentication-domain</artifactId>
-
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <packaging>pom</packaging>
+    <modules>
+        <module>authentication-domain-core</module>
+        <module>authentication-application-service</module>
+    </modules>
 
 </project>

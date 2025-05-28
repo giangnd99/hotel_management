@@ -1,4 +1,4 @@
-package com.food.ordering.system.domain.exception;
+package com.poly.domain.exception;
 
 public class DomainException extends RuntimeException {
 

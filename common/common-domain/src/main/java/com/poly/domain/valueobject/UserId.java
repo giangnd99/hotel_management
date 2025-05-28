@@ -1,4 +1,9 @@
 package com.poly.domain.valueobject;
 
-public class UserId {
+import java.util.UUID;
+
+public class UserId extends BaseId<UUID> {
+    public UserId(UUID value) {
+        super(value);
+    }
 }

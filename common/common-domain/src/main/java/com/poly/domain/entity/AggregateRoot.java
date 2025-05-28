@@ -1,4 +1,4 @@
-package com.food.ordering.system.domain.entity;
+package com.poly.domain.entity;
 
 public abstract class AggregateRoot<ID> extends BaseEntity<ID> {
 }
