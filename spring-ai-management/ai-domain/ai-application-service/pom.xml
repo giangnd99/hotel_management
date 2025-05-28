@@ -9,7 +9,13 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ai-service-application</artifactId>
+    <artifactId>ai-application-service</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>ai-domain-core</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
