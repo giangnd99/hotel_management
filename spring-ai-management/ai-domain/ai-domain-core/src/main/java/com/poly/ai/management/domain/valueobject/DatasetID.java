@@ -4,7 +4,7 @@ import com.poly.domain.valueobject.BaseId;
 
 public class DatasetID extends BaseId<String> {
 
-    protected DatasetID(String value) {
+    public DatasetID(String value) {
         super(value);
     }
 }

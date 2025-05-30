@@ -4,7 +4,7 @@ import com.poly.domain.valueobject.BaseId;
 
 public class EmbeddingID extends BaseId<String> {
 
-    protected EmbeddingID(String value) {
+    public EmbeddingID(String value) {
         super(value);
     }
 }

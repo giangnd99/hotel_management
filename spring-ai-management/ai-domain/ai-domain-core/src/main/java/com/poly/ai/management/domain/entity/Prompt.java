@@ -8,6 +8,18 @@ public class Prompt extends BaseEntity<PromptID> {
     private String text;
     private String modelId;
 
+    public void validate() {
+        if (text == null || text.isEmpty()) {
+            throw new IllegalStateException("Prompt text cannot be empty");
+        }
+        if (text.length() > 1000) {
+            throw new IllegalStateException("Prompt text exceeds maximum length");
+        }
+    }
+
+    public void preprocess() {
+        text = text.trim().replaceAll("\\s+", " ");
+    }
 
     public String getText() {
         return text;

@@ -4,7 +4,7 @@ import com.poly.domain.valueobject.BaseId;
 
 public class ResponseID extends BaseId<String> {
 
-    protected ResponseID(String value) {
+    public ResponseID(String value) {
         super(value);
     }
 }

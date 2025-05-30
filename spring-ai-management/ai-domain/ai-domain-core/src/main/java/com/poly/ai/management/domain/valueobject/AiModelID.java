@@ -4,7 +4,7 @@ import com.poly.domain.valueobject.BaseId;
 
 public class AiModelID extends BaseId<String> {
 
-    protected AiModelID(String value) {
+    public AiModelID(String value) {
         super(value);
     }
 }

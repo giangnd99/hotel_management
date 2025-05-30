@@ -4,9 +4,10 @@ import com.poly.ai.management.domain.entity.AiModel;
 import com.poly.ai.management.domain.valueobject.AiModelID;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AiModelRepository {
-    AiModel findById(AiModelID aiModelID);
+    Optional<AiModel> findById(String aiModelID);
     List<AiModel> findAll();
-    void save(AiModel aiModel);
+    AiModel save(AiModel aiModel);
 }

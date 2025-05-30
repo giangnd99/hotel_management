@@ -9,6 +9,19 @@ public class Dataset extends BaseEntity<DatasetID> {
     private String source;
     private long size;
 
+    public void split(double ratio) {
+        if (ratio <= 0 || ratio >= 1) {
+            throw new IllegalArgumentException("Split ratio must be between 0 and 1");
+        }
+        // Logic chia dataset, có thể trả về hai Dataset mới hoặc cập nhật trạng thái nội bộ
+    }
+
+    public void validate() {
+        if (size < 100) {
+            throw new IllegalStateException("Dataset size must be at least 100 records");
+        }
+    }
+
     public String getName() {
         return name;
     }
