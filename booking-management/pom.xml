@@ -10,7 +10,6 @@
     </parent>
 
     <packaging>pom</packaging>
-
     <artifactId>booking-management</artifactId>
 
 </project>
