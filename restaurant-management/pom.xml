@@ -9,7 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>payment-management</artifactId>
+    <artifactId>restaurant-management</artifactId>
     <packaging>pom</packaging>
 
 </project>

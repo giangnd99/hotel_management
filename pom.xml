@@ -42,6 +42,8 @@
         <module>reporting-management</module>
         <module>payment-management</module>
         <module>notification-management</module>
+        <module>restaurant-management</module>
+        <module>promotion-management</module>
     </modules>
 
     <scm>
