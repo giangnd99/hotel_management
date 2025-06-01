@@ -40,6 +40,8 @@
         <module>reporting-management</module>
         <module>payment-management</module>
         <module>notification-management</module>
+        <module>restaurant-management</module>
+        <module>promotion-management</module>
     </modules>
 
     <scm>
@@ -57,6 +59,11 @@
         <kafka-avro-serializer.version>7.3.3</kafka-avro-serializer.version>
         <avro.version>1.11.1</avro.version>
         <java.version>17</java.version>
+        <spring-ai.version>0.8.0</spring-ai.version>
+        <graphql-java.version>22.0</graphql-java.version>
+        <graphql-java-extended-scalars.version>2022-12-18T02-09-15-8bb2279</graphql-java-extended-scalars.version>
+        <spring-ai-starter-model-ollama.version>1.0.0</spring-ai-starter-model-ollama.version>
+        <spring-ai-bom.version>1.0.0-M5</spring-ai-bom.version>
     </properties>
 
     <dependencyManagement>
@@ -106,6 +113,21 @@
                 <artifactId>authentication-container</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>ai-domain-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>ai-application-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>ai-dao</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>
@@ -140,5 +162,6 @@
             </plugin>
         </plugins>
     </build>
+
 
 </project>
