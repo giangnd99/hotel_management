@@ -1,14 +1,16 @@
 package com.poly.ai.management.domain.entity;
 
 
+import com.poly.ai.management.domain.valueobject.AiModelID;
+import com.poly.ai.management.domain.valueobject.PromptID;
 import com.poly.ai.management.domain.valueobject.ResponseID;
 import com.poly.ai.management.domain.exception.AiDomainException;
 import com.poly.domain.entity.BaseEntity;
 
 public class Response extends BaseEntity<ResponseID> {
     private String generatedText;
-    private final String modelId;
-    private final String promptId;
+    private final AiModelID modelId;
+    private final PromptID promptId;
 
     private Response(Builder builder) {
         super.setId(builder.responseId);
@@ -28,10 +30,10 @@ public class Response extends BaseEntity<ResponseID> {
         if (generatedText == null || generatedText.isEmpty()) {
             throw new AiDomainException("Response text cannot be empty!");
         }
-        if (modelId == null || modelId.isEmpty()) {
+        if (modelId == null || modelId.getValue().isEmpty()) {
             throw new AiDomainException("Model ID cannot be empty!");
         }
-        if (promptId == null || promptId.isEmpty()) {
+        if (promptId == null || promptId.getValue().isEmpty()) {
             throw new AiDomainException("Prompt ID cannot be empty!");
         }
     }
@@ -40,11 +42,11 @@ public class Response extends BaseEntity<ResponseID> {
         return generatedText;
     }
 
-    public String getModelId() {
+    public AiModelID getModelId() {
         return modelId;
     }
 
-    public String getPromptId() {
+    public PromptID getPromptId() {
         return promptId;
     }
 
@@ -55,8 +57,8 @@ public class Response extends BaseEntity<ResponseID> {
     public static final class Builder {
         private ResponseID responseId;
         private String generatedText;
-        private String modelId;
-        private String promptId;
+        private AiModelID modelId;
+        private PromptID promptId;
 
         private Builder() {
         }
@@ -71,12 +73,12 @@ public class Response extends BaseEntity<ResponseID> {
             return this;
         }
 
-        public Builder modelId(String val) {
+        public Builder modelId(AiModelID val) {
             modelId = val;
             return this;
         }
 
-        public Builder promptId(String val) {
+        public Builder promptId(PromptID val) {
             promptId = val;
             return this;
         }

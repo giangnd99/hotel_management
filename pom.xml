@@ -29,12 +29,10 @@
 
     <modules>
         <module>common</module>
-        <module>common/common-application</module>
         <module>infrastructure</module>
         <module>api-gateway</module>
         <module>room-management</module>
         <module>customer-management</module>
-        <module>api-gateway/authentication-service/authentication-domain</module>
         <module>spring-ai-management</module>
         <module>staff-management</module>
         <module>inventory-management</module>
@@ -62,6 +60,10 @@
         <avro.version>1.11.1</avro.version>
         <java.version>17</java.version>
         <spring-ai.version>0.8.0</spring-ai.version>
+        <graphql-java.version>22.0</graphql-java.version>
+        <graphql-java-extended-scalars.version>2022-12-18T02-09-15-8bb2279</graphql-java-extended-scalars.version>
+        <spring-ai-starter-model-ollama.version>1.0.0</spring-ai-starter-model-ollama.version>
+        <spring-ai-bom.version>1.0.0-M5</spring-ai-bom.version>
     </properties>
 
     <dependencyManagement>
@@ -116,6 +118,16 @@
                 <artifactId>ai-domain-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>ai-application-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>ai-dao</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>
@@ -129,6 +141,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.38</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
