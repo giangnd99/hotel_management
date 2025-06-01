@@ -29,12 +29,10 @@
 
     <modules>
         <module>common</module>
-        <module>common/common-application</module>
         <module>infrastructure</module>
         <module>api-gateway</module>
         <module>room-management</module>
         <module>customer-management</module>
-        <module>api-gateway/authentication-service/authentication-domain</module>
         <module>spring-ai-management</module>
         <module>staff-management</module>
         <module>inventory-management</module>
@@ -121,6 +119,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.38</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
