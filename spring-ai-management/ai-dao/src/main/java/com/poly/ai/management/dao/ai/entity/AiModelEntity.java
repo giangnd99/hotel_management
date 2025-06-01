@@ -19,7 +19,11 @@ public class AiModelEntity {
 
     private String name;
 
-    private String description;
+    private String provider;
+
+    private String version;
+
+    private boolean isActive;
 
     @Embedded
     private AiModelID aiModelID;

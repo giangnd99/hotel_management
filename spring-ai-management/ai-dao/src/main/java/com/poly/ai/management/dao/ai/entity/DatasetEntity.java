@@ -17,8 +17,10 @@ public class DatasetEntity {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "data")
-    private String data;
+    @Column(name = "source")
+    private String source;
+
+    private long size;
 
     @Embedded
     private DatasetID datasetId;

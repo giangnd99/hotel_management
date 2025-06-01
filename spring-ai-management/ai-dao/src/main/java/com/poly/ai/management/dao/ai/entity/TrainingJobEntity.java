@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "training_jobs")
 @Getter
@@ -28,6 +30,9 @@ public class TrainingJobEntity {
 
     @Embedded
     private DatasetID datasetId;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    private List<String> errorMessages;
 
     public void setId(TrainingJobID id) {
         this.id = id.getValue();
