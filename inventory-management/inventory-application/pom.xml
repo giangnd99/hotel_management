@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.poly</groupId>
-        <artifactId>spring-ai-management</artifactId>
+        <artifactId>inventory-management</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ai-container</artifactId>
+    <artifactId>inventory-application</artifactId>
 
 </project>

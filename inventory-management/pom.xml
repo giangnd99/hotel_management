@@ -11,5 +11,9 @@
 
     <artifactId>inventory-management</artifactId>
     <packaging>pom</packaging>
+    <modules>
+        <module>inventory-application</module>
+        <module>inventory-domain</module>
+    </modules>
 
 </project>
