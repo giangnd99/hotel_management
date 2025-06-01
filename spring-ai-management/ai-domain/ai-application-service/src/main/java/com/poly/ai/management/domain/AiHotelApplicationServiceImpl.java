@@ -57,7 +57,7 @@ public class AiHotelApplicationServiceImpl implements AiHotelApplicationService 
     public AiModel createAiModel(AiModel model) {
         // Gán ID cho AiModel
         model.setId(new AiModelID(UUID.randomUUID().toString()));
-        // Gọi domain service để xác thực
+        // Gọi domainService service để xác thực
         AiModel validatedModel = aiDomainService.validateAndInitiateAiModel(model);
         // Lưu vào repository
         AiModel savedModel = aiModelRepository.save(validatedModel);
@@ -77,7 +77,7 @@ public class AiHotelApplicationServiceImpl implements AiHotelApplicationService 
         AiModel model = aiModelRepository.findById(savedPrompt.getModelId().toString())
                 .orElseThrow(() -> new IllegalArgumentException("AI Model not found with id: " + savedPrompt.getModelId()));
 
-        // Gọi domain service để xử lý Prompt
+        // Gọi domainService service để xử lý Prompt
         Response response = aiDomainService.processPrompt(savedPrompt, model);
 
         // Gán ID và nội dung cho Response
@@ -107,10 +107,10 @@ public class AiHotelApplicationServiceImpl implements AiHotelApplicationService 
 
         // Lấy AiModel từ repository
         Prompt finalPrompt = prompt;
-        AiModel model = aiModelRepository.findById(prompt.getModelId())
+        AiModel model = aiModelRepository.findById(prompt.getModelId().getValue())
                 .orElseThrow(() -> new IllegalArgumentException("AI Model not found with id: " + finalPrompt.getModelId()));
 
-        // Gọi domain service để tạo Embedding
+        // Gọi domainService service để tạo Embedding
         Embedding embedding = aiDomainService.generateEmbedding(prompt, model);
 
         // Gán ID và vector cho Embedding
@@ -133,16 +133,14 @@ public class AiHotelApplicationServiceImpl implements AiHotelApplicationService 
             queryEmbedding = embeddingRepository.save(queryEmbedding);
         }
 
-        List<Embedding> similarEmbeddings = aiDomainService.findSimilarEmbeddings(queryEmbedding, topK);
         List<Embedding> allEmbeddings = embeddingRepository.findAll();
+        float[] queryVector = queryEmbedding.getVectorArray(); // dùng float[] thay vì List<Float>
 
-        // Tính cosine similarity và sắp xếp
-        Embedding finalQueryEmbedding = queryEmbedding;
         List<Embedding> embeddingsFromDb = allEmbeddings.stream()
-                .filter(e -> cosineSimilarity(e.getVector(), finalQueryEmbedding.getVector()) > 0.7)
+                .filter(e -> cosineSimilarity(e.getVectorArray(), queryVector) > 0.7)
                 .sorted((e1, e2) -> Double.compare(
-                        cosineSimilarity(e2.getVector(), finalQueryEmbedding.getVector()),
-                        cosineSimilarity(e1.getVector(), finalQueryEmbedding.getVector())))
+                        cosineSimilarity(e2.getVectorArray(), queryVector),
+                        cosineSimilarity(e1.getVectorArray(), queryVector)))
                 .limit(topK)
                 .collect(Collectors.toList());
 
@@ -150,24 +148,26 @@ public class AiHotelApplicationServiceImpl implements AiHotelApplicationService 
         return embeddingsFromDb;
     }
 
-    private double cosineSimilarity(List<Float> vectorA, List<Float> vectorB) {
-        if (vectorA.size() != vectorB.size()) {
-            throw new AiDomainException("Vectors must have the same length for cosine similarity!");
+    private double cosineSimilarity(float[] vectorA, float[] vectorB) {
+        if (vectorA == null || vectorB == null || vectorA.length != vectorB.length) {
+            throw new AiDomainException("Vectors must be non-null and of the same length for cosine similarity!");
         }
+
         float dotProduct = 0.0f;
         float normA = 0.0f;
         float normB = 0.0f;
-        for (int i = 0; i < vectorA.size(); i++) {
-            dotProduct += vectorA.get(i) * vectorB.get(i);
-            normA += vectorA.get(i) * vectorA.get(i);
-            normB += vectorB.get(i) * vectorB.get(i);
+        for (int i = 0; i < vectorA.length; i++) {
+            dotProduct += vectorA[i] * vectorB[i];
+            normA += vectorA[i] * vectorA[i];
+            normB += vectorB[i] * vectorB[i];
         }
-        normA = (float) Math.sqrt(normA);
-        normB = (float) Math.sqrt(normB);
-        if (normA == 0 || normB == 0) {
+
+        double denominator = Math.sqrt(normA) * Math.sqrt(normB);
+        if (denominator == 0.0) {
             return 0.0;
         }
-        return dotProduct / (normA * normB);
+
+        return dotProduct / denominator;
     }
 
     @Override
@@ -175,7 +175,7 @@ public class AiHotelApplicationServiceImpl implements AiHotelApplicationService 
     public Dataset prepareDataset(Dataset dataset) {
         // Gán ID cho Dataset
         dataset.setId(new DatasetID(UUID.randomUUID().toString()));
-        // Gọi domain service để chuẩn bị Dataset
+        // Gọi domainService service để chuẩn bị Dataset
         Dataset preparedDataset = aiDomainService.prepareDataset(dataset);
         // Lưu Dataset
         Dataset savedDataset = datasetRepository.save(preparedDataset);
@@ -191,10 +191,10 @@ public class AiHotelApplicationServiceImpl implements AiHotelApplicationService 
         // Lấy AiModel và Dataset từ repository
         AiModel model = aiModelRepository.findById(job.getModelId().toString())
                 .orElseThrow(() -> new IllegalArgumentException("AI Model not found with id: " + job.getModelId()));
-        Dataset dataset = datasetRepository.findById(job.getDatasetId())
+        Dataset dataset = datasetRepository.findById(job.getDatasetId().getValue())
                 .orElseThrow(() -> new IllegalArgumentException("Dataset not found with id: " + job.getDatasetId()));
 
-        // Gọi domain service để bắt đầu huấn luyện
+        // Gọi domainService service để bắt đầu huấn luyện
         TrainingJob startedJob = aiDomainService.startTraining(job, model, dataset);
         // Lưu TrainingJob
         TrainingJob savedJob = trainingJobRepository.save(startedJob);
@@ -205,7 +205,7 @@ public class AiHotelApplicationServiceImpl implements AiHotelApplicationService 
     @Override
     @Transactional
     public TrainingJob completeTraining(TrainingJob job) {
-        // Gọi domain service để hoàn thành
+        // Gọi domainService service để hoàn thành
         TrainingJob completedJob = aiDomainService.completeTraining(job);
         // Lưu TrainingJob
         TrainingJob savedJob = trainingJobRepository.save(completedJob);
@@ -216,7 +216,7 @@ public class AiHotelApplicationServiceImpl implements AiHotelApplicationService 
     @Override
     @Transactional
     public TrainingJob failTraining(TrainingJob job, String errorMessage) {
-        // Gọi domain service để đánh dấu thất bại
+        // Gọi domainService service để đánh dấu thất bại
         TrainingJob failedJob = aiDomainService.failTraining(job, errorMessage);
         // Lưu TrainingJob
         TrainingJob savedJob = trainingJobRepository.save(failedJob);

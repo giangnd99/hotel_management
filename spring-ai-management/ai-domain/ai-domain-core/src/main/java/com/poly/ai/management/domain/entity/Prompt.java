@@ -1,12 +1,13 @@
 package com.poly.ai.management.domain.entity;
 
+import com.poly.ai.management.domain.valueobject.AiModelID;
 import com.poly.ai.management.domain.valueobject.PromptID;
 import com.poly.domain.entity.BaseEntity;
 
 public class Prompt extends BaseEntity<PromptID> {
 
     private String text;
-    private String modelId;
+    private AiModelID modelId;
 
     public void validate() {
         if (text == null || text.isEmpty()) {
@@ -25,7 +26,7 @@ public class Prompt extends BaseEntity<PromptID> {
         return text;
     }
 
-    public String getModelId() {
+    public AiModelID getModelId() {
         return modelId;
     }
 
@@ -39,7 +40,7 @@ public class Prompt extends BaseEntity<PromptID> {
     public static final class Builder {
         private PromptID promptID;
         private String text;
-        private String modelId;
+        private AiModelID modelId;
 
         private Builder() {
         }
@@ -58,7 +59,7 @@ public class Prompt extends BaseEntity<PromptID> {
             return this;
         }
 
-        public Builder modelId(String val) {
+        public Builder modelId(AiModelID val) {
             modelId = val;
             return this;
         }

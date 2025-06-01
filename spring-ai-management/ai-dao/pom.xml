@@ -24,12 +24,12 @@
         <dependency>
             <groupId>com.graphql-java</groupId>
             <artifactId>graphql-java</artifactId>
-            <version>22.0</version>
+            <version>${graphql-java.version}</version>
         </dependency>
         <dependency>
             <groupId>com.graphql-java</groupId>
             <artifactId>graphql-java-extended-scalars</artifactId>
-            <version>2022-12-18T02-09-15-8bb2279</version>
+            <version>${graphql-java-extended-scalars.version}</version>
         </dependency>
         <dependency>
             <groupId>com.poly</groupId>
@@ -38,8 +38,6 @@
         <dependency>
             <groupId>com.poly</groupId>
             <artifactId>ai-application-service</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 

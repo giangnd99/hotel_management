@@ -1,5 +1,6 @@
 package com.poly.ai.management.dao.ai.entity;
 
+import com.poly.ai.management.domain.valueobject.AiModelID;
 import com.poly.ai.management.domain.valueobject.PromptID;
 import com.poly.ai.management.domain.valueobject.ResponseID;
 import jakarta.persistence.*;
@@ -21,6 +22,9 @@ public class ResponseEntity {
 
     @Embedded
     private ResponseID responseId;
+
+    @Embedded
+    private AiModelID aiModelId;
 
     @Embedded
     private PromptID promptId;

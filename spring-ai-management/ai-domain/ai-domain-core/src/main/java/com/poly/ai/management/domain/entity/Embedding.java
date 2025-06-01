@@ -1,23 +1,21 @@
 package com.poly.ai.management.domain.entity;
 
+import com.poly.ai.management.domain.valueobject.AiModelID;
 import com.poly.ai.management.domain.valueobject.EmbeddingID;
 import com.poly.ai.management.domain.exception.AiDomainException;
+import com.poly.ai.management.domain.valueobject.PromptID;
 import com.poly.domain.entity.BaseEntity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class Embedding extends BaseEntity<EmbeddingID> {
     private float[] vector;
-    private final String dataId;
-    private final String modelId;
+    private final PromptID promptId;
+    private final AiModelID modelId;
 
     private Embedding(Builder builder) {
         super.setId(builder.embeddingId);
         this.vector = builder.vector;
-        this.dataId = builder.dataId;
+        this.promptId = builder.promptID;
         this.modelId = builder.modelId;
     }
 
@@ -32,10 +30,10 @@ public class Embedding extends BaseEntity<EmbeddingID> {
         if (vector == null || vector.length == 0) {
             throw new AiDomainException("Embedding vector cannot be empty!");
         }
-        if (dataId == null || dataId.isEmpty()) {
+        if (promptId == null || promptId.getValue().isEmpty()) {
             throw new AiDomainException("Data ID cannot be empty!");
         }
-        if (modelId == null || modelId.isEmpty()) {
+        if (modelId == null || modelId.getValue().isEmpty()) {
             throw new AiDomainException("Model ID cannot be empty!");
         }
     }
@@ -54,9 +52,6 @@ public class Embedding extends BaseEntity<EmbeddingID> {
         }
         for (int i = 0; i < vector.length; i++) {
             vector[i] /= norm;
-        }
-        if (norm == 0) {
-            throw new AiDomainException("Cannot normalize zero vector!");
         }
         for (int i = 0; i < vector.length; i++) {
             vector[i] /= norm;
@@ -82,19 +77,20 @@ public class Embedding extends BaseEntity<EmbeddingID> {
         return dotProduct / norm;
     }
 
-    public List<Float> getVector() {
-        List<Float> vectorList = new ArrayList<>();
-        for (float v : vector) {
-            vectorList.add(v);
-        }
-        return vectorList;
+    public float[] getVectorArray() {
+        return vector;
     }
 
-    public String getDataId() {
-        return dataId;
+    public float[] getVector() {
+        return vector.clone(); // tránh lộ reference gốc
     }
 
-    public String getModelId() {
+
+    public PromptID getPromptId() {
+        return promptId;
+    }
+
+    public AiModelID getModelId() {
         return modelId;
     }
 
@@ -105,10 +101,10 @@ public class Embedding extends BaseEntity<EmbeddingID> {
     public static final class Builder {
         private EmbeddingID embeddingId;
         private float[] vector;
-        private String dataId;
-        private String modelId;
+        private PromptID promptID;
+        private AiModelID modelId;
 
-        private Builder() {
+        public Builder() {
         }
 
         public Builder embeddingId(EmbeddingID val) {
@@ -121,12 +117,12 @@ public class Embedding extends BaseEntity<EmbeddingID> {
             return this;
         }
 
-        public Builder dataId(String val) {
-            dataId = val;
+        public Builder promptId(PromptID val) {
+            promptID = val;
             return this;
         }
 
-        public Builder modelId(String val) {
+        public Builder modelId(AiModelID val) {
             modelId = val;
             return this;
         }

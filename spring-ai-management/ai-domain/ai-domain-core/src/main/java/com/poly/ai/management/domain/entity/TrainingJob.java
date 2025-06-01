@@ -1,5 +1,7 @@
 package com.poly.ai.management.domain.entity;
 
+import com.poly.ai.management.domain.valueobject.AiModelID;
+import com.poly.ai.management.domain.valueobject.DatasetID;
 import com.poly.ai.management.domain.valueobject.TrainingJobID;
 import com.poly.ai.management.domain.exception.AiDomainException;
 import com.poly.domain.entity.BaseEntity;
@@ -9,8 +11,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class TrainingJob extends BaseEntity<TrainingJobID> {
-    private final String modelId;
-    private final String datasetId;
+    private final AiModelID modelId;
+    private final DatasetID datasetId;
     private String status;
     private List<String> errorMessages;
 
@@ -60,11 +62,11 @@ public class TrainingJob extends BaseEntity<TrainingJobID> {
         errorMessages.add(errorMessage);
     }
 
-    public String getModelId() {
+    public AiModelID getModelId() {
         return modelId;
     }
 
-    public String getDatasetId() {
+    public DatasetID getDatasetId() {
         return datasetId;
     }
 
@@ -82,8 +84,8 @@ public class TrainingJob extends BaseEntity<TrainingJobID> {
 
     public static final class Builder {
         private TrainingJobID trainingJobId;
-        private String modelId;
-        private String datasetId;
+        private AiModelID modelId;
+        private DatasetID datasetId;
         private String status = "PENDING";
         private List<String> errorMessages;
 
@@ -95,12 +97,12 @@ public class TrainingJob extends BaseEntity<TrainingJobID> {
             return this;
         }
 
-        public Builder modelId(String val) {
+        public Builder modelId(AiModelID val) {
             modelId = val;
             return this;
         }
 
-        public Builder datasetId(String val) {
+        public Builder datasetId(DatasetID val) {
             datasetId = val;
             return this;
         }

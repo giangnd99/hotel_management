@@ -25,8 +25,8 @@ public class AiDomainServiceImpl implements AiDomainService {
         prompt.validate();
         prompt.preprocess();
         Response response = Response.builder()
-                .modelId(model.getId().getValue())
-                .promptId(prompt.getId().getValue())
+                .modelId(model.getId())
+                .promptId(prompt.getId())
                 .build();
         return response;
     }
@@ -36,8 +36,8 @@ public class AiDomainServiceImpl implements AiDomainService {
         validateAiModel(model);
         prompt.validate();
         return Embedding.builder()
-                .dataId(prompt.getId().getValue())
-                .modelId(model.getId().getValue())
+                .promptId(prompt.getId())
+                .modelId(model.getId())
                 .build();
     }
 
