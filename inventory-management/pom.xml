@@ -12,6 +12,7 @@
     <artifactId>inventory-management</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <!--module khởi chạy, controller, cấu hình-->
         <module>inventory-application</module>
         <module>inventory-domain</module>
     </modules>
