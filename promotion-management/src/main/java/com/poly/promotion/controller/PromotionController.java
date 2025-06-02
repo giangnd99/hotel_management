@@ -108,21 +108,7 @@ public class PromotionController {
     }
 
     @DeleteMapping("/{promotionId}")
-    public ResponseEntity<PromotionModel> deletePromotion(@PathVariable String promotionId) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                PromotionModel.builder()
-                        .id(99)
-                        .name("Summer Sale")
-                        .description("Get 20% off on all items")
-                        .discountAmount(20.0)
-                        .target("Booked rooms")
-                        .condition("2 rooms booked")
-                        .startDate(LocalDate.of(2025, 7, 25))
-                        .endDate(LocalDate.of(2025, 8, 25))
-                        .status(1)
-                        .createdAt(LocalDateTime.of(2025, 6, 25, 10, 0))
-                        .createdBy("admin")
-                        .build()
-        );
+    public ResponseEntity<Void> closePromotion(@PathVariable String promotionId) {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
