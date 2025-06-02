@@ -1,5 +1,6 @@
 package com.poly.promotion.controller;
 
+import com.poly.promotion.model.VoucherModel;
 import com.poly.promotion.model.VoucherPackModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/voucher-packs")
@@ -63,6 +65,19 @@ public class VoucherPackController {
                         .validTo(LocalDate.of(2026,1,31))
                         .createdAt(LocalDateTime.now())
                         .createdBy("admin")
+                        .build()
+        );
+    }
+
+    @GetMapping("/redeem/{voucherPackId}")
+    public ResponseEntity<VoucherModel> redeem(@PathVariable Integer voucherPackId) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                VoucherModel.builder()
+                        .voucherCode(UUID.randomUUID().toString())
+                        .voucherPackId(voucherPackId)
+                        .discountAmount(20.0)
+                        .redeemedAt(LocalDateTime.now())
+                        .validTo(LocalDateTime.now().plusDays(30))
                         .build()
         );
     }

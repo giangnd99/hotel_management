@@ -72,7 +72,7 @@ public class PromotionController {
 
     // Example method to create a promotion
     @PostMapping
-    public ResponseEntity<PromotionModel> createPromotion(Object promotionRequest) {
+    public ResponseEntity<PromotionModel> createPromotion(PromotionModel promotionCreateRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(PromotionModel.builder()
                 .id(99)
                 .name("Summer Sale")
@@ -89,7 +89,7 @@ public class PromotionController {
     }
 
     @PutMapping("/{promotionId}")
-    public ResponseEntity<PromotionModel> updatePromotion(@PathVariable String promotionId, Object promotionRequest) {
+    public ResponseEntity<PromotionModel> updatePromotion(@PathVariable String promotionId, PromotionModel promotionUpdateRequest) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 PromotionModel.builder()
                         .id(99)
