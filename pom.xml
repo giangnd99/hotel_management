@@ -64,6 +64,7 @@
         <graphql-java-extended-scalars.version>2022-12-18T02-09-15-8bb2279</graphql-java-extended-scalars.version>
         <spring-ai-starter-model-ollama.version>1.0.0</spring-ai-starter-model-ollama.version>
         <spring-ai-bom.version>1.0.0-M5</spring-ai-bom.version>
+        <spring-boot-starter-graphql.version>3.3.4</spring-boot-starter-graphql.version>
     </properties>
 
     <dependencyManagement>
@@ -126,6 +127,16 @@
             <dependency>
                 <groupId>com.poly</groupId>
                 <artifactId>ai-dao</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>ai-application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>ai-container</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
