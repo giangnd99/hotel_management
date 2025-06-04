@@ -1,19 +1,16 @@
 package com.poly.inventory.application.command;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
 public class CreateInventoryItemCommand {
-    private final String name;
-    private final int quantity;
-
-    public CreateInventoryItemCommand(String name, int quantity) {
-        this.name = name;
-        this.quantity = quantity;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
+    private final String itemName;
+    private final String category;
+    private final Integer quantity;
+    private final Double unitPrice;
+    private final Integer minimumQuantity;
 }
