@@ -12,7 +12,10 @@
     <artifactId>inventory-domain</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <!--entity, value object, repository interface-->
         <module>inventory-domain-core</module>
+
+        <!--use case, service, handle business logic-->
         <module>inventory-application-service</module>
     </modules>
 
