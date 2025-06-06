@@ -1,10 +1,11 @@
-package com.poly.inventory.adapter;
+package com.poly.inventory.dataaccess.adapter;
+
 
 import com.poly.inventory.application.port.out.LoadInventoryPort;
 import com.poly.inventory.application.port.out.SaveInventoryPort;
+import com.poly.inventory.dataaccess.entity.InventoryEntity;
+import com.poly.inventory.dataaccess.repo.InventoryRepository;
 import com.poly.inventory.domain.entity.InventoryItem;
-import com.poly.inventory.entity.InventoryEntity;
-import com.poly.inventory.repository.InventoryRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.poly.inventory.entity;
+package com.poly.inventory.dataaccess.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
