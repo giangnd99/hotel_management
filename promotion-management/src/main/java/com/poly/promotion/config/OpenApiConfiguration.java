@@ -18,8 +18,8 @@ public class OpenApiConfiguration {
         server.setDescription("Development");
 
         Contact myContact = new Contact();
-        myContact.setName("Jane Doe");
-        myContact.setEmail("your.email@gmail.com");
+        myContact.setName("LinhPete");
+        myContact.setEmail("peterdamlinh1215@gmail.com");
 
         Info information = new Info()
                 .title("Promotion Management System API")
