@@ -1,9 +1,9 @@
 package com.poly.inventory.dataaccess.adapter;
 
-
 import com.poly.inventory.application.port.out.LoadInventoryPort;
 import com.poly.inventory.application.port.out.SaveInventoryPort;
 import com.poly.inventory.dataaccess.entity.InventoryEntity;
+import com.poly.inventory.dataaccess.mapper.InventoryMapper;
 import com.poly.inventory.dataaccess.repo.InventoryRepository;
 import com.poly.inventory.domain.model.entity.InventoryItem;
 import org.springframework.stereotype.Component;
@@ -23,38 +23,19 @@ public class InventoryJpaAdapter implements LoadInventoryPort, SaveInventoryPort
     @Override
     public List<InventoryItem> loadAllItems() {
         return inventoryRepository.findAll().stream()
-                .map(entity -> new InventoryItem(
-                        entity.getItemId(),
-                        entity.getItemName(),
-                        entity.getCategory(),
-                        entity.getQuantity(),
-                        entity.getUnitPrice(),
-                        entity.getMinimumQuantity()
-                ))
+                .map(InventoryMapper::toDomain)
                 .toList();
     }
 
     @Override
     public Optional<InventoryItem> loadItemById(Integer id) {
         return inventoryRepository.findById(id)
-                .map(entity -> new InventoryItem(
-                        entity.getItemId(),
-                        entity.getItemName(),
-                        entity.getCategory(),
-                        entity.getQuantity(),
-                        entity.getUnitPrice(),
-                        entity.getMinimumQuantity()
-                ));
+                .map(InventoryMapper::toDomain);
     }
 
     @Override
     public void save(InventoryItem item) {
-        InventoryEntity entity = new InventoryEntity();
-        entity.setItemName(item.getItemName());
-        entity.setCategory(item.getCategory());
-        entity.setQuantity(item.getQuantity());
-        entity.setUnitPrice(item.getUnitPrice());
-        entity.setMinimumQuantity(item.getMinimumQuantity());
+        InventoryEntity entity = InventoryMapper.toEntity(item);
         inventoryRepository.save(entity);
     }
 }
