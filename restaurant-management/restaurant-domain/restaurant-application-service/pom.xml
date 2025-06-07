@@ -5,17 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.poly</groupId>
-        <artifactId>hotel_management</artifactId>
+        <artifactId>restaurant-domain</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>restaurant-management</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>restaurant-domain</module>
-        <module>restaurant-application</module>
-        <module>restaurant-container</module>
-        <module>restaurant-data-access</module>
-    </modules>
+    <artifactId>restaurant-application-service</artifactId>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
 </project>
