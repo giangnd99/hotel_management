@@ -2,7 +2,7 @@ package com.poly.inventory.application.service;
 
 import com.poly.inventory.application.port.out.LoadInventoryPort;
 import com.poly.inventory.application.query.GetInventoryItemsQuery;
-import com.poly.inventory.domain.entity.InventoryItem;
+import com.poly.inventory.domain.model.entity.InventoryItem;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
