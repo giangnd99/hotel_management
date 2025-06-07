@@ -2,7 +2,7 @@ package com.poly.inventory.controller;
 
 import com.poly.inventory.application.query.GetInventoryItemByIdQuery;
 import com.poly.inventory.application.query.GetInventoryItemsQuery;
-import com.poly.inventory.domain.entity.InventoryItem;
+import com.poly.inventory.domain.model.entity.InventoryItem;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
