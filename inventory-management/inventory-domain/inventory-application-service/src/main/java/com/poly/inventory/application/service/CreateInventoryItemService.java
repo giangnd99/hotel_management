@@ -2,7 +2,7 @@ package com.poly.inventory.application.service;
 import com.poly.inventory.application.command.CreateInventoryItemCommand;
 import com.poly.inventory.application.port.in.CreateInventoryItemUseCase;
 import com.poly.inventory.application.port.out.SaveInventoryPort;
-import com.poly.inventory.domain.entity.InventoryItem;
+import com.poly.inventory.domain.model.entity.InventoryItem;
 import org.springframework.stereotype.Service;
 
 @Service

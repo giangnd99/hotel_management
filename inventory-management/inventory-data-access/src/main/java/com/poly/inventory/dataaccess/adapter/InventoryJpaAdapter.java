@@ -5,7 +5,7 @@ import com.poly.inventory.application.port.out.LoadInventoryPort;
 import com.poly.inventory.application.port.out.SaveInventoryPort;
 import com.poly.inventory.dataaccess.entity.InventoryEntity;
 import com.poly.inventory.dataaccess.repo.InventoryRepository;
-import com.poly.inventory.domain.entity.InventoryItem;
+import com.poly.inventory.domain.model.entity.InventoryItem;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

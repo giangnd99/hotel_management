@@ -1,4 +1,6 @@
-package com.poly.inventory.domain.entity;
+package com.poly.inventory.domain.model.entity;
+
+import com.poly.inventory.domain.model.value_object.Quantity;
 
 public class InventoryItem {
     private Integer itemId;
@@ -16,9 +18,6 @@ public class InventoryItem {
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.minimumQuantity = minimumQuantity;
-    }
-
-    public InventoryItem(String name, int quantity) {
     }
 
     public Integer getItemId() {
