@@ -10,6 +10,10 @@ public record Quantity(int value) {
         }
     }
 
+    public int getValue() {
+        return value;
+    }
+
     public Quantity add(Quantity other) {
         return new Quantity(this.value + other.value);
     }
