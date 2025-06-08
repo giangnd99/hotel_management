@@ -21,25 +21,15 @@ public class EmbeddingEntity {
     @Column(name = "id")
     private String id;
 
-    @Column(name = "vector", length = 10000)
+    @Column(name = "vector", columnDefinition = "TEXT")
     private String vectorString; // Lưu float[] dưới dạng chuỗi
 
     @Transient
     private float[] vector; // Không lưu trực tiếp vào DB
 
-    @Embedded
-    private EmbeddingID embeddingId;
+    private String promptId;
 
-    @Embedded
-    private PromptID promptId;
-
-    @Embedded
-    private AiModelID modelId;
-
-    public void setId(EmbeddingID id) {
-        this.id = id.getValue();
-        this.embeddingId = id;
-    }
+    private String modelId;
 
     public void setVector(float[] vector) {
         this.vector = vector;

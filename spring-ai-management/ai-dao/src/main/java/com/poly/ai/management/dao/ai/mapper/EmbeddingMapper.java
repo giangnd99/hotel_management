@@ -11,9 +11,9 @@ public class EmbeddingMapper {
 
     public static EmbeddingEntity toJpaEntity(Embedding embedding) {
         EmbeddingEntity entity = new EmbeddingEntity();
-        entity.setId(embedding.getId());
-        entity.setPromptId(embedding.getPromptId());
-        entity.setModelId(embedding.getModelId());
+        entity.setId(embedding.getId().getValue());
+        entity.setPromptId(embedding.getPromptId().getValue());
+        entity.setModelId(embedding.getModelId().getValue());
         entity.setVector(embedding.getVectorArray());
         return entity;
     }
@@ -21,8 +21,8 @@ public class EmbeddingMapper {
     public static Embedding toDomainEntity(EmbeddingEntity entity) {
         return Embedding.builder()
                 .embeddingId(new EmbeddingID(entity.getId()))
-                .promptId(new PromptID(entity.getPromptId().getValue()))
-                .modelId(new AiModelID(entity.getModelId().getValue()))
+                .promptId(new PromptID(entity.getPromptId()))
+                .modelId(new AiModelID(entity.getModelId()))
                 .vector(entity.getVector())
                 .build();
     }
