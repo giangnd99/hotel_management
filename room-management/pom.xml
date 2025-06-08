@@ -10,6 +10,5 @@
     </parent>
 
     <artifactId>room-management</artifactId>
-    <packaging>pom</packaging>
 
 </project>

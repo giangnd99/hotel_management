@@ -80,4 +80,9 @@ public class AiHotelApplicationServiceImpl implements AiHotelApplicationService 
     public TrainingJob failTraining(TrainingJob job, String errorMessage) {
         return failTrainingHandler.failTraining(job, errorMessage);
     }
+
+    @Override
+    public Booking findAvailableBooking(Booking booking) {
+        return ;
+    }
 }
