@@ -25,9 +25,6 @@ public class TrainingJob extends BaseEntity<TrainingJobID> {
     }
 
     public void initialize(String modelId, String datasetId) {
-        if (getId() != null) {
-            throw new AiDomainException("TrainingJob is already initialized!");
-        }
         if (modelId == null || modelId.isEmpty()) {
             throw new AiDomainException("Model ID cannot be empty!");
         }

@@ -1,11 +1,6 @@
 package com.poly.ai.management.domain;
 
-import com.poly.ai.management.domain.entity.AiModel;
-import com.poly.ai.management.domain.entity.Dataset;
-import com.poly.ai.management.domain.entity.Embedding;
-import com.poly.ai.management.domain.entity.Prompt;
-import com.poly.ai.management.domain.entity.Response;
-import com.poly.ai.management.domain.entity.TrainingJob;
+import com.poly.ai.management.domain.entity.*;
 import com.poly.ai.management.domain.exception.AiDomainException;
 
 import java.util.List;
@@ -74,6 +69,16 @@ public class AiDomainServiceImpl implements AiDomainService {
     public TrainingJob failTraining(TrainingJob job, String errorMessage) {
         job.fail(errorMessage);
         return job;
+    }
+
+    @Override
+    public Room findAvailableRoom(AiModel model) {
+        return null;
+    }
+
+    @Override
+    public Booking findAvailableBooking(AiModel model) {
+        return null;
     }
 
     private void validateAiModel(AiModel model) {

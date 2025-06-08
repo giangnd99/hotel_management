@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>promotion-management</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>

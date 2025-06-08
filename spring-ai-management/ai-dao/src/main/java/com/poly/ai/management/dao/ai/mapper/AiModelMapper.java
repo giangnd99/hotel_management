@@ -18,7 +18,7 @@ public class AiModelMapper {
 
     public static AiModelEntity toJPA(AiModel domain) {
         AiModelEntity entity = new AiModelEntity();
-        entity.setId(domain.getId());
+        entity.setId(domain.getId().getValue());
         entity.setName(domain.getName());
         entity.setProvider(domain.getProvider());
         entity.setVersion(domain.getVersion());
