@@ -66,6 +66,8 @@
         <spring-ai-bom.version>1.0.0-M5</spring-ai-bom.version>
         <spring-boot-starter-graphql.version>3.3.4</spring-boot-starter-graphql.version>
         <swagger-project.version>2.8.5</swagger-project.version>
+        <eureka-server.version>4.1.0</eureka-server.version>
+        <spring-cloud.version>2024.0.0</spring-cloud.version>
     </properties>
 
     <dependencyManagement>
