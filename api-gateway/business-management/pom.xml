@@ -10,5 +10,9 @@
     </parent>
 
     <artifactId>business-management</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>business-application</module>
+    </modules>
 
 </project>

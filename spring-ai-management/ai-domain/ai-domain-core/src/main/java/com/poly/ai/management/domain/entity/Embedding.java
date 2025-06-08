@@ -4,10 +4,11 @@ import com.poly.ai.management.domain.valueobject.AiModelID;
 import com.poly.ai.management.domain.valueobject.EmbeddingID;
 import com.poly.ai.management.domain.exception.AiDomainException;
 import com.poly.ai.management.domain.valueobject.PromptID;
+import com.poly.domain.entity.AggregateRoot;
 import com.poly.domain.entity.BaseEntity;
 
 
-public class Embedding extends BaseEntity<EmbeddingID> {
+public class Embedding extends AggregateRoot<EmbeddingID> {
     private float[] vector;
     private final PromptID promptId;
     private final AiModelID modelId;
