@@ -83,6 +83,6 @@ public class AiHotelApplicationServiceImpl implements AiHotelApplicationService 
 
     @Override
     public Booking findAvailableBooking(Booking booking) {
-        return ;
+        return null;
     }
 }
