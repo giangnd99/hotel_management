@@ -2,9 +2,11 @@ package com.poly.ai.management.domain.handler.ai;
 
 import org.springframework.ai.document.Document;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class ProcessDocumentHandler {
 
     public List<Document> processData(String rawData) {

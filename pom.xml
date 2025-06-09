@@ -68,6 +68,7 @@
         <swagger-project.version>2.8.5</swagger-project.version>
         <eureka-server.version>4.1.0</eureka-server.version>
         <spring-cloud.version>2024.0.0</spring-cloud.version>
+        <ai-pgvector.version>1.0.0-M5</ai-pgvector.version>
     </properties>
 
     <dependencyManagement>

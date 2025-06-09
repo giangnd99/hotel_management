@@ -20,13 +20,10 @@ import java.util.List;
 public class AiHotelApplicationServiceImpl implements AiHotelApplicationService {
 
     private final CreateAiModelHandler createAiModelHandler;
-    private final CompleteTrainingHandler completeTrainingHandler;
-    private final FailTrainingHandler failTrainingHandler;
     private final FindSimilarEmbeddingsHandler findSimilarEmbeddingsHandler;
     private final GenerateEmbeddingHandler generateEmbeddingHandler;
-    private final PrepareDatasetHandler prepareDatasetHandler;
     private final ProcessPromptHandler processPromptHandler;
-    private final StartTrainingHandler startTrainingHandler;
+
 
     @Override
     @Transactional
