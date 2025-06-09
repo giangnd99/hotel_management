@@ -2,22 +2,17 @@ package com.poly.ai.management.domain;
 
 
 import com.poly.ai.management.domain.entity.*;
-import com.poly.ai.management.domain.exception.AiDomainException;
+import com.poly.ai.management.domain.entity.rag.Embedding;
+import com.poly.ai.management.domain.entity.train.Response;
 import com.poly.ai.management.domain.handler.ai.*;
 import com.poly.ai.management.domain.port.input.service.AiHotelApplicationService;
-import com.poly.ai.management.domain.port.output.repository.*;
-import com.poly.ai.management.domain.valueobject.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.client.ChatClient;
 
-import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -58,31 +53,7 @@ public class AiHotelApplicationServiceImpl implements AiHotelApplicationService 
     }
 
     @Override
-    @Transactional
-    public Dataset prepareDataset(Dataset dataset) {
-        return prepareDatasetHandler.prepareDataset(dataset);
-    }
-
-    @Override
-    @Transactional
-    public TrainingJob startTraining(TrainingJob job) {
-        return startTrainingHandler.startTraining(job);
-    }
-
-    @Override
-    @Transactional
-    public TrainingJob completeTraining(TrainingJob job) {
-        return completeTrainingHandler.completeTraining(job);
-    }
-
-    @Override
-    @Transactional
-    public TrainingJob failTraining(TrainingJob job, String errorMessage) {
-        return failTrainingHandler.failTraining(job, errorMessage);
-    }
-
-    @Override
     public Booking findAvailableBooking(Booking booking) {
-        return ;
+        return null;
     }
 }

@@ -1,7 +1,7 @@
 package com.poly.ai.management.domain.port.output.repository;
 
 
-import com.poly.ai.management.domain.entity.TrainingJob;
+import com.poly.ai.management.domain.entity.train.TrainingJob;
 
 import java.util.Optional;
 

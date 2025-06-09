@@ -1,7 +1,7 @@
 package com.poly.ai.management.domain.handler.ai;
 
 import com.poly.ai.management.domain.AiDomainService;
-import com.poly.ai.management.domain.entity.Embedding;
+import com.poly.ai.management.domain.entity.rag.Embedding;
 import com.poly.ai.management.domain.exception.AiDomainException;
 import com.poly.ai.management.domain.port.output.repository.EmbeddingRepository;
 import com.poly.ai.management.domain.valueobject.EmbeddingID;

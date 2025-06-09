@@ -36,3 +36,4 @@ spring:
         model: llama3
       embedding:
         model: nomic-embed-text
+        enabled: true

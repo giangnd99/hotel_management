@@ -1,9 +1,14 @@
 package com.poly.ai.management.application.resolver;
 
 import com.poly.ai.management.domain.entity.*;
+import com.poly.ai.management.domain.entity.rag.Embedding;
+import com.poly.ai.management.domain.entity.train.Dataset;
+import com.poly.ai.management.domain.entity.train.Response;
+import com.poly.ai.management.domain.entity.train.TrainingJob;
 import com.poly.ai.management.domain.port.input.service.AiHotelApplicationService;
 import com.poly.ai.management.application.dto.*;
 import com.poly.ai.management.application.mapper.AiGraphQLMapper;
+import com.poly.ai.management.domain.port.input.service.FineTuningAIService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -17,6 +22,7 @@ import java.util.List;
 public class AiGraphQLResolver {
 
     private final AiHotelApplicationService aiService;
+    private final FineTuningAIService fineTuningService;
 
     // === QUERIES ===
 
@@ -47,21 +53,21 @@ public class AiGraphQLResolver {
 
     @MutationMapping
     public Dataset prepareDataset(@Argument PrepareDatasetInput input) {
-        return aiService.prepareDataset(AiGraphQLMapper.toDataset(input));
+        return fineTuningService.prepareDataset(AiGraphQLMapper.toDataset(input));
     }
 
     @MutationMapping
     public TrainingJob startTraining(@Argument StartTrainingInput input) {
-        return aiService.startTraining(AiGraphQLMapper.toTrainingJob(input));
+        return fineTuningService.startTraining(AiGraphQLMapper.toTrainingJob(input));
     }
 
     @MutationMapping
     public TrainingJob completeTraining(@Argument CompleteTrainingInput input) {
-        return aiService.completeTraining(AiGraphQLMapper.toCompleteJob(input));
+        return fineTuningService.completeTraining(AiGraphQLMapper.toCompleteJob(input));
     }
 
     @MutationMapping
     public TrainingJob failTraining(@Argument FailTrainingInput input) {
-        return aiService.failTraining(AiGraphQLMapper.toFailJob(input), input.getMessage());
+        return fineTuningService.failTraining(AiGraphQLMapper.toFailJob(input), input.getMessage());
     }
 }

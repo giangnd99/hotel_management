@@ -1,7 +1,7 @@
 package com.poly.ai.management.dao.ai.mapper;
 
 import com.poly.ai.management.dao.ai.entity.DatasetEntity;
-import com.poly.ai.management.domain.entity.Dataset;
+import com.poly.ai.management.domain.entity.train.Dataset;
 import com.poly.ai.management.domain.valueobject.DatasetID;
 
 public class DatasetMapper {
