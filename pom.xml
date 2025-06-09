@@ -13,6 +13,7 @@
     <artifactId>hotel_management</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
+
     <name>hotel_management</name>
     <description>hotel_management</description>
 
