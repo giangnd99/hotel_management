@@ -1,6 +1,8 @@
 package com.poly.ai.management.domain.port.input.service;
 
 import com.poly.ai.management.domain.entity.*;
+import com.poly.ai.management.domain.entity.rag.Embedding;
+import com.poly.ai.management.domain.entity.train.Response;
 
 import java.util.List;
 
@@ -12,14 +14,6 @@ public interface AiHotelApplicationService {
     Embedding generateEmbedding(Prompt prompt);
 
     List<Embedding> findSimilarEmbeddings(Embedding queryEmbedding, int topK);
-
-    Dataset prepareDataset(Dataset dataset);
-
-    TrainingJob startTraining(TrainingJob job);
-
-    TrainingJob completeTraining(TrainingJob job);
-
-    TrainingJob failTraining(TrainingJob job, String errorMessage);
 
     Booking findAvailableBooking(Booking booking);
 }

@@ -1,11 +1,10 @@
-package com.poly.ai.management.domain.entity;
+package com.poly.ai.management.domain.entity.rag;
 
 import com.poly.ai.management.domain.valueobject.AiModelID;
 import com.poly.ai.management.domain.valueobject.EmbeddingID;
 import com.poly.ai.management.domain.exception.AiDomainException;
 import com.poly.ai.management.domain.valueobject.PromptID;
 import com.poly.domain.entity.AggregateRoot;
-import com.poly.domain.entity.BaseEntity;
 
 
 public class Embedding extends AggregateRoot<EmbeddingID> {

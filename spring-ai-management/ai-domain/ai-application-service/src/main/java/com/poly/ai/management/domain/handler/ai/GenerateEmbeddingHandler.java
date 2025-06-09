@@ -2,7 +2,7 @@ package com.poly.ai.management.domain.handler.ai;
 
 import com.poly.ai.management.domain.AiDomainService;
 import com.poly.ai.management.domain.entity.AiModel;
-import com.poly.ai.management.domain.entity.Embedding;
+import com.poly.ai.management.domain.entity.rag.Embedding;
 import com.poly.ai.management.domain.entity.Prompt;
 import com.poly.ai.management.domain.port.output.repository.AiModelRepository;
 import com.poly.ai.management.domain.port.output.repository.EmbeddingRepository;

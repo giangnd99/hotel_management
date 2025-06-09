@@ -3,7 +3,7 @@ package com.poly.ai.management.dao.ai.adapter;
 import com.poly.ai.management.dao.ai.entity.DatasetEntity;
 import com.poly.ai.management.dao.ai.mapper.DatasetMapper;
 import com.poly.ai.management.dao.ai.repository.DatasetJPARepository;
-import com.poly.ai.management.domain.entity.Dataset;
+import com.poly.ai.management.domain.entity.train.Dataset;
 import com.poly.ai.management.domain.port.output.repository.DatasetRepository;
 import org.springframework.stereotype.Component;
 
