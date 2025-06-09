@@ -1,6 +1,10 @@
 package com.poly.ai.management.domain;
 
 import com.poly.ai.management.domain.entity.*;
+import com.poly.ai.management.domain.entity.rag.Embedding;
+import com.poly.ai.management.domain.entity.train.Dataset;
+import com.poly.ai.management.domain.entity.train.Response;
+import com.poly.ai.management.domain.entity.train.TrainingJob;
 import com.poly.ai.management.domain.exception.AiDomainException;
 
 import java.util.List;

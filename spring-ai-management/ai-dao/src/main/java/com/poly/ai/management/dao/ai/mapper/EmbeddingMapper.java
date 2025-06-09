@@ -1,9 +1,8 @@
 package com.poly.ai.management.dao.ai.mapper;
 
 import com.poly.ai.management.dao.ai.entity.EmbeddingEntity;
-import com.poly.ai.management.domain.entity.Embedding;
+import com.poly.ai.management.domain.entity.rag.Embedding;
 import com.poly.ai.management.domain.valueobject.AiModelID;
-import com.poly.ai.management.domain.valueobject.DatasetID;
 import com.poly.ai.management.domain.valueobject.EmbeddingID;
 import com.poly.ai.management.domain.valueobject.PromptID;
 

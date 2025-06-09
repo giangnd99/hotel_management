@@ -1,4 +1,4 @@
-package com.poly.ai.management.domain.entity;
+package com.poly.ai.management.domain.entity.train;
 
 import com.poly.ai.management.domain.valueobject.DatasetID;
 import com.poly.domain.entity.BaseEntity;
