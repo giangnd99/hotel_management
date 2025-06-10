@@ -1,4 +1,4 @@
-package com.poly.ai.management.domain;
+package com.poly.ai.management.domain.train;
 
 
 import com.poly.ai.management.domain.entity.*;
