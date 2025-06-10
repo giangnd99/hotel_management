@@ -25,4 +25,3 @@ public class InventoryEntity {
     private Double unitPrice;
     private Integer minimumQuantity;
 }
-

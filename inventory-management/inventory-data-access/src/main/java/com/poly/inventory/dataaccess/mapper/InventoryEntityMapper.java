@@ -1,12 +1,17 @@
 package com.poly.inventory.dataaccess.mapper;
 
 import com.poly.inventory.dataaccess.entity.InventoryEntity;
-import com.poly.inventory.domain.model.entity.InventoryItem;
-import com.poly.inventory.domain.model.value_object.Quantity;
+import com.poly.inventory.domain.entity.InventoryItem;
+import com.poly.inventory.domain.value_object.Quantity;
 
-public class InventoryMapper {
+public class InventoryEntityMapper {
+
+    private InventoryEntityMapper() {
+    }
 
     public static InventoryItem toDomain(InventoryEntity entity) {
+        if (entity == null) return null;
+
         return new InventoryItem(
                 entity.getItemId(),
                 entity.getItemName(),
@@ -18,6 +23,8 @@ public class InventoryMapper {
     }
 
     public static InventoryEntity toEntity(InventoryItem item) {
+        if (item == null) return null;
+
         InventoryEntity entity = new InventoryEntity();
         entity.setItemId(item.getItemId());
         entity.setItemName(item.getItemName());

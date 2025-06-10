@@ -1,6 +1,6 @@
 package com.poly.inventory.application.port.in;
 import com.poly.inventory.application.command.CreateInventoryItemCommand;
-import com.poly.inventory.domain.model.entity.InventoryItem;
+import com.poly.inventory.domain.entity.InventoryItem;
 
 @FunctionalInterface
 public interface CreateInventoryItemUseCase {

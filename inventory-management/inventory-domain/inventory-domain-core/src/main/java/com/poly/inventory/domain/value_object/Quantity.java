@@ -1,4 +1,4 @@
-package com.poly.inventory.domain.model.value_object;
+package com.poly.inventory.domain.value_object;
 
 import com.poly.inventory.domain.exception.InvalidQuantityException;
 
