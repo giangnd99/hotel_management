@@ -1,4 +1,4 @@
-package com.poly.inventory.domain;
+package com.poly.inventory.domain.value_object;
 
 public enum Category {
     ELECTRONICS,

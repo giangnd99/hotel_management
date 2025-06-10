@@ -1,6 +1,6 @@
 
 CREATE TABLE inventory_items (
-    item_id INT PRIMARY KEY,
+    item_id INT PRIMARY KEY AUTO_INCREMENT,
     item_name VARCHAR(255),
     category VARCHAR(100),
     quantity INT,

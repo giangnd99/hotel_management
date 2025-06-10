@@ -1,6 +1,6 @@
-package com.poly.inventory.domain.model.entity;
+package com.poly.inventory.domain.entity;
 
-import com.poly.inventory.domain.model.value_object.Quantity;
+import com.poly.inventory.domain.value_object.Quantity;
 
 public class InventoryItem {
     private Integer itemId;
