@@ -2,6 +2,7 @@ package com.poly.room.management.domain.entity;
 
 import com.poly.domain.entity.BaseEntity;
 import com.poly.domain.valueobject.InventoryItemId;
+import com.poly.room.management.domain.exception.RoomDomainException;
 import com.poly.room.management.domain.valueobject.FurnitureId;
 
 public class Furniture extends BaseEntity<FurnitureId> {
@@ -15,11 +16,23 @@ public class Furniture extends BaseEntity<FurnitureId> {
         this.inventoryItemId = inventoryItemId;
     }
 
+    public void validate() {
+        if (inventoryItemId == null
+                || inventoryItemId.getValue() == null
+                || inventoryItemId.getValue().isEmpty()
+                || inventoryItemId.getValue().isBlank()) {
+            throw new RoomDomainException("InventoryItemId is null");
+        }
+    }
+
     public InventoryItemId getInventoryItemId() {
         return inventoryItemId;
     }
 
     public void setInventoryItemId(InventoryItemId inventoryItemId) {
         this.inventoryItemId = inventoryItemId;
+        validate();
     }
+
+
 }
