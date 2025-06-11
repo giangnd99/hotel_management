@@ -3,6 +3,7 @@ package com.poly.inventory.controller;
 import com.poly.inventory.application.handler.*;
 import com.poly.inventory.application.dto.InventoryItemDto;
 import com.poly.inventory.domain.entity.InventoryItem;
+import com.poly.inventory.domain.value_object.ItemId;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,8 @@ public class InventoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<InventoryItem> getItemById(@PathVariable Integer id) {
-        return getItemByIdHandler.getItemById(id)
+        ItemId itemId = ItemId.of(id);
+        return getItemByIdHandler.getItemById(itemId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -47,14 +49,16 @@ public class InventoryController {
 
     @PutMapping("/{id}")
     public ResponseEntity<InventoryItemDto> updateItem(@PathVariable Integer id, @RequestBody InventoryItemDto dto) {
-        return updateHandler.update(id, dto)
+        ItemId itemId = ItemId.of(id);
+        return updateHandler.update(itemId, dto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteItem(@PathVariable Integer id) {
-        deleteHandler.deleteById(id);
+        ItemId itemId = ItemId.of(id);
+        deleteHandler.deleteById(itemId);
         return ResponseEntity.noContent().build();
     }
 }

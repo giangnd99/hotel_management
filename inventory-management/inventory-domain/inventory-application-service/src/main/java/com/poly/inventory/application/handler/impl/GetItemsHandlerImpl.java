@@ -20,4 +20,3 @@ public class GetItemsHandlerImpl implements GetItemsHandler {
         return loadInventoryPort.loadAllItems();
     }
 }
-
