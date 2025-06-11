@@ -1,9 +1,9 @@
-package com.poly.inventory.application.query;
+package com.poly.inventory.application.handler;
 
 import com.poly.inventory.domain.entity.InventoryItem;
 
 import java.util.List;
 
-public interface GetInventoryItemsQuery {
+public interface GetItemsHandler {
     List<InventoryItem> getAllItems();
 }
