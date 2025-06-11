@@ -6,12 +6,15 @@ import com.poly.inventory.application.mapper.InventoryDtoMapper;
 import com.poly.inventory.application.port.out.LoadInventoryPort;
 import com.poly.inventory.application.port.out.SaveInventoryPort;
 import com.poly.inventory.domain.entity.InventoryItem;
+import com.poly.inventory.domain.value_object.ItemId;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UpdateItemHandlerImpl implements UpdateItemHandler {
 
@@ -19,7 +22,7 @@ public class UpdateItemHandlerImpl implements UpdateItemHandler {
     private final LoadInventoryPort loadPort;
 
     @Override
-    public Optional<InventoryItemDto> update(Integer id, InventoryItemDto dto) {
+    public Optional<InventoryItemDto> update(ItemId id, InventoryItemDto dto) {
         return loadPort.loadItemById(id)
                 .map(existing -> {
                     InventoryItem updated = new InventoryItem(

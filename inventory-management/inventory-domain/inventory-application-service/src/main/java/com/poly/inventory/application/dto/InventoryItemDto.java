@@ -1,13 +1,12 @@
 package com.poly.inventory.application.dto;
 
+import com.poly.inventory.domain.value_object.ItemId;
 import com.poly.inventory.domain.value_object.Quantity;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class InventoryItemDto {
-    public Integer itemId;
+    public ItemId itemId;
     public String itemName;
     public String category;
     public Quantity quantity;

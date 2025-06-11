@@ -1,16 +1,17 @@
 package com.poly.inventory.domain.entity;
 
+import com.poly.inventory.domain.value_object.ItemId;
 import com.poly.inventory.domain.value_object.Quantity;
 
 public class InventoryItem {
-    private Integer itemId;
+    private ItemId itemId;
     private String itemName;
     private String category;
     private Quantity quantity;
     private Double unitPrice;
     private Integer minimumQuantity;
 
-    public InventoryItem(Integer itemId, String itemName, String category,
+    public InventoryItem(ItemId itemId, String itemName, String category,
                          Quantity quantity, Double unitPrice, Integer minimumQuantity) {
         this.itemId = itemId;
         this.itemName = itemName;
@@ -20,11 +21,11 @@ public class InventoryItem {
         this.minimumQuantity = minimumQuantity;
     }
 
-    public Integer getItemId() {
+    public ItemId getItemId() {
         return itemId;
     }
 
-    public void setItemId(Integer itemId) {
+    public void setItemId(ItemId itemId) {
         this.itemId = itemId;
     }
 

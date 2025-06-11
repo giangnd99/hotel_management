@@ -5,10 +5,12 @@ import com.poly.inventory.application.dto.InventoryItemDto;
 import com.poly.inventory.application.mapper.InventoryDtoMapper;
 import com.poly.inventory.application.port.out.SaveInventoryPort;
 import com.poly.inventory.domain.entity.InventoryItem;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CreateItemHandlerImpl implements CreateItemHandler {
 
