@@ -8,7 +8,7 @@ CREATE TABLE inventory_items (
     minimum_quantity INT
 );
 
-CREATE TABLE Inventory_Transaction (
+CREATE TABLE inventory_transaction (
     transaction_id INT PRIMARY KEY,
     item_id INT,
     staff_id INT,
@@ -31,7 +31,7 @@ INSERT INTO inventory_items (item_id, item_name, category, quantity, unit_price,
     (9, 'Dép đi trong phòng', 'Tiêu hao', 180, 8000.00, 60),
     (10, 'Máy sấy tóc', 'Thiết bị điện', 25, 450000.00, 5);
 
-INSERT INTO Inventory_Transaction (transaction_id, item_id, staff_id, transaction_type, quantity, transaction_date)
+INSERT INTO inventory_transaction (transaction_id, item_id, staff_id, transaction_type, quantity, transaction_date)
 VALUES
     (1, 1, 101, 'Import', 50, '2025-06-01 09:30:00'),
     (2, 2, 102, 'Export', 20, '2025-06-01 10:15:00'),
