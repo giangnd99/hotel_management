@@ -26,6 +26,7 @@ public class InventoryController {
     private final CreateItemHandler createHandler;
     private final UpdateItemHandler updateHandler;
     private final DeleteItemHandler deleteHandler;
+    // call port in (api)
 
     @GetMapping
     public ResponseEntity<List<InventoryItem>> getItems() {
