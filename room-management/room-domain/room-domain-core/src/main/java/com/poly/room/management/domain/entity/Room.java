@@ -20,8 +20,8 @@ public class Room extends BaseEntity<RoomId> {
         roomNumber = builder.roomNumber;
         floor = builder.floor;
         roomType = builder.roomType;
+        roomStatus = builder.roomStatus;
         validate();
-        setVacantRoomStatus();
     }
 
     public void validate() {
@@ -107,11 +107,27 @@ public class Room extends BaseEntity<RoomId> {
         }
     }
 
+    public void setRoomNumber(String newRoomNumber) {
+        this.roomNumber = newRoomNumber;
+        validateRoomNumber();
+    }
+
+    public void setFloor(int newFloor) {
+        this.floor = newFloor;
+    }
+
+    public void setRoomType(RoomType newRoomType) {
+        this.roomType = newRoomType;
+        validateRoomTypeAndStatus();
+    }
+
+
     public static final class Builder {
         private RoomId id;
         private String roomNumber;
         private int floor;
         private RoomType roomType;
+        private RoomStatus roomStatus;
 
         private Builder() {
         }
@@ -132,6 +148,11 @@ public class Room extends BaseEntity<RoomId> {
 
         public Builder floor(int val) {
             floor = val;
+            return this;
+        }
+
+        public Builder roomStatus(RoomStatus val) {
+            roomStatus = val;
             return this;
         }
 
