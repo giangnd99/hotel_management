@@ -9,6 +9,13 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
+    <modules>
+        <module>payment-domain</module>
+        <module>payment-application</module>
+        <module>payment-data-access</module>
+        <module>payment-container</module>
+    </modules>
+
     <artifactId>payment-management</artifactId>
 
     <packaging>pom</packaging>

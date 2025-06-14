@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Variable Environtment ###
+/payment-management/payment-container/key.env
