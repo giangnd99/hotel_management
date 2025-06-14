@@ -1,7 +1,7 @@
 package com.poly.inventory.controller;
 
-import com.poly.inventory.application.handler.*;
 import com.poly.inventory.application.dto.InventoryItemDto;
+import com.poly.inventory.application.port.in.InventoryUseCase;
 import com.poly.inventory.domain.entity.InventoryItem;
 import com.poly.inventory.domain.value_object.ItemId;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,45 +21,36 @@ import java.util.List;
 @Slf4j(topic = "INVENTORY-CONTROLLER")
 @Validated
 public class InventoryController {
-    private final GetItemsHandler getItemsHandler;
-    private final GetItemByIdHandler getItemByIdHandler;
-    private final CreateItemHandler createHandler;
-    private final UpdateItemHandler updateHandler;
-    private final DeleteItemHandler deleteHandler;
-    // call port in (api)
+
+    private final InventoryUseCase useCase;
 
     @GetMapping
     public ResponseEntity<List<InventoryItem>> getItems() {
-        List<InventoryItem> items = getItemsHandler.getAllItems();
-        return ResponseEntity.ok(items);
+        return ResponseEntity.ok(useCase.getAllItems());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<InventoryItem> getItemById(@PathVariable Integer id) {
-        ItemId itemId = ItemId.of(id);
-        return getItemByIdHandler.getItemById(itemId)
+        return useCase.getItemById(ItemId.of(id))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<InventoryItemDto> addItem(@RequestBody InventoryItemDto dto) {
-        InventoryItemDto result = createHandler.create(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    public ResponseEntity<Void> addItem(@RequestBody InventoryItemDto dto) {
+        useCase.createItem(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<InventoryItemDto> updateItem(@PathVariable Integer id, @RequestBody InventoryItemDto dto) {
-        ItemId itemId = ItemId.of(id);
-        return updateHandler.update(itemId, dto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Void> updateItem(@PathVariable Integer id, @RequestBody InventoryItemDto dto) {
+        useCase.updateItem(ItemId.of(id), dto);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteItem(@PathVariable Integer id) {
-        ItemId itemId = ItemId.of(id);
-        deleteHandler.deleteById(itemId);
+        useCase.deleteItem(ItemId.of(id));
         return ResponseEntity.noContent().build();
     }
 }

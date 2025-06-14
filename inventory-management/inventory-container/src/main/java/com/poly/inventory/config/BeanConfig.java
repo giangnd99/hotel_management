@@ -2,6 +2,7 @@ package com.poly.inventory.config;
 
 import com.poly.inventory.application.handler.*;
 import com.poly.inventory.application.handler.impl.*;
+import com.poly.inventory.application.port.in.impl.InventoryUseCaseImpl;
 import com.poly.inventory.application.port.out.DeleteInventoryPort;
 import com.poly.inventory.application.port.out.LoadInventoryPort;
 import com.poly.inventory.application.port.out.SaveInventoryPort;
@@ -43,5 +44,22 @@ public class BeanConfig {
     @Bean
     public DeleteItemHandler deleteItemHandler(DeleteInventoryPort deleteInventoryPort) {
         return new DeleteItemHandlerImpl(deleteInventoryPort);
+    }
+
+    @Bean
+    public InventoryUseCaseImpl inventoryUseCaseImpl(
+            GetItemsHandler getItemsHandler,
+            GetItemByIdHandler getItemByIdHandler,
+            CreateItemHandler createItemHandler,
+            UpdateItemHandler updateItemHandler,
+            DeleteItemHandler deleteItemHandler
+    ) {
+        return new InventoryUseCaseImpl(
+                getItemsHandler,
+                getItemByIdHandler,
+                createItemHandler,
+                updateItemHandler,
+                deleteItemHandler
+        );
     }
 }
