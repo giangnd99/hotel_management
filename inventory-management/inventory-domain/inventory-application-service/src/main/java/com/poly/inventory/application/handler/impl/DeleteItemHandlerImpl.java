@@ -2,7 +2,6 @@ package com.poly.inventory.application.handler.impl;
 
 import com.poly.inventory.application.handler.DeleteItemHandler;
 import com.poly.inventory.application.port.out.DeleteInventoryPort;
-import com.poly.inventory.domain.value_object.ItemId;
 
 public class DeleteItemHandlerImpl implements DeleteItemHandler {
     private final DeleteInventoryPort deletePort;
@@ -12,7 +11,7 @@ public class DeleteItemHandlerImpl implements DeleteItemHandler {
     }
 
     @Override
-    public void deleteById(ItemId id) {
+    public void deleteById(Integer id) {
         deletePort.deleteById(id);
     }
 }

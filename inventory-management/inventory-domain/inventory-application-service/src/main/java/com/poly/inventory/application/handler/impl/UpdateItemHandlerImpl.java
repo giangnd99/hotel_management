@@ -6,7 +6,6 @@ import com.poly.inventory.application.mapper.InventoryDtoMapper;
 import com.poly.inventory.application.port.out.LoadInventoryPort;
 import com.poly.inventory.application.port.out.SaveInventoryPort;
 import com.poly.inventory.domain.entity.InventoryItem;
-import com.poly.inventory.domain.value_object.ItemId;
 
 import java.util.Optional;
 
@@ -21,13 +20,10 @@ public class UpdateItemHandlerImpl implements UpdateItemHandler {
     }
 
     @Override
-    public Optional<InventoryItemDto> update(ItemId id, InventoryItemDto dto) {
+    public Optional<InventoryItemDto> update(Integer id, InventoryItemDto dto) {
         return loadPort.loadItemById(id)
                 .map(existing -> {
-                    InventoryItem updated = new InventoryItem(
-                            id, dto.itemName, dto.category, dto.quantity,
-                            dto.unitPrice, dto.minimumQuantity
-                    );
+                    InventoryItem updated = InventoryDtoMapper.toDomain(dto);
                     savePort.save(updated);
                     return InventoryDtoMapper.toDto(updated);
                 });

@@ -1,22 +1,16 @@
 package com.poly.inventory.domain.value_object;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-
-import java.io.Serializable;
 import java.util.Objects;
 
-@Embeddable
-public class ItemId implements Serializable {
+public class ItemId {
 
-    @Column(name = "item_id")
     private Integer value;
 
     public ItemId() {
 
     }
 
-    private ItemId(Integer value) {
+    public ItemId(Integer value) {
         this.value = value;
     }
 
@@ -27,7 +21,6 @@ public class ItemId implements Serializable {
     public Integer getValue() {
         return value;
     }
-
 
     public static ItemId of(Integer value) {
         return new ItemId(value);
