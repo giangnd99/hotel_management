@@ -59,7 +59,7 @@ public class PaymentController {
                 .orderCode(orderCode)
                 .amount(2000)
                 .description("Thanh toán đơn hàng")
-                .returnUrl("")
+                .returnUrl(domain)
                 .cancelUrl("")
                 .items(items)
                 .build();

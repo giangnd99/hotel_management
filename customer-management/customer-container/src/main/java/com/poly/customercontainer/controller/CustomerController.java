@@ -96,8 +96,8 @@ public class CustomerController {
     public ResponseEntity<Customer> findById(CustomerId id) {
         Customer customer = new Customer.Builder()
                 .userId(UUID.randomUUID())
-                .name(new Name("John Doe"))
-                .address(new Address("123 Street, City, Country"))
+                .name(new Name("Hải Thạch"))
+                .address(new Address("123 Ấp 17, Xã Trung Chánh, Huyện Hóc Môn, TP. Hồ Chí Minh"))
                 .dateOfBirth(LocalDate.of(1990, 1, 1))
                 .nationality(new Nationality("VIETNAME"))
                 .customerType(CustomerType.REGULAR)
