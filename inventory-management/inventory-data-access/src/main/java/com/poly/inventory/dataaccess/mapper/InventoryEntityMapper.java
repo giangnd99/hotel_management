@@ -14,7 +14,7 @@ public class InventoryEntityMapper {
         if (entity == null) return null;
 
         return new InventoryItem(
-                ItemId.of(entity.getItemId().getValue()),
+                new ItemId(entity.getItemId()),
                 entity.getItemName(),
                 entity.getCategory(),
                 new Quantity(entity.getQuantity()),
@@ -27,7 +27,7 @@ public class InventoryEntityMapper {
         if (item == null) return null;
 
         InventoryEntity entity = new InventoryEntity();
-        entity.setItemId(item.getItemId());
+        entity.setItemId(item.getItemId().getValue());
         entity.setItemName(item.getItemName());
         entity.setCategory(item.getCategory());
         entity.setQuantity(item.getQuantity().getValue());

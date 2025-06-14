@@ -1,6 +1,5 @@
 package com.poly.inventory.dataaccess.entity;
 
-import com.poly.inventory.domain.value_object.ItemId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,8 +15,7 @@ import lombok.Setter;
 public class InventoryEntity {
 
     @Id
-    @AttributeOverride(name = "value", column = @Column(name = "item_id"))
-    private ItemId itemId;
+    private Integer itemId;
 
     private String itemName;
     private String category;

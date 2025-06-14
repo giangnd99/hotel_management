@@ -22,6 +22,23 @@ import org.springframework.context.annotation.FilterType;
 public class BeanConfig {
 
     @Bean
+    public InventoryUseCaseImpl inventoryUseCaseImpl(
+            GetItemsHandler getItemsHandler,
+            GetItemByIdHandler getItemByIdHandler,
+            CreateItemHandler createItemHandler,
+            UpdateItemHandler updateItemHandler,
+            DeleteItemHandler deleteItemHandler
+    ) {
+        return new InventoryUseCaseImpl(
+                getItemsHandler,
+                getItemByIdHandler,
+                createItemHandler,
+                updateItemHandler,
+                deleteItemHandler
+        );
+    }
+
+    @Bean
     public GetItemByIdHandler getItemByIdHandler(LoadInventoryPort loadInventoryPort) {
         return new GetItemByIdHandlerImpl(loadInventoryPort);
     }
@@ -46,20 +63,5 @@ public class BeanConfig {
         return new DeleteItemHandlerImpl(deleteInventoryPort);
     }
 
-    @Bean
-    public InventoryUseCaseImpl inventoryUseCaseImpl(
-            GetItemsHandler getItemsHandler,
-            GetItemByIdHandler getItemByIdHandler,
-            CreateItemHandler createItemHandler,
-            UpdateItemHandler updateItemHandler,
-            DeleteItemHandler deleteItemHandler
-    ) {
-        return new InventoryUseCaseImpl(
-                getItemsHandler,
-                getItemByIdHandler,
-                createItemHandler,
-                updateItemHandler,
-                deleteItemHandler
-        );
-    }
+
 }

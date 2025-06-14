@@ -3,7 +3,6 @@ package com.poly.inventory.controller;
 import com.poly.inventory.application.dto.InventoryItemDto;
 import com.poly.inventory.application.port.in.InventoryUseCase;
 import com.poly.inventory.domain.entity.InventoryItem;
-import com.poly.inventory.domain.value_object.ItemId;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +30,7 @@ public class InventoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<InventoryItem> getItemById(@PathVariable Integer id) {
-        return useCase.getItemById(ItemId.of(id))
+        return useCase.getItemById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -44,13 +43,13 @@ public class InventoryController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateItem(@PathVariable Integer id, @RequestBody InventoryItemDto dto) {
-        useCase.updateItem(ItemId.of(id), dto);
+        useCase.updateItem(id, dto);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteItem(@PathVariable Integer id) {
-        useCase.deleteItem(ItemId.of(id));
+        useCase.deleteItem(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -7,7 +7,6 @@ import com.poly.inventory.dataaccess.entity.InventoryEntity;
 import com.poly.inventory.dataaccess.mapper.InventoryEntityMapper;
 import com.poly.inventory.dataaccess.jpa.InventoryJpaRepository;
 import com.poly.inventory.domain.entity.InventoryItem;
-import com.poly.inventory.domain.value_object.ItemId;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public class InventoryJpaAdapter implements LoadInventoryPort, SaveInventoryPort
     }
 
     @Override
-    public Optional<InventoryItem> loadItemById(ItemId id) {
+    public Optional<InventoryItem> loadItemById(Integer id) {
         return inventoryRepository.findById(id)
                 .map(InventoryEntityMapper::toDomain);
     }
@@ -42,7 +41,7 @@ public class InventoryJpaAdapter implements LoadInventoryPort, SaveInventoryPort
     }
 
     @Override
-    public void deleteById(ItemId id) {
+    public void deleteById(Integer id) {
         inventoryRepository.deleteById(id);
     }
 }
