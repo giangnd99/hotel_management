@@ -3,7 +3,6 @@ package com.poly.inventory.application.port.in.impl;
 import com.poly.inventory.application.dto.InventoryItemDto;
 import com.poly.inventory.application.handler.*;
 import com.poly.inventory.application.port.in.InventoryUseCase;
-import com.poly.inventory.domain.entity.InventoryItem;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,12 +29,12 @@ public class InventoryUseCaseImpl implements InventoryUseCase {
     }
 
     @Override
-    public List<InventoryItem> getAllItems() {
+    public List<InventoryItemDto> getAllItems() {
         return getItemsHandler.getAllItems();
     }
 
     @Override
-    public Optional<InventoryItem> getItemById(Integer id) {
+    public Optional<InventoryItemDto> getItemById(Integer id) {
         return getItemByIdHandler.getItemById(id);
     }
 
