@@ -1,9 +1,9 @@
-package com.poly.inventory.application.command;
+package com.poly.inventory.application.handler;
 
 import com.poly.inventory.application.dto.InventoryItemDto;
 
 import java.util.Optional;
 
-public interface UpdateInventoryItemCommandHandler {
+public interface UpdateItemHandler {
     Optional<InventoryItemDto> update(Integer id, InventoryItemDto updatedItem);
 }

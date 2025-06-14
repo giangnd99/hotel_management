@@ -15,6 +15,9 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
+  sql:
+    init:
+      schema-locations: classpath:db_inventory.sql
 
 openapi:
   service:

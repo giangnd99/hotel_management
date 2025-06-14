@@ -1,5 +1,6 @@
 package com.poly.inventory.dataaccess.adapter;
 
+import com.poly.inventory.application.port.out.DeleteInventoryPort;
 import com.poly.inventory.application.port.out.LoadInventoryPort;
 import com.poly.inventory.application.port.out.SaveInventoryPort;
 import com.poly.inventory.dataaccess.entity.InventoryEntity;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class InventoryJpaAdapter implements LoadInventoryPort, SaveInventoryPort {
+public class InventoryJpaAdapter implements LoadInventoryPort, SaveInventoryPort, DeleteInventoryPort {
 
     private final InventoryJpaRepository inventoryRepository;
 
@@ -37,5 +38,10 @@ public class InventoryJpaAdapter implements LoadInventoryPort, SaveInventoryPort
     public void save(InventoryItem item) {
         InventoryEntity entity = InventoryEntityMapper.toEntity(item);
         inventoryRepository.save(entity);
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+        inventoryRepository.deleteById(id);
     }
 }

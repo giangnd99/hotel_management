@@ -1,7 +1,7 @@
-package com.poly.inventory.application.command;
+package com.poly.inventory.application.handler;
 
 import com.poly.inventory.application.dto.InventoryItemDto;
 
-public interface CreateInventoryItemCommandHandler {
+public interface CreateItemHandler {
     InventoryItemDto create(InventoryItemDto itemDto);
 }
