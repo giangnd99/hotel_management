@@ -2,7 +2,6 @@ package com.poly.inventory.controller;
 
 import com.poly.inventory.application.dto.InventoryItemDto;
 import com.poly.inventory.application.port.in.InventoryUseCase;
-import com.poly.inventory.domain.entity.InventoryItem;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,12 +23,12 @@ public class InventoryController {
     private final InventoryUseCase useCase;
 
     @GetMapping
-    public ResponseEntity<List<InventoryItem>> getItems() {
+    public ResponseEntity<List<InventoryItemDto>> getItems() {
         return ResponseEntity.ok(useCase.getAllItems());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InventoryItem> getItemById(@PathVariable Integer id) {
+    public ResponseEntity<InventoryItemDto> getItemById(@PathVariable Integer id) {
         return useCase.getItemById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

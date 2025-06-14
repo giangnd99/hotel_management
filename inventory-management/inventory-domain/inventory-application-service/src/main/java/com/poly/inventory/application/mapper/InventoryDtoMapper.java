@@ -5,6 +5,8 @@ import com.poly.inventory.domain.entity.InventoryItem;
 import com.poly.inventory.domain.value_object.ItemId;
 import com.poly.inventory.domain.value_object.Quantity;
 
+import java.util.List;
+
 public class InventoryDtoMapper {
 
     public static InventoryItemDto toDto(InventoryItem item) {
@@ -27,5 +29,17 @@ public class InventoryDtoMapper {
                 dto.getUnitPrice(),
                 dto.getMinimumQuantity()
         );
+    }
+
+    public static List<InventoryItemDto> toDtoList(List<InventoryItem> items) {
+        return items.stream()
+                .map(InventoryDtoMapper::toDto)
+                .toList();
+    }
+
+    public static List<InventoryItem> toDomainList(List<InventoryItemDto> dtoItems) {
+        return dtoItems.stream()
+                .map(InventoryDtoMapper::toDomain)
+                .toList();
     }
 }

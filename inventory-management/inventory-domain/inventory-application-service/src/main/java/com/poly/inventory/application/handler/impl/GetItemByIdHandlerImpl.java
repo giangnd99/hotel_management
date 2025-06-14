@@ -1,8 +1,9 @@
 package com.poly.inventory.application.handler.impl;
 
+import com.poly.inventory.application.dto.InventoryItemDto;
+import com.poly.inventory.application.mapper.InventoryDtoMapper;
 import com.poly.inventory.application.port.out.LoadInventoryPort;
 import com.poly.inventory.application.handler.GetItemByIdHandler;
-import com.poly.inventory.domain.entity.InventoryItem;
 
 import java.util.Optional;
 
@@ -15,7 +16,7 @@ public class GetItemByIdHandlerImpl implements GetItemByIdHandler {
     }
 
     @Override
-    public Optional<InventoryItem> getItemById(Integer id) {
-        return loadInventoryPort.loadItemById(id);
+    public Optional<InventoryItemDto> getItemById(Integer id) {
+        return loadInventoryPort.loadItemById(id).map(InventoryDtoMapper::toDto);
     }
 }
