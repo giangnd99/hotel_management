@@ -30,7 +30,6 @@ public class NotificationController {
 
 
     @GetMapping("/user/{userId}")
-    @Operation(summary = "Lấy danh sách thông báo theo người dùng")
     public ResponseEntity<Page<NotificationResponse>> getByUser(
             @PathVariable Integer userId,
             @RequestParam(defaultValue = "0") int page,

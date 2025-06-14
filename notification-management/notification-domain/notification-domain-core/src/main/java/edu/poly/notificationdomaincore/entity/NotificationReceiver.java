@@ -1,12 +1,14 @@
 package edu.poly.notificationdomaincore.entity;
 
+/**
+ * Entity đại diện cho người nhận thông báo
+ */
 public class NotificationReceiver {
     private Integer notificationId;
     private Integer userId;
     private String receiverType; // receiver/cc/bcc
     private String additionalEmail;
 
-    // Constructor, getters, setters
     public NotificationReceiver(Integer notificationId, Integer userId,
                                 String receiverType, String additionalEmail) {
         this.notificationId = notificationId;
@@ -15,5 +17,20 @@ public class NotificationReceiver {
         this.additionalEmail = additionalEmail;
     }
 
-    // Getters and setters...
+    // Getter và Setter
+    public Integer getNotificationId() {
+        return notificationId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public String getReceiverType() {
+        return receiverType;
+    }
+
+    public String getAdditionalEmail() {
+        return additionalEmail;
+    }
 }

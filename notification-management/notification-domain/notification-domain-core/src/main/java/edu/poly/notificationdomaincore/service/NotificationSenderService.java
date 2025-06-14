@@ -2,8 +2,8 @@ package edu.poly.notificationdomaincore.service;
 
 
 import edu.poly.notificationdomaincore.entity.Notification;
+import edu.poly.notificationdomaincore.entity.NotificationStatus;
 import edu.poly.notificationdomaincore.exception.NotificationException;
-import edu.poly.notificationdomaincore.value_object.NotificationStatus;
 
 /**
  * Service trừu tượng cho việc gửi thông báo

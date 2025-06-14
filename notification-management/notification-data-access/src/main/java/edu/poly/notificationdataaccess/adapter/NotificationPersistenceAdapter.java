@@ -7,7 +7,6 @@ import edu.poly.notificationdataaccess.mapper.NotificationReceiverMapper;
 import edu.poly.notificationdataaccess.repository.NotificationJpaRepository;
 import edu.poly.notificationdataaccess.repository.NotificationReceiverJpaRepository;
 import edu.poly.notificationdomaincore.entity.Notification;
-import edu.poly.notificationdomaincore.service.NotificationPersistencePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.util.List;

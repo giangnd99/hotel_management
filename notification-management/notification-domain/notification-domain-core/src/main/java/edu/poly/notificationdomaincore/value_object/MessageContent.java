@@ -1,4 +1,4 @@
-package edu_poly_notificationdomaincore.value_object;
+package edu.poly.notificationdomaincore.value_object;
 
 /**
  * Value Object đại diện cho nội dung tin nhắn

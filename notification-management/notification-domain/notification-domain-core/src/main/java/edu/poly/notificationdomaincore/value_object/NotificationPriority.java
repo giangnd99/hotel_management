@@ -1,4 +1,4 @@
-package edu_poly_notificationdomaincore.value_object;
+package edu.poly.notificationdomaincore.value_object;
 
 /**
  * Enum mức độ ưu tiên của thông báo

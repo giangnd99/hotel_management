@@ -1,4 +1,4 @@
-package edu_poly_notificationdomaincore.value_object;
+package edu.poly.notificationdomaincore.value_object;
 
 /**
  * Enum các phương thức gửi thông báo

@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: inventory-service
+    name:
   datasource:
     url: jdbc:mysql://localhost:3306/
     username: root

@@ -1,7 +1,12 @@
-package edu_poly_notificationdomaincore.exception;
+package edu.poly.notificationdomaincore.exception;
 
-public class NotificationNotFoundException extends RuntimeException {
+import edu.poly.notificationdomaincore.exception.NotificationException;
+
+/**
+ * Exception khi không tìm thấy thông báo
+ */
+public class NotificationNotFoundException extends NotificationException {
     public NotificationNotFoundException(Integer notificationId) {
-        super("Notification not found with ID: " + notificationId);
+        super("Notification with ID " + notificationId + " not found");
     }
 }

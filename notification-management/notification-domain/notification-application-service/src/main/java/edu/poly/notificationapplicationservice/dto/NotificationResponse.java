@@ -12,14 +12,3 @@ public class NotificationResponse {
     private String status;
 }
 
-// ReceiverInfo.java
-package edu_poly_notificationapplicationservice.dto;
-
-import lombok.Data;
-
-@Data
-public class ReceiverInfo {
-    private Integer userId;
-    private String receiverType; // TO, CC, BCC
-    private String additionalEmail;
-}
