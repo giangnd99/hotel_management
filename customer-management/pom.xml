@@ -17,7 +17,7 @@
     <modules>
         <module>customer-domain</module>
         <module>customer-application</module>
-        <module>customer-dataaccess</module>
+        <module>customer-data-access</module>
         <module>customer-container</module>
     </modules>
 

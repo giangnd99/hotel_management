@@ -27,7 +27,7 @@
         </dependency>
         <dependency>
             <groupId>com.poly</groupId>
-            <artifactId>customer-dataaccess</artifactId>
+            <artifactId>customer-data-access</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
