@@ -44,4 +44,12 @@ public class InventoryJpaAdapter implements LoadInventoryPort, SaveInventoryPort
     public void deleteById(Integer id) {
         inventoryRepository.deleteById(id);
     }
+
+    @Override
+    public List<InventoryItem> searchByName(String name) {
+        return inventoryRepository.findByItemNameContainingIgnoreCase(name)
+                .stream()
+                .map(InventoryEntityMapper::toDomain)
+                .toList();
+    }
 }

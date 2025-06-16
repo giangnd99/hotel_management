@@ -9,4 +9,6 @@ public interface LoadInventoryPort {
     List<InventoryItem> loadAllItems();
 
     Optional<InventoryItem> loadItemById(Integer id);
+
+    List<InventoryItem> searchByName(String name);
 }

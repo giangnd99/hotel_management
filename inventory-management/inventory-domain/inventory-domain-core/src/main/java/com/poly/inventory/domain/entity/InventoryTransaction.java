@@ -2,19 +2,20 @@ package com.poly.inventory.domain.entity;
 
 import com.poly.inventory.domain.value_object.ItemId;
 import com.poly.inventory.domain.value_object.Quantity;
+import com.poly.inventory.domain.value_object.TransactionId;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class InventoryTransaction {
-    private final Integer transactionId;
+    private final TransactionId transactionId;
     private final ItemId itemId;
     private final Integer staffId;
     private final String transactionType;
     private final Quantity quantity;
     private final LocalDateTime transactionDate;
 
-    public InventoryTransaction(Integer transactionId, ItemId itemId, Integer staffId, String transactionType, Quantity quantity, LocalDateTime transactionDate) {
+    public InventoryTransaction(TransactionId transactionId, ItemId itemId, Integer staffId, String transactionType, Quantity quantity, LocalDateTime transactionDate) {
         this.transactionId = transactionId;
         this.itemId = itemId;
         this.staffId = staffId;
@@ -23,7 +24,7 @@ public class InventoryTransaction {
         this.transactionDate = transactionDate;
     }
 
-    public Integer getTransactionId() {
+    public TransactionId getTransactionId() {
         return transactionId;
     }
 

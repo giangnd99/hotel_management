@@ -15,8 +15,8 @@ CREATE TABLE inventory_transaction (
     transaction_type VARCHAR(100),
     quantity INT,
     transaction_date DATETIME,
-    FOREIGN KEY (item_id) REFERENCES inventory_items(item_id),
-    FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+    FOREIGN KEY (item_id) REFERENCES inventory_items(item_id)
+#     ,FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
 );
 
 INSERT INTO inventory_items (item_id, item_name, category, quantity, unit_price, minimum_quantity) VALUES

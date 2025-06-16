@@ -51,4 +51,10 @@ public class InventoryController {
         useCase.deleteItem(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<InventoryItemDto>> searchItems(@RequestParam(required = false) String name) {
+        List<InventoryItemDto> result = useCase.searchItemsByName(name);
+        return ResponseEntity.ok(result);
+    }
 }
