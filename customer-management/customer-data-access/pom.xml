@@ -11,7 +11,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <artifactId>customer-dataaccess</artifactId>
+    <artifactId>customer-data-access</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.poly</groupId>
