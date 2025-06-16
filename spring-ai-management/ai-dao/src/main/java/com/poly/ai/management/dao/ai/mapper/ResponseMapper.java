@@ -12,17 +12,17 @@ public class ResponseMapper {
         return Response.builder()
                 .responseId(new ResponseID(entity.getId()))
                 .generatedText(entity.getGeneratedText())
-                .modelId(new AiModelID(entity.getAiModelId().getValue()))
-                .promptId(new PromptID(entity.getPromptId().getValue()))
+                .modelId(new AiModelID(entity.getAiModelId()))
+                .promptId(new PromptID(entity.getPromptId()))
                 .build();
     }
 
     public static ResponseEntity toJPA(Response domain) {
         ResponseEntity entity = new ResponseEntity();
-        entity.setId(domain.getId());
+        entity.setId(domain.getId().getValue());
         entity.setGeneratedText(domain.getGeneratedText());
-        entity.setPromptId(domain.getPromptId());
-        entity.setAiModelId(domain.getModelId());
+        entity.setPromptId(domain.getPromptId().getValue());
+        entity.setAiModelId(domain.getModelId().getValue());
         return entity;
     }
 }

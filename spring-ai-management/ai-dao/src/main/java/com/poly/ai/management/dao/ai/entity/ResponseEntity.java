@@ -17,20 +17,11 @@ public class ResponseEntity {
     @Column(name = "id")
     private String id;
 
-    @Column(name = "generated_text")
+    @Column(name = "generated_text", columnDefinition = "TEXT")
     private String generatedText;
 
-    @Embedded
-    private ResponseID responseId;
+    private String aiModelId;
 
-    @Embedded
-    private AiModelID aiModelId;
+    private String promptId;
 
-    @Embedded
-    private PromptID promptId;
-
-    public void setId(ResponseID id) {
-        this.id = id.getValue();
-        this.responseId = id;
-    }
 }

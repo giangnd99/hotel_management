@@ -24,12 +24,4 @@ public class AiModelEntity {
     private String version;
 
     private boolean isActive;
-
-    @Embedded
-    private AiModelID aiModelID;
-
-    public void setId(AiModelID aiModelID) {
-        this.id = aiModelID.getValue();
-        this.aiModelID = aiModelID;
-    }
 }

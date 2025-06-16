@@ -22,20 +22,10 @@ public class TrainingJobEntity {
     @Column(name = "status")
     private String status;
 
-    @Embedded
-    private TrainingJobID trainingJobId;
+    private String modelId;
 
-    @Embedded
-    private AiModelID modelId;
-
-    @Embedded
-    private DatasetID datasetId;
+    private String datasetId;
 
     @ElementCollection(fetch = FetchType.LAZY)
     private List<String> errorMessages;
-
-    public void setId(TrainingJobID id) {
-        this.id = id.getValue();
-        this.trainingJobId = id;
-    }
 }
