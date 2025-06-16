@@ -22,11 +22,4 @@ public class DatasetEntity {
 
     private long size;
 
-    @Embedded
-    private DatasetID datasetId;
-
-    public void setId(DatasetID id) {
-        this.id = id.getValue();
-        this.datasetId = id;
-    }
 }

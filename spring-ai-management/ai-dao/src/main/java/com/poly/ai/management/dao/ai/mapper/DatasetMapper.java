@@ -8,7 +8,7 @@ public class DatasetMapper {
 
     public static DatasetEntity toEntity(Dataset dataset) {
         DatasetEntity entity = new DatasetEntity();
-        entity.setId(dataset.getId());
+        entity.setId(dataset.getId().getValue());
         entity.setName(dataset.getName());
         entity.setSource(dataset.getSource());
         entity.setSize(dataset.getSize());

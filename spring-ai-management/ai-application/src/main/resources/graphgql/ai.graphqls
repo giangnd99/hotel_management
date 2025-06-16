@@ -1,0 +1,94 @@
+# --- Input Types ---
+# Các Input Type này được dùng để nhóm các đối số đầu vào cho các mutation.
+
+input CreateAiModelInput {
+    name: String!
+    description: String!
+}
+
+input ProcessPromptInput {
+    prompt: String!
+}
+
+input GenerateEmbeddingInput {
+    prompt: String!
+}
+
+input StartTrainingInput {
+    modelId: ID!
+    datasetId: ID!
+}
+
+input CompleteTrainingInput {
+    jobId: ID!
+}
+
+input FailTrainingInput {
+    jobId: ID!
+    message: String!
+}
+
+input FindAvailableRoomsInput {
+    checkIn: String!
+    checkOut: String!
+    roomType: String
+}
+
+# --- Query Type ---
+type Query {
+    findSimilarEmbeddings(prompt: String!, topK: Int!): [Embedding]
+    predictBookingNextMonth: Int
+    findAvailableRooms(input: FindAvailableRoomsInput!): [Room]
+}
+
+# --- Mutation Type ---
+type Mutation {
+    createAiModel(input: CreateAiModelInput!): AiModel
+    processPrompt(input: ProcessPromptInput!): Response
+    generateEmbedding(input: GenerateEmbeddingInput!): Embedding
+    startTraining(input: StartTrainingInput!): TrainingJob
+    completeTraining(input: CompleteTrainingInput!): TrainingJob
+    failTraining(input: FailTrainingInput!): TrainingJob
+}
+
+# --- Object Types ---
+# Các Object Type này đại diện cho các đối tượng dữ liệu được trả về bởi các Query và Mutation.
+
+type AiModel {
+    id: ID!
+    name: String
+    description: String
+}
+
+type Prompt {
+    id: ID!
+    content: String
+}
+
+type Response {
+    id: ID!
+    content: String
+}
+
+type Embedding {
+    id: ID!
+    vector: [Float]
+}
+
+type Dataset {
+    id: ID!
+    name: String
+}
+
+type TrainingJob {
+    id: ID!
+    status: String
+}
+
+type Room {
+    id: ID!
+    roomNumber: String
+    roomType: String
+    floor: Int
+    status: String
+}

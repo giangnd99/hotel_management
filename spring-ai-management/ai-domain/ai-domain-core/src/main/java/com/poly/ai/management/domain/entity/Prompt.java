@@ -7,6 +7,7 @@ import com.poly.domain.entity.BaseEntity;
 public class Prompt extends BaseEntity<PromptID> {
 
     private String text;
+    private String content;
     private AiModelID modelId;
 
     public void validate() {
@@ -33,6 +34,7 @@ public class Prompt extends BaseEntity<PromptID> {
     private Prompt(Builder builder) {
         super.setId(builder.promptID);
         text = builder.text;
+        content = builder.content;
         modelId = builder.modelId;
     }
 
@@ -40,6 +42,7 @@ public class Prompt extends BaseEntity<PromptID> {
     public static final class Builder {
         private PromptID promptID;
         private String text;
+        private String content;
         private AiModelID modelId;
 
         private Builder() {
@@ -61,6 +64,11 @@ public class Prompt extends BaseEntity<PromptID> {
 
         public Builder modelId(AiModelID val) {
             modelId = val;
+            return this;
+        }
+
+        public Builder content(String val) {
+            content = val;
             return this;
         }
 

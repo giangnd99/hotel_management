@@ -11,15 +11,15 @@ public class PromptMapper {
         return Prompt.Builder.builder()
                 .id(new PromptID(entity.getId()))
                 .text(entity.getText())
-                .modelId(new AiModelID(entity.getAiModelID().getValue()))
+                .modelId(new AiModelID(entity.getAiModelID()))
                 .build();
     }
 
     public static PromptEntity toJPA(Prompt domain) {
         PromptEntity entity = new PromptEntity();
-        entity.setId(domain.getId());
+        entity.setId(domain.getId().getValue());
         entity.setText(domain.getText());
-        entity.setAiModelID(domain.getModelId());
+        entity.setAiModelID(domain.getModelId().getValue());
         return entity;
     }
 }
