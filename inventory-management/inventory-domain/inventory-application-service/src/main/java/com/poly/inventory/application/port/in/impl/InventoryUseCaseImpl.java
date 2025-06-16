@@ -13,19 +13,21 @@ public class InventoryUseCaseImpl implements InventoryUseCase {
     private final CreateItemHandler createItemHandler;
     private final UpdateItemHandler updateItemHandler;
     private final DeleteItemHandler deleteItemHandler;
+    private final SearchItemHandler searchItemHandler;
 
     public InventoryUseCaseImpl(
             GetItemsHandler getItemsHandler,
             GetItemByIdHandler getItemByIdHandler,
             CreateItemHandler createHandler,
             UpdateItemHandler updateHandler,
-            DeleteItemHandler deleteHandler
+            DeleteItemHandler deleteHandler, SearchItemHandler searchItemHandler
     ) {
         this.getItemsHandler = getItemsHandler;
         this.getItemByIdHandler = getItemByIdHandler;
         this.createItemHandler = createHandler;
         this.updateItemHandler = updateHandler;
         this.deleteItemHandler = deleteHandler;
+        this.searchItemHandler = searchItemHandler;
     }
 
     @Override
@@ -51,5 +53,10 @@ public class InventoryUseCaseImpl implements InventoryUseCase {
     @Override
     public void deleteItem(Integer id) {
         deleteItemHandler.deleteById(id);
+    }
+
+    @Override
+    public List<InventoryItemDto> searchItemsByName(String name) {
+        return searchItemHandler.searchItemsByName(name);
     }
 }

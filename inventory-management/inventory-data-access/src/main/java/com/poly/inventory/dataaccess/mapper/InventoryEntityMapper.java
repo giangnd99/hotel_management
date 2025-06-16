@@ -7,9 +7,6 @@ import com.poly.inventory.domain.value_object.Quantity;
 
 public class InventoryEntityMapper {
 
-    private InventoryEntityMapper() {
-    }
-
     public static InventoryItem toDomain(InventoryEntity entity) {
         if (entity == null) return null;
 

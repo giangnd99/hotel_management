@@ -15,4 +15,6 @@ public interface InventoryUseCase {
     void updateItem(Integer id, InventoryItemDto request);
 
     void deleteItem(Integer id);
+
+    List<InventoryItemDto> searchItemsByName(String name);
 }
