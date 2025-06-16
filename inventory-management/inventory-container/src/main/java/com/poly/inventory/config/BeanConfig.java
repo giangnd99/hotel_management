@@ -3,9 +3,8 @@ package com.poly.inventory.config;
 import com.poly.inventory.application.handler.*;
 import com.poly.inventory.application.handler.impl.*;
 import com.poly.inventory.application.port.in.impl.InventoryUseCaseImpl;
-import com.poly.inventory.application.port.out.DeleteInventoryPort;
-import com.poly.inventory.application.port.out.LoadInventoryPort;
-import com.poly.inventory.application.port.out.SaveInventoryPort;
+import com.poly.inventory.application.port.in.impl.TransactionUseCaseImpl;
+import com.poly.inventory.application.port.out.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ComponentScan;
@@ -27,14 +26,16 @@ public class BeanConfig {
             GetItemByIdHandler getItemByIdHandler,
             CreateItemHandler createItemHandler,
             UpdateItemHandler updateItemHandler,
-            DeleteItemHandler deleteItemHandler
+            DeleteItemHandler deleteItemHandler,
+            SearchItemHandler searchItemHandler
     ) {
         return new InventoryUseCaseImpl(
                 getItemsHandler,
                 getItemByIdHandler,
                 createItemHandler,
                 updateItemHandler,
-                deleteItemHandler
+                deleteItemHandler,
+                searchItemHandler
         );
     }
 
@@ -63,5 +64,56 @@ public class BeanConfig {
         return new DeleteItemHandlerImpl(deleteInventoryPort);
     }
 
+    @Bean
+    public SearchItemHandler searchItemHandler(LoadInventoryPort searchItemHandler) {
+        return new SearchItemHandlerImpl(searchItemHandler);
+    }
 
+    @Bean
+    public TransactionUseCaseImpl transactionUseCaseImpl(
+            GetTransactionsHandler getTransactionsHandler,
+            StockInHandler stockInHandler,
+            StockOutHandler stockOutHandler,
+            InventoryCheckHandler inventoryCheckHandler,
+            GetReportHandler getReportHandler
+    ) {
+        return new TransactionUseCaseImpl(
+                getTransactionsHandler,
+                stockInHandler,
+                stockOutHandler,
+                inventoryCheckHandler,
+                getReportHandler
+        );
+    }
+
+    @Bean
+    public GetTransactionsHandler getTransactionsHandler(LoadTransactionPort loadTransactionPort) {
+        return new GetTransactionsHandlerImpl(loadTransactionPort);
+    }
+
+    @Bean
+    public StockInHandler stockInHandler(SaveTransactionPort saveTransactionPort,
+                                         LoadInventoryPort loadInventoryPort,
+                                         SaveInventoryPort saveInventoryPort) {
+        return new StockInHandlerImpl(saveTransactionPort, loadInventoryPort, saveInventoryPort);
+    }
+
+    @Bean
+    public StockOutHandler stockOutHandler(SaveTransactionPort saveTransactionPort,
+                                           LoadInventoryPort loadInventoryPort,
+                                           SaveInventoryPort saveInventoryPort) {
+        return new StockOutHandlerImpl(saveTransactionPort, loadInventoryPort, saveInventoryPort);
+    }
+
+    @Bean
+    public InventoryCheckHandler inventoryCheckHandler(SaveTransactionPort saveTransactionPort,
+                                                       LoadInventoryPort loadInventoryPort,
+                                                       SaveInventoryPort saveInventoryPort) {
+        return new InventoryCheckHandlerImpl(saveTransactionPort, loadInventoryPort, saveInventoryPort);
+    }
+
+    @Bean
+    public GetReportHandler getReportHandler(LoadTransactionPort loadTransactionPort) {
+        return new GetReportHandlerImpl(loadTransactionPort);
+    }
 }
