@@ -2,14 +2,19 @@ package com.poly.inventory.application.mapper;
 
 import com.poly.inventory.application.dto.InventoryItemDto;
 import com.poly.inventory.domain.entity.InventoryItem;
+import com.poly.inventory.domain.value_object.ItemId;
+import com.poly.inventory.domain.value_object.Quantity;
+
+import java.util.List;
 
 public class InventoryDtoMapper {
+
     public static InventoryItemDto toDto(InventoryItem item) {
         InventoryItemDto dto = new InventoryItemDto();
-        dto.itemId = item.getItemId();
+        dto.itemId = item.getItemId().getValue();
         dto.itemName = item.getItemName();
         dto.category = item.getCategory();
-        dto.quantity = item.getQuantity();
+        dto.quantity = item.getQuantity().getValue();
         dto.unitPrice = item.getUnitPrice();
         dto.minimumQuantity = item.getMinimumQuantity();
         return dto;
@@ -17,12 +22,24 @@ public class InventoryDtoMapper {
 
     public static InventoryItem toDomain(InventoryItemDto dto) {
         return new InventoryItem(
-                dto.getItemId(),
+                new ItemId(dto.getItemId()),
                 dto.getItemName(),
                 dto.getCategory(),
-                dto.getQuantity(),
+                new Quantity(dto.getQuantity()),
                 dto.getUnitPrice(),
                 dto.getMinimumQuantity()
         );
+    }
+
+    public static List<InventoryItemDto> toDtoList(List<InventoryItem> items) {
+        return items.stream()
+                .map(InventoryDtoMapper::toDto)
+                .toList();
+    }
+
+    public static List<InventoryItem> toDomainList(List<InventoryItemDto> dtoItems) {
+        return dtoItems.stream()
+                .map(InventoryDtoMapper::toDomain)
+                .toList();
     }
 }

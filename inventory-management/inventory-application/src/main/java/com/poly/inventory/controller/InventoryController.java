@@ -1,11 +1,7 @@
 package com.poly.inventory.controller;
 
-import com.poly.inventory.application.command.CreateInventoryItemCommandHandler;
-import com.poly.inventory.application.command.UpdateInventoryItemCommandHandler;
 import com.poly.inventory.application.dto.InventoryItemDto;
-import com.poly.inventory.application.query.GetInventoryItemByIdQuery;
-import com.poly.inventory.application.query.GetInventoryItemsQuery;
-import com.poly.inventory.domain.entity.InventoryItem;
+import com.poly.inventory.application.port.in.InventoryUseCase;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,34 +19,36 @@ import java.util.List;
 @Slf4j(topic = "INVENTORY-CONTROLLER")
 @Validated
 public class InventoryController {
-    private final GetInventoryItemsQuery getInventoryItemsQuery;
-    private final GetInventoryItemByIdQuery getInventoryItemByIdQuery;
-    private final CreateInventoryItemCommandHandler createHandler;
-    private final UpdateInventoryItemCommandHandler updateHandler;
+
+    private final InventoryUseCase useCase;
 
     @GetMapping
-    public ResponseEntity<List<InventoryItem>> getItems() {
-        List<InventoryItem> items = getInventoryItemsQuery.getAllItems();
-        return ResponseEntity.ok(items);
+    public ResponseEntity<List<InventoryItemDto>> getItems() {
+        return ResponseEntity.ok(useCase.getAllItems());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InventoryItem> getItemById(@PathVariable Integer id) {
-        return getInventoryItemByIdQuery.getItemById(id)
+    public ResponseEntity<InventoryItemDto> getItemById(@PathVariable Integer id) {
+        return useCase.getItemById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<InventoryItemDto> addItem(@RequestBody InventoryItemDto dto) {
-        InventoryItemDto result = createHandler.create(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    public ResponseEntity<Void> addItem(@RequestBody InventoryItemDto dto) {
+        useCase.createItem(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<InventoryItemDto> updateItem(@PathVariable Integer id, @RequestBody InventoryItemDto dto) {
-        return updateHandler.update(id, dto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Void> updateItem(@PathVariable Integer id, @RequestBody InventoryItemDto dto) {
+        useCase.updateItem(id, dto);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteItem(@PathVariable Integer id) {
+        useCase.deleteItem(id);
+        return ResponseEntity.noContent().build();
     }
 }
