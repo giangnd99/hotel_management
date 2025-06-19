@@ -1,7 +1,12 @@
 package com.poly.ai.management.domain;
 
 import com.poly.ai.management.domain.entity.*;
+import com.poly.ai.management.domain.entity.rag.Embedding;
+import com.poly.ai.management.domain.entity.train.Dataset;
+import com.poly.ai.management.domain.entity.train.Response;
+import com.poly.ai.management.domain.entity.train.TrainingJob;
 import com.poly.ai.management.domain.port.input.service.AiHotelApplicationService;
+import com.poly.ai.management.domain.port.input.service.FineTuningAIService;
 import com.poly.ai.management.domain.valueobject.AiModelID;
 import com.poly.ai.management.domain.valueobject.DatasetID;
 import com.poly.ai.management.domain.valueobject.PromptID;
@@ -12,15 +17,14 @@ import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 class AiManagementApplicationTest {
 
     @Autowired
     private AiHotelApplicationService aiService;
+
+    @Autowired
+    private FineTuningAIService fineTuningService;
 
     @Autowired
     private EmbeddingModel embeddingModel; // test embedding nếu cần thực tế
@@ -67,7 +71,7 @@ class AiManagementApplicationTest {
                 .size(200)
                 .build();
 
-        Dataset preparedDataset = aiService.prepareDataset(dataset);
+        Dataset preparedDataset = fineTuningService.prepareDataset(dataset);
         Assertions.assertThat(preparedDataset).isNotNull();
         Assertions.assertThat(preparedDataset.getId()).isEqualTo(new DatasetID("test-dataset"));
         Assertions.assertThat(preparedDataset.getName()).isEqualTo("Hotel Training Set");
@@ -81,13 +85,13 @@ class AiManagementApplicationTest {
                 .datasetId(preparedDataset.getId())
                 .build();
 
-        TrainingJob startedJob = aiService.startTraining(job);
+        TrainingJob startedJob = fineTuningService.startTraining(job);
         Assertions.assertThat(startedJob).isNotNull();
         Assertions.assertThat(startedJob.getId()).isEqualTo(new TrainingJobID("test-job"));
         Assertions.assertThat(startedJob.getStatus()).isEqualTo("RUNNING");
 
         // --- 6. Hoàn thành Training ---
-        TrainingJob completedJob = aiService.completeTraining(startedJob);
+        TrainingJob completedJob = fineTuningService.completeTraining(startedJob);
         Assertions.assertThat(completedJob).isNotNull();
         Assertions.assertThat(completedJob.getStatus()).isEqualTo("COMPLETED");
 
@@ -98,8 +102,8 @@ class AiManagementApplicationTest {
                 .datasetId(preparedDataset.getId())
                 .build();
 
-        TrainingJob startedFailJob = aiService.startTraining(failJob);
-        TrainingJob failed = aiService.failTraining(startedFailJob, "Test error");
+        TrainingJob startedFailJob = fineTuningService.startTraining(failJob);
+        TrainingJob failed = fineTuningService.failTraining(startedFailJob, "Test error");
         Assertions.assertThat(failed).isNotNull();
         Assertions.assertThat(failed.getStatus()).isEqualTo("FAILED");
         Assertions.assertThat(failed.getErrorMessages()).contains("Test error");

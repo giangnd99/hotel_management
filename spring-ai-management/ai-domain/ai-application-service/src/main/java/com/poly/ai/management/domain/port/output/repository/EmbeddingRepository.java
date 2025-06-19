@@ -1,7 +1,7 @@
 package com.poly.ai.management.domain.port.output.repository;
 
 
-import com.poly.ai.management.domain.entity.Embedding;
+import com.poly.ai.management.domain.entity.rag.Embedding;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.poly.ai.management.dao.ai.mapper;
 
 import com.poly.ai.management.dao.ai.entity.ResponseEntity;
-import com.poly.ai.management.domain.entity.Response;
+import com.poly.ai.management.domain.entity.train.Response;
 import com.poly.ai.management.domain.valueobject.AiModelID;
 import com.poly.ai.management.domain.valueobject.PromptID;
 import com.poly.ai.management.domain.valueobject.ResponseID;
