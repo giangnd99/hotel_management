@@ -1,10 +1,9 @@
 package com.poly.ai.management.domain.handler.ai;
 
 import com.poly.ai.management.domain.AiDomainService;
-import com.poly.ai.management.domain.entity.TrainingJob;
+import com.poly.ai.management.domain.entity.train.TrainingJob;
 import com.poly.ai.management.domain.port.output.repository.TrainingJobRepository;
 import com.poly.service.handler.BaseHandler;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.stereotype.Component;

@@ -1,7 +1,7 @@
 package com.poly.ai.management.dao.ai.mapper;
 
 import com.poly.ai.management.dao.ai.entity.TrainingJobEntity;
-import com.poly.ai.management.domain.entity.TrainingJob;
+import com.poly.ai.management.domain.entity.train.TrainingJob;
 import com.poly.ai.management.domain.valueobject.AiModelID;
 import com.poly.ai.management.domain.valueobject.DatasetID;
 import com.poly.ai.management.domain.valueobject.TrainingJobID;

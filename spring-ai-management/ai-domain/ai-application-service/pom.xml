@@ -33,6 +33,11 @@
             <version>${spring-ai-starter-model-ollama.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-pgvector-store-spring-boot-starter</artifactId>
+            <version>${ai-pgvector.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.poly</groupId>
             <artifactId>ai-domain-core</artifactId>
         </dependency>
