@@ -29,6 +29,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>booking-application-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>booking-domain-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>booking-application</artifactId>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
