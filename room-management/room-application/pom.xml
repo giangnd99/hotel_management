@@ -11,4 +11,10 @@
 
     <artifactId>room-application</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>room-application-service</artifactId>
+        </dependency>
+    </dependencies>
 </project>

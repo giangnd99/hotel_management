@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface RoomTypeFurnitureJpaRepository extends JpaRepository<RoomTypeFurnitureEntity, RoomTypeFurnitureEntityId> {
 
-    List<RoomTypeFurnitureEntity> findAllByRoomTypeId(Integer roomTypeId);
+    List<RoomTypeFurnitureEntity> findAllByRoomType_RoomTypeId(Integer roomTypeId);
 }

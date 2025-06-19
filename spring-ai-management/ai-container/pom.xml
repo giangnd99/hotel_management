@@ -17,6 +17,10 @@
             <artifactId>ai-domain-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.poly</groupId>
             <artifactId>ai-application-service</artifactId>
         </dependency>

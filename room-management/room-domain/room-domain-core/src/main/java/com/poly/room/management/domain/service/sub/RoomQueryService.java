@@ -6,6 +6,7 @@ import com.poly.room.management.domain.entity.RoomType;
 import com.poly.room.management.domain.valueobject.RoomTypeId;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +33,7 @@ public interface RoomQueryService {
      * @param checkOutDate Check-out date.
      * @return A list of available rooms matching the criteria.
      */
-    List<Room> findAvailableRooms(List<Room> allRooms, Optional<RoomTypeId> roomTypeId, Optional<Integer> minFloor, Optional<Integer> maxFloor, Timestamp checkInDate, Timestamp checkOutDate);
+    List<Room> findAvailableRooms(List<Room> allRooms, Optional<RoomTypeId> roomTypeId, Optional<Integer> minFloor, Optional<Integer> maxFloor, LocalDateTime checkInDate, LocalDateTime checkOutDate);
 
     /**
      * Filters a list of rooms by a specific status.

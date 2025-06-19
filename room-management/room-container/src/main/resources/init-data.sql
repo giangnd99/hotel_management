@@ -8,11 +8,11 @@ INSERT INTO maintenance_type_entity (maintenance_type_id, name) VALUES
 
 -- Insert RoomStatusEntity records
 INSERT INTO room_status_entity (status_id, status_name) VALUES
-(1, 'Available'),
-(2, 'Occupied'),
-(3, 'Under Maintenance'),
-(4, 'Out of Service'),
-(5, 'Reserved');
+(1, 'VACANT'),
+(2, 'BOOKED'),
+(3, 'OCCUPIED'),
+(4, 'MAINTENANCE'),
+(5, 'CLEANING');
 
 -- Insert RoomTypeEntity records
 INSERT INTO room_type_entity (room_type_id, type_name, description, base_price, max_occupancy) VALUES
@@ -23,7 +23,7 @@ INSERT INTO room_type_entity (room_type_id, type_name, description, base_price, 
 (5, 'Family Room', 'Spacious room for family stay', 350.00, 6);
 
 -- Insert FurnitureEntity records
-INSERT INTO furniture_entity (furniture_id, inventory_item_id) VALUES
+INSERT INTO room_management.furniture_entity (furniture_id, inventory_item_id) VALUES
 (1, 'BED-001'),
 (2, 'CHAIR-001'),
 (3, 'TABLE-001'),
@@ -31,15 +31,17 @@ INSERT INTO furniture_entity (furniture_id, inventory_item_id) VALUES
 (5, 'CABINET-001');
 
 -- Insert RoomTypeFurnitureEntity records
-INSERT INTO room_type_furniture_entity (room_type_id, furniture_id, require_quantity) VALUES
+INSERT INTO room_management.room_type_furniture_entity (room_type_id, furniture_id, require_quantity) VALUES
 (1, 1, 1),
 (1, 2, 2),
 (2, 1, 1),
 (3, 3, 1),
+(5, 2, 1),
 (4, 4, 1);
 
+
 -- Insert RoomEntity records
-INSERT INTO room_entity (room_id, room_type_id, status_id, room_number, floor) VALUES
+INSERT INTO room_management.room_entity (room_id, room_type_id, status_id, room_number, floor) VALUES
 (1, 1, 1, '101', 1),
 (2, 2, 2, '201', 2),
 (3, 3, 1, '301', 3),
@@ -47,7 +49,7 @@ INSERT INTO room_entity (room_id, room_type_id, status_id, room_number, floor) V
 (5, 5, 1, '501', 5);
 
 -- Insert RoomMaintenanceEntity records
-INSERT INTO room_maintenance_entity (maintenance_id, room_id, staff_id, maintenance_date, maintenance_type_id, description, status) VALUES
+INSERT INTO room_management.room_maintenance_entity (maintenance_id, room_id, staff_id, maintenance_date, maintenance_type_id, description, status) VALUES
 (1, 1, 'STAFF001', '2025-06-14 09:00:00', 1, 'Regular room cleaning', 'COMPLETED'),
 (2, 2, 'STAFF002', '2025-06-14 10:30:00', 2, 'Fix broken AC', 'IN_PROGRESS'),
 (3, 3, 'STAFF003', '2025-06-14 11:45:00', 3, 'Replace old furniture', 'SCHEDULED'),

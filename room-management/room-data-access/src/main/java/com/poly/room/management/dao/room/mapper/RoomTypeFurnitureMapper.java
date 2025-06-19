@@ -1,7 +1,11 @@
 package com.poly.room.management.dao.room.mapper;
 
+import com.poly.domain.valueobject.CompositeKey;
 import com.poly.room.management.dao.room.entity.RoomTypeFurnitureEntity;
 import com.poly.room.management.domain.entity.FurnitureRequirement;
+import com.poly.room.management.domain.valueobject.FurnitureId;
+import com.poly.room.management.domain.valueobject.FurnitureRequirementId;
+import com.poly.room.management.domain.valueobject.RoomTypeId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +20,15 @@ public class RoomTypeFurnitureMapper {
     private final FurnitureMapper furnitureMapper;
 
     public FurnitureRequirement toDomain(RoomTypeFurnitureEntity entity) {
-        return new FurnitureRequirement(furnitureMapper.toDomainEntity(entity.getFurniture()), entity.getRequireQuantity());
+        return FurnitureRequirement.Builder.builder()
+                .id(new FurnitureRequirementId(
+                        new CompositeKey<>(
+                                new FurnitureId(entity.getFurniture().getFurnitureId()),
+                                new RoomTypeId(entity.getRoomType().getRoomTypeId()))))
+                .roomTypeId(new RoomTypeId(entity.getRoomType().getRoomTypeId()))
+                .furniture(furnitureMapper.toDomainEntity(entity.getFurniture()))
+                .requiredQuantity(entity.getRequireQuantity())
+                .build();
     }
 
     public RoomTypeFurnitureEntity toEntity(FurnitureRequirement domain) {
@@ -36,15 +48,4 @@ public class RoomTypeFurnitureMapper {
                 .map(this::toDomain)
                 .collect(Collectors.toList());
     }
-
-    public List<RoomTypeFurnitureEntity> toJpaEntities(List<FurnitureRequirement> domains) {
-        if (domains == null) {
-            return Collections.emptyList();
-        }
-
-        return domains.stream()
-                .map(this::toEntity)
-                .collect(Collectors.toList());
-    }
-
 }

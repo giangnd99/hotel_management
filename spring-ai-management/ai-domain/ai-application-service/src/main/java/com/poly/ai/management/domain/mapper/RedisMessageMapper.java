@@ -19,7 +19,7 @@ public class RedisMessageMapper {
 
     public static RedisMessageDto fromSpringAIMessage(Message springAiMessage) {
         return new RedisMessageDto(springAiMessage.getMessageType().name(),
-                springAiMessage.getContent());
+                springAiMessage.getText());
     }
 
     public static Message toSpringAIMessage(RedisMessageDto redisMessageDto) {

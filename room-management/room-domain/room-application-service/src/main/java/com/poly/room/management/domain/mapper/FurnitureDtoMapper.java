@@ -27,12 +27,4 @@ public class FurnitureDtoMapper {
                 .build();
     }
 
-    public FurnitureRequirementResponse toRoomFurnitureRequirementResponse(FurnitureRequirement furnitureRequirement) {
-        return FurnitureRequirementResponse.builder()
-                .furnitureId(furnitureRequirement.getFurniture().getId().getValue())
-                .furnitureInventoryItemId(furnitureRequirement.getFurniture().getInventoryItemId().getValue())
-                .requiredQuantity(furnitureRequirement.getRequiredQuantity())
-                .roomTypeId(new RoomTypeId(furnitureRequirement.getId().getValue().getId2().getValue()).getValue())
-                .build();
-    }
 }

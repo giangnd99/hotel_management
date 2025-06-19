@@ -1,5 +1,20 @@
 package com.poly.room.management.domain.service.impl;
 
+import com.poly.domain.valueobject.DateCustom;
+import com.poly.domain.valueobject.MaintenanceStatus;
+import com.poly.domain.valueobject.RoomId;
+import com.poly.domain.valueobject.StaffId;
+import com.poly.room.management.domain.entity.MaintenanceType;
+import com.poly.room.management.domain.entity.RoomMaintenance;
+import com.poly.room.management.domain.exception.RoomDomainException;
+import com.poly.room.management.domain.service.sub.MaintenanceQueryService;
+import com.poly.room.management.domain.valueobject.MaintenanceId;
+import com.poly.room.management.domain.valueobject.MaintenanceTypeId;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 public class MaintenanceQueryServiceImpl implements MaintenanceQueryService {
     @Override
     public Optional<RoomMaintenance> getRoomMaintenanceById(List<RoomMaintenance> allMaintenances, MaintenanceId maintenanceId) {
@@ -40,8 +55,8 @@ public class MaintenanceQueryServiceImpl implements MaintenanceQueryService {
     }
 
     @Override
-    public List<RoomMaintenance> getRoomMaintenancesBetweenDates(List<RoomMaintenance> allMaintenances, 
-            LocalDateTime startDate, LocalDateTime endDate) {
+    public List<RoomMaintenance> getRoomMaintenancesBetweenDates(List<RoomMaintenance> allMaintenances,
+                                                                 DateCustom startDate, DateCustom endDate) {
         return allMaintenances.stream()
                 .filter(rm -> !rm.getScheduledDate().isBefore(startDate) && !rm.getScheduledDate().isAfter(endDate))
                 .collect(Collectors.toList());
