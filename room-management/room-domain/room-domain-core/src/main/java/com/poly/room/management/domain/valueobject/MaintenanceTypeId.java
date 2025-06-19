@@ -4,7 +4,7 @@ import com.poly.domain.valueobject.BaseId;
 
 public class MaintenanceTypeId extends BaseId<Integer> {
 
-    protected MaintenanceTypeId(Integer value) {
+    public MaintenanceTypeId(Integer value) {
         super(value);
     }
 }
