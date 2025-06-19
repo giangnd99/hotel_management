@@ -1,0 +1,7 @@
+server:
+  port: ${STAFF_MANAGEMENT_PORT}
+  servlet:
+    context-path: /staff-management
+springdoc:
+  api-docs:
+    path: /api-docs

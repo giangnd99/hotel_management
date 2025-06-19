@@ -1,0 +1,38 @@
+server:
+  port: 8088
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:ai_management_db;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+
+  graphql:
+    path: /graphql
+    schema:
+      locations: classpath:graphql/
+    graphiql:
+      enabled: true
+
+# Spring AI - Ollama
+  ai:
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        model: llama3
+      embedding:
+        model: nomic-embed-text

@@ -20,4 +20,6 @@ public interface AiHotelApplicationService {
     TrainingJob completeTraining(TrainingJob job);
 
     TrainingJob failTraining(TrainingJob job, String errorMessage);
+
+    Booking findAvailableBooking(Booking booking);
 }
