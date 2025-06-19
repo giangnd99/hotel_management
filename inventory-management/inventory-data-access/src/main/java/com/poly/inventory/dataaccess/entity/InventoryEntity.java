@@ -15,8 +15,6 @@ import lombok.Setter;
 public class InventoryEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_id")
     private Integer itemId;
 
     private String itemName;
@@ -25,4 +23,3 @@ public class InventoryEntity {
     private Double unitPrice;
     private Integer minimumQuantity;
 }
-
