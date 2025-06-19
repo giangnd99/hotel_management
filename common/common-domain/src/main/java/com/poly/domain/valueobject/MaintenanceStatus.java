@@ -1,5 +1,5 @@
 package com.poly.domain.valueobject;
 
 public enum MaintenanceStatus {
-    PENDING, WORKING, UPDATING, COMPLETED
+    PENDING, WORKING, UPDATING, IN_PROGRESS, CANCELED, COMPLETED
 }
