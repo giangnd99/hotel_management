@@ -26,7 +26,5 @@ public interface AiDomainService {
 
     TrainingJob failTraining(TrainingJob job, String errorMessage);
 
-    Room findAvailableRoom(AiModel model);
-
     Booking findAvailableBooking(AiModel model);
 }

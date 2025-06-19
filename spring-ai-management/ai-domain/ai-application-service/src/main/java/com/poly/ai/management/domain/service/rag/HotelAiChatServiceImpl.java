@@ -3,6 +3,7 @@ package com.poly.ai.management.domain.service.rag;
 import com.poly.ai.management.domain.entity.ChatSession;
 import com.poly.ai.management.domain.port.input.service.HotelAiChatService;
 import com.poly.ai.management.domain.port.output.repository.ChatSessionRepository;
+import com.poly.ai.management.domain.valueobject.SessionID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
@@ -38,7 +39,7 @@ public class HotelAiChatServiceImpl implements HotelAiChatService {
         Optional<ChatSession> optionalChatSession = chatSessionRepository.findById(sessionId);
         ChatSession chatSession = optionalChatSession.orElseGet(() -> {
             log.info("Tạo phiên hội thoại mới cho session ID: {}", sessionId);
-            return new ChatSession(sessionId);
+            return ChatSession.initialize(new SessionID(sessionId));
         });
 
         // 2. Thêm câu hỏi hiện tại của người dùng vào lịch sử trong đối tượng ChatSession
@@ -62,7 +63,7 @@ public class HotelAiChatServiceImpl implements HotelAiChatService {
 
         // Trích xuất nội dung từ các tài liệu liên quan để tạo ngữ cảnh
         String context = relevantDocuments.stream()
-                .map(Document::getContent)
+                .map(Document::getText)
                 .collect(Collectors.joining("\n\n---\n\n"));
         // Phân tách các document rõ ràng
 
@@ -98,12 +99,9 @@ public class HotelAiChatServiceImpl implements HotelAiChatService {
 
         // Gửi Prompt đến Llama3 và nhận phản hồi
         String responseContent = Objects.requireNonNull(
-                        chatClient.prompt(prompt)
-                                .call()
-                                .chatResponse())
-                .getResult()
-                .getOutput()
-                .getContent();
+                chatClient.prompt(prompt)
+                        .call()
+                        .content());
 
         // 6. Thêm phản hồi của bot vào lịch sử hội thoại trong đối tượng ChatSession
         chatSession.addAssistantMessage(responseContent);

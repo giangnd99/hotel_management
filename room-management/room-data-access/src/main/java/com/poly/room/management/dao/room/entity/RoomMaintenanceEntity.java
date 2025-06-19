@@ -18,7 +18,7 @@ public class RoomMaintenanceEntity {
     @Id
     private Integer maintenanceId;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "room_id")
     private RoomEntity room;
 
@@ -26,7 +26,7 @@ public class RoomMaintenanceEntity {
 
     private Timestamp maintenanceDate;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "maintenance_type_id")
     private MaintenanceTypeEntity maintenanceType;
 

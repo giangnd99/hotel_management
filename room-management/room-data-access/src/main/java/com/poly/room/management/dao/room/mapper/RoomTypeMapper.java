@@ -9,6 +9,7 @@ import com.poly.room.management.domain.valueobject.RoomTypeId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Component
@@ -16,17 +17,16 @@ import java.util.List;
 public class RoomTypeMapper {
 
     private final RoomTypeFurnitureJpaRepository repository;
-    private final FurnitureMapper furnitureMapper;
     private final RoomTypeFurnitureMapper roomTypeFurnitureMapper;
 
     public RoomType toDomainEntity(RoomTypeEntity entity) {
-        List<RoomTypeFurnitureEntity> furnitureEntities = repository.findAllByRoomTypeId(
+        List<RoomTypeFurnitureEntity> furnitureEntities = repository.findAllByRoomType_RoomTypeId(
                 entity.getRoomTypeId());
-
+        Money basePrice = new Money(entity.getBasePrice());
         return RoomType.Builder.builder()
                 .id(new RoomTypeId(entity.getRoomTypeId()))
                 .typeName(entity.getTypeName())
-                .basePrice(new Money(entity.getBasePrice()))
+                .basePrice(basePrice)
                 .description(entity.getDescription())
                 .maxOccupancy(entity.getMaxOccupancy())
                 .furnitures(roomTypeFurnitureMapper.toDomainEntities(furnitureEntities))

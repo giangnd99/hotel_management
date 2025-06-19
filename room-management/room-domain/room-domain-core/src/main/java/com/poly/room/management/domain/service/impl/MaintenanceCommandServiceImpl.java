@@ -1,5 +1,17 @@
 package com.poly.room.management.domain.service.impl;
 
+import com.poly.domain.valueobject.DateCustom;
+import com.poly.domain.valueobject.MaintenanceStatus;
+import com.poly.domain.valueobject.StaffId;
+import com.poly.room.management.domain.entity.MaintenanceType;
+import com.poly.room.management.domain.entity.Room;
+import com.poly.room.management.domain.entity.RoomMaintenance;
+import com.poly.room.management.domain.exception.RoomDomainException;
+import com.poly.room.management.domain.service.sub.MaintenanceCommandService;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 public class MaintenanceCommandServiceImpl implements MaintenanceCommandService {
     @Override
     public RoomMaintenance createRoomMaintenance(Room room, StaffId staffId, MaintenanceType maintenanceType, String description) {
@@ -9,9 +21,9 @@ public class MaintenanceCommandServiceImpl implements MaintenanceCommandService 
                 .maintenanceType(maintenanceType)
                 .description(description)
                 .status(MaintenanceStatus.PENDING)
-                .scheduledDate(LocalDateTime.now())
+                .scheduledDate(DateCustom.now())
                 .build();
-        
+
         room.setMaintenanceRoomStatus();
         return maintenance;
     }

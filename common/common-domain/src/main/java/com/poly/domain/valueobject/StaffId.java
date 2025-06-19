@@ -1,8 +1,8 @@
 package com.poly.domain.valueobject;
 
-public class StaffId extends BaseId<Integer> {
+public class StaffId extends BaseId<String> {
 
-    protected StaffId(Integer value) {
+    public StaffId(String value) {
         super(value);
     }
 }

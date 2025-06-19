@@ -11,9 +11,6 @@ public class Money {
 
     public Money(BigDecimal amount) {
         this.amount = amount;
-        if (isGreaterThanZero()){
-            throw new ArithmeticException("Can't input Money by zero");
-        }
     }
 
     public boolean isGreaterThanZero() {

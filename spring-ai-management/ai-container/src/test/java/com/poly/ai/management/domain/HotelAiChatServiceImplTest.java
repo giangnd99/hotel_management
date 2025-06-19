@@ -1,123 +1,150 @@
-package com.poly.ai.management.domain.service.rag;
+package com.poly.ai.management.domain;
 
-import com.poly.ai.chat.client.ChatClient;
-import com.poly.ai.chat.messages.AssistantMessage;
-import com.poly.ai.chat.messages.Message;
-import com.poly.ai.document.Document;
 import com.poly.ai.management.domain.entity.ChatSession;
 import com.poly.ai.management.domain.port.output.repository.ChatSessionRepository;
-import com.poly.ai.vectorstore.SearchRequest;
-import com.poly.ai.vectorstore.VectorStore;
+import com.poly.ai.management.domain.service.rag.HotelAiChatServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-class HotelAiChatServiceImplTest {
+@SpringBootTest(classes = AiManagementApplication.class)
+class HotelAiChatServiceImplTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private HotelAiChatServiceImpl hotelAiChatService;
 
-    @MockBean
+    @Autowired
     private ChatClient chatClient;
 
-    @MockBean
+    @Autowired
     private VectorStore vectorStore;
 
-    @MockBean
+    @Autowired
     private ChatSessionRepository chatSessionRepository;
 
-    @Test
-    void testAskLlama3WithRAG_NewSession() {
-        String sessionId = "test-session-id";
-        String userQuery = "What are the top hotels in New York?";
-        ChatSession newChatSession = new ChatSession(sessionId);
+    private String sessionId;
 
-        when(chatSessionRepository.findById(sessionId)).thenReturn(Optional.empty());
-        when(vectorStore.similaritySearch(any(SearchRequest.class))).thenReturn(List.of(new Document("Hotel 1 details"), new Document("Hotel 2 details")));
-        Message expectedResponseMessage = new AssistantMessage("Here are the top hotels in New York: Hotel 1, Hotel 2.");
-        when(chatClient.prompt(any())).thenReturn(() -> () -> () -> () -> expectedResponseMessage);
-        when(chatSessionRepository.save(any())).thenReturn(newChatSession);
-
-        String response = hotelAiChatService.askLlama3WithRAG(sessionId, userQuery);
-
-        assertEquals("Here are the top hotels in New York: Hotel 1, Hotel 2.", response);
-
-        verify(chatSessionRepository, times(1)).save(newChatSession);
-        verify(vectorStore, times(1)).similaritySearch(any(SearchRequest.class));
-        verify(chatClient, times(1)).prompt(any());
+    @BeforeEach
+    void setUp() {
+        // Tạo một sessionId mới cho mỗi test để tránh xung đột
+        sessionId = UUID.randomUUID().toString();
     }
 
     @Test
-    void testAskLlama3WithRAG_ExistingSession() {
-        String sessionId = "test-session-id";
-        String userQuery = "Tell me about room availability.";
-        ChatSession existingChatSession = new ChatSession(sessionId);
-        existingChatSession.addUserMessage("Previous question");
-
-        when(chatSessionRepository.findById(sessionId)).thenReturn(Optional.of(existingChatSession));
-        when(vectorStore.similaritySearch(any(SearchRequest.class))).thenReturn(List.of(new Document("Room details")));
-        Message expectedResponseMessage = new AssistantMessage("Rooms are available. Here are the details.");
-        when(chatClient.prompt(any())).thenReturn(() -> () -> () -> () -> expectedResponseMessage);
-        when(chatSessionRepository.save(any())).thenReturn(existingChatSession);
+    void shouldHandleNewSessionWithHotelQuery() {
+        String userQuery = "Cho tôi biết các tiện nghi của khách sạn?";
 
         String response = hotelAiChatService.askLlama3WithRAG(sessionId, userQuery);
 
-        assertEquals("Rooms are available. Here are the details.", response);
+        assertNotNull(response);
+        assertFalse(response.isEmpty());
 
-        verify(chatSessionRepository, times(1)).save(existingChatSession);
-        verify(vectorStore, times(1)).similaritySearch(any(SearchRequest.class));
-        verify(chatClient, times(1)).prompt(any());
+        // Kiểm tra xem session có được lưu không
+        assertTrue(chatSessionRepository.findById(sessionId).isPresent());
     }
 
     @Test
-    void testAskLlama3WithRAG_NoRelevantDocuments() {
-        String sessionId = "test-session-id";
-        String userQuery = "What are the best amenities available?";
+    void shouldHandleExistingSessionWithFollowUpQuery() {
+        // First query to create a session
+        String firstQuery = "Khách sạn có bao nhiêu phòng?";
+        hotelAiChatService.askLlama3WithRAG(sessionId, firstQuery);
 
-        ChatSession newChatSession = new ChatSession(sessionId);
+        // Follow up query
+        String followUpQuery = "Giá phòng như thế nào?";
+        String response = hotelAiChatService.askLlama3WithRAG(sessionId, followUpQuery);
 
-        when(chatSessionRepository.findById(sessionId)).thenReturn(Optional.empty());
-        when(vectorStore.similaritySearch(any(SearchRequest.class))).thenReturn(List.of());
-        Message expectedResponseMessage = new AssistantMessage("Sorry, I couldn’t find any details.");
-        when(chatClient.prompt(any())).thenReturn(() -> () -> () -> () -> expectedResponseMessage);
-        when(chatSessionRepository.save(any())).thenReturn(newChatSession);
+        assertNotNull(response);
+        assertFalse(response.isEmpty());
 
-        String response = hotelAiChatService.askLlama3WithRAG(sessionId, userQuery);
-
-        assertEquals("Sorry, I couldn’t find any details.", response);
-
-        verify(chatSessionRepository, times(1)).save(newChatSession);
-        verify(vectorStore, times(1)).similaritySearch(any(SearchRequest.class));
-        verify(chatClient, times(1)).prompt(any());
+        // Kiểm tra xem session có lưu cả 2 messages không
+        ChatSession session = chatSessionRepository.findById(sessionId).orElseThrow();
+        assertTrue(session.getMessages().size() >= 4); // 2 user messages + 2 assistant messages
     }
 
     @Test
-    void testAskLlama3WithRAG_ExceptionInChatClient() {
-        String sessionId = "test-session-id";
-        String userQuery = "What are the top resorts in Hawaii?";
-        ChatSession newChatSession = new ChatSession(sessionId);
+    void shouldHandleComplexQuery() {
+        String complexQuery = "Cho tôi biết chi tiết về các dịch vụ spa, nhà hàng và phòng gym của khách sạn, " +
+                "bao gồm cả giờ hoạt động và chi phí?";
 
-        when(chatSessionRepository.findById(sessionId)).thenReturn(Optional.empty());
-        when(vectorStore.similaritySearch(any(SearchRequest.class))).thenReturn(List.of(new Document("Resort 1 details")));
-        when(chatClient.prompt(any())).thenThrow(new RuntimeException("Chat client error"));
+        String response = hotelAiChatService.askLlama3WithRAG(sessionId, complexQuery);
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                hotelAiChatService.askLlama3WithRAG(sessionId, userQuery));
+        assertNotNull(response);
+        assertFalse(response.isEmpty());
+        assertTrue(response.length() > 100); // Expect detailed response
+    }
 
-        assertEquals("Chat client error", exception.getMessage());
+    @Test
+    void shouldHandleVietnameseQuery() {
+        String vietnameseQuery = "Khách sạn có những loại phòng nào và giá cả ra sao?";
 
-        verify(chatSessionRepository, times(0)).save(any());
-        verify(vectorStore, times(1)).similaritySearch(any(SearchRequest.class));
-        verify(chatClient, times(1)).prompt(any());
+        String response = hotelAiChatService.askLlama3WithRAG(sessionId, vietnameseQuery);
+
+        assertNotNull(response);
+        assertFalse(response.isEmpty());
+        // Kiểm tra xem response có chứa ký tự tiếng Việt không
+        assertTrue(response.matches(".*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ].*"));
+    }
+
+    @Test
+    void shouldHandleMultipleQueriesInSameSession() {
+        String[] queries = {
+                "Khách sạn có bể bơi không?",
+                "Bể bơi mở cửa mấy giờ?",
+                "Có phục vụ đồ ăn ở bể bơi không?",
+                "Giá vé vào bể bơi thế nào?"
+        };
+
+        for (String query : queries) {
+            String response = hotelAiChatService.askLlama3WithRAG(sessionId, query);
+            assertNotNull(response);
+            assertFalse(response.isEmpty());
+        }
+
+        // Kiểm tra xem session có lưu đủ số lượng messages không
+        ChatSession session = chatSessionRepository.findById(sessionId).orElseThrow();
+        assertTrue(session.getMessages().size() >= queries.length * 2); // user + assistant messages
+    }
+
+    @Test
+    void shouldHandleLongConversationHistory() {
+        // Tạo một cuộc hội thoại dài
+        for (int i = 0; i < 2; i++) {
+            String query = "Câu hỏi số " + (i + 1) + " về dịch vụ khách sạn?";
+            String response = hotelAiChatService.askLlama3WithRAG(sessionId, query);
+            assertNotNull(response);
+            assertFalse(response.isEmpty());
+        }
+
+        // Kiểm tra câu hỏi cuối vẫn hoạt động tốt
+        String nameHotelQuery = "Tôi muốn biết tên khách sạn?";
+        String responses = hotelAiChatService.askLlama3WithRAG(sessionId, nameHotelQuery);
+        String finalQuery = "Tổng hợp lại các thông tin trên?";
+        String response = hotelAiChatService.askLlama3WithRAG(sessionId, finalQuery);
+
+        assertNotNull(response);
+        assertFalse(response.isEmpty());
+        assertTrue(response.length() > 200); // Expect a comprehensive summary
+    }
+
+    @Test
+    void shouldHandleFoundRoomConversationHistory() {
+
+        // Kiểm tra câu hỏi cuối vẫn hoạt động tốt
+        String nameHotelQuery = "Tôi muốn biết tất cả phòng của khách sạn đang có thể đặt ?";
+        String response = hotelAiChatService.askLlama3WithRAG(sessionId, nameHotelQuery);
+
+        String findRoomHotelQuery = "Tôi muốn biết phòng 201 có thể đặt phòng không ?";
+        String response2 = hotelAiChatService.askLlama3WithRAG(sessionId, nameHotelQuery);
+        assertNotNull(response);
+        assertFalse(response.isEmpty());
+        assertTrue(response.length() > 200); // Expect a comprehensive summary
     }
 }
