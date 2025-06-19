@@ -1,0 +1,2 @@
+docker exec -it pgvector-db psql -U postgres
+CREATE EXTENSION IF NOT EXISTS vector;
