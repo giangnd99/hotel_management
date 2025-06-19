@@ -1,41 +1,55 @@
 package com.poly.inventory.dataaccess.adapter;
 
+import com.poly.inventory.application.port.out.DeleteInventoryPort;
 import com.poly.inventory.application.port.out.LoadInventoryPort;
 import com.poly.inventory.application.port.out.SaveInventoryPort;
 import com.poly.inventory.dataaccess.entity.InventoryEntity;
-import com.poly.inventory.dataaccess.mapper.InventoryMapper;
-import com.poly.inventory.dataaccess.repo.InventoryRepository;
-import com.poly.inventory.domain.model.entity.InventoryItem;
+import com.poly.inventory.dataaccess.mapper.InventoryEntityMapper;
+import com.poly.inventory.dataaccess.jpa.InventoryJpaRepository;
+import com.poly.inventory.domain.entity.InventoryItem;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
 @Component
-public class InventoryJpaAdapter implements LoadInventoryPort, SaveInventoryPort {
+public class InventoryJpaAdapter implements LoadInventoryPort, SaveInventoryPort, DeleteInventoryPort {
 
-    private final InventoryRepository inventoryRepository;
+    private final InventoryJpaRepository inventoryRepository;
 
-    public InventoryJpaAdapter(InventoryRepository inventoryRepository) {
+    public InventoryJpaAdapter(InventoryJpaRepository inventoryRepository) {
         this.inventoryRepository = inventoryRepository;
     }
 
     @Override
     public List<InventoryItem> loadAllItems() {
         return inventoryRepository.findAll().stream()
-                .map(InventoryMapper::toDomain)
+                .map(InventoryEntityMapper::toDomain)
                 .toList();
     }
 
     @Override
     public Optional<InventoryItem> loadItemById(Integer id) {
         return inventoryRepository.findById(id)
-                .map(InventoryMapper::toDomain);
+                .map(InventoryEntityMapper::toDomain);
     }
 
     @Override
     public void save(InventoryItem item) {
-        InventoryEntity entity = InventoryMapper.toEntity(item);
+        InventoryEntity entity = InventoryEntityMapper.toEntity(item);
         inventoryRepository.save(entity);
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+        inventoryRepository.deleteById(id);
+    }
+
+    @Override
+    public List<InventoryItem> searchByName(String name) {
+        return inventoryRepository.findByItemNameContainingIgnoreCase(name)
+                .stream()
+                .map(InventoryEntityMapper::toDomain)
+                .toList();
     }
 }
