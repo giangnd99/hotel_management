@@ -11,4 +11,6 @@
 
     <artifactId>booking-application</artifactId>
 
+    <dependencies>
+    </dependencies>
 </project>
