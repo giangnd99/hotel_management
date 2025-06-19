@@ -10,6 +10,26 @@ import java.util.Optional;
 public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
+    public Customer save(Customer customer) {
+        return null;
+    }
+
+    @Override
+    public Customer find(CustomerId customerId) {
+        return null;
+    }
+
+    @Override
+    public Customer update(Customer customer) {
+        return null;
+    }
+
+    @Override
+    public void delete(CustomerId customerId) {
+
+    }
+
+    @Override
     public Optional<Customer> findById(CustomerId id) {
         return Optional.empty();
     }

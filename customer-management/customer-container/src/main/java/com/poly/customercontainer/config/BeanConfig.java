@@ -1,6 +1,6 @@
 package com.poly.customercontainer.config;
 
-import com.poly.customerapplication.port.CustomerUsecase;
+import com.poly.customerapplication.port.input.CustomerUsecase;
 import com.poly.customerapplication.service.CustomerApplicationService;
 import com.poly.customerdataaccess.port.CustomerRepositoryImpl;
 import com.poly.customerdomain.output.CustomerRepository;

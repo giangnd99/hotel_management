@@ -26,7 +26,7 @@ public class CustomerController {
     @GetMapping()
     public ResponseEntity<List<Customer>> retrieveAllCustomer() {
 
-        Customer customer1 = new Customer.Builder()
+        Customer customer1 =  Customer.builder()
                 .userId(UUID.randomUUID())
                 .name(new Name("Hải Thạch"))
                 .address(new Address("123 Ấp 17, Xã Trung Chánh, Huyện Hóc Môn, TP. Hồ Chí Minh"))
@@ -35,7 +35,7 @@ public class CustomerController {
                 .customerType(CustomerType.REGULAR)
                 .build();
 
-        Customer customer2 = new Customer.Builder()
+        Customer customer2 = Customer.builder()
                 .userId(UUID.randomUUID())
                 .name(new Name("Đằng Giang"))
                 .address(new Address("123 Bình Dương, Tp. Hồ Chí Minh"))
@@ -44,7 +44,7 @@ public class CustomerController {
                 .customerType(CustomerType.REGULAR)
                 .build();
 
-        Customer customer3 = new Customer.Builder()
+        Customer customer3 =  Customer.builder()
                 .userId(UUID.randomUUID())
                 .name(new Name("Lâm Hùng"))
                 .address(new Address("123 Quận 7, TP. Hồ Chí Minh"))
@@ -53,7 +53,7 @@ public class CustomerController {
                 .customerType(CustomerType.REGULAR)
                 .build();
 
-        Customer customer4 = new Customer.Builder()
+        Customer customer4 = Customer.builder()
                 .userId(UUID.randomUUID())
                 .name(new Name("Vũ Lâm"))
                 .address(new Address("123 Quận 9, TP. Hồ Chí Minh"))
@@ -62,7 +62,7 @@ public class CustomerController {
                 .customerType(CustomerType.REGULAR)
                 .build();
 
-        Customer customer5 = new Customer.Builder()
+        Customer customer5=  Customer.builder()
                 .userId(UUID.randomUUID())
                 .name(new Name("Trí Tài"))
                 .address(new Address("123 Quận 12, TP. Hồ Chí Minh"))
@@ -71,7 +71,7 @@ public class CustomerController {
                 .customerType(CustomerType.REGULAR)
                 .build();
 
-        Customer customer6 = new Customer.Builder()
+        Customer customer6 = Customer.builder()
                 .userId(UUID.randomUUID())
                 .name(new Name("Hoàng Linh"))
                 .address(new Address("123 Quận Gò Vấp, TP. Hồ Chí Minh"))
@@ -94,7 +94,7 @@ public class CustomerController {
 
     @GetMapping("/find")
     public ResponseEntity<Customer> findById(CustomerId id) {
-        Customer customer = new Customer.Builder()
+        Customer customer = Customer.builder()
                 .userId(UUID.randomUUID())
                 .name(new Name("John Doe"))
                 .address(new Address("123 Street, City, Country"))

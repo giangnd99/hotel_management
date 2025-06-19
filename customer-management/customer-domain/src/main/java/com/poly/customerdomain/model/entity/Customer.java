@@ -6,12 +6,18 @@ import com.poly.customerdomain.model.valueobject.*;
 import com.poly.domain.entity.AggregateRoot;
 import com.poly.domain.valueobject.CustomerId;
 import com.poly.domain.valueobject.Money;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Getter
+@Setter
+//@Builder
 public class Customer extends AggregateRoot<CustomerId> {
 
     private UUID userId;
@@ -22,27 +28,66 @@ public class Customer extends AggregateRoot<CustomerId> {
     private CustomerType customerType;
     private Money accumulatedSpending;
     private Level level;
-    private final BehaviorData behaviorData;
+    private BehaviorData behaviorData;
     private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     private Customer(Builder builder) {
-        super.setId(builder.customerId != null ? builder.customerId : new CustomerId(UUID.randomUUID()));
-        this.userId = builder.userId;
-        this.name = builder.name;
-        this.address = builder.address;
-        this.dateOfBirth = builder.dateOfBirth;
-        this.nationality = builder.nationality;
-        this.customerType = builder.customerType;
-        this.accumulatedSpending = builder.accumulatedSpending;
-        this.level = builder.level;
-        this.behaviorData = builder.behaviorData;
-        this.createdAt = builder.createdAt != null ? builder.createdAt : LocalDateTime.now();
-        this.updatedAt = builder.updatedAt != null ? builder.updatedAt : LocalDateTime.now();
+        super.setId(builder.id);
+        setUserId(builder.userId);
+        setName(builder.name);
+        setAddress(builder.address);
+        setDateOfBirth(builder.dateOfBirth);
+        setNationality(builder.nationality);
+        setCustomerType(builder.customerType);
+        setAccumulatedSpending(builder.accumulatedSpending);
+        setLevel(builder.level);
+        setBehaviorData(builder.behaviorData);
+        createdAt = builder.createdAt;
+        setUpdatedAt(builder.updatedAt);
     }
 
-    public static class Builder {
-        private CustomerId customerId;
+//    @Builder
+//    private Customer(UUID userId, Name name, Address address, LocalDate dateOfBirth, Nationality nationality,
+//                     CustomerType customerType, Money accumulatedSpending, Level level, BehaviorData behaviorData,
+//                     LocalDateTime createdAt, LocalDateTime updatedAt, CustomerId customerId) {
+//
+//        if (userId == null) {
+//            throw new CustomerDomainException(ErrorDomainCode.USERID_INVALID);
+//        }
+//
+//        if (name == null) {
+//            throw new CustomerDomainException(ErrorDomainCode.NAME_INVALID);
+//        }
+//
+//        super.setId(customerId != null ? customerId : new CustomerId(UUID.randomUUID()));
+//        this.userId = userId;
+//        this.name = name;
+//        this.address = address;
+//        this.dateOfBirth = dateOfBirth;
+//        this.nationality = nationality;
+//        this.customerType = customerType;
+//        this.accumulatedSpending = accumulatedSpending;
+//        this.level = level;
+//        this.behaviorData = behaviorData;
+//        this.createdAt = createdAt;
+//        this.updatedAt = updatedAt;
+//    }
+
+
+
+    public void updateInfo(Name name, Address address, LocalDate dateOfBirth, Nationality nationality) {
+
+        if (name != null) this.name = name;
+        if (address != null) this.address = address;
+        if (dateOfBirth != null) this.dateOfBirth = dateOfBirth;
+        if (nationality != null) this.nationality = nationality;
+
+        this.setUpdatedAt(LocalDateTime.now());
+    }
+
+    public static final class Builder {
+        private CustomerId id;
         private UUID userId;
         private Name name;
         private Address address;
@@ -55,92 +100,74 @@ public class Customer extends AggregateRoot<CustomerId> {
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
-        public Builder() {
-            this.accumulatedSpending = new Money(BigDecimal.valueOf(1));
-            this.level = Level.None;
-        }
-
-        public Builder customerId(CustomerId customerId) {
-            this.customerId = customerId;
+        public Builder id(CustomerId val) {
+            id = val;
             return this;
         }
 
-        public Builder userId(UUID userId) {
-            this.userId = userId;
+        public Builder userId(UUID val) {
+            userId = val;
             return this;
         }
 
-        public Builder name(Name name) {
-            this.name = name;
+        public Builder name(Name val) {
+            name = val;
             return this;
         }
 
-        public Builder address(Address address) {
-            this.address = address;
+        public Builder address(Address val) {
+            address = val;
             return this;
         }
 
-        public Builder dateOfBirth(LocalDate dateOfBirth) {
-            this.dateOfBirth = dateOfBirth;
+        public Builder dateOfBirth(LocalDate val) {
+            dateOfBirth = val;
             return this;
         }
 
-        public Builder nationality(Nationality nationality) {
-            this.nationality = nationality;
+        public Builder nationality(Nationality val) {
+            nationality = val;
             return this;
         }
 
-        public Builder customerType(CustomerType customerType) {
-            this.customerType = customerType;
+        public Builder customerType(CustomerType val) {
+            customerType = val;
             return this;
         }
 
-        public Builder accumulatedSpending(Money accumulatedSpending) {
-            this.accumulatedSpending = accumulatedSpending;
+        public Builder accumulatedSpending(Money val) {
+            accumulatedSpending = val;
             return this;
         }
 
-        public Builder level(Level level) {
-            this.level = level;
+        public Builder level(Level val) {
+            level = val;
             return this;
         }
 
-        public Builder behaviorData(BehaviorData behaviorData) {
-            this.behaviorData = behaviorData;
+        public Builder behaviorData(BehaviorData val) {
+            behaviorData = val;
             return this;
         }
 
-        public Builder createdAt(LocalDateTime createdAt) {
-            this.createdAt = createdAt;
+        public Builder updatedAt(LocalDateTime val) {
+            updatedAt = val;
             return this;
         }
 
-        public Builder updatedAt(LocalDateTime updatedAt) {
-            this.updatedAt = updatedAt;
+        public Builder createddAt(LocalDateTime val) {
+            createdAt = val;
             return this;
         }
 
         public Customer build() {
-            if (name == null) {
-                throw new CustomerDomainException(ErrorDomainCode.NAME_INVALID);
-            }
-            if (userId == null) {
-                throw new CustomerDomainException(ErrorDomainCode.USERID_INVALID);
-            }
             return new Customer(this);
         }
     }
 
-    // Getters
-    public UUID getUserId() { return userId; }
-    public Name getName() { return name; }
-    public Address getAddress() { return address; }
-    public LocalDate getDateOfBirth() { return dateOfBirth; }
-    public Nationality getNationality() { return nationality; }
-    public CustomerType getCustomerType() { return customerType; }
-    public Money getAccumulatedSpending() { return accumulatedSpending; }
-    public Level getLevel() { return level; }
-    public BehaviorData getBehaviorData() { return behaviorData; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public static Builder builder() {
+        return new Builder();
+    }
+
+
 }
