@@ -18,5 +18,5 @@ public interface RoomService {
     RoomResponse updateRoomStatus(Integer roomId, String newStatus) throws ApplicationServiceException;
     List<RoomResponse> findAvailableRooms(Optional<Integer> roomTypeId, Optional<Integer> minFloor, Optional<Integer> maxFloor, Timestamp checkInDate, Timestamp checkOutDate);
     List<RoomResponse> getRoomsByStatus(String statusName);
-    void requestInventoryItemForRoom(Integer roomId, Integer inventoryItemId, int quantity, Integer requestedByStaffId) throws ApplicationServiceException;
+    void requestInventoryItemForRoom(Integer roomId, String inventoryItemId, int quantity, String requestedByStaffId) throws ApplicationServiceException;
 }

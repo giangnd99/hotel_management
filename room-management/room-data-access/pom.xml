@@ -24,6 +24,9 @@
             <groupId>com.poly</groupId>
             <artifactId>room-application-service</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>common-domain</artifactId>
+        </dependency>
     </dependencies>
 </project>

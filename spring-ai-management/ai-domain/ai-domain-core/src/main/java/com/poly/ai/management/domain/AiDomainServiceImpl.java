@@ -76,11 +76,6 @@ public class AiDomainServiceImpl implements AiDomainService {
     }
 
     @Override
-    public Room findAvailableRoom(AiModel model) {
-        return null;
-    }
-
-    @Override
     public Booking findAvailableBooking(AiModel model) {
         return null;
     }

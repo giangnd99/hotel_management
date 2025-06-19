@@ -2,6 +2,8 @@ server:
   port: 8088
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   jpa:
     open-in-view: false
     show-sql: true
@@ -9,8 +11,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=ai_management&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
+    url: jdbc:postgresql://localhost:5433/postgres?currentSchema=ai_management
     username: postgres
     password: admin
     driver-class-name: org.postgresql.Driver
@@ -30,9 +34,6 @@ spring:
     name: spring-management
   # Spring AI - Ollama
   ai:
-    vectors-tore:
-      pgvector:
-        initialize-schema: true
     ollama:
       base-url: http://localhost:11434
       chat:

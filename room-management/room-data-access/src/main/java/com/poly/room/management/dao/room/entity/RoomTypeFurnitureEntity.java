@@ -1,9 +1,6 @@
 package com.poly.room.management.dao.room.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,11 +15,13 @@ import lombok.NoArgsConstructor;
 public class RoomTypeFurnitureEntity {
 
     @Id
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "room_type_id")
     private RoomTypeEntity roomType;
 
     @Id
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "furniture_id")
     private FurnitureEntity furniture;
 
     private int requireQuantity;

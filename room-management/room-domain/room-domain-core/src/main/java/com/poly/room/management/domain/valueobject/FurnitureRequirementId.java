@@ -5,7 +5,7 @@ import com.poly.domain.valueobject.CompositeKey;
 
 public class FurnitureRequirementId extends CompositeId<FurnitureId, RoomTypeId> {
 
-    protected FurnitureRequirementId(CompositeKey<FurnitureId, RoomTypeId> value) {
+    public FurnitureRequirementId(CompositeKey<FurnitureId, RoomTypeId> value) {
         super(value);
     }
 }

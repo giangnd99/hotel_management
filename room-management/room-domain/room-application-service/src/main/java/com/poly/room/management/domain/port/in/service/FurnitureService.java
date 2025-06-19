@@ -6,10 +6,10 @@ import com.poly.room.management.domain.dto.response.FurnitureResponse;
 import java.util.List;
 
 public interface FurnitureService {
-    FurnitureResponse createFurniture(Integer inventoryItemId) throws ApplicationServiceException;
-    FurnitureResponse updateFurnitureInventoryItem(Integer furnitureId, Integer newInventoryItemId) throws ApplicationServiceException;
+    FurnitureResponse createFurniture(String inventoryItemId) throws ApplicationServiceException;
+    FurnitureResponse updateFurnitureInventoryItem(Integer furnitureId, String inventoryItemId) throws ApplicationServiceException;
     void deleteFurniture(Integer furnitureId) throws ApplicationServiceException;
     FurnitureResponse getFurnitureById(Integer furnitureId) throws ApplicationServiceException;
     List<FurnitureResponse> getAllFurnitures();
-    FurnitureResponse getFurnitureByInventoryItemId(Integer inventoryItemId) throws ApplicationServiceException;
+    FurnitureResponse getFurnitureByInventoryItemId(String inventoryItemId) throws ApplicationServiceException;
 }

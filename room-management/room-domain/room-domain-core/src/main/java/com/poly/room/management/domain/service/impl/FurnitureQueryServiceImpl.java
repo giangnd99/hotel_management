@@ -1,5 +1,15 @@
 package com.poly.room.management.domain.service.impl;
 
+import com.poly.domain.valueobject.InventoryItemId;
+import com.poly.room.management.domain.entity.Furniture;
+import com.poly.room.management.domain.exception.RoomDomainException;
+import com.poly.room.management.domain.service.sub.FurnitureQueryService;
+import com.poly.room.management.domain.valueobject.FurnitureId;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 public class FurnitureQueryServiceImpl implements FurnitureQueryService {
     
     @Override

@@ -1,15 +1,30 @@
 package com.poly.room.management.domain.service.impl;
 
-public class RoomTypeCommandServiceImpl implements RoomTypeCommandService {
-    
+import com.poly.domain.valueobject.CompositeKey;
+import com.poly.domain.valueobject.Money;
+import com.poly.room.management.domain.entity.Furniture;
+import com.poly.room.management.domain.entity.FurnitureRequirement;
+import com.poly.room.management.domain.entity.RoomType;
+import com.poly.room.management.domain.exception.RoomDomainException;
+import com.poly.room.management.domain.service.sub.RoomTypeCommandService;
+import com.poly.room.management.domain.valueobject.FurnitureId;
+import com.poly.room.management.domain.valueobject.FurnitureRequirementId;
+import com.poly.room.management.domain.valueobject.RoomTypeId;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+public class RoomTypeManagementServiceImpl implements RoomTypeCommandService {
+
     @Override
-    public RoomType createRoomType(String typeName, String description, String basePriceStr, 
-            int maxOccupancy, List<FurnitureRequirement> furnitureItems) {
-            
-        BigDecimal basePriceAmount;
+    public RoomType createRoomType(String typeName, String description, String basePriceStr,
+                                   int maxOccupancy, List<FurnitureRequirement> furnitureItems) {
+
+        Money basePriceAmount;
         try {
-            basePriceAmount = new BigDecimal(basePriceStr);
-            if (basePriceAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            basePriceAmount = new Money(new BigDecimal(basePriceStr));
+            if (!basePriceAmount.isGreaterThanZero()) {
                 throw new RoomDomainException("Base price must be positive");
             }
         } catch (NumberFormatException e) {
@@ -18,17 +33,22 @@ public class RoomTypeCommandServiceImpl implements RoomTypeCommandService {
 
         validateFurnitureRequirements(furnitureItems);
 
-        RoomType newRoomType = new RoomType(typeName, description, 
-                new Money(basePriceAmount), maxOccupancy, new ArrayList<>(furnitureItems));
-        
+        RoomType newRoomType = RoomType.Builder.builder()
+                .typeName(typeName)
+                .description(description)
+                .basePrice(basePriceAmount)
+                .maxOccupancy(maxOccupancy)
+                .furnitures(new ArrayList<>(furnitureItems))
+                .build();
+
         newRoomType.validateRoomType();
         return newRoomType;
     }
 
     @Override
-    public RoomType updateRoomTypeDetails(RoomType roomType, String newTypeName, 
-            String newDescription, String newBasePriceStr, int newMaxOccupancy) {
-            
+    public RoomType updateRoomTypeDetails(RoomType roomType, String newTypeName,
+                                          String newDescription, String newBasePriceStr, int newMaxOccupancy) {
+
         roomType.setTypeName(newTypeName);
         roomType.setDescription(newDescription);
 
@@ -45,7 +65,7 @@ public class RoomTypeCommandServiceImpl implements RoomTypeCommandService {
         roomType.setBasePrice(new Money(newBasePriceAmount));
         roomType.setMaxOccupancy(newMaxOccupancy);
         roomType.validateRoomType();
-        
+
         return roomType;
     }
 
@@ -63,17 +83,17 @@ public class RoomTypeCommandServiceImpl implements RoomTypeCommandService {
 
         FurnitureRequirementId requirementId = new FurnitureRequirementId(
                 new CompositeKey<>(furniture.getId(), roomType.getId()));
-                
+
         FurnitureRequirement requirement = FurnitureRequirement.Builder.builder()
                 .id(requirementId)
                 .furniture(furniture)
-                .roomType(roomType)
+                .roomTypeId(roomType.getId())
                 .requiredQuantity(quantity)
                 .build();
 
         roomType.addFurnitureRequirement(requirement);
         roomType.validateRoomType();
-        
+
         return roomType;
     }
 
@@ -85,12 +105,12 @@ public class RoomTypeCommandServiceImpl implements RoomTypeCommandService {
     }
 
     @Override
-    public RoomType updateFurnitureQuantityInRoomType(RoomType roomType, 
-            FurnitureId furnitureId, int newQuantity) {
+    public RoomType updateFurnitureQuantityInRoomType(RoomType roomType,
+                                                      FurnitureId furnitureId, int newQuantity) {
         if (newQuantity <= 0) {
             throw new RoomDomainException("New furniture quantity must be positive");
         }
-        
+
         roomType.updateFurnitureRequirementQuantity(furnitureId, newQuantity);
         roomType.validateRoomType();
         return roomType;
@@ -100,7 +120,7 @@ public class RoomTypeCommandServiceImpl implements RoomTypeCommandService {
         if (requirements == null) {
             return;
         }
-        
+
         for (FurnitureRequirement requirement : requirements) {
             validateFurniture(requirement.getFurniture());
             if (requirement.getRequiredQuantity() <= 0) {

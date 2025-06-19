@@ -4,6 +4,7 @@ import com.poly.ai.management.dao.redis.model.RedisChatSession;
 import com.poly.ai.management.domain.dto.RedisMessageDto;
 import com.poly.ai.management.domain.entity.ChatSession;
 import com.poly.ai.management.domain.mapper.RedisMessageMapper;
+import com.poly.ai.management.domain.valueobject.SessionID;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ public class ChatSessionMapper {
 
     // Chuyển đổi từ RedisChatSession sang Domain ChatSession
     public static ChatSession toDomainChatSession(RedisChatSession redisChatSession) {
-        ChatSession domainChatSession = new ChatSession(redisChatSession.getId()); // Sử dụng constructor có ID
+        ChatSession domainChatSession = ChatSession.initialize(new SessionID(redisChatSession.getId())); // Sử dụng constructor có ID
         domainChatSession.setMessages(redisChatSession.getMessages().stream()
                 .map(RedisMessageMapper::toDomainMessage)
                 .collect(Collectors.toList()));
