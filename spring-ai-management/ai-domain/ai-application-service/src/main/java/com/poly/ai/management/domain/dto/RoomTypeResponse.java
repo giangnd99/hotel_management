@@ -1,4 +1,4 @@
-package com.poly.room.management.domain.dto.response;
+package com.poly.ai.management.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

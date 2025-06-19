@@ -15,9 +15,9 @@ import java.util.UUID;
 public class RoomMaintenanceResponse {
     private Integer id;
     private Integer roomId;
-    private UUID staffId;
-    private Timestamp maintenanceDate;
-    private Timestamp actualStartDate;
+    private String staffId;
+    private Timestamp scheduledDate;
+    private Timestamp startDate;
     private Timestamp completionDate;
     private Integer maintenanceTypeId;
     private String maintenanceTypeName;

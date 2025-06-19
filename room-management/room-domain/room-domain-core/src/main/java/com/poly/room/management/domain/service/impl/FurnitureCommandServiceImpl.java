@@ -1,14 +1,25 @@
 package com.poly.room.management.domain.service.impl;
 
+import com.poly.domain.valueobject.InventoryItemId;
+import com.poly.room.management.domain.entity.Furniture;
+import com.poly.room.management.domain.exception.RoomDomainException;
+import com.poly.room.management.domain.service.sub.FurnitureCommandService;
+import com.poly.room.management.domain.valueobject.FurnitureId;
+
+import java.util.UUID;
+
 public class FurnitureCommandServiceImpl implements FurnitureCommandService {
-    
+
     @Override
     public Furniture createFurniture(InventoryItemId inventoryItemId) {
         if (inventoryItemId == null) {
             throw new RoomDomainException("InventoryItemId cannot be null");
         }
-        
-        Furniture newFurniture = new Furniture(inventoryItemId);
+
+        Furniture newFurniture = Furniture.Builder.builder()
+                .id(new FurnitureId(UUID.randomUUID().variant()))
+                .inventoryItemId(inventoryItemId)
+                .build();
         newFurniture.validate();
         return newFurniture;
     }
@@ -18,7 +29,7 @@ public class FurnitureCommandServiceImpl implements FurnitureCommandService {
         if (newInventoryItemId == null) {
             throw new RoomDomainException("New InventoryItemId cannot be null");
         }
-        
+
         furniture.setInventoryItemId(newInventoryItemId);
         furniture.validate();
         return furniture;

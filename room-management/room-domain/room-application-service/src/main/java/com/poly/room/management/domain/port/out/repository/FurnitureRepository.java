@@ -3,10 +3,11 @@ package com.poly.room.management.domain.port.out.repository;
 import com.poly.room.management.domain.entity.Furniture;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FurnitureRepository {
 
-    Furniture findById(Integer id);
+    Optional<Furniture> findById(Integer id);
 
     Furniture save(Furniture furniture);
 

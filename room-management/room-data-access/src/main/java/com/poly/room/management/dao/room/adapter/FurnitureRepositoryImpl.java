@@ -1,4 +1,4 @@
-package com.poly.room.management.adapter.data.adapter;
+package com.poly.room.management.dao.room.adapter;
 
 import com.poly.room.management.dao.room.mapper.FurnitureMapper;
 import com.poly.room.management.dao.room.repository.FurnitureJpaRepository;
@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -18,9 +19,10 @@ public class FurnitureRepositoryImpl implements FurnitureRepository {
     private final FurnitureMapper mapper;
 
     @Override
-    public Furniture findById(Integer id) {
-        return mapper.toDomainEntity(
-                jpaRepository.findById(id).orElseThrow(() -> new RoomDomainException("Furniture with id " + id + " not found")));
+    public Optional<Furniture> findById(Integer id) {
+        return Optional.ofNullable(mapper.toDomainEntity(
+                jpaRepository.findById(id)
+                        .orElseThrow(() -> new RoomDomainException("Furniture with id " + id + " not found"))));
     }
 
     @Override

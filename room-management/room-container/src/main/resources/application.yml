@@ -1,10 +1,32 @@
 server:
-  port: 8087
+  port: 8087 # Cổng cho dịch vụ room-management
+
 spring:
   application:
-    name: room-management
+    name: room-management # Tên ứng dụng
 
   eureka:
     client:
       service-url:
-        defaultZone: http://localhost/8761
+        defaultZone: http://localhost:8761/ # Sửa lại cổng thành 8761 (nếu Eureka chạy trên 8761)
+  jpa:
+    open-in-view: false
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+          # hibernate.ddl-auto: update # Cần cẩn thận với cái này trong production.
+          # Nếu bạn chỉ muốn chạy init-schema.sql và data.sql,
+          # bạn có thể để ddl-auto là 'none' hoặc 'validate'
+        # để tránh Hibernate tạo/cập nhật schema.
+  datasource:
+    url: jdbc:postgresql://localhost:5433/postgres?currentSchema=room_management&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
+    username: postgres
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: ALWAYS
+      schema-locations: classpath:init-schema.sql # Chỉ định script tạo schema
+      data-locations: classpath:init-data.sql # Chỉ định script chèn dữ liệu

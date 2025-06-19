@@ -1,5 +1,7 @@
 package com.poly.room.management.domain.port.out.feign;
 
+import com.poly.room.management.domain.dto.response.ItemDTO;
+import com.poly.room.management.domain.dto.response.StockTransactionDTO;
 import lombok.Data;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @FeignClient(name = "inventory-service", url = "localhost:8081/mock/api/inventory")
-public interface RoomServiceClient {
+public interface InventoryServiceClient {
 
     @GetMapping("/items")
     ResponseEntity<List<ItemDTO>> getAllItems();
@@ -63,21 +65,4 @@ public interface RoomServiceClient {
 
     @GetMapping("/export-receipt")
     ResponseEntity<String> exportReceipt(@RequestParam int index);
-}
-
-@Data
-class ItemDTO {
-    private String itemCode;
-    private String name;
-    private String unit;
-    private int quantity;
-}
-
-@Data
-class StockTransactionDTO {
-    private String itemCode;
-    private String type;
-    private int quantity;
-    private LocalDateTime timestamp;
-    private String note;
 }

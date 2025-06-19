@@ -1,4 +1,4 @@
-package com.poly.room.management.domain.handler;
+package com.poly.room.management.domain.handler.furniture;
 
 import com.poly.application.handler.ApplicationServiceException;
 import com.poly.domain.valueobject.InventoryItemId;

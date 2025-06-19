@@ -20,31 +20,6 @@ public class RoomType extends BaseEntity<RoomTypeId> {
     private int maxOccupancy;
     private List<FurnitureRequirement> furnitures;
 
-    /**
-     * Constructor mặc định.
-     */
-    public RoomType() {
-        this.furnitures = new ArrayList<>();
-    }
-
-    /**
-     * Constructor đầy đủ để tạo một loại phòng.
-     *
-     * @param typeName     Tên loại phòng.
-     * @param description  Mô tả loại phòng.
-     * @param basePrice    Giá cơ bản.
-     * @param maxOccupancy Sức chứa tối đa.
-     * @param furnitures   Danh sách các yêu cầu nội thất.
-     */
-    public RoomType(String typeName, String description, Money basePrice, int maxOccupancy, List<FurnitureRequirement> furnitures) {
-        this.typeName = typeName;
-        this.description = description;
-        this.basePrice = basePrice;
-        this.maxOccupancy = maxOccupancy;
-        this.furnitures = furnitures != null ? new ArrayList<>(furnitures) : new ArrayList<>();
-        validateRoomType();
-    }
-
     private RoomType(Builder builder) {
         super.setId(builder.id);
         setTypeName(builder.typeName);
@@ -52,6 +27,7 @@ public class RoomType extends BaseEntity<RoomTypeId> {
         setBasePrice(builder.basePrice);
         setMaxOccupancy(builder.maxOccupancy);
         furnitures = builder.furnitures;
+        validateRoomType();
     }
 
     /**
@@ -201,25 +177,20 @@ public class RoomType extends BaseEntity<RoomTypeId> {
         return maxOccupancy;
     }
 
-    // Setters (Nếu thay đổi sau khi tạo, cần validate lại)
     public void setTypeName(String typeName) {
         this.typeName = typeName;
-        checkTypeName();
     }
 
     public void setDescription(String description) {
         this.description = description;
-        checkDescription();
     }
 
     public void setBasePrice(Money basePrice) {
         this.basePrice = basePrice;
-        checkBasePriceAndOccupancy();
     }
 
     public void setMaxOccupancy(int maxOccupancy) {
         this.maxOccupancy = maxOccupancy;
-        checkBasePriceAndOccupancy();
     }
 
     public static final class Builder {
