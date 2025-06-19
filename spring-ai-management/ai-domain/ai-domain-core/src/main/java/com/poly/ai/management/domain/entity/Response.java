@@ -10,6 +10,7 @@ import com.poly.domain.entity.BaseEntity;
 public class Response extends BaseEntity<ResponseID> {
     private String generatedText;
     private final AiModelID modelId;
+    private String source;
     private final PromptID promptId;
 
     private Response(Builder builder) {
@@ -17,6 +18,7 @@ public class Response extends BaseEntity<ResponseID> {
         this.generatedText = builder.generatedText;
         this.modelId = builder.modelId;
         this.promptId = builder.promptId;
+        this.source = builder.source;
     }
 
     public void setGeneratedText(String text) {
@@ -59,6 +61,7 @@ public class Response extends BaseEntity<ResponseID> {
         private String generatedText;
         private AiModelID modelId;
         private PromptID promptId;
+        private String source;
 
         private Builder() {
         }
@@ -80,6 +83,11 @@ public class Response extends BaseEntity<ResponseID> {
 
         public Builder promptId(PromptID val) {
             promptId = val;
+            return this;
+        }
+
+        public Builder source(String val) {
+            source = val;
             return this;
         }
 
