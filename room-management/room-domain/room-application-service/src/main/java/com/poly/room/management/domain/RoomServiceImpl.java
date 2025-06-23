@@ -1,11 +1,10 @@
 package com.poly.room.management.domain;
 
-import com.poly.application.handler.ApplicationServiceException;
+import com.poly.application.handler.AppException;
 import com.poly.room.management.domain.dto.request.CreateRoomRequest;
 import com.poly.room.management.domain.dto.request.UpdateRoomRequest;
 import com.poly.room.management.domain.dto.response.RoomResponse;
 import com.poly.room.management.domain.dto.response.RoomTypeResponse;
-import com.poly.room.management.domain.entity.Room;
 import com.poly.room.management.domain.entity.RoomType;
 import com.poly.room.management.domain.handler.room.FindAllRoomsHandler;
 import com.poly.room.management.domain.port.in.service.RoomService;
@@ -237,22 +236,22 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomResponse createRoom(CreateRoomRequest request) throws ApplicationServiceException {
+    public RoomResponse createRoom(CreateRoomRequest request) throws AppException {
         return null;
     }
 
     @Override
-    public RoomResponse updateRoom(UpdateRoomRequest request) throws ApplicationServiceException {
+    public RoomResponse updateRoom(UpdateRoomRequest request) throws AppException {
         return null;
     }
 
     @Override
-    public void deleteRoom(Integer roomId) throws ApplicationServiceException {
+    public void deleteRoom(Integer roomId) throws AppException {
 
     }
 
     @Override
-    public RoomResponse getRoomById(Integer roomId) throws ApplicationServiceException {
+    public RoomResponse getRoomById(Integer roomId) throws AppException {
         return null;
     }
 
@@ -262,7 +261,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomResponse updateRoomStatus(Integer roomId, String newStatus) throws ApplicationServiceException {
+    public RoomResponse updateRoomStatus(Integer roomId, String newStatus) throws AppException {
         return null;
     }
 
@@ -277,7 +276,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void requestInventoryItemForRoom(Integer roomId, String inventoryItemId, int quantity, String requestedByStaffId) throws ApplicationServiceException {
+    public void requestInventoryItemForRoom(Integer roomId, String inventoryItemId, int quantity, String requestedByStaffId) throws AppException {
 
     }
 }

@@ -1,6 +1,6 @@
-package com.springboot.asm.fpoly_asm_springboot.repository.custom.impl;
+package com.poly.authentication.service.dao.user.repository.custom.impl;
 
-import com.springboot.asm.fpoly_asm_springboot.repository.custom.CustomUserRepository;
+import com.poly.authentication.service.dao.user.repository.custom.CustomUserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;

@@ -99,17 +99,17 @@
             </dependency>
             <dependency>
                 <groupId>com.poly</groupId>
-                <artifactId>authentication-dataaccess</artifactId>
+                <artifactId>authentication-data-access</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.poly</groupId>
-                <artifactId>authentication-domain-core</artifactId>
+                <artifactId>authen-domain-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.poly</groupId>
-                <artifactId>authentication-application-service</artifactId>
+                <artifactId>authen-application-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

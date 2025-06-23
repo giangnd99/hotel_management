@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import org.junit.jupiter.api.BeforeEach;
-import com.poly.application.handler.ApplicationServiceException;
+import com.poly.application.handler.AppException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -61,7 +61,7 @@ class FurnitureCreationHandlerIntegrationTest {
     @DisplayName("Should throw exception when inventory item doesn't exist")
     void createFurniture_WithNonExistentInventoryItem_ShouldThrowException() {
         // Act & Assert
-        assertThrows(ApplicationServiceException.class,
+        assertThrows(AppException.class,
                 () -> furnitureCreationHandler.createFurniture(NON_EXISTENT_INVENTORY_ID),
                 "Item not found"
         );
@@ -71,7 +71,7 @@ class FurnitureCreationHandlerIntegrationTest {
     @DisplayName("Should throw exception when inventory item ID is empty")
     void createFurniture_WithEmptyInventoryId_ShouldThrowException() {
         // Act & Assert
-        assertThrows(ApplicationServiceException.class,
+        assertThrows(AppException.class,
                 () -> furnitureCreationHandler.createFurniture(""),
                 "inventoryItemId cannot be null or empty"
         );

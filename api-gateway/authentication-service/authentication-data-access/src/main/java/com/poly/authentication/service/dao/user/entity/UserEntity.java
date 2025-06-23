@@ -1,14 +1,16 @@
-package com.springboot.asm.fpoly_asm_springboot.entity;
+package com.poly.authentication.service.dao.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.annotation.Nullable;
+import com.poly.authentication.service.dao.role.entity.RoleEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -18,14 +20,13 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "users")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class User implements Serializable {
+public class UserEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "user_id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private UUID id;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
@@ -34,16 +35,11 @@ public class User implements Serializable {
     @NotBlank(message = "Password is required")
     private String password;
 
-    @NotBlank(message = "Full Name is required")
-    private String fullName;
-
-    private String avatar;
-
-    private LocalDate birthday;
-
     @Pattern(regexp = "0\\d{9,10}", message = " Invalid phone format. Phone must start with 0 and contain 10-11 digits")
     private String phone;
 
-    private Boolean gender;
+    @JoinColumn(name = "role_id")
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private RoleEntity role;
 
 }

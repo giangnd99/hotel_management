@@ -11,4 +11,65 @@
 
     <artifactId>authentication-container</artifactId>
 
+    <dependencies>
+        <!-- Web hoặc WebFlux tùy nhu cầu -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Eureka Client -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>authen-application-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>authen-domain-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>authentication-data-access</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>authentication-application</artifactId>
+        </dependency>
+    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <image>
+                        <name>${project.groupId}/order.service:${project.version}</name>
+                    </image>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>build-image</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

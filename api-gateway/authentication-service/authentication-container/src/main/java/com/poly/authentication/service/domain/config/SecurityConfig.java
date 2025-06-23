@@ -1,4 +1,4 @@
-package com.springboot.asm.fpoly_asm_springboot.config;
+package com.poly.authentication.service.domain.config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;

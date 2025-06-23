@@ -1,7 +1,7 @@
-package com.springboot.asm.fpoly_asm_springboot.repository.primary;
+package com.poly.authentication.service.dao.user.repository;
 
-import com.springboot.asm.fpoly_asm_springboot.entity.User;
-import com.springboot.asm.fpoly_asm_springboot.repository.custom.CustomUserRepository;
+import com.poly.authentication.service.dao.user.entity.UserEntity;
+import com.poly.authentication.service.dao.user.repository.custom.CustomUserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,21 +11,15 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 
-public interface UserRepository extends JpaRepository<User, Integer>, CustomUserRepository {
+public interface UserJpaRepository extends JpaRepository<UserEntity, UUID>, CustomUserRepository {
 
     boolean existsByEmail(String email);
 
-    Optional<User> findByEmail(String email);
+    Optional<UserEntity> findByEmail(String email);
 
-    Page<User> findAll(Pageable pageable);
-
-    @Query("SELECT new map(u.fullName as name, SUM(o.total) as total_spent) " +
-            "FROM ProductOrder o " +
-            "JOIN o.user u " +
-            "GROUP BY u.fullName " +
-            "ORDER BY SUM(o.total) DESC")
-    List<Map<String, Object>> getTopVipCustomers();
+    Page<UserEntity> findAll(Pageable pageable);
 }

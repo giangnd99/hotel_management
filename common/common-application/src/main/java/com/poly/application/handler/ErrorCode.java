@@ -1,4 +1,4 @@
-package com.springboot.asm.fpoly_asm_springboot.exception;
+package com.poly.application.handler;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -32,6 +32,9 @@ public enum ErrorCode {
     ORDER_NOT_SHIPPING(5030, "Only shipping orders can be completed.", HttpStatus.CONFLICT),
     ORDER_NOT_CANCEL(5040, "Cannot cancel a completed order.", HttpStatus.CONFLICT),
     AVATAR_NOT_PERMISSION(1111, "Cannot change a avatar of other user.", HttpStatus.CONFLICT),
+    INVENTORY_NOT_EXISTED(7001, "Inventory not existed", HttpStatus.NOT_FOUND),
+    INVENTORY_NOT_ENOUGH(7002, "Inventory not enough", HttpStatus.BAD_REQUEST),
+    FURNITURE_NOT_EXISTED(8001, "Furniture not existed", HttpStatus.NOT_FOUND),
     ;
 
 

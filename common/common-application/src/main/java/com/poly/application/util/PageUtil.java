@@ -1,8 +1,10 @@
-package com.springboot.asm.fpoly_asm_springboot.util;
+package com.poly.application.util;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PageUtil {
     private static int DEFAULT_PAGE_SIZE = 4;
 

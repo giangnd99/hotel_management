@@ -1,4 +1,4 @@
-package com.springboot.asm.fpoly_asm_springboot.entity;
+package com.poly.authentication.service.dao.token.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -13,14 +13,13 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Builder
-public class ForgotPasswordToken implements Serializable {
+public class ForgotPasswordTokenEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    private String token;
-    private String email;
+    private String id;
     private long expiresTime;
 
 }

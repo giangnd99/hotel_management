@@ -1,6 +1,5 @@
-package com.springboot.asm.fpoly_asm_springboot.config;
+package com.poly.authentication.service.domain.config;
 
-import com.springboot.asm.fpoly_asm_springboot.repository.primary.AuthorityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;

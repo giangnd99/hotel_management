@@ -1,6 +1,6 @@
 package com.poly.application.handler;
 
-public class ApplicationServiceException extends RuntimeException {
+public class AppException extends RuntimeException {
 
     private ErrorCode errorCode;
 

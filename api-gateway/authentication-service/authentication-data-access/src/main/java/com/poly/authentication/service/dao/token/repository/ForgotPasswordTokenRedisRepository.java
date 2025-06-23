@@ -5,6 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ForgotPasswordTokenRepository extends CrudRepository<ForgotPasswordTokenEntity, String> {
+public interface ForgotPasswordTokenRedisRepository extends CrudRepository<ForgotPasswordTokenEntity, String> {
 
 }

@@ -1,4 +1,4 @@
-package com.springboot.asm.fpoly_asm_springboot.util;
+package com.poly.application.util;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;

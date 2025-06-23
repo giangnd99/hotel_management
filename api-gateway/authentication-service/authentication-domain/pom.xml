@@ -12,8 +12,8 @@
     <artifactId>authentication-domain</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>authentication-domain-core</module>
-        <module>authentication-application-service</module>
+        <module>authen-domain-core</module>
+        <module>authen-application-service</module>
     </modules>
 
 </project>

@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>authentication-application</module>
-        <module>authentication-dataaccess</module>
+        <module>authentication-data-access</module>
         <module>authentication-container</module>
         <module>authentication-domain</module>
     </modules>
