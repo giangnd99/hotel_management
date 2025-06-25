@@ -19,19 +19,5 @@ public class UserCreationRequest {
     @Size(min = 8, message = "PASSWORD_INVALID")
     private String password;
 
-    @NotBlank(message = "FIELD_BLANK")
-    private String firstName;
-
-    private String lastName;
-
-    private LocalDate birthday;
-
     private String phone;
-
-    private Boolean gender;
-
-    public String getFullName() {
-        return (lastName != null ? lastName : "") + " " + (firstName != null ? firstName : "");
-    }
-
 }

@@ -13,13 +13,14 @@ import com.poly.authentication.service.domain.handler.authentication.*;
 import com.poly.authentication.service.domain.port.in.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final AuthenticationHandler authenticationHandler;
-    private final GenerateTokenHandler generateTokenHandler;
+
     private final ProcessGoogleAccountHandler processGoogleAccountHandler;
     private final LogoutHandler logoutHandler;
     private final RefreshTokenHandler refreshTokenHandler;
@@ -31,12 +32,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public String generateToken(User user) {
-        return generateTokenHandler.generateToken(user);
-    }
-
-    @Override
-    public IntrospectResponse introspect(IntrospectRequest token) {
+    public Mono<IntrospectResponse> introspect(IntrospectRequest token) {
         return introspectTokenHandler.introspect(token);
     }
 

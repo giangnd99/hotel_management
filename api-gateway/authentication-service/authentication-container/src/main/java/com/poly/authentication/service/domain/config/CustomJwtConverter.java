@@ -16,12 +16,11 @@ import java.util.stream.Collectors;
 public class CustomJwtConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
 
     @Override
-    public Collection<GrantedAuthority> convert(Jwt jwt) {
-        List<String> roles = jwt.getClaimAsStringList("scope");
-        if (roles == null) {
+    public Collection<GrantedAuthority> convert(Jwt source) {
+        if (source.getClaimAsStringList("authorities") == null) {
             return List.of();
         }
-        return roles.stream()
+        return source.getClaimAsStringList("authorities").stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }

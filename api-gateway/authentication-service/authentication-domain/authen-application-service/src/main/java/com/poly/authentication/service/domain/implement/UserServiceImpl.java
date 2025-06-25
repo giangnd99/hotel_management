@@ -1,17 +1,16 @@
 package com.poly.authentication.service.domain.implement;
 
-import com.poly.application.handler.AppException;
-import com.poly.application.handler.ErrorCode;
-import com.poly.application.util.PageUtil;
 import com.poly.authentication.service.domain.dto.reponse.UserResponse;
 import com.poly.authentication.service.domain.dto.request.UserCreationRequest;
 import com.poly.authentication.service.domain.dto.request.UserUpdatedRequest;
 import com.poly.authentication.service.domain.entity.User;
+import com.poly.authentication.service.domain.exception.AppException;
+import com.poly.authentication.service.domain.exception.ErrorCode;
 import com.poly.authentication.service.domain.mapper.UserMapper;
 import com.poly.authentication.service.domain.port.in.service.UserService;
-import com.poly.authentication.service.domain.port.out.repository.RoleRepository;
 import com.poly.authentication.service.domain.port.out.repository.UserRepository;
 import com.poly.authentication.service.domain.valueobject.Password;
+import com.poly.dao.util.PageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,6 +19,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
@@ -91,6 +91,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Mono<User> getUserByEmail(String email) {
+        return Mono.just(userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
+    }
+
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteUser(UUID userId) {
         userRepository.deleteById(userId);
@@ -106,5 +112,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(userResetPassword);
     }
+
+
 }
 

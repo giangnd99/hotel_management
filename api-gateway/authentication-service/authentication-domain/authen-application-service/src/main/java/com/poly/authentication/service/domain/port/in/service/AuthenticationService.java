@@ -9,13 +9,12 @@ import com.poly.authentication.service.domain.dto.request.IntrospectRequest;
 import com.poly.authentication.service.domain.dto.request.LogoutRequest;
 import com.poly.authentication.service.domain.dto.request.RefreshRequest;
 import com.poly.authentication.service.domain.entity.User;
+import reactor.core.publisher.Mono;
 
 public interface AuthenticationService {
     AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest);
 
-    String generateToken(User user);
-
-    IntrospectResponse introspect(IntrospectRequest token);
+    Mono<IntrospectResponse> introspect(IntrospectRequest token);
 
     UserGGResponse processGoogleAccount(OutboundUserResponse googleAccount);
 

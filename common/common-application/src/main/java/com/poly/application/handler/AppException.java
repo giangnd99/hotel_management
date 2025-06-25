@@ -1,5 +1,10 @@
 package com.poly.application.handler;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class AppException extends RuntimeException {
 
     private ErrorCode errorCode;
@@ -8,4 +13,5 @@ public class AppException extends RuntimeException {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
+
 }

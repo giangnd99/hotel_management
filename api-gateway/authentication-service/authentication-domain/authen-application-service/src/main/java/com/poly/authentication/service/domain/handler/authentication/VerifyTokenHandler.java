@@ -4,8 +4,8 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.SignedJWT;
-import com.poly.application.handler.AppException;
-import com.poly.application.handler.ErrorCode;
+import com.poly.authentication.service.domain.exception.AppException;
+import com.poly.authentication.service.domain.exception.ErrorCode;
 import com.poly.domain.DomainConstants;
 import org.springframework.stereotype.Component;
 

@@ -5,11 +5,9 @@ import com.poly.authentication.service.domain.port.in.service.AuthenticationServ
 import com.poly.domain.DomainConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtException;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -17,27 +15,32 @@ import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
-public class CustomJwtDecoder implements JwtDecoder {
+public class CustomJwtDecoder implements ReactiveJwtDecoder {
 
     private final AuthenticationService authenticationService;
 
-    private NimbusJwtDecoder nimbusJwtDecoder = null;
+    private ReactiveJwtDecoder reactiveNimbusJwtDecoder = null;
+
 
     @Override
-    public Jwt decode(String token) throws JwtException {
+    public Mono<Jwt> decode(String token) throws JwtException {
 
-        var response = authenticationService.introspect(
-                IntrospectRequest.builder().token(token).build());
-
-        if (!response.isValid()) throw new JwtException("Token invalid");
-
-        if (Objects.isNull(nimbusJwtDecoder)) {
-            SecretKeySpec secretKeySpec = new SecretKeySpec(DomainConstants.JWT_SECRET.getBytes(), "HmacSHA512");
-            nimbusJwtDecoder = NimbusJwtDecoder.withSecretKey(secretKeySpec)
-                    .macAlgorithm(MacAlgorithm.HS512)
-                    .build();
-        }
-
-        return nimbusJwtDecoder.decode(token);
+        return authenticationService.introspect(
+                IntrospectRequest.builder().token(token).build()).flatMap(
+                response -> {
+                    if (!response.isValid()) {
+                        return Mono.error(new JwtException("Token invalid"));
+                    }
+                    if (Objects.isNull(reactiveNimbusJwtDecoder)) {
+                        SecretKeySpec secretKeySpec = new SecretKeySpec(DomainConstants.JWT_SECRET.getBytes(), "HmacSHA512");
+                        reactiveNimbusJwtDecoder = NimbusReactiveJwtDecoder.withSecretKey(secretKeySpec).macAlgorithm(MacAlgorithm.HS512).build();
+                    }
+                    try {
+                        return reactiveNimbusJwtDecoder.decode(token);
+                    } catch (JwtException e) {
+                        return Mono.error(new JwtException("Token invalid"));
+                    }
+                }
+        ).switchIfEmpty(Mono.error(new JwtException("Token invalid")));
     }
 }
