@@ -12,6 +12,7 @@
 	</parent>
 
 	<artifactId>customer-domain</artifactId>
+
     <dependencies>
         <dependency>
             <groupId>com.poly</groupId>

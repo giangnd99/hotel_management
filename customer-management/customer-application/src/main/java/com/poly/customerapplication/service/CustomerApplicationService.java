@@ -29,7 +29,7 @@ public class CustomerApplicationService implements CustomerUsecase {
         Customer customerToUpdate = customerRepository.findById(command.getId())
                 .orElseThrow(() -> new CustomerDomainException(ErrorDomainCode.CUSTOMER_NOT_FOUND));
 
-        customerToUpdate.updateInfo(command.getName(), command.getAddress(), command.getDateOfBirth(), command.getNationality());
+//        customerToUpdate.updateInfo(command.getName(), command.getAddress(), command.getDateOfBirth(), command.getNationality());
 
         return customerRepository.save(customerToUpdate);
     }

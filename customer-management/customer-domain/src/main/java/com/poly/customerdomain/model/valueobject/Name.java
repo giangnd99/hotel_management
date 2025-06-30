@@ -1,14 +1,22 @@
 package com.poly.customerdomain.model.valueobject;
 
-import com.poly.customerdomain.model.exception.CustomerDomainException;
-import com.poly.customerdomain.model.exception.ErrorDomainCode;
+import com.poly.customerdomain.model.exception.BlankCustomerNameException;
+import com.poly.customerdomain.model.exception.CustomerNameLengthOutOfRangeException;
+import lombok.Getter;
 
-public record Name(String fullName) {
+@Getter
+public class Name{
 
-    public Name {
+    private String fullName;
+
+    public Name(String fullName) {
         if (fullName == null || fullName.isBlank()) {
-            throw new CustomerDomainException(ErrorDomainCode.NAME_INVALID);
+            throw new BlankCustomerNameException();
         }
+        if (fullName.trim().length() < 5 ||  fullName.trim().length() > 100) {
+            throw new CustomerNameLengthOutOfRangeException(5, 100);
+        }
+        this.fullName = fullName;
     }
 
 }

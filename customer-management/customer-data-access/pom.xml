@@ -8,10 +8,11 @@
         <groupId>com.poly</groupId>
         <artifactId>customer-management</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>customer-data-access</artifactId>
+
     <dependencies>
         <dependency>
             <groupId>com.poly</groupId>

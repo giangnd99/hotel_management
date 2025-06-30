@@ -2,10 +2,7 @@ package com.poly.customercontainer.controller;
 
 import com.poly.customerapplication.service.CustomerApplicationService;
 import com.poly.customerdomain.model.entity.Customer;
-import com.poly.customerdomain.model.valueobject.Address;
-import com.poly.customerdomain.model.valueobject.CustomerType;
-import com.poly.customerdomain.model.valueobject.Name;
-import com.poly.customerdomain.model.valueobject.Nationality;
+import com.poly.customerdomain.model.valueobject.*;
 import com.poly.domain.valueobject.CustomerId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/customers")
+@RequestMapping("/customers")
 public class CustomerController {
 
     private CustomerApplicationService  customerApplicationService;
@@ -29,8 +26,8 @@ public class CustomerController {
         Customer customer1 =  Customer.builder()
                 .userId(UUID.randomUUID())
                 .name(new Name("Hải Thạch"))
-                .address(new Address("123 Ấp 17, Xã Trung Chánh, Huyện Hóc Môn, TP. Hồ Chí Minh"))
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
+                .address(new Address("12 Lê Lợi", "Phường 4", "Quận 10", "TP.HCM"))
+                .dateOfBirth(new DateOfBirth(LocalDate.of(1980, 1, 1)))
                 .nationality(new Nationality("VIETNAME"))
                 .customerType(CustomerType.REGULAR)
                 .build();
@@ -38,8 +35,8 @@ public class CustomerController {
         Customer customer2 = Customer.builder()
                 .userId(UUID.randomUUID())
                 .name(new Name("Đằng Giang"))
-                .address(new Address("123 Bình Dương, Tp. Hồ Chí Minh"))
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
+                .address(new Address("12 Lê Lợi", "Phường 4", "Quận 10", "TP.HCM"))
+                .dateOfBirth(new DateOfBirth(LocalDate.of(1980, 1, 1)))
                 .nationality(new Nationality("VIETNAME"))
                 .customerType(CustomerType.REGULAR)
                 .build();
@@ -47,8 +44,8 @@ public class CustomerController {
         Customer customer3 =  Customer.builder()
                 .userId(UUID.randomUUID())
                 .name(new Name("Lâm Hùng"))
-                .address(new Address("123 Quận 7, TP. Hồ Chí Minh"))
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
+                .address(new Address("12 Lê Lợi", "Phường 4", "Quận 10", "TP.HCM"))
+                .dateOfBirth(new DateOfBirth(LocalDate.of(1980, 1, 1)))
                 .nationality(new Nationality("VIETNAME"))
                 .customerType(CustomerType.REGULAR)
                 .build();
@@ -56,8 +53,8 @@ public class CustomerController {
         Customer customer4 = Customer.builder()
                 .userId(UUID.randomUUID())
                 .name(new Name("Vũ Lâm"))
-                .address(new Address("123 Quận 9, TP. Hồ Chí Minh"))
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
+                .address(new Address("12 Lê Lợi", "Phường 4", "Quận 10", "TP.HCM"))
+                .dateOfBirth(new DateOfBirth(LocalDate.of(1980, 1, 1)))
                 .nationality(new Nationality("VIETNAME"))
                 .customerType(CustomerType.REGULAR)
                 .build();
@@ -65,8 +62,8 @@ public class CustomerController {
         Customer customer5=  Customer.builder()
                 .userId(UUID.randomUUID())
                 .name(new Name("Trí Tài"))
-                .address(new Address("123 Quận 12, TP. Hồ Chí Minh"))
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
+                .address(new Address("12 Lê Lợi", "Phường 4", "Quận 10", "TP.HCM"))
+                .dateOfBirth(new DateOfBirth(LocalDate.of(1980, 1, 1)))
                 .nationality(new Nationality("VIETNAME"))
                 .customerType(CustomerType.REGULAR)
                 .build();
@@ -74,8 +71,8 @@ public class CustomerController {
         Customer customer6 = Customer.builder()
                 .userId(UUID.randomUUID())
                 .name(new Name("Hoàng Linh"))
-                .address(new Address("123 Quận Gò Vấp, TP. Hồ Chí Minh"))
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
+                .address(new Address("12 Lê Lợi", "Phường 4", "Quận 10", "TP.HCM"))
+                .dateOfBirth(null)
                 .nationality(new Nationality("VIETNAME"))
                 .customerType(CustomerType.REGULAR)
                 .build();
@@ -97,8 +94,8 @@ public class CustomerController {
         Customer customer = Customer.builder()
                 .userId(UUID.randomUUID())
                 .name(new Name("John Doe"))
-                .address(new Address("123 Street, City, Country"))
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
+                .address(new Address("12 Lê Lợi", "Phường 4", "Quận 10", "TP.HCM"))
+                .dateOfBirth(new DateOfBirth(LocalDate.of(1980, 1, 1)))
                 .nationality(new Nationality("VIETNAME"))
                 .customerType(CustomerType.REGULAR)
                 .build();
