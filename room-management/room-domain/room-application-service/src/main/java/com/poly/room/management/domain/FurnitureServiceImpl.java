@@ -1,6 +1,7 @@
 package com.poly.room.management.domain;
 
-import com.poly.application.handler.ApplicationServiceException;
+import com.poly.application.handler.AppException;
+import com.poly.application.handler.ErrorCode;
 import com.poly.domain.valueobject.InventoryItemId;
 import com.poly.room.management.domain.dto.response.FurnitureResponse;
 import com.poly.room.management.domain.entity.Furniture;
@@ -23,10 +24,10 @@ public class FurnitureServiceImpl implements FurnitureService {
 
     @Override
     @Transactional
-    public FurnitureResponse createFurniture(String inventoryItemId) throws ApplicationServiceException {
+    public FurnitureResponse createFurniture(String inventoryItemId) throws AppException {
         try {
             if (inventoryItemId == null) {
-                throw new ApplicationServiceException("inventoryItemId cannot be null");
+                throw new AppException(ErrorCode.INVENTORY_NOT_EXISTED);
             }
             InventoryItemId domainInventoryItemId = new InventoryItemId(inventoryItemId);
             Furniture furniture = roomDomainService.getFurnitureCommandService()
@@ -34,22 +35,22 @@ public class FurnitureServiceImpl implements FurnitureService {
 
             return furnitureDtoMapper.toResponse(furniture);
         } catch (RoomDomainException e) {
-            throw new ApplicationServiceException("Failed to create furniture", e);
+            throw new AppException(ErrorCode.FURNITURE_NOT_EXISTED);
         }
     }
 
     @Override
-    public FurnitureResponse updateFurnitureInventoryItem(Integer furnitureId, String inventoryItemId) throws ApplicationServiceException {
+    public FurnitureResponse updateFurnitureInventoryItem(Integer furnitureId, String inventoryItemId) throws AppException {
         return null;
     }
 
     @Override
-    public void deleteFurniture(Integer furnitureId) throws ApplicationServiceException {
+    public void deleteFurniture(Integer furnitureId) throws AppException {
 
     }
 
     @Override
-    public FurnitureResponse getFurnitureById(Integer furnitureId) throws ApplicationServiceException {
+    public FurnitureResponse getFurnitureById(Integer furnitureId) throws AppException {
         return null;
     }
 
@@ -59,7 +60,7 @@ public class FurnitureServiceImpl implements FurnitureService {
     }
 
     @Override
-    public FurnitureResponse getFurnitureByInventoryItemId(String inventoryItemId) throws ApplicationServiceException {
+    public FurnitureResponse getFurnitureByInventoryItemId(String inventoryItemId) throws AppException {
         return null;
     }
 
