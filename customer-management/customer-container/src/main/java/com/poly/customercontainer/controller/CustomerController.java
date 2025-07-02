@@ -29,7 +29,7 @@ public class CustomerController {
                 .address(new Address("12 Lê Lợi", "Phường 4", "Quận 10", "TP.HCM"))
                 .dateOfBirth(new DateOfBirth(LocalDate.of(1980, 1, 1)))
                 .nationality(new Nationality("VIETNAME"))
-                .customerType(CustomerType.REGULAR)
+                .customerType(CustomerType.regular())
                 .build();
 
         Customer customer2 = Customer.builder()
@@ -38,7 +38,7 @@ public class CustomerController {
                 .address(new Address("12 Lê Lợi", "Phường 4", "Quận 10", "TP.HCM"))
                 .dateOfBirth(new DateOfBirth(LocalDate.of(1980, 1, 1)))
                 .nationality(new Nationality("VIETNAME"))
-                .customerType(CustomerType.REGULAR)
+                .customerType(CustomerType.regular())
                 .build();
 
         Customer customer3 =  Customer.builder()
@@ -47,7 +47,7 @@ public class CustomerController {
                 .address(new Address("12 Lê Lợi", "Phường 4", "Quận 10", "TP.HCM"))
                 .dateOfBirth(new DateOfBirth(LocalDate.of(1980, 1, 1)))
                 .nationality(new Nationality("VIETNAME"))
-                .customerType(CustomerType.REGULAR)
+                .customerType(CustomerType.regular())
                 .build();
 
         Customer customer4 = Customer.builder()
@@ -56,7 +56,7 @@ public class CustomerController {
                 .address(new Address("12 Lê Lợi", "Phường 4", "Quận 10", "TP.HCM"))
                 .dateOfBirth(new DateOfBirth(LocalDate.of(1980, 1, 1)))
                 .nationality(new Nationality("VIETNAME"))
-                .customerType(CustomerType.REGULAR)
+                .customerType(CustomerType.regular())
                 .build();
 
         Customer customer5=  Customer.builder()
@@ -65,7 +65,7 @@ public class CustomerController {
                 .address(new Address("12 Lê Lợi", "Phường 4", "Quận 10", "TP.HCM"))
                 .dateOfBirth(new DateOfBirth(LocalDate.of(1980, 1, 1)))
                 .nationality(new Nationality("VIETNAME"))
-                .customerType(CustomerType.REGULAR)
+                .customerType(CustomerType.regular())
                 .build();
 
         Customer customer6 = Customer.builder()
@@ -74,7 +74,7 @@ public class CustomerController {
                 .address(new Address("12 Lê Lợi", "Phường 4", "Quận 10", "TP.HCM"))
                 .dateOfBirth(null)
                 .nationality(new Nationality("VIETNAME"))
-                .customerType(CustomerType.REGULAR)
+                .customerType(CustomerType.regular())
                 .build();
 
         List<Customer> list = List.of(
@@ -97,7 +97,7 @@ public class CustomerController {
                 .address(new Address("12 Lê Lợi", "Phường 4", "Quận 10", "TP.HCM"))
                 .dateOfBirth(new DateOfBirth(LocalDate.of(1980, 1, 1)))
                 .nationality(new Nationality("VIETNAME"))
-                .customerType(CustomerType.REGULAR)
+                .customerType(CustomerType.regular())
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(customer);
     }
