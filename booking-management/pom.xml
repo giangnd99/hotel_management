@@ -10,7 +10,12 @@
     </parent>
 
     <packaging>pom</packaging>
-
+    <modules>
+        <module>booking-domain</module>
+        <module>booking-application</module>
+        <module>booking-container</module>
+        <module>booking-data-access</module>
+    </modules>
     <artifactId>booking-management</artifactId>
 
 </project>

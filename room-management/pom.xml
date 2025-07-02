@@ -11,5 +11,10 @@
 
     <artifactId>room-management</artifactId>
     <packaging>pom</packaging>
-
+    <modules>
+        <module>room-domain</module>
+        <module>room-container</module>
+        <module>room-data-access</module>
+        <module>room-application</module>
+    </modules>
 </project>
