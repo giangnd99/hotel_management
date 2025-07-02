@@ -1,6 +1,7 @@
 package com.poly.room.management.domain.handler.furniture;
 
 import com.poly.application.handler.AppException;
+import com.poly.application.handler.ErrorCode;
 import com.poly.domain.valueobject.InventoryItemId;
 import com.poly.room.management.domain.dto.response.FurnitureResponse;
 import com.poly.room.management.domain.dto.response.ItemDTO;
@@ -39,13 +40,13 @@ public class FurnitureCreationHandler extends BaseHandler<RoomDomainService, Fur
             Furniture furniture = createAndSaveFurniture(item);
             return furnitureDtoMapper.toResponse(furniture);
         } catch (RoomDomainException e) {
-            throw new AppException(FURNITURE_CREATION_ERROR, e);
+            throw new AppException(ErrorCode.FURNITURE_NOT_EXISTED);
         }
     }
 
     private void validateInventoryItemId(String inventoryItemId) {
         if (inventoryItemId == null || inventoryItemId.isEmpty()) {
-            throw new AppException(INVENTORY_ID_EMPTY_MESSAGE);
+            throw new AppException(ErrorCode.INVENTORY_NOT_EXISTED);
         }
     }
 
@@ -53,7 +54,7 @@ public class FurnitureCreationHandler extends BaseHandler<RoomDomainService, Fur
         ResponseEntity<ItemDTO> response = inventoryServiceClient.getItem(inventoryItemId);
         ItemDTO item = response.getBody();
         if (item == null) {
-            throw new AppException(ITEM_NOT_FOUND_MESSAGE);
+            throw new AppException(ErrorCode.INVENTORY_NOT_EXISTED);
         }
         return item;
     }

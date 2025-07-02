@@ -2,6 +2,7 @@ package com.poly.authentication.service.domain.entity;
 
 import com.poly.authentication.service.domain.exception.AuthenException;
 import com.poly.authentication.service.domain.valueobject.Password;
+import com.poly.authentication.service.domain.valueobject.TokenId;
 import com.poly.domain.entity.AggregateRoot;
 import com.poly.domain.valueobject.UserId;
 
@@ -72,6 +73,16 @@ public class User extends AggregateRoot<UserId> {
         this.phone = phone;
     }
 
+    public void setToken(String token) {
+        this.token = Token.Builder.builder()
+                .id(new TokenId(token))
+                .build();
+    }
+
+    public void addRole(Role role) {
+        checkRole(role);
+        this.role = role;
+    }
 
     private boolean isValidSizePhoneNumber(String phone) {
         return !phone.matches("^\\+?\\d{10,11}$");
@@ -82,13 +93,12 @@ public class User extends AggregateRoot<UserId> {
         checkPassword(password);
         checkGmail(gmail);
         checkPhone(phone);
-        checkRole(role);
     }
 
     private void checkPhone(String phone) {
         if (phone == null || phone.isEmpty()) {
             throw new AuthenException("phone is empty");
-        }else if (isValidSizePhoneNumber(phone)) {
+        } else if (isValidSizePhoneNumber(phone)) {
             throw new AuthenException("phone is invalid");
         }
     }

@@ -4,6 +4,7 @@ import com.poly.authentication.service.dao.role.entity.RoleEntity;
 import com.poly.authentication.service.dao.role.mapper.RoleJpaMapper;
 import com.poly.authentication.service.dao.role.repository.RoleJpaRepository;
 import com.poly.authentication.service.dao.user.entity.UserEntity;
+import com.poly.authentication.service.domain.entity.Role;
 import com.poly.authentication.service.domain.entity.User;
 import com.poly.authentication.service.domain.valueobject.Password;
 import com.poly.domain.valueobject.UserId;
@@ -25,17 +26,22 @@ public class UserJpaMapper {
                 .email(user.getGmail())
                 .password(user.getPassword().getValue())
                 .phone(user.getPhone())
+                .role(roleJpaRepository.findByName(user.getRole().getRoleName()).get())
                 .build();
     }
 
     public User toDomainEntity(UserEntity entity) {
+        Role role = roleJpaMapper.toDomainEntity(
+                roleJpaRepository.findByName(
+                                entity.getRole().getName())
+                        .get());
 
         return User.Builder.builder()
                 .id(new UserId((entity.getId())))
                 .phone(entity.getPhone())
                 .password(new Password(entity.getPassword()))
                 .gmail(entity.getEmail())
-                .role(roleJpaMapper.toDomainEntity(entity.getRole()))
+                .role(role)
                 .build();
     }
 }

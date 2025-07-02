@@ -31,21 +31,18 @@ public class SecurityConfig {
 
     // Danh sách các đường dẫn công khai (không cần xác thực)
     private final String[] PUBLIC_URLS = {
-            "/auth/login",
-            "/auth/register",
-            "/auth/validate-token", // Endpoint validation được gọi nội bộ
+            "/auth/token",
+            "/auth/introspect", // Endpoint validation được gọi nội bộ
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/eureka/**",
             "/actuator/**",
             // Các đường dẫn public từ các service khác
-            "/products", "/products/**",
-            "/categories", "/categories/**",
-            "/reviews", "/reviews/**",
+            "/rooms", "/rooms/**",
             "/payment/vn-pay-callback", "/payment/vn-pay-callback/**",
             "/reset-password", "/reset-password/**",
-            // "/users", // Nếu bạn muốn /users là public (cẩn thận với bảo mật)
+             "/users", // Nếu bạn muốn /users là public (cẩn thận với bảo mật)
             // Nếu có các phương thức HTTP cụ thể cho public URLs, bạn có thể thêm:
             // HttpMethod.GET + "/some-public-read-only-endpoint",
             // "/some-other-public-path"

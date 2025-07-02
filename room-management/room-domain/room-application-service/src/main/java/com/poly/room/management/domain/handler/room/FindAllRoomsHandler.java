@@ -1,6 +1,7 @@
 package com.poly.room.management.domain.handler.room;
 
 import com.poly.application.handler.AppException;
+import com.poly.application.handler.ErrorCode;
 import com.poly.room.management.domain.dto.response.RoomResponse;
 import com.poly.room.management.domain.mapper.RoomDtoMapper;
 import com.poly.room.management.domain.port.out.repository.RoomRepository;
@@ -32,7 +33,7 @@ public class FindAllRoomsHandler extends BaseHandler<RoomDomainService, RoomRepo
             return repository.findAll().stream().map(roomDtoMapper::toResponse).toList();
         } catch (Exception e) {
             log.error("Error fetching all rooms", e);
-            throw new AppException("Failed to fetch rooms", e);
+            throw new AppException(ErrorCode.PRODUCT_NOT_EXISTED);
         }
     }
 }

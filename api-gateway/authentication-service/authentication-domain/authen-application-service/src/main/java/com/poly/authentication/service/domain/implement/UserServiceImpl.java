@@ -3,14 +3,18 @@ package com.poly.authentication.service.domain.implement;
 import com.poly.authentication.service.domain.dto.reponse.UserResponse;
 import com.poly.authentication.service.domain.dto.request.UserCreationRequest;
 import com.poly.authentication.service.domain.dto.request.UserUpdatedRequest;
+import com.poly.authentication.service.domain.entity.Role;
+import com.poly.authentication.service.domain.entity.Token;
 import com.poly.authentication.service.domain.entity.User;
 import com.poly.authentication.service.domain.exception.AppException;
 import com.poly.authentication.service.domain.exception.ErrorCode;
+import com.poly.authentication.service.domain.handler.authentication.GenerateTokenHandler;
 import com.poly.authentication.service.domain.mapper.UserMapper;
 import com.poly.authentication.service.domain.port.in.service.UserService;
 import com.poly.authentication.service.domain.port.out.repository.UserRepository;
 import com.poly.authentication.service.domain.valueobject.Password;
 import com.poly.dao.util.PageUtil;
+import com.poly.domain.valueobject.ERole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,6 +33,7 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final GenerateTokenHandler generateTokenHandler;
     private final UserMapper userMapper;
     private final PageUtil pageUtil;
 
@@ -41,9 +46,12 @@ public class UserServiceImpl implements UserService {
 
         }
         User user = userMapper.toDomainEntity(request);
-
+        user.addRole(Role.Builder.builder()
+                .name(ERole.ROLE_CUSTOMER)
+                .build());
         User savedUser = userRepository.save(user);
-
+        String token = generateTokenHandler.generateToken(savedUser);
+        savedUser.setToken(token);
         return userMapper.toUserResponse(savedUser);
     }
 
