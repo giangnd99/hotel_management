@@ -5,6 +5,7 @@ import com.poly.inventory.application.handler.impl.*;
 import com.poly.inventory.application.port.in.impl.InventoryUseCaseImpl;
 import com.poly.inventory.application.port.in.impl.TransactionUseCaseImpl;
 import com.poly.inventory.application.port.out.*;
+import com.poly.inventory.application.port.out.feign.StaffServiceClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ComponentScan;

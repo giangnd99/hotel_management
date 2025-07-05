@@ -30,6 +30,11 @@ public class StockInHandlerImpl implements StockInHandler {
         InventoryItem item = loadInventoryPort.loadItemById(dto.getItemId())
                 .orElseThrow(() -> new RuntimeException("Item not found"));
 
+//        var staff = staffServiceClient.getStaffById(dto.getStaffId()).getBody();
+//        if (staff == null) {
+//            throw new RuntimeException("Staff not found");
+//        }
+
         // quantity: Quantity + int
         item.setQuantity(item.getQuantity().add(new Quantity(dto.getQuantity())));
         saveInventoryPort.save(item);

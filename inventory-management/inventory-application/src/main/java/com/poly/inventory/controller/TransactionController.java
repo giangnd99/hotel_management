@@ -48,6 +48,7 @@ public class TransactionController {
     public ResponseEntity<TransactionDto> stockOutToRoom(@RequestParam String roomNumber,
                                                          @RequestBody @Valid TransactionDto dto) {
         dto.setNote("Xuất cho phòng " + roomNumber + (dto.getNote() != null ? " - " + dto.getNote() : ""));
+        // String role = authenticationService.getCurrentUserRole();
         TransactionDto result = useCase.stockOut(dto);
         return ResponseEntity.ok(result);
     }
