@@ -1,9 +1,12 @@
 package com.poly.customerdomain.model.exception;
 
-import com.poly.domain.exception.DomainException;
-
 public class BlankCustomerAddressException extends DomainException {
-    public BlankCustomerAddressException() {
-        super("Địa chỉ không được để trống bất kỳ trường nào.");
+    public BlankCustomerAddressException(String street, String ward, String district, String city) {
+        super("Thông tin địa chỉ trống tại: %s %s %s %s".formatted(street, ward, district, city));
+
+    }
+    @Override
+    public String getErrorCode() {
+        return "CUSTOMER_ADDRESS_BLANK";
     }
 }

@@ -1,22 +1,26 @@
 package com.poly.customercontainer.config;
 
-import com.poly.customerapplication.port.input.CustomerUsecase;
-import com.poly.customerapplication.service.CustomerApplicationService;
-import com.poly.customerdataaccess.port.CustomerRepositoryImpl;
+import com.poly.customerapplicationservice.port.input.CustomerUsecase;
+import com.poly.customerapplicationservice.service.CustomerApplicationService;
 import com.poly.customerdomain.output.CustomerRepository;
+import com.poly.customerdomain.output.LoyaltyRepository;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
+@EnableJpaRepositories(basePackages = "com.poly.customerdataaccess.jpa")
+@EntityScan(basePackages = "com.poly.customerdataaccess.entity")
+@ComponentScan(basePackages = {
+        "com.poly.customerdataaccess"})
 public class BeanConfig {
 
     @Bean
-    public CustomerRepository customerDomain() {
-        return new CustomerRepositoryImpl();
+    public CustomerUsecase customerUsecase(CustomerRepository customerRepo,
+                                           LoyaltyRepository loyaltyRepo) {
+        return new CustomerApplicationService(customerRepo, loyaltyRepo);
     }
 
-    @Bean
-    public CustomerUsecase customerUsecase(CustomerRepository customerRepository) {
-        return new CustomerApplicationService(customerRepository);
-    }
 }

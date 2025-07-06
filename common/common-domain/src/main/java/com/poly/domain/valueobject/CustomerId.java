@@ -8,4 +8,12 @@ public class CustomerId extends BaseId<UUID> {
         super(value);
     }
 
+    public static CustomerId generate() {
+        return new CustomerId(UUID.randomUUID());
+    }
+
+    public static CustomerId from(UUID entity) {
+        return new CustomerId(entity);
+    }
+
 }
