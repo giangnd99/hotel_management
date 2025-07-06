@@ -14,6 +14,7 @@ import com.poly.domain.valueobject.CustomerId;
 import com.poly.domain.valueobject.Money;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public class CustomerApplicationService implements CustomerUsecase{
@@ -35,9 +36,9 @@ public class CustomerApplicationService implements CustomerUsecase{
         Customer newCustomer = Customer.builder()
                 .customerId(CustomerId.generate())
                 .userId(command.getUserId())
-                .name(new Name(command.getFirstName().trim(), command.getLastName().trim()))
-                .address(new Address(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity()))
-                .dateOfBirth(new DateOfBirth(command.getDateOfBirth()))
+                .name(Name.from(command.getFirstName().trim(), command.getLastName().trim()))
+                .address(Address.from(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity()))
+                .dateOfBirth(DateOfBirth.from(command.getDateOfBirth()))
                 .accumulatedSpending(Money.ZERO)
                 .level(Level.NONE)
                 .behaviorData(BehaviorData.empty())
@@ -45,13 +46,23 @@ public class CustomerApplicationService implements CustomerUsecase{
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        Loyalty newLoyalty = Loyalty.createNew(newCustomer.getId());
-
         Customer savedCustomer = customerRepository.save(newCustomer);
+
+        Loyalty newLoyalty = Loyalty.createNew(newCustomer.getId());
 
         Loyalty savedLoyalty = loyaltyRepository.save(newLoyalty);
 
         return CustomerDto.from(newCustomer);
+    }
+
+    @Override
+    public List<CustomerDto> getCustomers() {
+        return List.of();
+    }
+
+    @Override
+    public CustomerDto getCustomerById(UUID userID) {
+        return null;
     }
 
     private void validateUserId(UUID userId) {
