@@ -15,7 +15,6 @@ import java.util.UUID;
 public class LoyaltyEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "loyalty_id", columnDefinition = "BINARY(16)")
     private UUID id;
 

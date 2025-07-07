@@ -28,6 +28,6 @@ public class LoyaltyRepositoryImpl implements LoyaltyRepository {
 
     @Override
     public Optional<Loyalty> findByCustomerId(UUID customerId) {
-        return loyaltyJpaRepository.findByCustomerId(customerId);
+        return loyaltyJpaRepository.findByCustomerId(customerId).map(LoyaltyDataMapper::toDomain);
     }
 }

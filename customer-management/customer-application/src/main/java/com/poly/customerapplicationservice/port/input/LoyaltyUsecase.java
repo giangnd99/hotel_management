@@ -1,8 +1,8 @@
 package com.poly.customerapplicationservice.port.input;
 
 import com.poly.customerapplicationservice.command.RetriveLoyaltyProfileCommand;
-import com.poly.customerapplicationservice.dto.LoytaltyDto;
+import com.poly.customerapplicationservice.dto.LoyaltyDto;
 
 public interface LoyaltyUsecase {
-    LoytaltyDto retriveLoyaltyProfile(RetriveLoyaltyProfileCommand command);
+    LoyaltyDto retriveLoyaltyProfile(RetriveLoyaltyProfileCommand command);
 }

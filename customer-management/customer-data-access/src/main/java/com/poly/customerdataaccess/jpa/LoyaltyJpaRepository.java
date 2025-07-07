@@ -8,5 +8,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface LoyaltyJpaRepository extends JpaRepository<LoyaltyEntity, Integer> {
-    Optional<Loyalty> findByCustomerId(UUID customerId);
+    Optional<LoyaltyEntity> findByCustomerId(UUID customerId);
 }

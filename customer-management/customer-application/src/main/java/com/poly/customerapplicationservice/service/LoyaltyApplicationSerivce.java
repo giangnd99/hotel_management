@@ -1,7 +1,7 @@
 package com.poly.customerapplicationservice.service;
 
 import com.poly.customerapplicationservice.command.RetriveLoyaltyProfileCommand;
-import com.poly.customerapplicationservice.dto.LoytaltyDto;
+import com.poly.customerapplicationservice.dto.LoyaltyDto;
 import com.poly.customerapplicationservice.port.input.LoyaltyUsecase;
 import com.poly.customerdomain.model.entity.Customer;
 import com.poly.customerdomain.model.entity.Loyalty;
@@ -23,7 +23,7 @@ public class LoyaltyApplicationSerivce implements LoyaltyUsecase {
     }
 
     @Override
-    public LoytaltyDto retriveLoyaltyProfile(RetriveLoyaltyProfileCommand command) {
+    public LoyaltyDto retriveLoyaltyProfile(RetriveLoyaltyProfileCommand command) {
         if (command.getCustomerId() == null) {
             throw new BlankUserIdException();
         }
@@ -31,7 +31,7 @@ public class LoyaltyApplicationSerivce implements LoyaltyUsecase {
                 .orElseThrow(() -> new CustomerNotFoundException(command.getCustomerId()));
         Loyalty loyalty = loyaltyRepository.findByCustomerId(command.getCustomerId())
                 .orElseThrow(() -> new LoyaltyNotFoundException(command.getCustomerId()));
-        return LoytaltyDto.from(loyalty);
+        return LoyaltyDto.from(loyalty);
     }
 
 }

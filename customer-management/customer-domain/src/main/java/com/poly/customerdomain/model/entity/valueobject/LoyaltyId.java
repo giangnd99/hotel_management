@@ -14,4 +14,8 @@ public class LoyaltyId {
         return new LoyaltyId(UUID.randomUUID());
     }
 
+    public static UUID toUUID(LoyaltyId loyaltyId) {
+        return UUID.fromString(loyaltyId.value.toString());
+    }
+
 }

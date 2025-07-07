@@ -34,6 +34,11 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 .map(CustomerDataMapper::mapToDomain);
     }
 
+    @Override
+    public Optional<Customer> findById(UUID customerId) {
+        return customerJpaRepository.findById(customerId).map(CustomerDataMapper::mapToDomain);
+    }
+
 
     @Override
     public List<Customer> findAll() {

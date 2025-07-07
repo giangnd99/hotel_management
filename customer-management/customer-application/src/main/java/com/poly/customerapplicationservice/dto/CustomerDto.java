@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Setter
+@Getter
 public class CustomerDto {
     private UUID customerId;
     private String firstName;
