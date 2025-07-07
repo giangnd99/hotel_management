@@ -10,10 +10,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Getter
 @Setter
 public class CustomerDto {
-    private UUID userId;
+    private UUID customerId;
     private String firstName;
     private String lastName;
     private String address;
@@ -25,7 +24,7 @@ public class CustomerDto {
 
     public static CustomerDto from(Customer customer) {
         CustomerDto dto = new CustomerDto();
-        dto.setUserId(customer.getUserId());
+        dto.setCustomerId(customer.getId().getValue());
         dto.setFirstName(customer.getFullName().getFirstName());
         dto.setLastName(customer.getFullName().getLastName());
         dto.setDateOfBirth(customer.getDateOfBirth().getValue());

@@ -7,6 +7,9 @@ import com.poly.customerdomain.model.entity.Loyalty;
 import com.poly.customerdomain.output.LoyaltyRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Repository
 public class LoyaltyRepositoryImpl implements LoyaltyRepository {
 
@@ -21,5 +24,10 @@ public class LoyaltyRepositoryImpl implements LoyaltyRepository {
         LoyaltyEntity entity = LoyaltyDataMapper.toEntity(loyalty);
         LoyaltyEntity saved = loyaltyJpaRepository.save(entity);
         return LoyaltyDataMapper.toDomain(saved);
+    }
+
+    @Override
+    public Optional<Loyalty> findByCustomerId(UUID customerId) {
+        return loyaltyJpaRepository.findByCustomerId(customerId);
     }
 }

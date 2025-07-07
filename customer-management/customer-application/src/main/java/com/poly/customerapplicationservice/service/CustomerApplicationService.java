@@ -5,13 +5,13 @@ import com.poly.customerapplicationservice.command.RetrieveCustomerProfileComman
 import com.poly.customerapplicationservice.command.UpdateCustomerCommand;
 import com.poly.customerapplicationservice.dto.CustomerDto;
 import com.poly.customerapplicationservice.dto.PageResult;
-import com.poly.customerapplicationservice.exception.BlankUserIdException;
-import com.poly.customerapplicationservice.exception.UserExistException;
 import com.poly.customerapplicationservice.port.input.CustomerUsecase;
 import com.poly.customerdomain.model.entity.Customer;
 import com.poly.customerdomain.model.entity.Loyalty;
 import com.poly.customerdomain.model.entity.valueobject.*;
+import com.poly.customerdomain.model.exception.BlankUserIdException;
 import com.poly.customerdomain.model.exception.CustomerNotFoundException;
+import com.poly.customerdomain.model.exception.UserExistException;
 import com.poly.customerdomain.output.CustomerRepository;
 import com.poly.customerdomain.output.LoyaltyRepository;
 import com.poly.domain.valueobject.CustomerId;

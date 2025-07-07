@@ -22,7 +22,7 @@ public class LoyaltyDataMapper {
         return new Loyalty.Builder(new CustomerId(entity.getCustomerId()))
                 .id(new LoyaltyId(entity.getId()))
                 .points(new Point(entity.getPoints()))
-                .lastUpdated(entity.getLastUpdated()) // nếu có field này trong LoyaltyEntity
+                .lastUpdated(entity.getLastUpdated())
                 .build();
     }
 

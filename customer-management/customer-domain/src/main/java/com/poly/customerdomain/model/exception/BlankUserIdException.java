@@ -1,6 +1,6 @@
-package com.poly.customerapplicationservice.exception;
+package com.poly.customerdomain.model.exception;
 
-public class BlankUserIdException extends ApplicationServiceException {
+public class BlankUserIdException extends DomainException {
     public BlankUserIdException() {
         super("User Id đang trống.");
     }
