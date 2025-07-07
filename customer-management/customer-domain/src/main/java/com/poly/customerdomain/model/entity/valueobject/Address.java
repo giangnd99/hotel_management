@@ -27,7 +27,6 @@ public class Address {
                 || street.trim().length() > MAX_ADDRESS_LENGTH || ward.trim().length() > MAX_ADDRESS_LENGTH || district.trim().length() > MAX_ADDRESS_LENGTH || city.trim().length() > MAX_ADDRESS_LENGTH;
     }
 
-
     public static Address empty() {
         return new Address("Unnamed", "Unnamed", "Unnamed", "Unnamed");
     }

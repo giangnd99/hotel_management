@@ -19,6 +19,7 @@ import com.poly.domain.valueobject.Money;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class CustomerApplicationService implements CustomerUsecase{
@@ -85,7 +86,18 @@ public class CustomerApplicationService implements CustomerUsecase{
 
     @Override
     public CustomerDto ChangeCustomerInformation(UpdateCustomerCommand command) {
-        return null;
+        validateUserId(command.getUserId(), Mode.RETRIEVE);
+
+        Optional<Customer> customer = customerRepository.findByUserId(command.getUserId());
+        customer.ifPresent(c -> {
+            c.setUserId(command.getUserId());
+            c.setFullName(Name.from(command.getFirstName().trim(), command.getLastName().trim()));
+            c.setAddress(Address.from(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity()));
+            c.setDateOfBirth(DateOfBirth.from(command.getDateOfBirth()));
+            c.setUpdatedAt(LocalDateTime.now());
+        });
+        Customer savedCustomer = customerRepository.save(customer.get());
+        return CustomerDto.from(savedCustomer);
     }
 
     private void validateUserId(UUID userId, Mode mode) {

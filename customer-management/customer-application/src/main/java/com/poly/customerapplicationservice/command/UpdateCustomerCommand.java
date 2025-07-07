@@ -1,10 +1,12 @@
 package com.poly.customerapplicationservice.command;
 
 import com.poly.customerapplicationservice.shared.AddressDto;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
+@Getter
 public class UpdateCustomerCommand {
     private UUID userId;
     private String firstName;
