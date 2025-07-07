@@ -29,10 +29,11 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
-    public Optional<Customer> findById(CustomerId customerId) {
-        return customerJpaRepository.findById(Integer.parseInt(customerId.getValue().toString()))
+    public Optional<Customer> findByUserId(UUID userId) {
+        return customerJpaRepository.findByUserId(userId)
                 .map(CustomerDataMapper::mapToDomain);
     }
+
 
     @Override
     public List<Customer> findAll() {

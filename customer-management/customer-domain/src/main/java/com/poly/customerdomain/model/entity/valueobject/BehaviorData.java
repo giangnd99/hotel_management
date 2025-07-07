@@ -3,24 +3,20 @@ package com.poly.customerdomain.model.entity.valueobject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.List;
-
 public class BehaviorData {
 
-    private final List<String> favoriteRoomTypes;   // Ví dụ: ["DELUXE", "SUITE"]
-    private final List<String> frequentlyUsedServices; // Ví dụ: ["SPA", "BREAKFAST"]
+    private String favoriteRoomTypes;
+    private String frequentlyUsedServices;
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public BehaviorData() {
-        this.favoriteRoomTypes = List.of();
-        this.frequentlyUsedServices = List.of();
+
     }
 
-
-    public BehaviorData(List<String> favoriteRoomTypes, List<String> frequentlyUsedServices) {
-        this.favoriteRoomTypes = favoriteRoomTypes == null ? List.of() : favoriteRoomTypes;
-        this.frequentlyUsedServices = frequentlyUsedServices == null ? List.of() : frequentlyUsedServices;
+    public BehaviorData(String favoriteRoomTypes, String frequentlyUsedServices) {
+        this.favoriteRoomTypes = favoriteRoomTypes == null ? "Unnamed" : favoriteRoomTypes;
+        this.frequentlyUsedServices = frequentlyUsedServices == null ? "Unnamed": frequentlyUsedServices;
     }
 
     // ✅ Serialize
@@ -42,14 +38,14 @@ public class BehaviorData {
     }
 
     public static BehaviorData empty() {
-        return new BehaviorData(List.of(), List.of());
+        return new BehaviorData("Unnamed", "Unnamed");
     }
 
-    public List<String> getFavoriteRoomTypes() {
+    public String getFavoriteRoomTypes() {
         return favoriteRoomTypes;
     }
 
-    public List<String> getFrequentlyUsedServices() {
+    public String getFrequentlyUsedServices() {
         return frequentlyUsedServices;
     }
 

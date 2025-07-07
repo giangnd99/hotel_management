@@ -1,14 +1,14 @@
 package com.poly.customerapplicationservice.port.input;
 
 import com.poly.customerapplicationservice.command.CreateCustomerCommand;
+import com.poly.customerapplicationservice.command.RetrieveCustomerProfileCommand;
+import com.poly.customerapplicationservice.command.UpdateCustomerCommand;
 import com.poly.customerapplicationservice.dto.CustomerDto;
-
-import java.util.List;
-import java.util.UUID;
+import com.poly.customerapplicationservice.dto.PageResult;
 
 public interface CustomerUsecase {
     CustomerDto initializeCustomerProfile(CreateCustomerCommand command);
-    List<CustomerDto> getCustomers();
-    CustomerDto getCustomerById(UUID userID);
-//    CustomerDto updateCustomerProfile(UUID id, CreateCustomerCommand command);
+    CustomerDto retrieveCustomerProfile(RetrieveCustomerProfileCommand command);
+    PageResult<CustomerDto> retrieveAllCustomers(int page, int size);
+    CustomerDto ChangeCustomerInformation (UpdateCustomerCommand command);
 }

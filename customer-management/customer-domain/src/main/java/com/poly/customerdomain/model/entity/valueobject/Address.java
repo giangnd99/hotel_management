@@ -1,7 +1,6 @@
 package com.poly.customerdomain.model.entity.valueobject;
 
 import com.poly.customerdomain.model.exception.CustomerAddressLengthOutOfRangeException;
-import lombok.ToString;
 
 public class Address {
 
@@ -10,9 +9,12 @@ public class Address {
     private String district;
     private String city;
 
+    private static final int MIN_ADDRESS_LENGTH = 3;
+    private static final int MAX_ADDRESS_LENGTH = 100;
+
     public Address(String street, String ward, String district, String city) {
         if (isLenghtOutOfRange(street, ward, district, city)) {
-            throw new CustomerAddressLengthOutOfRangeException(5, 100);
+            throw new CustomerAddressLengthOutOfRangeException(MIN_ADDRESS_LENGTH, MAX_ADDRESS_LENGTH);
         }
         this.street = street;
         this.ward = ward;
@@ -21,10 +23,8 @@ public class Address {
     }
 
     private static boolean isLenghtOutOfRange(String street, String ward, String district, String city) {
-        int min = 5;
-        int max = 100;
-        return street.trim().length() < min || ward.trim().length() < min || district.trim().length() < min || city.trim().length() < min
-                || street.trim().length() > max || ward.trim().length() > max || district.trim().length() > max || city.trim().length() > max;
+        return street.trim().length() < MIN_ADDRESS_LENGTH || ward.trim().length() < MIN_ADDRESS_LENGTH || district.trim().length() < MIN_ADDRESS_LENGTH || city.trim().length() < MIN_ADDRESS_LENGTH
+                || street.trim().length() > MAX_ADDRESS_LENGTH || ward.trim().length() > MAX_ADDRESS_LENGTH || district.trim().length() > MAX_ADDRESS_LENGTH || city.trim().length() > MAX_ADDRESS_LENGTH;
     }
 
 

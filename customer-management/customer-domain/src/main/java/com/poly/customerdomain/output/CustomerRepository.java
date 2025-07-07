@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface CustomerRepository {
     Customer save(Customer customer);                     // create or update
-    Optional<Customer> findById(CustomerId customerId);   // optional: avoid null
+    Optional<Customer> findByUserId(UUID userId);   // optional: avoid null
     List<Customer> findAll();                             // list
     void delete(CustomerId customerId);                   // delete
     boolean existsByUserId(UUID userId);
