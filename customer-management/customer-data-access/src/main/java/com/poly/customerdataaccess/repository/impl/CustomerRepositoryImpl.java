@@ -1,7 +1,7 @@
-package com.poly.customerdataaccess.adapter;
+package com.poly.customerdataaccess.repository.impl;
 
 import com.poly.customerdataaccess.entity.CustomerEntity;
-import com.poly.customerdataaccess.jpa.CustomerJpaRepository;
+import com.poly.customerdataaccess.repository.CustomerJpaRepository;
 import com.poly.customerdataaccess.mapper.CustomerDataMapper;
 import com.poly.customerdomain.model.entity.Customer;
 import com.poly.customerdomain.output.CustomerRepository;

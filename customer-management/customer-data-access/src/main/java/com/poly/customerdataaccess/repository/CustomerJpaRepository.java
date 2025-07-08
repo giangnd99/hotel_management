@@ -1,4 +1,4 @@
-package com.poly.customerdataaccess.jpa;
+package com.poly.customerdataaccess.repository;
 
 import com.poly.customerdataaccess.entity.CustomerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

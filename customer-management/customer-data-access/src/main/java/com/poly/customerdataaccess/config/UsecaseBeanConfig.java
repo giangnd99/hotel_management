@@ -1,6 +1,5 @@
-package com.poly.customercontainer.config;
+package com.poly.customerdataaccess.config;
 
-import com.cloudinary.Cloudinary;
 import com.poly.customerapplicationservice.port.input.CustomerUsecase;
 import com.poly.customerapplicationservice.port.input.LoyaltyUsecase;
 import com.poly.customerapplicationservice.port.output.ImageUploadService;
@@ -15,11 +14,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "com.poly.customerdataaccess.jpa")
+@EnableJpaRepositories(basePackages = "com.poly.customerdataaccess.repository")
 @EntityScan(basePackages = "com.poly.customerdataaccess.entity")
-@ComponentScan(basePackages = {
-        "com.poly.customerdataaccess"})
-public class BeanConfig {
+@ComponentScan(basePackages = {"com.poly.customerdataaccess"})
+public class UsecaseBeanConfig {
 
     @Bean
     public CustomerUsecase customerUsecase(CustomerRepository customerRepo,
@@ -32,12 +30,4 @@ public class BeanConfig {
                                          LoyaltyRepository loyaltyRepo) {
         return new LoyaltyApplicationSerivce(loyaltyRepo, customerRepo);
     }
-
-    @Bean
-    public Cloudinary cloudinary() {
-        Cloudinary cloudinary = new Cloudinary("cloudinary://574523193735564:sHwwRZQfoldu5EIyd60_Sb2WieU@dhbjvvn87");
-        cloudinary.config.secure = true;
-        return cloudinary;
-    }
-
 }

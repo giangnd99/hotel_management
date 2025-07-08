@@ -6,16 +6,14 @@ import com.poly.customerapplicationservice.command.UpdateCustomerCommand;
 import com.poly.customerapplicationservice.dto.CustomerDto;
 import com.poly.customerapplicationservice.dto.PageResult;
 import com.poly.customerapplicationservice.port.input.CustomerUsecase;
-import com.poly.customerapplicationservice.port.output.ImageUploadService;
 import com.poly.customercontainer.shared.request.ApiResponse;
-import com.poly.customercontainer.utils.CloudinaryImageUtils;
+import com.poly.customerdataaccess.image.CloudinaryImageUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.UUID;
 
 @RestController

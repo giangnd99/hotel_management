@@ -1,4 +1,4 @@
-package com.poly.customercontainer.utils;
+package com.poly.customerdataaccess.image;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;

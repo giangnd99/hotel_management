@@ -1,7 +1,7 @@
-package com.poly.customerdataaccess.adapter;
+package com.poly.customerdataaccess.repository.impl;
 
 import com.poly.customerdataaccess.entity.LoyaltyEntity;
-import com.poly.customerdataaccess.jpa.LoyaltyJpaRepository;
+import com.poly.customerdataaccess.repository.LoyaltyJpaRepository;
 import com.poly.customerdataaccess.mapper.LoyaltyDataMapper;
 import com.poly.customerdomain.model.entity.Loyalty;
 import com.poly.customerdomain.output.LoyaltyRepository;
