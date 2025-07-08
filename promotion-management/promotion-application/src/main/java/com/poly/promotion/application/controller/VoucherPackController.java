@@ -26,7 +26,7 @@ public class VoucherPackController {
     public ResponseEntity<List<VoucherPackModel>> getVoucherPacks() {
         return ResponseEntity.status(HttpStatus.OK).body(List.of(
                 VoucherPackModel.builder()
-                        .id(1)
+                        .id(1L)
                         .description("Includes 5 vouchers")
                         .discountAmount(20.0)
                         .validRange("30 DAYS")
@@ -38,7 +38,7 @@ public class VoucherPackController {
                         .createdBy("admin")
                         .build(),
                 VoucherPackModel.builder()
-                        .id(2)
+                        .id(2L)
                         .description("Includes 5 vouchers")
                         .discountAmount(20.0)
                         .validRange("30 DAYS")
@@ -53,7 +53,7 @@ public class VoucherPackController {
     }
 
     @GetMapping("/{voucherPackId}")
-    public ResponseEntity<VoucherPackModel> getVoucherPackById(@PathVariable Integer voucherPackId) {
+    public ResponseEntity<VoucherPackModel> getVoucherPackById(@PathVariable Long voucherPackId) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 VoucherPackModel.builder()
                         .id(voucherPackId)
@@ -71,7 +71,7 @@ public class VoucherPackController {
     }
 
     @GetMapping("/redeem/{voucherPackId}")
-    public ResponseEntity<VoucherModel> redeem(@PathVariable Integer voucherPackId) {
+    public ResponseEntity<VoucherModel> redeem(@PathVariable Long voucherPackId) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 VoucherModel.builder()
                         .voucherCode(UUID.randomUUID().toString())
@@ -89,7 +89,7 @@ public class VoucherPackController {
     }
 
     @PutMapping("/{voucherPackId}")
-    public ResponseEntity<VoucherPackModel> updateVoucherPack(@PathVariable Integer voucherPackId, VoucherPackModel voucherPack) {
+    public ResponseEntity<VoucherPackModel> updateVoucherPack(@PathVariable Long voucherPackId, VoucherPackModel voucherPack) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 VoucherPackModel.builder()
                         .id(voucherPackId)

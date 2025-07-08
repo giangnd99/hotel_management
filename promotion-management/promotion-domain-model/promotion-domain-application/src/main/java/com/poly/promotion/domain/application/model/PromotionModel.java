@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class PromotionModel {
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class PromotionModel extends BaseModel {
     Integer id;
     String name;
     String description;
