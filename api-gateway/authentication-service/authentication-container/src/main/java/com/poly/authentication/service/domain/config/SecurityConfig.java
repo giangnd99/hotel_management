@@ -39,7 +39,7 @@ public class SecurityConfig {
             "/eureka/**",
             "/actuator/**",
             // Các đường dẫn public từ các service khác
-            "/rooms", "/rooms/**",
+            "api/rooms", "api/rooms/**",
             "/payment/vn-pay-callback", "/payment/vn-pay-callback/**",
             "/reset-password", "/reset-password/**",
              "/users", // Nếu bạn muốn /users là public (cẩn thận với bảo mật)
