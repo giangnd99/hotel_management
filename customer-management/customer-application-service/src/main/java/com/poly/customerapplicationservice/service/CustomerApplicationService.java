@@ -6,6 +6,7 @@ import com.poly.customerapplicationservice.command.UpdateCustomerCommand;
 import com.poly.customerapplicationservice.dto.CustomerDto;
 import com.poly.customerapplicationservice.dto.PageResult;
 import com.poly.customerapplicationservice.port.input.CustomerUsecase;
+import com.poly.customerapplicationservice.port.output.ImageUploadService;
 import com.poly.customerdomain.model.entity.Customer;
 import com.poly.customerdomain.model.entity.Loyalty;
 import com.poly.customerdomain.model.entity.valueobject.*;
@@ -18,6 +19,7 @@ import com.poly.domain.valueobject.CustomerId;
 import com.poly.domain.valueobject.Money;
 
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,9 +30,12 @@ public class CustomerApplicationService implements CustomerUsecase{
 
     private final LoyaltyRepository loyaltyRepository;
 
-    public CustomerApplicationService(CustomerRepository customerRepo, LoyaltyRepository loyaltyRepo) {
+    private final ImageUploadService imageUploadService;
+
+    public CustomerApplicationService(CustomerRepository customerRepo, LoyaltyRepository loyaltyRepo, ImageUploadService imageUploadService) {
         this.customerRepository = customerRepo;
         this.loyaltyRepository = loyaltyRepo;
+        this.imageUploadService = imageUploadService;
     }
 
     @Override
@@ -94,8 +99,10 @@ public class CustomerApplicationService implements CustomerUsecase{
             c.setFullName(Name.from(command.getFirstName().trim(), command.getLastName().trim()));
             c.setAddress(Address.from(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity()));
             c.setDateOfBirth(DateOfBirth.from(command.getDateOfBirth()));
+            c.setImage(ImageUrl.from(command.getImage()));
             c.setUpdatedAt(LocalDateTime.now());
         });
+
         Customer savedCustomer = customerRepository.save(customer.get());
         return CustomerDto.from(savedCustomer);
     }

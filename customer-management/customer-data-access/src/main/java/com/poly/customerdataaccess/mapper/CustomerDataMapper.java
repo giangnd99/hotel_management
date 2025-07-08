@@ -3,10 +3,7 @@ package com.poly.customerdataaccess.mapper;
 import com.poly.customerdataaccess.entity.CustomerEntity;
 import com.poly.customerdataaccess.entity.Level;
 import com.poly.customerdomain.model.entity.Customer;
-import com.poly.customerdomain.model.entity.valueobject.Address;
-import com.poly.customerdomain.model.entity.valueobject.BehaviorData;
-import com.poly.customerdomain.model.entity.valueobject.DateOfBirth;
-import com.poly.customerdomain.model.entity.valueobject.Name;
+import com.poly.customerdomain.model.entity.valueobject.*;
 import com.poly.domain.valueobject.CustomerId;
 import com.poly.domain.valueobject.Money;
 
@@ -22,6 +19,7 @@ public class CustomerDataMapper {
         customerEntity.setDateOfBirth(domain.getDateOfBirth().getValue());
         customerEntity.setAccumulatedSpending(domain.getAccumulatedSpending().getAmount());
         customerEntity.setLevel(Level.valueOf(domain.getLevel().name()));
+        customerEntity.setImageUrl(domain.getImage().getUrl());
         customerEntity.setBehaviorData(domain.getBehaviorData().toJson());
         customerEntity.setCreatedAt(domain.getCreatedAt());
         customerEntity.setUpdatedAt(domain.getUpdatedAt());
@@ -38,6 +36,7 @@ public class CustomerDataMapper {
                 .accumulatedSpending(Money.from(entity.getAccumulatedSpending()))
                 .level(com.poly.customerdomain.model.entity.valueobject.Level.valueOf(entity.getLevel().name()))
                 .behaviorData(BehaviorData.fromJson(entity.getBehaviorData()))
+                .image(ImageUrl.from(entity.getImageUrl()))
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();

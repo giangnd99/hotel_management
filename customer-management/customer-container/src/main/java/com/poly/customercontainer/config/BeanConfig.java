@@ -1,7 +1,9 @@
 package com.poly.customercontainer.config;
 
+import com.cloudinary.Cloudinary;
 import com.poly.customerapplicationservice.port.input.CustomerUsecase;
 import com.poly.customerapplicationservice.port.input.LoyaltyUsecase;
+import com.poly.customerapplicationservice.port.output.ImageUploadService;
 import com.poly.customerapplicationservice.service.CustomerApplicationService;
 import com.poly.customerapplicationservice.service.LoyaltyApplicationSerivce;
 import com.poly.customerdomain.output.CustomerRepository;
@@ -21,14 +23,21 @@ public class BeanConfig {
 
     @Bean
     public CustomerUsecase customerUsecase(CustomerRepository customerRepo,
-                                           LoyaltyRepository loyaltyRepo) {
-        return new CustomerApplicationService(customerRepo, loyaltyRepo);
+                                           LoyaltyRepository loyaltyRepo, ImageUploadService imageUploadService) {
+        return new CustomerApplicationService(customerRepo, loyaltyRepo, imageUploadService);
     }
 
     @Bean
     public LoyaltyUsecase loyaltyUsecase(CustomerRepository customerRepo,
                                          LoyaltyRepository loyaltyRepo) {
         return new LoyaltyApplicationSerivce(loyaltyRepo, customerRepo);
+    }
+
+    @Bean
+    public Cloudinary cloudinary() {
+        Cloudinary cloudinary = new Cloudinary("cloudinary://574523193735564:sHwwRZQfoldu5EIyd60_Sb2WieU@dhbjvvn87");
+        cloudinary.config.secure = true;
+        return cloudinary;
     }
 
 }

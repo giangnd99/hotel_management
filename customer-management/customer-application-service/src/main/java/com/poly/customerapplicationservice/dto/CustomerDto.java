@@ -20,6 +20,7 @@ public class CustomerDto {
     private LocalDate dateOfBirth;
     private BigDecimal accumulatedSpending;
     private Level level;
+    private String imageUrl;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 
@@ -32,6 +33,7 @@ public class CustomerDto {
         dto.setAccumulatedSpending(customer.getAccumulatedSpending().getAmount());
         dto.setLevel(Level.fromDomain(customer.getLevel()));
         dto.setAddress(customer.getAddress().toFullAddress());
+        dto.setImageUrl(customer.getImage().getUrl());
         dto.setCreatedDate(customer.getCreatedAt());
         dto.setUpdatedDate(customer.getUpdatedAt());
         return dto;

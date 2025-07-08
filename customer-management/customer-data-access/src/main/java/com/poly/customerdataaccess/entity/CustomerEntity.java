@@ -34,6 +34,9 @@ public class CustomerEntity {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Column(name = "accumulated_spending", nullable = false)
     private BigDecimal accumulatedSpending;
 

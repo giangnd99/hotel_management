@@ -6,10 +6,16 @@ import com.poly.customerapplicationservice.command.UpdateCustomerCommand;
 import com.poly.customerapplicationservice.dto.CustomerDto;
 import com.poly.customerapplicationservice.dto.PageResult;
 import com.poly.customerapplicationservice.port.input.CustomerUsecase;
+import com.poly.customerapplicationservice.port.output.ImageUploadService;
 import com.poly.customercontainer.shared.request.ApiResponse;
+import com.poly.customercontainer.utils.CloudinaryImageUtils;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.UUID;
 
 @RestController
@@ -18,8 +24,11 @@ public class CustomerController {
 
     private final CustomerUsecase customerUsecase;
 
-    public CustomerController(CustomerUsecase customerUsecase) {
+    private final CloudinaryImageUtils cloudinaryImageUtils;
+
+    public CustomerController(CustomerUsecase customerUsecase, CloudinaryImageUtils cloudinaryImageUtils) {
         this.customerUsecase = customerUsecase;
+        this.cloudinaryImageUtils = cloudinaryImageUtils;
     }
 
     @GetMapping("/profile/{userId}")
@@ -41,10 +50,21 @@ public class CustomerController {
         return ResponseEntity.ok(ApiResponse.success(customerId));
     }
 
-    @PutMapping("/profile")
-    public ResponseEntity<ApiResponse<CustomerDto>> updateCustomer(@RequestBody UpdateCustomerCommand updateCustomerCommand) {
-        var customer = customerUsecase.ChangeCustomerInformation(updateCustomerCommand);
+    @PutMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<CustomerDto>> updateCustomer(
+            @ModelAttribute UpdateCustomerCommand command,
+            @RequestPart(value = "imageRaw", required = false) MultipartFile imageFile) {
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            try {
+                byte[] imageBytes = imageFile.getBytes();
+                String imageLink = cloudinaryImageUtils.upload(imageBytes);
+                command.setImage(imageLink);
+            } catch (IOException e) {
+                throw new RuntimeException("Không đọc được ảnh", e);
+            }
+        }
+        var customer = customerUsecase.ChangeCustomerInformation(command);
         return ResponseEntity.ok(ApiResponse.success(customer));
     }
-
 }

@@ -22,6 +22,7 @@ public class Customer extends AggregateRoot<CustomerId> {
     private DateOfBirth dateOfBirth;
     private Money accumulatedSpending;
     private Level level;
+    private ImageUrl image;
     private BehaviorData behaviorData;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -35,6 +36,7 @@ public class Customer extends AggregateRoot<CustomerId> {
         this.dateOfBirth = builder.dateOfBirth != null ? builder.dateOfBirth : DateOfBirth.empty();
         this.accumulatedSpending = builder.accumulatedSpending != null ? builder.accumulatedSpending : Money.ZERO;
         this.behaviorData = builder.behaviorData != null ? builder.behaviorData : BehaviorData.empty();
+        this.image = builder.image != null ? builder.image : null;
         this.createdAt = builder.createdAt != null ? builder.createdAt : LocalDateTime.now();
         this.updatedAt = builder.updatedAt != null ? builder.updatedAt : LocalDateTime.now();
     }
@@ -47,6 +49,7 @@ public class Customer extends AggregateRoot<CustomerId> {
         private DateOfBirth dateOfBirth;
         private Money accumulatedSpending;
         private Level level;
+        private ImageUrl image;
         private BehaviorData behaviorData;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
@@ -61,6 +64,11 @@ public class Customer extends AggregateRoot<CustomerId> {
 
         public Builder userId(UUID val) {
             userId = val;
+            return this;
+        }
+
+        public Builder image(ImageUrl val) {
+            image = val;
             return this;
         }
 

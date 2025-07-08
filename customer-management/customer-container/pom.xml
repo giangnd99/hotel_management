@@ -23,7 +23,7 @@
 
         <dependency>
             <groupId>com.poly</groupId>
-            <artifactId>customer-application</artifactId>
+            <artifactId>customer-application-service</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
