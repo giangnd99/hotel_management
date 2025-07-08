@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Objects;
 
 public class DateCustom {
@@ -48,6 +49,10 @@ public class DateCustom {
                 DateTimeFormatter.ofPattern(pattern)));
     }
 
+    public static DateCustom of(Date expiryTime) {
+        return new DateCustom(LocalDateTime.ofInstant(expiryTime.toInstant(), UTC_ZONE));
+    }
+
     public String toISOString() {
         return format(ISO_PATTERN);
     }
@@ -73,6 +78,9 @@ public class DateCustom {
 
     public DateCustom toUTC() {
         return atZone(UTC_ZONE.getId());
+    }
+    public Date toDate() {
+        return Date.from(value.atZone(UTC_ZONE).toInstant());
     }
 
     public boolean isBefore(DateCustom other) {

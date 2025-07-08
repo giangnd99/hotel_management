@@ -12,4 +12,10 @@
     <artifactId>authentication-application</artifactId>
 
 
+    <dependencies>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>authen-application-service</artifactId>
+        </dependency>
+    </dependencies>
 </project>

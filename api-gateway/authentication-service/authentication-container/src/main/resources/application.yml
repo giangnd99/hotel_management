@@ -1,0 +1,83 @@
+server:
+  port: 8092 # Cổng mới bạn đã cung cấp
+
+spring:
+  # Cấu hình Datasource cho PostgreSQL
+  datasource:
+    url: ${DBMS_CONNECTION:jdbc:postgresql://localhost:5433/postgres?currentSchema=authentication_service}
+    username: ${DBMS_USERNAME:postgres}
+    password: ${DBMS_PASSWORD:admin}
+    driver-class-name: org.postgresql.Driver # Driver cho PostgreSQL
+
+  # Cấu hình JPA/Hibernate
+  jpa:
+    open-in-view: false # Không giữ session Hibernate mở trong view, giúp tránh N+1 issues
+    show-sql: true # Hiển thị SQL Hibernate trong log (hữu ích cho debug)
+    database-platform: org.hibernate.dialect.PostgreSQLDialect # Nền tảng database
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect # Dialect cụ thể cho PostgreSQL
+    hibernate:
+      ddl-auto: update # Tự động cập nhật schema database khi ứng dụng khởi động.
+      # Cẩn thận khi dùng trong production, thường là 'none' hoặc 'validate'
+  # Cấu hình SQL init (chạy script SQL khi khởi động)
+  sql:
+    init:
+      schema-locations: classpath:init-schema.sql # Chỉ định script tạo schema
+      data-locations: classpath:init-data.sql # Chỉ định script chèn dữ liệu
+      mode: always # Luôn chạy các script này khi khởi động ứng dụng
+
+  application:
+    name: authentication-service # Tên ứng dụng của bạn (sẽ được đăng ký với Eureka)
+
+  # Cấu hình Spring Cloud. Đã thêm 'config.enabled: false' để tránh lỗi Config Server.
+  cloud:
+    config:
+      enabled: false # Tắt Spring Cloud Config Client vì không dùng Config Server riêng biệt
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true # Cho phép Gateway tự động định tuyến dựa trên tên service từ Eureka
+              lower-case-service-id: true # Chuyển tên service ID sang chữ thường
+          globalcors: # Cấu hình CORS toàn cục cho Gateway
+            corsConfigurations:
+              '[/**]':
+              allowedOrigins: "*" # PRODUCTION: Thay đổi thành domain thực tế của Frontend (ví dụ: http://localhost:5173)
+              allowedMethods:
+                - GET
+                - POST
+                - PUT
+                - DELETE
+                - OPTIONS
+              allowedHeaders: "*" # Cho phép tất cả các header, bao gồm Authorization
+              allowCredentials: true # Cho phép gửi cookie, header xác thực
+              maxAge: 3600 # Thời gian pre-flight request được cache (giây)
+
+  # Cấu hình Eureka Client
+  eureka:
+    client:
+      service-url:
+        defaultZone: http://localhost:8761/ # Đảm bảo địa chỉ của Eureka Server đúng
+    instance:
+      hostname: localhost # hostname của dịch vụ này khi đăng ký với Eureka
+
+  # Cấu hình Spring Security OAuth2 Client cho Google
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            scope: email, profile # Phạm vi quyền yêu cầu từ Google
+            redirect-uri: ${GOOGLE_REDIRECT_URI:http://localhost:5173/login-success} # URI chuyển hướng sau khi đăng nhập Google
+            client-id: ${GOOGLE_CLIENT_ID} # Client ID của ứng dụng Google của bạn
+            client-secret: ${GOOGLE_CLIENT_SECRET_KEY} # Client Secret của ứng dụng Google của bạn
+
+  # Cấu hình Spring Data Redis
+  data:
+    redis:
+      port: ${REDIS_PORT:6379} # Cổng Redis (mặc định 6379)
+      host: ${REDIS_HOST:localhost} # Host Redis (mặc định localhost)
+      repositories:
+        enabled: true # Kích hoạt Spring Data Redis Repositories (nếu bạn dùng)
