@@ -1,15 +1,12 @@
 package com.poly.ai.management.domain.handler.ai;
 
 import com.poly.ai.management.domain.AiDomainService;
-import com.poly.ai.management.domain.entity.Dataset;
+import com.poly.ai.management.domain.entity.train.Dataset;
 import com.poly.ai.management.domain.port.output.repository.DatasetRepository;
-import com.poly.ai.management.domain.valueobject.DatasetID;
 import com.poly.service.handler.BaseHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 @Component
 @Slf4j

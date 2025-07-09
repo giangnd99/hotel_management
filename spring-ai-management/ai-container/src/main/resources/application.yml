@@ -2,24 +2,26 @@ server:
   port: 8088
 
 spring:
-  datasource:
-    url: jdbc:h2:mem:ai_management_db;DB_CLOSE_DELAY=-1
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-
+  main:
+    allow-bean-definition-overriding: true
   jpa:
-    hibernate:
-      ddl-auto: update
+    open-in-view: false
     show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:postgresql://localhost:5433/postgres?currentSchema=ai_management
+    username: postgres
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: ALWAYS
+      schema-locations: classpath:init-schema.sql
 
   graphql:
     path: /graphql
@@ -28,7 +30,9 @@ spring:
     graphiql:
       enabled: true
 
-# Spring AI - Ollama
+  application:
+    name: spring-management
+  # Spring AI - Ollama
   ai:
     ollama:
       base-url: http://localhost:11434
@@ -36,3 +40,15 @@ spring:
         model: llama3
       embedding:
         model: nomic-embed-text
+        enabled: true
+  eureka:
+    client:
+      service-url:
+        defaultZone: http://localhost:8761/
+
+  data:
+    redis:
+      port: 6379
+      host: localhost
+      repositories:
+        enabled: true

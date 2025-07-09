@@ -22,7 +22,7 @@
 //    private String source;
 //
 //    @Column(name = "content_tsv", columnDefinition = "tsvector")
-//    @Type(type = "org.hibernate.type.TextType")
+////    @Type(type = "org.hibernate.type.TextType")
 //    private String contentTsv;
 //
 //    @PrePersist

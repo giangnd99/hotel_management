@@ -1,6 +1,10 @@
 package com.poly.ai.management.domain;
 
 import com.poly.ai.management.domain.entity.*;
+import com.poly.ai.management.domain.entity.rag.Embedding;
+import com.poly.ai.management.domain.entity.train.Dataset;
+import com.poly.ai.management.domain.entity.train.Response;
+import com.poly.ai.management.domain.entity.train.TrainingJob;
 
 import java.util.List;
 
@@ -21,8 +25,6 @@ public interface AiDomainService {
     TrainingJob completeTraining(TrainingJob job);
 
     TrainingJob failTraining(TrainingJob job, String errorMessage);
-
-    Room findAvailableRoom(AiModel model);
 
     Booking findAvailableBooking(AiModel model);
 }

@@ -3,7 +3,7 @@ package com.poly.ai.management.dao.ai.adapter;
 import com.poly.ai.management.dao.ai.entity.EmbeddingEntity;
 import com.poly.ai.management.dao.ai.mapper.EmbeddingMapper;
 import com.poly.ai.management.dao.ai.repository.EmbeddingJPARepository;
-import com.poly.ai.management.domain.entity.Embedding;
+import com.poly.ai.management.domain.entity.rag.Embedding;
 import com.poly.ai.management.domain.port.output.repository.EmbeddingRepository;
 import org.springframework.stereotype.Component;
 

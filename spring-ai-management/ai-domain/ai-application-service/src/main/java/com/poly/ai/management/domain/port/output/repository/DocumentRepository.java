@@ -1,5 +1,9 @@
-//package com.poly.ai.management.domain.port.output.repository;
-//
-//public interface DocumentRepository {
-//    List<DocumentEntity> findBySource(String source);
-//}
+package com.poly.ai.management.domain.port.output.repository;
+
+import org.springframework.ai.document.Document;
+
+import java.util.List;
+
+public interface DocumentRepository {
+    List<Document> findBySource(String source);
+}

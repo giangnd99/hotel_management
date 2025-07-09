@@ -2,16 +2,13 @@ package com.poly.ai.management.application.mapper;
 
 import com.poly.ai.management.application.dto.*;
 import com.poly.ai.management.domain.entity.AiModel;
-import com.poly.ai.management.domain.entity.Dataset;
+import com.poly.ai.management.domain.entity.train.Dataset;
 import com.poly.ai.management.domain.entity.Prompt;
-import com.poly.ai.management.domain.entity.TrainingJob;
+import com.poly.ai.management.domain.entity.train.TrainingJob;
 import com.poly.ai.management.domain.valueobject.AiModelID;
 import com.poly.ai.management.domain.valueobject.DatasetID;
-import com.poly.ai.management.domain.valueobject.PromptID;
-import com.poly.ai.management.domain.valueobject.TrainingJobID;
 
 import java.util.List;
-import java.util.UUID;
 
 public class AiGraphQLMapper {
 
