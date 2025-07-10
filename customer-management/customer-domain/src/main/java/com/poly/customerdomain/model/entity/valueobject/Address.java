@@ -35,9 +35,9 @@ public class Address {
 
     private static boolean isLenghtOutOfRange(String... values) {
         for (String value : values) {
-            if (value.trim().length() >= MIN_ADDRESS_LENGTH && value.trim().length() <= MAX_ADDRESS_LENGTH) return true;
+            if (value.trim().length() >= MIN_ADDRESS_LENGTH && value.trim().length() <= MAX_ADDRESS_LENGTH) return false;
         }
-        return false;
+        return true;
     }
 
     public static Address empty() {

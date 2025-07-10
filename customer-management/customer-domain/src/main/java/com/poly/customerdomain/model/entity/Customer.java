@@ -33,7 +33,7 @@ public class Customer extends AggregateRoot<CustomerId> {
         this.dateOfBirth = builder.dateOfBirth != null ? builder.dateOfBirth : DateOfBirth.empty();
         this.accumulatedSpending = builder.accumulatedSpending != null ? builder.accumulatedSpending : Money.ZERO;
         this.behaviorData = builder.behaviorData != null ? builder.behaviorData : BehaviorData.empty();
-        this.image = builder.image != null ? builder.image : null;
+        this.image = builder.image != null ? builder.image : ImageUrl.empty();
         this.createdAt = builder.createdAt != null ? builder.createdAt : LocalDateTime.now();
         this.updatedAt = builder.updatedAt != null ? builder.updatedAt : LocalDateTime.now();
     }
