@@ -11,7 +11,6 @@ public class BehaviorData {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public BehaviorData() {
-
     }
 
     public BehaviorData(String favoriteRoomTypes, String frequentlyUsedServices) {

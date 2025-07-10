@@ -1,6 +1,6 @@
 package com.poly.customerdomain.model.entity.valueobject;
 
-import com.poly.customerdomain.model.exception.BlankCustomerNameException;
+import com.poly.customerdomain.model.exception.InvalidCustomerNameException;
 import com.poly.customerdomain.model.exception.CustomerNameLengthOutOfRangeException;
 import lombok.Getter;
 import lombok.ToString;
@@ -17,7 +17,7 @@ public class Name{
 
     public Name(String firstName, String lastName) {
         if (firstName == null || firstName.isBlank() &&  (lastName == null || lastName.isBlank())) {
-            throw new BlankCustomerNameException();
+            throw new InvalidCustomerNameException();
         }
         if (firstName.trim().length() < MIN_NAME_LENGTH ||  firstName.trim().length() > MAX_NAME_LENGTH && lastName.trim().length() < MIN_NAME_LENGTH ||  lastName.trim().length() > MAX_NAME_LENGTH) {
             throw new CustomerNameLengthOutOfRangeException(MIN_NAME_LENGTH, MAX_NAME_LENGTH);
@@ -30,9 +30,14 @@ public class Name{
         return new Name(firstName, lastName);
     }
 
-    public static String getFullName(String firstName, String lastName) {
-        return firstName + " " + lastName;
+//    public static String getFullName(String firstName, String lastName) {
+//        return firstName + " " + lastName;
+//    }
+
+    public String getFullName() {
+        return (firstName + " " + lastName).trim();
     }
+
 
     public static Name empty() {
         return new Name("Unnamed", "Unnamed");

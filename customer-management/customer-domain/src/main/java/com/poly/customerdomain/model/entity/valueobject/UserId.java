@@ -1,5 +1,7 @@
 package com.poly.customerdomain.model.entity.valueobject;
 
+import com.poly.customerdomain.model.exception.InvalidCustomerUserIdException;
+
 import java.util.UUID;
 
 public class UserId {
@@ -7,6 +9,9 @@ public class UserId {
     private final UUID value;
 
     public UserId(UUID value) {
+        if(value == null){
+            throw new InvalidCustomerUserIdException();
+        }
         this.value = value;
     }
 

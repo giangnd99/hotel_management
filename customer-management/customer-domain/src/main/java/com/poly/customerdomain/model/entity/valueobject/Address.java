@@ -1,6 +1,7 @@
 package com.poly.customerdomain.model.entity.valueobject;
 
 import com.poly.customerdomain.model.exception.CustomerAddressLengthOutOfRangeException;
+import com.poly.customerdomain.model.exception.InvalidCustomerAddressException;
 
 public class Address {
 
@@ -13,6 +14,9 @@ public class Address {
     private static final int MAX_ADDRESS_LENGTH = 100;
 
     public Address(String street, String ward, String district, String city) {
+        if (isNullOrBlank(street, ward, district, city)) {
+            throw new InvalidCustomerAddressException();
+        }
         if (isLenghtOutOfRange(street, ward, district, city)) {
             throw new CustomerAddressLengthOutOfRangeException(MIN_ADDRESS_LENGTH, MAX_ADDRESS_LENGTH);
         }
@@ -22,9 +26,18 @@ public class Address {
         this.city = city;
     }
 
-    private static boolean isLenghtOutOfRange(String street, String ward, String district, String city) {
-        return street.trim().length() < MIN_ADDRESS_LENGTH || ward.trim().length() < MIN_ADDRESS_LENGTH || district.trim().length() < MIN_ADDRESS_LENGTH || city.trim().length() < MIN_ADDRESS_LENGTH
-                || street.trim().length() > MAX_ADDRESS_LENGTH || ward.trim().length() > MAX_ADDRESS_LENGTH || district.trim().length() > MAX_ADDRESS_LENGTH || city.trim().length() > MAX_ADDRESS_LENGTH;
+    private static boolean isNullOrBlank(String... values) {
+        for (String value : values) {
+            if (value == null || value.trim().isEmpty()) return true;
+        }
+        return false;
+    }
+
+    private static boolean isLenghtOutOfRange(String... values) {
+        for (String value : values) {
+            if (value.trim().length() >= MIN_ADDRESS_LENGTH && value.trim().length() <= MAX_ADDRESS_LENGTH) return true;
+        }
+        return false;
     }
 
     public static Address empty() {
