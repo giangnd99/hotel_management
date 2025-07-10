@@ -9,11 +9,11 @@ import java.io.IOException;
 import java.util.Map;
 
 @Service
-public class CloudinaryImageUtils implements ImageUploadService {
+public class CloudinaryImage implements ImageUploadService {
 
     private final Cloudinary cloudinary;
 
-    public CloudinaryImageUtils(Cloudinary cloudinary) {
+    public CloudinaryImage(Cloudinary cloudinary) {
         this.cloudinary = cloudinary;
     }
 

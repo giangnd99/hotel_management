@@ -7,7 +7,7 @@ import com.poly.customerapplicationservice.dto.CustomerDto;
 import com.poly.customerapplicationservice.dto.PageResult;
 import com.poly.customerapplicationservice.port.input.CustomerUsecase;
 import com.poly.customercontainer.shared.request.ApiResponse;
-import com.poly.customerdataaccess.image.CloudinaryImageUtils;
+import com.poly.customerdataaccess.image.CloudinaryImage;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +22,11 @@ public class CustomerController {
 
     private final CustomerUsecase customerUsecase;
 
-    private final CloudinaryImageUtils cloudinaryImageUtils;
+    private final CloudinaryImage cloudinaryImage;
 
-    public CustomerController(CustomerUsecase customerUsecase, CloudinaryImageUtils cloudinaryImageUtils) {
+    public CustomerController(CustomerUsecase customerUsecase, CloudinaryImage cloudinaryImage) {
         this.customerUsecase = customerUsecase;
-        this.cloudinaryImageUtils = cloudinaryImageUtils;
+        this.cloudinaryImage = cloudinaryImage;
     }
 
     @GetMapping("/profile/{userId}")
@@ -56,7 +56,7 @@ public class CustomerController {
         if (imageFile != null && !imageFile.isEmpty()) {
             try {
                 byte[] imageBytes = imageFile.getBytes();
-                String imageLink = cloudinaryImageUtils.upload(imageBytes);
+                String imageLink = cloudinaryImage.upload(imageBytes);
                 command.setImage(imageLink);
             } catch (IOException e) {
                 throw new RuntimeException("Không đọc được ảnh", e);

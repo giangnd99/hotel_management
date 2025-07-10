@@ -12,7 +12,7 @@ public class CustomerDataMapper {
     public static CustomerEntity mapToEntity(Customer domain) {
         CustomerEntity customerEntity = new CustomerEntity();
         customerEntity.setId(domain.getId().getValue());
-        customerEntity.setUserId(domain.getUserId());
+        customerEntity.setUserId(domain.getUserId().getValue());
         customerEntity.setFirstName(domain.getFullName().getFirstName());
         customerEntity.setLastName(domain.getFullName().getLastName());
         customerEntity.setAddress(domain.getAddress().toFullAddress());
@@ -29,7 +29,7 @@ public class CustomerDataMapper {
     public static Customer mapToDomain(CustomerEntity entity) {
         return Customer.builder()
                 .customerId(CustomerId.from(entity.getId()))
-                .userId(entity.getUserId())
+                .userId(UserId.from(entity.getUserId()))
                 .name(Name.from(entity.getFirstName(), entity.getLastName()))
                 .address(Address.from(entity.getAddress()))
                 .dateOfBirth(DateOfBirth.from(entity.getDateOfBirth()))

@@ -19,7 +19,6 @@ import com.poly.domain.valueobject.CustomerId;
 import com.poly.domain.valueobject.Money;
 
 import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,12 +29,9 @@ public class CustomerApplicationService implements CustomerUsecase{
 
     private final LoyaltyRepository loyaltyRepository;
 
-    private final ImageUploadService imageUploadService;
-
-    public CustomerApplicationService(CustomerRepository customerRepo, LoyaltyRepository loyaltyRepo, ImageUploadService imageUploadService) {
+    public CustomerApplicationService(CustomerRepository customerRepo, LoyaltyRepository loyaltyRepo) {
         this.customerRepository = customerRepo;
         this.loyaltyRepository = loyaltyRepo;
-        this.imageUploadService = imageUploadService;
     }
 
     @Override
@@ -45,7 +41,7 @@ public class CustomerApplicationService implements CustomerUsecase{
 
         Customer newCustomer = Customer.builder()
                 .customerId(CustomerId.generate())
-                .userId(command.getUserId())
+                .userId(UserId.from(command.getUserId()))
                 .name(Name.from(command.getFirstName().trim(), command.getLastName().trim()))
                 .address(Address.from(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity()))
                 .dateOfBirth(DateOfBirth.from(command.getDateOfBirth()))
@@ -95,7 +91,7 @@ public class CustomerApplicationService implements CustomerUsecase{
 
         Optional<Customer> customer = customerRepository.findByUserId(command.getUserId());
         customer.ifPresent(c -> {
-            c.setUserId(command.getUserId());
+            c.setUserId(UserId.from(command.getUserId()));
             c.setFullName(Name.from(command.getFirstName().trim(), command.getLastName().trim()));
             c.setAddress(Address.from(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity()));
             c.setDateOfBirth(DateOfBirth.from(command.getDateOfBirth()));

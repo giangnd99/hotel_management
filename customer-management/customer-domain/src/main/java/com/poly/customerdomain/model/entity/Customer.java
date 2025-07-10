@@ -8,13 +8,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
 public class Customer extends AggregateRoot<CustomerId> {
 
-    private UUID userId;
+    private UserId userId;
     private Name fullName;
     private Address address;
     private DateOfBirth dateOfBirth;
@@ -41,7 +40,7 @@ public class Customer extends AggregateRoot<CustomerId> {
 
     public static final class Builder {
         private CustomerId customerId;
-        private UUID userId;
+        private UserId userId;
         private Name name;
         private Address address;
         private DateOfBirth dateOfBirth;
@@ -60,7 +59,7 @@ public class Customer extends AggregateRoot<CustomerId> {
             return this;
         }
 
-        public Builder userId(UUID val) {
+        public Builder userId(UserId val) {
             userId = val;
             return this;
         }

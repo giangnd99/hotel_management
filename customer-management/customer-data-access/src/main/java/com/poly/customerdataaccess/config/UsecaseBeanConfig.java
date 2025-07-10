@@ -5,6 +5,7 @@ import com.poly.customerapplicationservice.port.input.LoyaltyUsecase;
 import com.poly.customerapplicationservice.port.output.ImageUploadService;
 import com.poly.customerapplicationservice.service.CustomerApplicationService;
 import com.poly.customerapplicationservice.service.LoyaltyApplicationSerivce;
+import com.poly.customerdataaccess.image.CloudinaryImage;
 import com.poly.customerdomain.output.CustomerRepository;
 import com.poly.customerdomain.output.LoyaltyRepository;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -21,8 +22,8 @@ public class UsecaseBeanConfig {
 
     @Bean
     public CustomerUsecase customerUsecase(CustomerRepository customerRepo,
-                                           LoyaltyRepository loyaltyRepo, ImageUploadService imageUploadService) {
-        return new CustomerApplicationService(customerRepo, loyaltyRepo, imageUploadService);
+                                           LoyaltyRepository loyaltyRepo) {
+        return new CustomerApplicationService(customerRepo, loyaltyRepo);
     }
 
     @Bean
@@ -30,4 +31,6 @@ public class UsecaseBeanConfig {
                                          LoyaltyRepository loyaltyRepo) {
         return new LoyaltyApplicationSerivce(loyaltyRepo, customerRepo);
     }
+
+
 }
