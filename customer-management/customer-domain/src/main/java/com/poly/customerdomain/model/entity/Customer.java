@@ -6,14 +6,12 @@ import com.poly.domain.valueobject.CustomerId;
 import com.poly.domain.valueobject.Money;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @Setter
-@ToString
 public class Customer extends AggregateRoot<CustomerId> {
 
     private UUID userId;

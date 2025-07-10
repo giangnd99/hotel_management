@@ -5,11 +5,9 @@ import com.poly.customerdomain.model.entity.valueobject.Point;
 import com.poly.domain.valueobject.CustomerId;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@ToString
 @Getter
 @Setter
 public class Loyalty {

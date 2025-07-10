@@ -1,15 +1,12 @@
 package com.poly.customerdomain.model.entity;
 
 import com.poly.customerdomain.model.entity.valueobject.Discount;
-import com.poly.customerdomain.model.entity.valueobject.PromotionId;
 import com.poly.customerdomain.model.entity.valueobject.VoucherId;
 import com.poly.customerdomain.model.entity.valueobject.VoucherStatus;
 import com.poly.domain.valueobject.CustomerId;
-import lombok.ToString;
 
 import java.time.LocalDate;
 
-@ToString
 public class Voucher {
 
     private final VoucherId id;

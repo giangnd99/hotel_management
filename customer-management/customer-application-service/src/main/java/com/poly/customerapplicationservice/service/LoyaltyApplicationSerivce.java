@@ -23,7 +23,7 @@ public class LoyaltyApplicationSerivce implements LoyaltyUsecase {
     }
 
     @Override
-    public LoyaltyDto retriveLoyaltyProfile(RetriveLoyaltyProfileCommand command) {
+    public LoyaltyDto retrieveLoyaltyProfile(RetriveLoyaltyProfileCommand command) {
         if (command.getCustomerId() == null) {
             throw new BlankUserIdException();
         }

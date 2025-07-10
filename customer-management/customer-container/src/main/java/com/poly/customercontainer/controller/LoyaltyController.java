@@ -26,6 +26,6 @@ public class LoyaltyController {
     public ResponseEntity<ApiResponse<LoyaltyDto>> retrieveLoyalty(@PathVariable UUID customerId) {
         RetriveLoyaltyProfileCommand  command = new RetriveLoyaltyProfileCommand();
         command.setCustomerId(customerId);
-        return ResponseEntity.ok(ApiResponse.success(loyaltyUsecase.retriveLoyaltyProfile(command)));
+        return ResponseEntity.ok(ApiResponse.success(loyaltyUsecase.retrieveLoyaltyProfile(command)));
     }
 }
