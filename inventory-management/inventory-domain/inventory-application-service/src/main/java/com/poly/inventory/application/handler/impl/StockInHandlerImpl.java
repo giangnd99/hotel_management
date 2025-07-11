@@ -43,6 +43,6 @@ public class StockInHandlerImpl implements StockInHandler {
         dto.setTransactionDate(LocalDateTime.now());
 
         var domain = saveTransactionPort.save(toDomain(dto));
-        return toDto(domain);
+        return toDto(domain);  // << return từ domain object sau khi save
     }
 }
