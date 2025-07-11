@@ -1,7 +1,11 @@
 package com.poly.promotion.domain.core.entity;
 
 import com.poly.domain.entity.BaseEntity;
+import com.poly.domain.valueobject.Money;
 import com.poly.promotion.domain.core.exception.PromotionDomainException;
+import com.poly.promotion.domain.core.valueobject.Discount;
+import com.poly.promotion.domain.core.valueobject.DiscountAmount;
+import com.poly.promotion.domain.core.valueobject.DiscountPercentage;
 import com.poly.promotion.domain.core.valueobject.PromotionId;
 import com.poly.promotion.domain.core.valueobject.PromotionStatus;
 import lombok.AccessLevel;
@@ -12,6 +16,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -23,7 +28,7 @@ import java.time.LocalDateTime;
 public class Promotion extends BaseEntity<PromotionId> {
     String name;
     String description;
-    Double discountAmount;
+    Discount discount;
     String target;
     String condition;
     LocalDate startDate;
@@ -37,7 +42,7 @@ public class Promotion extends BaseEntity<PromotionId> {
     private Promotion(Builder builder) {
         setName(builder.name);
         setDescription(builder.description);
-        setDiscountAmount(builder.discountAmount);
+        setDiscount(builder.discount);
         setTarget(builder.target);
         setCondition(builder.condition);
         setStartDate(builder.startDate);
@@ -57,7 +62,7 @@ public class Promotion extends BaseEntity<PromotionId> {
     public static final class Builder {
         private String name;
         private String description;
-        private Double discountAmount;
+        private Discount discount;
         private String target;
         private String condition;
         private LocalDate startDate;
@@ -82,11 +87,14 @@ public class Promotion extends BaseEntity<PromotionId> {
             return this;
         }
 
-        public Builder discountAmount(Double val) {
-            if (val != null && val < 0) {
-                throw new PromotionDomainException("Discount amount must be a non-negative value.");
+        public Builder discount(Double val) {
+            if(val>= 0 && val <= 100) {
+                discount = new DiscountPercentage(val);
+            } else if(val >= 1000) {
+                discount = new DiscountAmount(new Money(BigDecimal.valueOf(val)));
+            } else {
+                throw new PromotionDomainException("Invalid discount amount: " + val);
             }
-            discountAmount = val;
             return this;
         }
 
@@ -144,6 +152,5 @@ public class Promotion extends BaseEntity<PromotionId> {
             return new Promotion(this);
         }
     }
-
 
 }

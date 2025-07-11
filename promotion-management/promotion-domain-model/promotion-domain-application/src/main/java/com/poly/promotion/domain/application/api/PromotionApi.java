@@ -11,5 +11,5 @@ public interface PromotionApi {
     void closePromotion(Long promotionId);
     PromotionModel getPromotionById(Long promotionId);
     List<PromotionModel> getActivePromotions();
-    PromotionModel getApplicablePromotion(BookingModel bookingModel);
+    List<PromotionModel> getApplicablePromotions(BookingModel bookingModel);
 }

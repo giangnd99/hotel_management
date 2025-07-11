@@ -20,6 +20,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>common-application</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.poly.promotion.domain.application</groupId>
             <artifactId>promotion-domain-application</artifactId>
             <version>0.0.1-SNAPSHOT</version>

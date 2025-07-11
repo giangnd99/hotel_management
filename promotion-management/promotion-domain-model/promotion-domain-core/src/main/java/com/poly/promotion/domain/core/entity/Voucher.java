@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Voucher extends BaseEntity<VoucherId> {
-    VoucherId voucherId;
     CustomerId customerId;
     VoucherPackId voucherPackId;
     String voucherCode;
