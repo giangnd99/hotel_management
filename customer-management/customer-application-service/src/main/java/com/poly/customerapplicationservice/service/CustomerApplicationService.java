@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class CustomerApplicationService implements CustomerUsecase{
+public class CustomerApplicationService implements CustomerUsecase {
 
     private final CustomerRepository customerRepository;
 
@@ -90,17 +90,16 @@ public class CustomerApplicationService implements CustomerUsecase{
     public CustomerDto ChangeCustomerInformation(UpdateCustomerCommand command) {
         validateUserId(command.getUserId(), Mode.RETRIEVE);
 
-        Optional<Customer> customer = customerRepository.findByUserId(command.getUserId());
-        customer.ifPresent(c -> {
-            c.setUserId(UserId.from(command.getUserId()));
-            c.setFullName(Name.from(command.getFirstName().trim(), command.getLastName().trim()));
-            c.setAddress(Address.from(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity()));
-            c.setDateOfBirth(DateOfBirth.from(command.getDateOfBirth()));
-            c.setImage(ImageUrl.from(command.getImage()));
-            c.setUpdatedAt(LocalDateTime.now());
-        });
+        Customer customer = customerRepository.findByUserId(command.getUserId())
+                .orElseThrow(() -> new CustomerNotFoundException(command.getUserId()));
+        customer.setUserId(UserId.from(command.getUserId()));
+        customer.setFullName(Name.from(command.getFirstName().trim(), command.getLastName().trim()));
+        customer.setAddress(Address.from(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity()));
+        customer.setDateOfBirth(DateOfBirth.from(command.getDateOfBirth()));
+        customer.setImage(ImageUrl.from(command.getImage()));
+        customer.setUpdatedAt(LocalDateTime.now());
 
-        Customer savedCustomer = customerRepository.save(customer.get());
+        Customer savedCustomer = customerRepository.save(customer);
         return CustomerDto.from(savedCustomer);
     }
 
