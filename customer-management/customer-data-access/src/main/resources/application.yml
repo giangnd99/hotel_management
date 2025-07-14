@@ -4,8 +4,8 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
-      group-id: customer-service
-      auto-offset-reset: earliest
+      group-id: customer-service-test
+      auto-offset-reset: latest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:

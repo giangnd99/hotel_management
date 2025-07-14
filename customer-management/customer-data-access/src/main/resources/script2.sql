@@ -11,6 +11,7 @@ CREATE TABLE customer
     first_name           VARCHAR(100)                                                     NOT NULL,
     last_name            VARCHAR(100)                                                     NOT NULL,
     address              TEXT,
+    image_url             VARCHAR(100),
     date_of_birth        DATE,
     accumulated_spending DECIMAL(15, 2)                                                   NOT NULL DEFAULT 0.00 CHECK (accumulated_spending >= 0),
     level                ENUM ('NONE', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND') NOT NULL DEFAULT 'NONE',

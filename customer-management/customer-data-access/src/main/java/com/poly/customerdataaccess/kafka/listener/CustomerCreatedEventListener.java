@@ -14,7 +14,7 @@ public class CustomerCreatedEventListener {
         this.customerUsecase = customerUsecase;
     }
 
-    @KafkaListener(topics = "customer-created", groupId = "customer-service")
+    @KafkaListener(topics = "customer-created", groupId = "customer-service-test")
     public void listen(CreateCustomerCommand command) {
         customerUsecase.initializeCustomerProfile(command);
     }

@@ -12,6 +12,7 @@ public class LoyaltyDataMapper {
 
     public static LoyaltyEntity toEntity(Loyalty domain) {
         LoyaltyEntity entity = new LoyaltyEntity();
+        entity.setId(LoyaltyId.toUUID(domain.getId()));
         entity.setCustomerId(domain.getCustomerId().getValue());
         entity.setPoints(domain.getPoints().getValue());
         entity.setLastUpdated(domain.getLastUpdated());
