@@ -1,4 +1,4 @@
-package com.poly.application.util;
+package com.poly.restaurant.application.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;

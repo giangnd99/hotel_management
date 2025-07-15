@@ -1,4 +1,4 @@
-package com.poly.application.util;
+package com.poly.restaurant.application.util;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.poly.application.dto;
+package com.poly.restaurant.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

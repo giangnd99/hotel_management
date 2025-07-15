@@ -1,4 +1,4 @@
-package com.poly.application.handler;
+package com.poly.restaurant.application.handler;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

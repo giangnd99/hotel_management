@@ -1,4 +1,4 @@
-package com.poly.application.handler;
+package com.poly.restaurant.application.handler;
 
 public class ApplicationServiceException extends RuntimeException {
 

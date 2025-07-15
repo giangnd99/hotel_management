@@ -1,9 +1,8 @@
-package com.poly.application.handler;
+package com.poly.restaurant.application.handler;
 
-import com.poly.application.dto.ApiResponse;
+import com.poly.restaurant.application.dto.ApiResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
