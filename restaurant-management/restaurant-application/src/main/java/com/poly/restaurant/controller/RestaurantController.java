@@ -25,24 +25,8 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantUseCase.getAllTables());
     }
 
-    @GetMapping("/menu")
-    public ResponseEntity<List<MenuItemDTO>> getMenu() {
-        return ResponseEntity.ok(restaurantUseCase.getMenu());
-    }
-
-    @PostMapping("/order")
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody CreateOrderRequest request) {
-        return ResponseEntity.ok(restaurantUseCase.createOrder(request));
-    }
-
-    @GetMapping("/orders")
-    public ResponseEntity<List<OrderDTO>> getOrders() {
-        return ResponseEntity.ok(restaurantUseCase.getAllOrders());
-    }
-
     @GetMapping("/staff")
     public ResponseEntity<List<StaffDTO>> getStaff() {
         return ResponseEntity.ok(restaurantUseCase.getAllStaff());
     }
-
 }
