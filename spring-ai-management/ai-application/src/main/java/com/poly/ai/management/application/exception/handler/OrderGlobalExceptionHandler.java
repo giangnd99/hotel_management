@@ -3,7 +3,7 @@ package com.poly.ai.management.application.exception.handler;
 
 import com.poly.ai.management.domain.exception.AiDomainException;
 import com.poly.application.handler.ErrorDTO;
-import com.poly.restaurant.application.handler.GlobalExceptionHandler;
+import com.poly.restaurant.domain.handler.GlobalExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

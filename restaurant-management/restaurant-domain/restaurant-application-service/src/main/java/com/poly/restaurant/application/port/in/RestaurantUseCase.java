@@ -54,14 +54,14 @@ public interface RestaurantUseCase {
      * @param id      the ID of the menu item to update
      * @param request the MenuDTO containing updated details
      */
-    void updateMenu(Long id, MenuDTO request);
+    void updateMenu(Integer id, MenuDTO request);
 
     /**
      * Deletes a menu item.
      *
      * @param id the ID of the menu item to delete
      */
-    void deleteMenu(Long id);
+    void deleteMenu(Integer id);
 
     /**
      * Adds a review to a menu item.

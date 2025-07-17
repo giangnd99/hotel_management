@@ -36,13 +36,13 @@ public class MenuController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MenuDTO> updateMenu(@PathVariable Long id, @RequestBody @Valid MenuDTO request) {
+    public ResponseEntity<MenuDTO> updateMenu(@PathVariable Integer id, @RequestBody @Valid MenuDTO request) {
         restaurantUseCase.updateMenu(id, request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<MenuDTO> deleteMenu(@PathVariable Long id) {
+    public ResponseEntity<MenuDTO> deleteMenu(@PathVariable Integer id) {
         restaurantUseCase.deleteMenu(id);
         return ResponseEntity.noContent().build();
     }

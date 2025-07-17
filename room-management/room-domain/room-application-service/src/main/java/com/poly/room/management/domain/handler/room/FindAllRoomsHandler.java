@@ -1,7 +1,7 @@
 package com.poly.room.management.domain.handler.room;
 
-import com.poly.restaurant.application.handler.AppException;
-import com.poly.restaurant.application.handler.ErrorCode;
+import com.poly.restaurant.domain.handler.AppException;
+import com.poly.restaurant.domain.handler.ErrorCode;
 import com.poly.room.management.domain.dto.response.RoomResponse;
 import com.poly.room.management.domain.mapper.RoomDtoMapper;
 import com.poly.room.management.domain.port.out.repository.RoomRepository;

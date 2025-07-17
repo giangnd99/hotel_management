@@ -1,4 +1,12 @@
 package com.poly.restaurant.application.dto;
 
-public record MenuDTO(Integer id, String name, double price, String category) {
-}
+import java.math.BigDecimal;
+
+public record MenuDTO(
+        Integer id,
+        String name,
+        String description,
+        BigDecimal price,
+        String category,
+        Integer quantity
+) {}

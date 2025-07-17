@@ -1,6 +1,7 @@
 package com.poly.restaurant.controller;
 
-import com.poly.restaurant.application.dto.*;
+import com.poly.restaurant.application.dto.StaffDTO;
+import com.poly.restaurant.application.dto.TableDTO;
 import com.poly.restaurant.application.port.in.RestaurantUseCase;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
