@@ -68,6 +68,7 @@
         <spring-cloud.version>2024.0.1</spring-cloud.version>
         <openfeign.version>4.2.0</openfeign.version>
         <springdoc-openapi.version>2.2.0</springdoc-openapi.version>
+        <junitt.version>5.10.3</junitt.version>
     </properties>
 
     <dependencyManagement>
@@ -191,6 +192,13 @@
                 <groupId>com.poly</groupId>
                 <artifactId>booking-application-service</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junitt.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
 
