@@ -2,16 +2,20 @@ package com.poly.restaurant.application.port.in.impl;
 
 import com.poly.restaurant.application.annotation.DomainHandler;
 import com.poly.restaurant.application.dto.*;
-import com.poly.restaurant.application.handler.MenuItemHandler;
+import com.poly.restaurant.application.handler.OrderHandler;
+import com.poly.restaurant.application.mapper.OrderMapper;
 import com.poly.restaurant.application.port.in.RestaurantUseCase;
+import com.poly.restaurant.domain.entity.Order;
 
 import java.util.List;
 
 @DomainHandler
 public class RestaurantUseCaseImpl implements RestaurantUseCase {
 
+    private final OrderHandler orderHandler;
 
-    public RestaurantUseCaseImpl(MenuItemHandler menuItemHandler) {
+    public RestaurantUseCaseImpl(OrderHandler orderHandler) {
+        this.orderHandler = orderHandler;
     }
 
     @Override
@@ -21,12 +25,14 @@ public class RestaurantUseCaseImpl implements RestaurantUseCase {
 
     @Override
     public OrderDTO createOrder(OrderDTO request) {
-        return null;
+        Order order = OrderMapper.toEntity(request);
+        Order saved = orderHandler.create(order);
+        return OrderMapper.toDto(saved);
     }
 
     @Override
     public List<OrderDTO> getAllOrders() {
-        return List.of();
+        return orderHandler.getAll().stream().map(OrderMapper::toDto).toList();
     }
 
     @Override

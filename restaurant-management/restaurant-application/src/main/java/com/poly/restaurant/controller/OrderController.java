@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,9 @@ public class OrderController {
 
     @PostMapping("/order")
     public ResponseEntity<OrderDTO> createOrder(@RequestBody @Valid OrderDTO request) {
-        return ResponseEntity.ok(restaurantUseCase.createOrder(request));
+        OrderDTO created = restaurantUseCase.createOrder(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+
     }
 
     @GetMapping

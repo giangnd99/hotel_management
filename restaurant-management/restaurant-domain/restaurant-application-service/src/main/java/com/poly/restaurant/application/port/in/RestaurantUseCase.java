@@ -34,5 +34,4 @@ public interface RestaurantUseCase {
      */
     List<OrderDTO> getAllOrders();
 
-
 }
