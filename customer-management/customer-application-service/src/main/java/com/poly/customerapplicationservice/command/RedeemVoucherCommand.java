@@ -9,5 +9,5 @@ import java.util.UUID;
 @Setter
 public class RedeemVoucherCommand {
     private UUID customerId;
-    private String voucherId;
+    private UUID voucherId;
 }

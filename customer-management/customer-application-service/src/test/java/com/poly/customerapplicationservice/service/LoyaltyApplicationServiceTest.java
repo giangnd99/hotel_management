@@ -3,6 +3,7 @@ package com.poly.customerapplicationservice.service;
 import com.poly.customerapplicationservice.command.EarnPointLoyaltyCommand;
 import com.poly.customerapplicationservice.command.RedeemPointLoyaltyCommand;
 import com.poly.customerapplicationservice.dto.LoyaltyPointDto;
+import com.poly.customerapplicationservice.port.output.PromotionServicePort;
 import com.poly.customerapplicationservice.shared.RedeemTargetType;
 import com.poly.customerdomain.model.entity.Customer;
 import com.poly.customerdomain.model.entity.LoyaltyPoint;
@@ -26,8 +27,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -42,6 +42,9 @@ public class LoyaltyApplicationServiceTest {
 
     @Mock
     private LoyaltyTransactionRepository  loyaltyTransactionRepository;
+
+    @Mock
+    private PromotionServicePort promotionServicePort;
 
     @InjectMocks
     private LoyaltyApplicationService loyaltyApplicationService;
@@ -144,9 +147,27 @@ public class LoyaltyApplicationServiceTest {
                 .level(Level.BRONZE)
                 .build();
 
+        RedeemPointLoyaltyCommand command = new RedeemPointLoyaltyCommand();
+        command.setCustomerId(customer.getId().getValue());
+        command.setAmount(BigDecimal.valueOf(5000000));
+        command.setTargetType(RedeemTargetType.VOUCHER);
+        command.setDescription("Đổi voucher test");
+
         LoyaltyPoint loyaltyPoint = LoyaltyPoint.createNew(customer.getId());
         loyaltyPoint.addPoints(Point.from(BigDecimal.valueOf(5000000)));
 
-        when()
+        when(customerRepository.findById(customer.getId().getValue())).thenReturn(Optional.of(customer));
+        when(loyaltyPointRepository.findByCustomerId(customer.getId().getValue())).thenReturn(Optional.of(loyaltyPoint));
+        when(promotionServicePort.redeemVoucher(any())).thenReturn(true);
+
+        LoyaltyPointDto result = loyaltyApplicationService.redeemPoint(command);
+        assertNotNull(result);
+        assertEquals(BigDecimal.valueOf(0), result.getPoints());
+        verify(promotionServicePort, times(1)).redeemVoucher(any());
+        verify(loyaltyTransactionRepository, times(1)).save(any(LoyaltyTransaction.class));
+        verify(loyaltyPointRepository, times(1)).save(loyaltyPoint);
+
     }
+
+
 }

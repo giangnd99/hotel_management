@@ -3,6 +3,7 @@ package com.poly.customerapplicationservice.service;
 import com.poly.customerapplicationservice.command.*;
 import com.poly.customerapplicationservice.dto.LoyaltyPointDto;
 import com.poly.customerapplicationservice.dto.LoyaltyTransactionDto;
+import com.poly.customerapplicationservice.exception.VoucherRedeemFailedException;
 import com.poly.customerapplicationservice.port.input.LoyaltyUsecase;
 import com.poly.customerapplicationservice.port.output.PromotionServicePort;
 import com.poly.customerdomain.model.entity.Customer;
@@ -82,22 +83,29 @@ public class LoyaltyApplicationService implements LoyaltyUsecase{
             throw new NotEnoughPointException();
         }
 
-        // Ghi transaction và trừ điểm cơ bản (áp dụng cho VOUCHER, ROOM, SERVICE)
-        if (!command.getTargetType().equals(command.getTargetType())) {
-            recordRedeemTransaction(loyaltyPoint, amount, command.getDescription());
-            loyaltyPoint.subtractPoints(amount);
-            loyaltyPointRepository.save(loyaltyPoint);
-        }
-
         switch (command.getTargetType()) {
-            case VOUCHER -> handleVoucherRedeem(command);
-            case ROOM -> handleRoomRedeem(command);
-            case SERVICE -> handleServiceRedeem(command);
+            case VOUCHER -> {
+                handleVoucherRedeem(command);
+                redeemAndRecord(loyaltyPoint, amount, command.getDescription());
+            }
+            case ROOM -> {
+                handleRoomRedeem(command);
+                redeemAndRecord(loyaltyPoint, amount, command.getDescription());
+            }
+            case SERVICE -> {
+                handleServiceRedeem(command);
+                redeemAndRecord(loyaltyPoint, amount, command.getDescription());
+            }
             case LEVEL_UP -> handleLevelUpRedeem(loyaltyPoint, customer);
             default -> throw new UnsupportedRedeemTypeException();
         }
-
         return LoyaltyPointDto.from(loyaltyPoint);
+    }
+
+    private void redeemAndRecord(LoyaltyPoint loyaltyPoint, Point amount, String description) {
+        loyaltyPoint.subtractPoints(amount);
+        loyaltyPointRepository.save(loyaltyPoint);
+        recordRedeemTransaction(loyaltyPoint, amount, description);
     }
 
     private void recordRedeemTransaction(LoyaltyPoint loyaltyPoint, Point amount, String description) {
@@ -110,6 +118,7 @@ public class LoyaltyApplicationService implements LoyaltyUsecase{
         );
         loyaltyTransactionRepository.save(transaction);
     }
+
 
     private void handleLevelUpRedeem(LoyaltyPoint loyaltyPoint, Customer customer) {
         Level currentLevel = customer.getLevel();
@@ -124,21 +133,34 @@ public class LoyaltyApplicationService implements LoyaltyUsecase{
             throw new NotEnoughPointToUpgradeException();
         }
 
-        customer.upgradeTo(nextLevel);
-        customerRepository.save(customer);
-
         loyaltyPoint.subtractPoints(requiredPoint);
         loyaltyPointRepository.save(loyaltyPoint);
+
+        customer.upgradeTo(nextLevel);
+        customerRepository.save(customer);
 
         recordRedeemTransaction(loyaltyPoint, requiredPoint, "Nâng hạng thành viên lên " + nextLevel.name());
     }
 
+
+
     private void handleVoucherRedeem(RedeemPointLoyaltyCommand command) {
         RedeemVoucherCommand voucherCommand = new RedeemVoucherCommand();
         voucherCommand.setCustomerId(command.getCustomerId());
-        voucherCommand.setVoucherId(command.getTargetId().toString());
-        boolean redeemVoucherChecking = promotionServicePort.redeemVoucher(voucherCommand);
+        voucherCommand.setVoucherId(command.getTargetId());
+
+        try {
+            boolean success = promotionServicePort.redeemVoucher(voucherCommand);
+            if (!success) {
+                // Trường hợp phía promotion-service trả về false
+                throw new VoucherRedeemFailedException();
+            }
+        } catch (Exception ex) {
+            // Trường hợp gọi Feign thất bại (timeout, 404, 5xx...)
+            throw new VoucherRedeemFailedException("Lỗi khi gọi Promotion Service: " + ex.getMessage(), ex);
+        }
     }
+
     private void handleRoomRedeem(RedeemPointLoyaltyCommand command) {
 //        bookingClient.reserveRoomByPoint(command.getCustomerId(), command.getTargetId());
     }
