@@ -1,5 +1,7 @@
 package com.poly.domain.valueobject;
 
+import com.poly.domain.exception.DomainException;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
@@ -11,6 +13,17 @@ public class Money {
 
     public Money(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public Money(double v) {
+        this(BigDecimal.valueOf(v));
+        if (Double.isNaN(v) || Double.isInfinite(v)) {
+            throw new DomainException("Invalid money amount: " + v);
+        }
+        if (v < 0) {
+            throw new DomainException("Money amount must be greater than zero: " + v);
+        }
+
     }
 
     public boolean isGreaterThanZero() {

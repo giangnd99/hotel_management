@@ -5,7 +5,7 @@ import com.poly.booking.management.domain.dto.CreateBookingCommand;
 import com.poly.booking.management.domain.dto.RoomDto;
 import com.poly.booking.management.domain.dto.RoomSearchQuery;
 import com.poly.booking.management.domain.port.in.service.BookingManagementService;
-import com.poly.domain.valueobject.BookingStatus;
+import com.poly.domain.valueobject.EBookingStatus;
 import com.poly.domain.valueobject.ERoomStatus;
 import org.springframework.stereotype.Service;
 
@@ -40,27 +40,27 @@ public class BookingManagementMockingServiceImpl implements BookingManagementSer
         MOCK_BOOKING_DTOS.add(new BookingDto(
                 UUID.fromString("c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a01"), 1L, "Nguyen Dang Giang", 1L, "101",
                 LocalDate.of(2025, 8, 1), LocalDate.of(2025, 8, 5), 2,
-                new BigDecimal("400.00"), LocalDateTime.of(2025, 7, 20, 10, 0), BookingStatus.CONFIRMED, "Early check-in"
+                new BigDecimal("400.00"), LocalDateTime.of(2025, 7, 20, 10, 0), EBookingStatus.CONFIRMED, "Early check-in"
         ));
         MOCK_BOOKING_DTOS.add(new BookingDto(
                 UUID.fromString("c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a02"), 2L, "Nguyen Phan Lam Hung", 3L, "201",
                 LocalDate.of(2025, 9, 10), LocalDate.of(2025, 9, 12), 3,
-                new BigDecimal("300.00"), LocalDateTime.of(2025, 7, 25, 11, 30), BookingStatus.PENDING, "Late check-out"
+                new BigDecimal("300.00"), LocalDateTime.of(2025, 7, 25, 11, 30), EBookingStatus.PENDING, "Late check-out"
         ));
         MOCK_BOOKING_DTOS.add(new BookingDto(
                 UUID.fromString("c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a03"), 1L, "Nguyen Dang Giang", 5L, "301",
                 LocalDate.of(2025, 10, 1), LocalDate.of(2025, 10, 7), 4,
-                new BigDecimal("1500.00"), LocalDateTime.of(2025, 7, 28, 14, 0), BookingStatus.CONFIRMED, "High floor"
+                new BigDecimal("1500.00"), LocalDateTime.of(2025, 7, 28, 14, 0), EBookingStatus.CONFIRMED, "High floor"
         ));
         MOCK_BOOKING_DTOS.add(new BookingDto(
                 UUID.fromString("c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a04"), 3L, "Nguyen Dung Hai Thach", 2L, "102",
                 LocalDate.of(2025, 8, 15), LocalDate.of(2025, 8, 17), 1,
-                new BigDecimal("200.00"), LocalDateTime.of(2025, 7, 29, 9, 0), BookingStatus.CHECKED_IN, ""
+                new BigDecimal("200.00"), LocalDateTime.of(2025, 7, 29, 9, 0), EBookingStatus.CHECKED_IN, ""
         ));
         MOCK_BOOKING_DTOS.add(new BookingDto(
                 UUID.fromString("c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a05"), 4L, "Nguyen Dam Hoang Linh", 4L, "202",
                 LocalDate.of(2025, 9, 5), LocalDate.of(2025, 9, 8), 2,
-                new BigDecimal("450.00"), LocalDateTime.of(2025, 7, 30, 16, 0), BookingStatus.CANCELLED, "Customer illness"
+                new BigDecimal("450.00"), LocalDateTime.of(2025, 7, 30, 16, 0), EBookingStatus.CANCELLED, "Customer illness"
         ));
     }
 
@@ -87,7 +87,7 @@ public class BookingManagementMockingServiceImpl implements BookingManagementSer
                 command.getNumberOfGuests() != 0 ? command.getNumberOfGuests() : 2,
                 new BigDecimal("200.00"), // Mock total amount
                 LocalDateTime.now(),
-                BookingStatus.PENDING,
+                EBookingStatus.PENDING,
                 command.getSpecialRequests() != null ? command.getSpecialRequests() : "Mock special requests"
         );
     }
@@ -131,7 +131,7 @@ public class BookingManagementMockingServiceImpl implements BookingManagementSer
                                 bookingId,
                                 99L, "Generic Mock Customer", 99L, "XXX",
                                 LocalDate.of(2025, 11, 1), LocalDate.of(2025, 11, 3), 2,
-                                new BigDecimal("300.00"), LocalDateTime.now(), BookingStatus.CONFIRMED, "Generic Request"
+                                new BigDecimal("300.00"), LocalDateTime.now(), EBookingStatus.CONFIRMED, "Generic Request"
                         ));
                     }
                     return Optional.empty();
@@ -196,7 +196,7 @@ public class BookingManagementMockingServiceImpl implements BookingManagementSer
                         originalBooking.getNumberOfGuests(),
                         originalBooking.getTotalAmount(),
                         originalBooking.getBookingDate(),
-                        BookingStatus.CANCELLED, // Set status to CANCELLED
+                        EBookingStatus.CANCELLED, // Set status to CANCELLED
                         originalBooking.getSpecialRequests() + " (Cancelled)"
                 ))
                 .orElseThrow(() -> new IllegalArgumentException("Booking not found for cancellation: " + bookingId));
@@ -214,7 +214,7 @@ public class BookingManagementMockingServiceImpl implements BookingManagementSer
      * @return A hardcoded BookingDto representing the updated booking, or throws an exception if not found.
      */
     @Override
-    public BookingDto updateBookingDetails(UUID bookingId, BookingStatus newStatus, String specialRequests, Integer numberOfGuests) {
+    public BookingDto updateBookingDetails(UUID bookingId, EBookingStatus newStatus, String specialRequests, Integer numberOfGuests) {
         // In a real application, this would fetch, modify, and save the booking entity.
         // For this mock, we return a modified version of an existing mock booking if found.
         return MOCK_BOOKING_DTOS.stream()
