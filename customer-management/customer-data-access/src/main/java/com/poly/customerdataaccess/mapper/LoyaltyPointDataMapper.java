@@ -1,17 +1,15 @@
 package com.poly.customerdataaccess.mapper;
 
-import com.poly.customerdataaccess.entity.LoyaltyEntity;
-import com.poly.customerdomain.model.entity.Loyalty;
+import com.poly.customerdataaccess.entity.LoyaltyPointEntity;
+import com.poly.customerdomain.model.entity.LoyaltyPoint;
 import com.poly.customerdomain.model.entity.valueobject.LoyaltyId;
 import com.poly.customerdomain.model.entity.valueobject.Point;
 import com.poly.domain.valueobject.CustomerId;
 
-import java.util.UUID;
+public class LoyaltyPointDataMapper {
 
-public class LoyaltyDataMapper {
-
-    public static LoyaltyEntity toEntity(Loyalty domain) {
-        LoyaltyEntity entity = new LoyaltyEntity();
+    public static LoyaltyPointEntity toEntity(LoyaltyPoint domain) {
+        LoyaltyPointEntity entity = new LoyaltyPointEntity();
         entity.setId(LoyaltyId.toUUID(domain.getId()));
         entity.setCustomerId(domain.getCustomerId().getValue());
         entity.setPoints(domain.getPoints().getValue());
@@ -19,8 +17,8 @@ public class LoyaltyDataMapper {
         return entity;
     }
 
-    public static Loyalty toDomain(LoyaltyEntity entity) {
-        return new Loyalty.Builder(new CustomerId(entity.getCustomerId()))
+    public static LoyaltyPoint toDomain(LoyaltyPointEntity entity) {
+        return new LoyaltyPoint.Builder(new CustomerId(entity.getCustomerId()))
                 .id(new LoyaltyId(entity.getId()))
                 .points(new Point(entity.getPoints()))
                 .lastUpdated(entity.getLastUpdated())

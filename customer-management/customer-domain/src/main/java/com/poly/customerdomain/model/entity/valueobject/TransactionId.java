@@ -14,11 +14,15 @@ public class TransactionId {
         return value;
     }
 
+    public static TransactionId generateId() {
+        return new TransactionId(UUID.randomUUID());
+    }
+
     public static TransactionId from(UUID value) {
         return new TransactionId(value);
     }
 
-    public static UUID from(TransactionId value) {
+    public static UUID to(TransactionId value) {
         return value.getValue();
     }
 }

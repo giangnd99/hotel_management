@@ -7,6 +7,6 @@ import java.util.UUID;
 
 @Setter
 @Getter
-public class RetriveLoyaltyProfileCommand {
+public class RetrieveLoyaltyProfileCommand {
     private UUID customerId;
 }

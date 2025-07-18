@@ -6,32 +6,30 @@ import com.poly.customerapplicationservice.command.UpdateCustomerCommand;
 import com.poly.customerapplicationservice.dto.CustomerDto;
 import com.poly.customerapplicationservice.dto.PageResult;
 import com.poly.customerapplicationservice.port.input.CustomerUsecase;
-import com.poly.customerapplicationservice.port.output.ImageUploadService;
 import com.poly.customerdomain.model.entity.Customer;
-import com.poly.customerdomain.model.entity.Loyalty;
+import com.poly.customerdomain.model.entity.LoyaltyPoint;
 import com.poly.customerdomain.model.entity.valueobject.*;
 import com.poly.customerdomain.model.exception.BlankUserIdException;
 import com.poly.customerdomain.model.exception.CustomerNotFoundException;
 import com.poly.customerdomain.model.exception.UserExistException;
 import com.poly.customerdomain.output.CustomerRepository;
-import com.poly.customerdomain.output.LoyaltyRepository;
+import com.poly.customerdomain.output.LoyaltyPointRepository;
 import com.poly.domain.valueobject.CustomerId;
 import com.poly.domain.valueobject.Money;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public class CustomerApplicationService implements CustomerUsecase {
 
     private final CustomerRepository customerRepository;
 
-    private final LoyaltyRepository loyaltyRepository;
+    private final LoyaltyPointRepository loyaltyPointRepository;
 
-    public CustomerApplicationService(CustomerRepository customerRepo, LoyaltyRepository loyaltyRepo) {
+    public CustomerApplicationService(CustomerRepository customerRepo, LoyaltyPointRepository loyaltyRepo) {
         this.customerRepository = customerRepo;
-        this.loyaltyRepository = loyaltyRepo;
+        this.loyaltyPointRepository = loyaltyRepo;
     }
 
     @Override
@@ -55,9 +53,9 @@ public class CustomerApplicationService implements CustomerUsecase {
 
         Customer savedCustomer = customerRepository.save(newCustomer);
 
-        Loyalty newLoyalty = Loyalty.createNew(newCustomer.getId());
+        LoyaltyPoint newLoyaltyPoint = LoyaltyPoint.createNew(newCustomer.getId());
 
-        Loyalty savedLoyalty = loyaltyRepository.save(newLoyalty);
+        LoyaltyPoint savedLoyaltyPoint = loyaltyPointRepository.save(newLoyaltyPoint);
 
         return CustomerDto.from(newCustomer);
     }

@@ -12,7 +12,7 @@ import com.poly.customerdomain.model.exception.BlankUserIdException;
 import com.poly.customerdomain.model.exception.CustomerNotFoundException;
 import com.poly.customerdomain.model.exception.UserExistException;
 import com.poly.customerdomain.output.CustomerRepository;
-import com.poly.customerdomain.output.LoyaltyRepository;
+import com.poly.customerdomain.output.LoyaltyPointRepository;
 import com.poly.domain.valueobject.CustomerId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +36,7 @@ class CustomerApplicationServiceTest {
     private CustomerRepository customerRepository;
 
     @Mock
-    private LoyaltyRepository loyaltyRepository;
+    private LoyaltyPointRepository loyaltyPointRepository;
 
     @InjectMocks
     private CustomerApplicationService service;
@@ -55,7 +55,7 @@ class CustomerApplicationServiceTest {
         command.setAddress(new AddressDto("123 Street", "Ward 123", "District 123", "City 123"));
         when(customerRepository.existsByUserId(userId)).thenReturn(false);
         when(customerRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-        when(loyaltyRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(loyaltyPointRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
         CustomerDto result = service.initializeCustomerProfile(command);
         assertNotNull(result);
         assertNotNull(result.getCustomerId());

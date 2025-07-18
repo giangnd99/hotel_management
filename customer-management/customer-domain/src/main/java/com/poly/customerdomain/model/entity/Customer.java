@@ -118,5 +118,7 @@ public class Customer extends AggregateRoot<CustomerId> {
         return new Builder();
     }
 
-
+    public void upgradeTo(Level level) {
+        this.setLevel(level);
+    }
 }

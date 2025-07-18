@@ -3,7 +3,6 @@ DROP DATABASE IF EXISTS customer_management;
 CREATE DATABASE IF NOT EXISTS customer_management;
 USE customer_management;
 
--- Bảng customer: Lưu thông tin cá nhân khách hàng
 CREATE TABLE customer
 (
     customer_id          BINARY(16) PRIMARY KEY,
@@ -13,37 +12,19 @@ CREATE TABLE customer
     address              TEXT,
     image_url             VARCHAR(100),
     date_of_birth        DATE,
-    accumulated_spending DECIMAL(15, 2)                                                   NOT NULL DEFAULT 0.00 CHECK (accumulated_spending >= 0),
     level                ENUM ('NONE', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND') NOT NULL DEFAULT 'NONE',
     behavior_data        JSON,
     created_at           DATETIME                                                         NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at           DATETIME                                                         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Bảng loyalty: Quản lý điểm tích lũy
-CREATE TABLE loyalty
+CREATE TABLE loyaltyPoint
 (
     loyalty_id   BINARY(16) PRIMARY KEY,
     customer_id  BINARY(16)     NOT NULL,
     points       DECIMAL(10, 2) NOT NULL DEFAULT 0.00 CHECK (points >= 0),
     last_updated DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (customer_id) REFERENCES customer (customer_id) ON DELETE CASCADE
-);
-
--- Bảng voucher: Quản lý voucher
-CREATE TABLE voucher
-(
-    voucher_id          BINARY(16) PRIMARY KEY,
-    customer_id         BINARY(16)                         NOT NULL,
-    promotion_id        INT,
-    code                VARCHAR(20)                        NOT NULL UNIQUE,
-    discount_percentage DECIMAL(5, 2)                      NOT NULL CHECK (discount_percentage BETWEEN 0 AND 100),
-    discount_amount     DECIMAL(10, 2)                              DEFAULT 0.00 CHECK (discount_amount >= 0),
-    issue_date          DATE                               NOT NULL,
-    expiry_date         DATE                               NOT NULL,
-    status              ENUM ('ACTIVE', 'USED', 'EXPIRED') NOT NULL DEFAULT 'ACTIVE',
-    FOREIGN KEY (customer_id) REFERENCES customer (customer_id) ON DELETE CASCADE,
-    CHECK (expiry_date >= issue_date)
 );
 
 -- Bảng loyalty_transaction: Lịch sử giao dịch điểm
@@ -57,7 +38,7 @@ CREATE TABLE loyalty_transaction
     transaction_date DATETIME                          NOT NULL DEFAULT CURRENT_TIMESTAMP,
     description      VARCHAR(255),
     FOREIGN KEY (customer_id) REFERENCES customer (customer_id) ON DELETE CASCADE,
-    FOREIGN KEY (loyalty_id) REFERENCES loyalty (loyalty_id) ON DELETE CASCADE
+    FOREIGN KEY (loyalty_id) REFERENCES loyaltyPoint (loyalty_id) ON DELETE CASCADE
 );
 
 -- Bảng birthday_notification_log: Lịch sử gửi email sinh nhật
@@ -70,7 +51,6 @@ CREATE TABLE birthday_notification_log
     status          ENUM ('SENT', 'FAILED') NOT NULL,
     message_content TEXT,
     FOREIGN KEY (customer_id) REFERENCES customer (customer_id) ON DELETE CASCADE,
-    FOREIGN KEY (voucher_id) REFERENCES voucher (voucher_id) ON DELETE SET NULL
 );
 -- Insert dữ liệu mẫu vào bảng customer
 INSERT INTO customer (customer_id, user_id, first_Name, last_Name, address, date_of_birth, accumulated_spending, level,
@@ -180,8 +160,8 @@ VALUES (UUID_TO_BIN('9f8d2531-6724-4a2f-b9cc-66e2fa4b9d01'), UUID_TO_BIN('a84f7c
          "frequentlyUsedServices": "SPA"
        }');
 
--- loyalty
-INSERT INTO loyalty (loyalty_id, customer_id, points)
+-- loyaltyPoint
+INSERT INTO loyaltyPoint (loyalty_id, customer_id, points)
 VALUES (UUID_TO_BIN('468e28fc-4c19-42ae-8457-0492f7000018'), UUID_TO_BIN('9f8d2531-6724-4a2f-b9cc-66e2fa4b9d01'),
         24192.14),
        (UUID_TO_BIN('4efdc1a2-8c92-44f1-810d-3c03a85094aa'), UUID_TO_BIN('b2e5fc6e-69fc-4aeb-b237-65c7277e9b95'),
@@ -240,7 +220,7 @@ VALUES (UUID_TO_BIN('c9f1a82e-8f89-4d10-b6f2-dc6f66a3e2a5'), UUID_TO_BIN('f10088
         -5000.00, 'REDEEM', '2025-05-16 15:00:00', 'Redeemed for promotion LOYALTY500');
 
 -- birthday_notification_log
-INSERT INTO birthday_notification_log (customer_id, voucher_id, sent_date, status, message_content)
+INSERT INTO birthday_notification_log (customer_id, sent_date, status, message_content)
 VALUES (UUID_TO_BIN('c9f1a82e-8f89-4d10-b6f2-dc6f66a3e2a5'), UUID_TO_BIN('55555555-5555-5555-5555-555555555555'),
         '2025-01-01 09:00:00', 'SENT', 'Chúc mừng sinh nhật John Doe! Dùng mã BDAY2025-JD để được giảm 10%.'),
        (UUID_TO_BIN('9ea47fd1-3d59-4f9b-bcf7-89f7c3d3d3f7'), UUID_TO_BIN('66666666-6666-6666-6666-666666666666'),

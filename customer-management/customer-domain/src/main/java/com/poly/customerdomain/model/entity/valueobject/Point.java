@@ -13,6 +13,10 @@ public class Point {
         this.value = value;
     }
 
+    public static Point from(BigDecimal value) {
+        return new Point(value);
+    }
+
     public static Point zero() {
         return new Point(BigDecimal.ZERO);
     }
@@ -31,6 +35,10 @@ public class Point {
 
     public BigDecimal getValue() {
         return value;
+    }
+
+    public boolean isLessThan(Point other) {
+        return this.value.compareTo(other.value) < 0;
     }
 
 }

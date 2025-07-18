@@ -10,21 +10,21 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class Loyalty {
+public class LoyaltyPoint {
 
     private LoyaltyId id;
     private final CustomerId customerId;
     private Point points;
     private LocalDateTime lastUpdated;
 
-    private Loyalty(Builder builder) {
+    private LoyaltyPoint(Builder builder) {
         id = builder.id;
         customerId = builder.customerId;
         points = builder.points;
         lastUpdated = builder.lastUpdated;
     }
 
-    public static Loyalty createNew(CustomerId customerId) {
+    public static LoyaltyPoint createNew(CustomerId customerId) {
         return new Builder(customerId)
                 .id(LoyaltyId.generate())
                 .points(Point.zero())
@@ -67,8 +67,8 @@ public class Loyalty {
             return this;
         }
 
-        public Loyalty build() {
-            return new Loyalty(this);
+        public LoyaltyPoint build() {
+            return new LoyaltyPoint(this);
         }
     }
 }

@@ -1,4 +1,5 @@
 package com.poly.customerdomain.model.entity.valueobject;
 
-public class TransactionType {
+public enum TransactionType {
+    EARN, REDEEM, ADJUSTMENT
 }

@@ -18,4 +18,8 @@ public class LoyaltyId {
         return UUID.fromString(loyaltyId.value.toString());
     }
 
+    public static LoyaltyId fromUUID(UUID value) {
+        return new LoyaltyId(value);
+    }
+
 }

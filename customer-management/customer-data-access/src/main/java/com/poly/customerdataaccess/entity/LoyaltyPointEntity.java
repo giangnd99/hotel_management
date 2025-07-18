@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "loyalty")
+@Table(name = "loyalty_point")
 @Getter
 @Setter
-public class LoyaltyEntity {
+public class LoyaltyPointEntity {
 
     @Id
     @Column(name = "loyalty_id", columnDefinition = "BINARY(16)")
