@@ -43,7 +43,6 @@ public class CustomerApplicationService implements CustomerUsecase {
                 .name(Name.from(command.getFirstName().trim(), command.getLastName().trim()))
                 .address(Address.from(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity()))
                 .dateOfBirth(DateOfBirth.from(command.getDateOfBirth()))
-                .accumulatedSpending(Money.ZERO)
                 .image(ImageUrl.empty())
                 .level(Level.NONE)
                 .behaviorData(BehaviorData.empty())

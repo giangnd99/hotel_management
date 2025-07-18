@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Setter
 @Getter
-public class LoyaltyPointDto {
+    public class LoyaltyPointDto {
     private UUID id;
     private BigDecimal points;
     private LocalDateTime lastUpdated;

@@ -15,8 +15,8 @@ public class PointChanged {
         this.valueChange = valueChange;
     }
 
-    public long getValueChange() {
-        return valueChange.longValue();
+    public BigDecimal getValueChange() {
+        return valueChange;
     }
 
     public static PointChanged from(BigDecimal valueChange) {
@@ -24,6 +24,6 @@ public class PointChanged {
     }
 
     public static BigDecimal to(PointChanged pointChanged) {
-        return BigDecimal.valueOf(pointChanged.getValueChange());
+        return pointChanged.getValueChange();
     }
 }

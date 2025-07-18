@@ -10,4 +10,8 @@ public class Description {
     public static Description from(String description) {
         return new Description(description);
     }
+
+    public String getValue() {
+        return description;
+    }
 }

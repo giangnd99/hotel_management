@@ -22,4 +22,7 @@ public class LoyaltyId {
         return new LoyaltyId(value);
     }
 
+    public UUID getValue() {
+        return value;
+    }
 }

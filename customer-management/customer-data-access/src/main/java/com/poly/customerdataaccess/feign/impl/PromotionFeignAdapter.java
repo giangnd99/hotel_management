@@ -14,6 +14,7 @@ public class PromotionFeignAdapter implements PromotionServicePort {
 
     @Override
     public boolean redeemVoucher(RedeemVoucherCommand command) {
-        return promotionFeignClient.redeemVoucher(command);
+//        return promotionFeignClient.redeemVoucher(command);
+        return true;
     }
 }

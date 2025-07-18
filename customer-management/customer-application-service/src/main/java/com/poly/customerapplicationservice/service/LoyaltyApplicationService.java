@@ -45,7 +45,14 @@ public class LoyaltyApplicationService implements LoyaltyUsecase{
 
     @Override
     public List<LoyaltyTransactionDto> viewTransactionHistory(RetrieveLoyaltyTransactionCommand command) {
-        return List.of();
+        Customer customer = customerRepository.findById(command.getCustomerId()).orElseThrow(() -> new CustomerNotFoundException(command.getCustomerId()));
+        LoyaltyPoint loyaltyPoint = loyaltyPointRepository.findByCustomerId(customer.getId().getValue())
+                .orElseThrow(() -> new LoyaltyNotFoundException(command.getCustomerId()));
+
+        List<LoyaltyTransaction> loyaltyTransactions = loyaltyTransactionRepository
+                .findAllByLoyaltyId(loyaltyPoint.getId().getValue());
+
+        return LoyaltyTransactionDto.from(loyaltyTransactions);
     }
 
     @Override

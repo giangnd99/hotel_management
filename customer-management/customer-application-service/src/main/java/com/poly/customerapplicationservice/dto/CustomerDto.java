@@ -30,7 +30,6 @@ public class CustomerDto {
         dto.setFirstName(customer.getFullName().getFirstName());
         dto.setLastName(customer.getFullName().getLastName());
         dto.setDateOfBirth(customer.getDateOfBirth().getValue());
-        dto.setAccumulatedSpending(customer.getAccumulatedSpending().getAmount());
         dto.setLevel(customer.getLevel());
         dto.setAddress(customer.getAddress().toFullAddress());
         dto.setImageUrl(customer.getImage().getUrl());

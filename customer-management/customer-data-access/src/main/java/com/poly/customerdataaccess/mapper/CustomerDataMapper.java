@@ -17,7 +17,6 @@ public class CustomerDataMapper {
         customerEntity.setLastName(domain.getFullName().getLastName());
         customerEntity.setAddress(domain.getAddress().toFullAddress());
         customerEntity.setDateOfBirth(domain.getDateOfBirth().getValue());
-        customerEntity.setAccumulatedSpending(domain.getAccumulatedSpending().getAmount());
         customerEntity.setLevel(Level.valueOf(domain.getLevel().name()));
         customerEntity.setImageUrl(domain.getImage().getUrl());
         customerEntity.setBehaviorData(domain.getBehaviorData().toJson());
@@ -33,7 +32,6 @@ public class CustomerDataMapper {
                 .name(Name.from(entity.getFirstName(), entity.getLastName()))
                 .address(Address.from(entity.getAddress()))
                 .dateOfBirth(DateOfBirth.from(entity.getDateOfBirth()))
-                .accumulatedSpending(Money.from(entity.getAccumulatedSpending()))
                 .level(com.poly.customerdomain.model.entity.valueobject.Level.valueOf(entity.getLevel().name()))
                 .behaviorData(BehaviorData.fromJson(entity.getBehaviorData()))
                 .image(ImageUrl.from(entity.getImageUrl()))
