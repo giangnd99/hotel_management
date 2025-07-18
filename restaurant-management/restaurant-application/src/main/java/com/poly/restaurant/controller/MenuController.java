@@ -2,7 +2,7 @@ package com.poly.restaurant.controller;
 
 import com.poly.restaurant.application.dto.MenuDTO;
 import com.poly.restaurant.application.dto.ReviewDTO;
-import com.poly.restaurant.application.port.in.RestaurantUseCase;
+import com.poly.restaurant.application.port.in.MenuUseCase;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,41 +22,39 @@ import java.util.List;
 @Validated
 public class MenuController {
 
-    private final RestaurantUseCase restaurantUseCase;
+    private final MenuUseCase useCase;
 
     @GetMapping
     public ResponseEntity<List<MenuDTO>> getMenu() {
-        return ResponseEntity.ok(restaurantUseCase.getMenu());
+        return ResponseEntity.ok(useCase.getMenu());
     }
 
     @PostMapping
     public ResponseEntity<MenuDTO> createMenu(@RequestBody @Valid MenuDTO request) {
-        restaurantUseCase.createMenu(request);
+        useCase.createMenu(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<MenuDTO> updateMenu(@PathVariable Integer id, @RequestBody @Valid MenuDTO request) {
-        restaurantUseCase.updateMenu(id, request);
+        useCase.updateMenu(id, request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<MenuDTO> deleteMenu(@PathVariable Integer id) {
-        restaurantUseCase.deleteMenu(id);
+        useCase.deleteMenu(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{menuId}/review")
     public ResponseEntity<?> addReview(@PathVariable Long menuId, @RequestBody @Valid ReviewDTO request) {
-        restaurantUseCase.addReview(menuId, request);
+        useCase.addReview(menuId, request);
         return ResponseEntity.ok("Đánh giá đã được ghi nhận");
     }
 
     @GetMapping("/{menuId}/reviews")
     public ResponseEntity<?> getReviews(@PathVariable Long menuId) {
-        return ResponseEntity.ok(restaurantUseCase.getReviews(menuId));
+        return ResponseEntity.ok(useCase.getReviews(menuId));
     }
-
 }
-

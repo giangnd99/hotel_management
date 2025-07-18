@@ -1,9 +1,9 @@
 package com.poly.restaurant.application.handler;
 
-import com.poly.restaurant.application.dto.MenuDTO;
+import com.poly.restaurant.domain.entity.MenuItem;
 
 import java.util.List;
 
-public interface MenuItemHandler {
-    List<MenuDTO> searchByName(String name);
+public interface MenuItemHandler extends GenericHandler<MenuItem, Integer>{
+    List<MenuItem> searchByName(String name);
 }

@@ -6,16 +6,21 @@ import com.poly.restaurant.domain.value_object.MenuItemId;
 
 public class MenuItemEntityMapper {
 
-    public static MenuItemJpaEntity toJpa(MenuItem item) {
+    private MenuItemEntityMapper() {
+        // private constructor to prevent instantiation
+    }
+
+    public static MenuItemJpaEntity toEntity(MenuItem item) {
         if (item == null) return null;
-        MenuItemJpaEntity entity = new MenuItemJpaEntity();
-        entity.setId(item.getId().getValue());
-        entity.setName(item.getName());
-        entity.setDescription(item.getDescription());
-        entity.setPrice(item.getPrice());
-        entity.setCategory(item.getCategory());
-        entity.setQuantity(item.getQuantity());
-        return entity;
+
+        return MenuItemJpaEntity.builder()
+                .id(item.getId().getValue())
+                .name(item.getName())
+                .description(item.getDescription())
+                .price(item.getPrice())
+                .category(item.getCategory())
+                .quantity(item.getQuantity())
+                .build();
     }
 
     public static MenuItem toDomain(MenuItemJpaEntity entity) {

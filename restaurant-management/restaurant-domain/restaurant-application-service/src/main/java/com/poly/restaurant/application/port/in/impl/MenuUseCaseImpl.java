@@ -1,40 +1,22 @@
-package com.poly.restaurant.application.port.in;
+package com.poly.restaurant.application.port.in.impl;
 
 import com.poly.restaurant.application.annotation.DomainHandler;
-import com.poly.restaurant.application.dto.*;
-import com.poly.restaurant.application.handler.impl.MenuItemHandlerImpl;
+import com.poly.restaurant.application.dto.MenuDTO;
+import com.poly.restaurant.application.dto.ReviewDTO;
+import com.poly.restaurant.application.handler.MenuItemHandler;
 import com.poly.restaurant.application.mapper.MenuItemMapper;
+import com.poly.restaurant.application.port.in.MenuUseCase;
+import com.poly.restaurant.domain.entity.MenuItem;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @DomainHandler
-public class RestaurantUseCaseImpl implements RestaurantUseCase {
+public class MenuUseCaseImpl implements MenuUseCase {
+    private final MenuItemHandler menuItemHandler;
 
-    private final MenuItemHandlerImpl menuItemHandler;
-
-    @Override
-    public List<TableDTO> getAllTables() {
-        return List.of();
-    }
-
-    public RestaurantUseCaseImpl(MenuItemHandlerImpl menuItemHandler) {
+    public MenuUseCaseImpl(MenuItemHandler menuItemHandler) {
         this.menuItemHandler = menuItemHandler;
-    }
-
-    @Override
-    public OrderDTO createOrder(OrderDTO request) {
-        return null;
-    }
-
-    @Override
-    public List<OrderDTO> getAllOrders() {
-        return List.of();
-    }
-
-    @Override
-    public List<StaffDTO> getAllStaff() {
-        return List.of();
     }
 
     @Override
@@ -47,7 +29,8 @@ public class RestaurantUseCaseImpl implements RestaurantUseCase {
 
     @Override
     public void createMenu(MenuDTO request) {
-        menuItemHandler.create(MenuItemMapper.toEntity(request));
+        MenuItem entity = MenuItemMapper.toEntity(request);
+        menuItemHandler.create(entity);
     }
 
     @Override
