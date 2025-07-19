@@ -1,6 +1,6 @@
 package com.poly.room.management.domain.port.in.service;
 
-import com.poly.application.handler.AppException;
+import com.poly.restaurant.domain.handler.AppException;
 import com.poly.room.management.domain.dto.response.FurnitureResponse;
 
 import java.util.List;
