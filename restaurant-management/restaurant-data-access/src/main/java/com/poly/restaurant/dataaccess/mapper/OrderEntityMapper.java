@@ -12,34 +12,39 @@ import java.util.stream.Collectors;
 
 public class OrderEntityMapper {
 
-    // Domain -> JPA: OrderItem -> OrderJpaEntity
-    public static OrderJpaEntity toEntity(OrderItem domainItem) {
-        return OrderJpaEntity.builder()
+    // Domain -> JPA: OrderItem -> OrderItemJpaEntity
+    public static OrderItemJpaEntity toEntity(OrderItem domainItem, OrderJpaEntity order) {
+        return OrderItemJpaEntity.builder()
                 .orderItemId(domainItem.getOrderItemId())
-                .menuItemId(domainItem.getMenuItemId().getValue()) // unwrap value object
+                .order(order)
+                .menuItemId(domainItem.getMenuItemId().getValue())
                 .quantity(domainItem.getQuantity())
                 .unitPrice(domainItem.getUnitPrice())
                 .build();
     }
 
-    // Domain -> JPA: Order -> OrderItemJpaEntity
-    public static OrderItemJpaEntity toEntity(Order domainOrder) {
-        List<OrderJpaEntity> jpaItems = domainOrder.getItems().stream()
-                .map(OrderEntityMapper::toEntity)
-                .collect(Collectors.toList());
-
-        return OrderItemJpaEntity.builder()
+    // Domain -> JPA: Order -> OrderJpaEntity
+    public static OrderJpaEntity toEntity(Order domainOrder) {
+        OrderJpaEntity orderEntity = OrderJpaEntity.builder()
                 .orderId(domainOrder.getOrderId().getValue())
                 .customerId(domainOrder.getCustomerId())
                 .orderDate(domainOrder.getOrderDate())
-                .items(jpaItems)
                 .totalPrice(domainOrder.getTotalPrice())
                 .status(domainOrder.getStatus())
                 .build();
+
+        // map items kèm order reference
+        List<OrderItemJpaEntity> jpaItems = domainOrder.getItems().stream()
+                .map(item -> toEntity(item, orderEntity))
+                .collect(Collectors.toList());
+
+        orderEntity.setItems(jpaItems);
+
+        return orderEntity;
     }
 
-    // JPA -> Domain: OrderJpaEntity -> OrderItem
-    public static OrderItem toDomain(OrderJpaEntity jpaEntity) {
+    // JPA -> Domain: OrderItemJpaEntity -> OrderItem
+    public static OrderItem toDomain(OrderItemJpaEntity jpaEntity) {
         return new OrderItem(
                 jpaEntity.getOrderItemId(),
                 new MenuItemId(jpaEntity.getMenuItemId()),
@@ -48,8 +53,8 @@ public class OrderEntityMapper {
         );
     }
 
-    // JPA -> Domain: OrderItemJpaEntity -> Order
-    public static Order toDomain(OrderItemJpaEntity jpaEntity) {
+    // JPA -> Domain: OrderJpaEntity -> Order
+    public static Order toDomain(OrderJpaEntity jpaEntity) {
         List<OrderItem> domainItems = jpaEntity.getItems().stream()
                 .map(OrderEntityMapper::toDomain)
                 .collect(Collectors.toList());

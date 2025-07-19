@@ -1,30 +1,33 @@
 package com.poly.restaurant.dataaccess.entity;
 
-import com.poly.restaurant.domain.value_object.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
+
 
 @Entity
-@Builder
+@Table(name = "order_items")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "order_items")
+@Builder
 public class OrderItemJpaEntity {
     @Id
-    @Column(name = "order_id")
-    private int orderId;
-    private int customerId;
-    private LocalDateTime orderDate;
+    @Column(name = "order_item_id")
+    private int orderItemId;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "order_id")
-    private List<OrderJpaEntity> items;
-    private BigDecimal totalPrice;
-    private OrderStatus status;
+    private OrderJpaEntity order;
+
+    @Column(name = "menu_item_id")
+    private int menuItemId;
+
+    @Column(name = "quantity")
+    private int quantity;
+
+    @Column(name = "unit_price")
+    private BigDecimal unitPrice;
 }
