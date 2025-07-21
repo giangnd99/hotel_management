@@ -1,0 +1,23 @@
+package com.poly.authentication.service.domain.dto.request;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+
+import java.time.LocalDate;
+
+@Setter
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserCreationRequest {
+    @Size(min = 3, message = "USERNAME_INVALID")
+    private String email;
+
+    @NotBlank(message = "PASSWORD_CANNOT_BE_NULL")
+    @Size(min = 8, message = "PASSWORD_INVALID")
+    private String password;
+
+    private String phone;
+}

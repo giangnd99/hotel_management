@@ -1,0 +1,12 @@
+server:
+  port: 8082
+
+openapi:
+  service:
+    api-docs: restaurant-service-docs
+    title: Restaurant Service API
+    version: 1.0.0
+    server: http://localhost:8082
+logging:
+  level:
+    org.springdoc: DEBUG
