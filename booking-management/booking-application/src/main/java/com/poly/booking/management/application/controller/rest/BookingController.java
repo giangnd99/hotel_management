@@ -5,7 +5,7 @@ import com.poly.booking.management.domain.dto.CreateBookingCommand;
 import com.poly.booking.management.domain.dto.RoomDto;
 import com.poly.booking.management.domain.dto.RoomSearchQuery;
 import com.poly.booking.management.domain.port.in.service.BookingManagementService;
-import com.poly.domain.valueobject.BookingStatus;
+import com.poly.domain.valueobject.EBookingStatus;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -125,7 +125,7 @@ public class BookingController {
     @PutMapping("/{bookingId}/update")
     public ResponseEntity<BookingDto> updateBooking(
             @PathVariable UUID bookingId,
-            @RequestParam(required = false) BookingStatus newStatus,
+            @RequestParam(required = false) EBookingStatus newStatus,
             @RequestParam(required = false) String specialRequests,
             @RequestParam(required = false) Integer numberOfGuests) {
         try {

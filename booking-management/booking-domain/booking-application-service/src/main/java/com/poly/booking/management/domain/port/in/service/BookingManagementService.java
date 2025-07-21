@@ -4,7 +4,7 @@ import com.poly.booking.management.domain.dto.BookingDto;
 import com.poly.booking.management.domain.dto.CreateBookingCommand;
 import com.poly.booking.management.domain.dto.RoomDto;
 import com.poly.booking.management.domain.dto.RoomSearchQuery;
-import com.poly.domain.valueobject.BookingStatus;
+import com.poly.domain.valueobject.EBookingStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,5 +24,5 @@ public interface BookingManagementService {
 
     BookingDto cancelBooking(UUID bookingId);
 
-    BookingDto updateBookingDetails(UUID bookingId, BookingStatus newStatus, String specialRequests, Integer numberOfGuests);
+    BookingDto updateBookingDetails(UUID bookingId, EBookingStatus newStatus, String specialRequests, Integer numberOfGuests);
 }
