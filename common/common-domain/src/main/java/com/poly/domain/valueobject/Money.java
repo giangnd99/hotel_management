@@ -58,6 +58,10 @@ public class Money {
         return amount.equals(money.amount);
     }
 
+    public static Money from(BigDecimal amount) {
+        return new Money(amount);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(amount);
