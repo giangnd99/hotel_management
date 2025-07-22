@@ -8,6 +8,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CustomerRepository {
-    Optional<Customer> findById(CustomerId id);
-    List<Customer> findAll();
+    Customer save(Customer customer);                     // create or update
+    Optional<Customer> findByUserId(UUID userId);   // optional: avoid null
+    Optional<Customer> findById(UUID customerId);
+    List<Customer> findAll();                             // list
+    void delete(CustomerId customerId);                   // delete
+    boolean existsByUserId(UUID userId);
 }

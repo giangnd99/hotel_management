@@ -30,12 +30,10 @@
 
     <modules>
         <module>common</module>
-        <module>common/common-application</module>
         <module>infrastructure</module>
         <module>api-gateway</module>
         <module>room-management</module>
         <module>customer-management</module>
-        <module>api-gateway/authentication-service/authentication-domain</module>
         <module>spring-ai-management</module>
         <module>staff-management</module>
         <module>inventory-management</module>
@@ -43,6 +41,8 @@
         <module>reporting-management</module>
         <module>payment-management</module>
         <module>notification-management</module>
+        <module>restaurant-management</module>
+        <module>promotion-management</module>
     </modules>
 
     <scm>
@@ -56,10 +56,20 @@
     <properties>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <mockito.version>5.2.0</mockito.version>
-        <spring-kafka.version>3.0.5</spring-kafka.version>
+        <spring-kafka.version>3.3.7</spring-kafka.version>
         <kafka-avro-serializer.version>7.3.3</kafka-avro-serializer.version>
         <avro.version>1.11.1</avro.version>
         <java.version>17</java.version>
+        <graphql-java.version>22.0</graphql-java.version>
+        <graphql-java-extended-scalars.version>2022-12-18T02-09-15-8bb2279</graphql-java-extended-scalars.version>
+        <spring-ai.version>1.0.0</spring-ai.version>
+        <spring-boot-starter-graphql.version>3.3.4</spring-boot-starter-graphql.version>
+        <swagger-project.version>2.8.5</swagger-project.version>
+        <eureka-server.version>4.1.0</eureka-server.version>
+        <spring-cloud.version>2024.0.1</spring-cloud.version>
+        <openfeign.version>4.2.0</openfeign.version>
+        <springdoc-openapi.version>2.2.0</springdoc-openapi.version>
+        <junitt.version>5.10.3</junitt.version>
     </properties>
 
     <dependencyManagement>
@@ -91,23 +101,105 @@
             </dependency>
             <dependency>
                 <groupId>com.poly</groupId>
-                <artifactId>authentication-dataaccess</artifactId>
+                <artifactId>authentication-data-access</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.poly</groupId>
-                <artifactId>authentication-domain-core</artifactId>
+                <artifactId>authen-domain-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.poly</groupId>
-                <artifactId>authentication-application-service</artifactId>
+                <artifactId>authen-application-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.poly</groupId>
                 <artifactId>authentication-container</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>ai-domain-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>ai-application-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>ai-dao</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>ai-application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>ai-container</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>room-data-access</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>room-domain-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>room-application-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>room-application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>room-container</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>booking-application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>booking-container</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>booking-data-access</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>booking-domain-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>booking-application-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junitt.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
 
@@ -122,6 +214,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.38</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -142,5 +235,6 @@
             </plugin>
         </plugins>
     </build>
+
 
 </project>

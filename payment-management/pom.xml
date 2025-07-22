@@ -17,7 +17,6 @@
     </modules>
 
     <artifactId>payment-management</artifactId>
-
     <packaging>pom</packaging>
 
 </project>

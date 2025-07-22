@@ -14,7 +14,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>ai-domain-core</module>
-        <module>ai-service-application</module>
+        <module>ai-application-service</module>
     </modules>
 
 </project>

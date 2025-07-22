@@ -1,107 +1,68 @@
 package com.poly.customercontainer.controller;
 
-import com.poly.customerapplication.service.CustomerApplicationService;
-import com.poly.customerdomain.model.entity.Customer;
-import com.poly.customerdomain.model.valueobject.Address;
-import com.poly.customerdomain.model.valueobject.CustomerType;
-import com.poly.customerdomain.model.valueobject.Name;
-import com.poly.customerdomain.model.valueobject.Nationality;
-import com.poly.domain.valueobject.CustomerId;
-import org.springframework.http.HttpStatus;
+import com.poly.customerapplicationservice.command.CreateCustomerCommand;
+import com.poly.customerapplicationservice.command.RetrieveCustomerProfileCommand;
+import com.poly.customerapplicationservice.command.UpdateCustomerCommand;
+import com.poly.customerapplicationservice.dto.CustomerDto;
+import com.poly.customerapplicationservice.dto.PageResult;
+import com.poly.customerapplicationservice.port.input.CustomerUsecase;
+import com.poly.customercontainer.shared.request.ApiResponse;
+import com.poly.customerdataaccess.image.CloudinaryImage;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.io.IOException;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/customers")
+@RequestMapping("/customers")
 public class CustomerController {
 
-    private CustomerApplicationService  customerApplicationService;
+    private final CustomerUsecase customerUsecase;
 
-    @GetMapping()
-    public ResponseEntity<List<Customer>> retrieveAllCustomer() {
+    private final CloudinaryImage cloudinaryImage;
 
-        Customer customer1 = new Customer.Builder()
-                .userId(UUID.randomUUID())
-                .name(new Name("Hải Thạch"))
-                .address(new Address("123 Ấp 17, Xã Trung Chánh, Huyện Hóc Môn, TP. Hồ Chí Minh"))
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
-                .nationality(new Nationality("VIETNAME"))
-                .customerType(CustomerType.REGULAR)
-                .build();
-
-        Customer customer2 = new Customer.Builder()
-                .userId(UUID.randomUUID())
-                .name(new Name("Đằng Giang"))
-                .address(new Address("123 Bình Dương, Tp. Hồ Chí Minh"))
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
-                .nationality(new Nationality("VIETNAME"))
-                .customerType(CustomerType.REGULAR)
-                .build();
-
-        Customer customer3 = new Customer.Builder()
-                .userId(UUID.randomUUID())
-                .name(new Name("Lâm Hùng"))
-                .address(new Address("123 Quận 7, TP. Hồ Chí Minh"))
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
-                .nationality(new Nationality("VIETNAME"))
-                .customerType(CustomerType.REGULAR)
-                .build();
-
-        Customer customer4 = new Customer.Builder()
-                .userId(UUID.randomUUID())
-                .name(new Name("Vũ Lâm"))
-                .address(new Address("123 Quận 9, TP. Hồ Chí Minh"))
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
-                .nationality(new Nationality("VIETNAME"))
-                .customerType(CustomerType.REGULAR)
-                .build();
-
-        Customer customer5 = new Customer.Builder()
-                .userId(UUID.randomUUID())
-                .name(new Name("Trí Tài"))
-                .address(new Address("123 Quận 12, TP. Hồ Chí Minh"))
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
-                .nationality(new Nationality("VIETNAME"))
-                .customerType(CustomerType.REGULAR)
-                .build();
-
-        Customer customer6 = new Customer.Builder()
-                .userId(UUID.randomUUID())
-                .name(new Name("Hoàng Linh"))
-                .address(new Address("123 Quận Gò Vấp, TP. Hồ Chí Minh"))
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
-                .nationality(new Nationality("VIETNAME"))
-                .customerType(CustomerType.REGULAR)
-                .build();
-
-        List<Customer> list = List.of(
-                customer1,
-                customer2,
-                customer3,
-                customer4,
-                customer5,
-                customer6
-
-        );
-        return ResponseEntity.status(HttpStatus.OK).body(list);
+    public CustomerController(CustomerUsecase customerUsecase, CloudinaryImage cloudinaryImage) {
+        this.customerUsecase = customerUsecase;
+        this.cloudinaryImage = cloudinaryImage;
     }
 
-    @GetMapping("/find")
-    public ResponseEntity<Customer> findById(CustomerId id) {
-        Customer customer = new Customer.Builder()
-                .userId(UUID.randomUUID())
-                .name(new Name("John Doe"))
-                .address(new Address("123 Street, City, Country"))
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
-                .nationality(new Nationality("VIETNAME"))
-                .customerType(CustomerType.REGULAR)
-                .build();
-        return ResponseEntity.status(HttpStatus.OK).body(customer);
+    @GetMapping("/profile/{userId}")
+    public ResponseEntity<ApiResponse<CustomerDto>> retrieveCustomerProfile(@PathVariable UUID userId) {
+        RetrieveCustomerProfileCommand command = new RetrieveCustomerProfileCommand();
+        command.setUserId(userId);
+        var dto = customerUsecase.retrieveCustomerProfile(command);
+        return ResponseEntity.ok(ApiResponse.success(dto));
+    }
+
+    @GetMapping()
+    public ResponseEntity<ApiResponse<PageResult<CustomerDto>>> retrieveAllCustomers(@RequestParam int page, @RequestParam int size) {
+        return ResponseEntity.ok(ApiResponse.success(customerUsecase.retrieveAllCustomers(page, size)));
+    }
+
+    @PostMapping()
+    public ResponseEntity<ApiResponse<CustomerDto>> createCustomer(@RequestBody CreateCustomerCommand createCustomerCommand) {
+         var customerId = customerUsecase.initializeCustomerProfile(createCustomerCommand);
+        return ResponseEntity.ok(ApiResponse.success(customerId));
+    }
+
+    @PutMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<CustomerDto>> updateCustomer(
+            @ModelAttribute UpdateCustomerCommand command,
+            @RequestPart(value = "imageRaw", required = false) MultipartFile imageFile) {
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            try {
+                byte[] imageBytes = imageFile.getBytes();
+                String imageLink = cloudinaryImage.upload(imageBytes);
+                command.setImage(imageLink);
+            } catch (IOException e) {
+                throw new RuntimeException("Không đọc được ảnh", e);
+            }
+        }
+        var customer = customerUsecase.ChangeCustomerInformation(command);
+        return ResponseEntity.ok(ApiResponse.success(customer));
     }
 }
