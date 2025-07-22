@@ -45,6 +45,12 @@ public class Money {
     public Money multiply(int multiplier) {
         return new Money(setScale(this.amount.multiply(new BigDecimal(multiplier))));
     }
+    public Money multiply(BigDecimal multiplier) {
+        return new Money(setScale(this.amount.multiply(multiplier)));
+    }
+    public Money divide(BigDecimal divisor) {
+        return new Money(setScale(this.amount.divide(divisor, RoundingMode.HALF_EVEN)));
+    }
 
     public BigDecimal getAmount() {
         return amount;

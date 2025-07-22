@@ -3,5 +3,8 @@ package com.poly.booking.management.domain.valueobject;
 public enum DepositStatus {
     APPROVED,
     REJECTED,
-    CANCELLED
+    CANCELLED,
+    REFUNDED,
+    REFUNDING,
+    PENDING
 }
