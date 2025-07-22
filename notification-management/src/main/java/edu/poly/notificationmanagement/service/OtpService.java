@@ -10,13 +10,13 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class OtpService {
 
-    private static final long OTP_EXPIRATION_TIME_MINUTES = 5; // OTP hết hạn sau 5 phút
+    private static final long OTP_EXPIRATION_TIME_MINUTES = 5; // OTP hết hạn 5 phút
 
     @Autowired
     private StringRedisTemplate redisTemplate;
 
     @Autowired
-    private EmailService emailService; // Để gửi OTP qua email
+    private EmailService emailService; // gửi OTP qua email
 
     /**
      * Tạo và lưu OTP vào Redis, sau đó gửi OTP qua email.
