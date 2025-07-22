@@ -13,6 +13,7 @@
     <artifactId>hotel_management</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
+
     <name>hotel_management</name>
     <description>hotel_management</description>
 
@@ -55,7 +56,7 @@
     <properties>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <mockito.version>5.2.0</mockito.version>
-        <spring-kafka.version>3.0.5</spring-kafka.version>
+        <spring-kafka.version>3.3.7</spring-kafka.version>
         <kafka-avro-serializer.version>7.3.3</kafka-avro-serializer.version>
         <avro.version>1.11.1</avro.version>
         <java.version>17</java.version>
@@ -68,6 +69,7 @@
         <spring-cloud.version>2024.0.1</spring-cloud.version>
         <openfeign.version>4.2.0</openfeign.version>
         <springdoc-openapi.version>2.2.0</springdoc-openapi.version>
+        <junitt.version>5.10.3</junitt.version>
     </properties>
 
     <dependencyManagement>
@@ -191,6 +193,13 @@
                 <groupId>com.poly</groupId>
                 <artifactId>booking-application-service</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junitt.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
 

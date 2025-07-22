@@ -1,7 +1,7 @@
 package com.poly.room.management.domain;
 
-import com.poly.application.handler.AppException;
-import com.poly.application.handler.ErrorCode;
+import com.poly.restaurant.domain.handler.AppException;
+import com.poly.restaurant.domain.handler.ErrorCode;
 import com.poly.domain.valueobject.InventoryItemId;
 import com.poly.room.management.domain.dto.response.FurnitureResponse;
 import com.poly.room.management.domain.entity.Furniture;

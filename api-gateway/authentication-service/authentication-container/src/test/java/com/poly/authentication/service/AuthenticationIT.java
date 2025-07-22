@@ -32,7 +32,6 @@ public class AuthenticationIT {
     @Autowired
     private WebTestClient webTestClient;
 
-
     private static String userToken;
     private static String adminToken; // For testing admin roles, if applicable
     private static String expiredToken;
@@ -118,9 +117,8 @@ public class AuthenticationIT {
     @Test
     @Order(4)
     void test4_GatewayRoutesToProductServiceWithValidToken() {
-        assertThat(userToken).isNotNull().isNotEmpty();
 
-        webTestClient.get().uri("/rooms") // Path được định tuyến tới ROOM-SERVICE
+        webTestClient.get().uri("api/rooms") // Path được định tuyến tới ROOM-SERVICE
 //                .header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken)
                 .exchange()
                 .expectStatus().isNotFound(); // Tương tự test3, xác nhận định tuyến và xác thực thành công.

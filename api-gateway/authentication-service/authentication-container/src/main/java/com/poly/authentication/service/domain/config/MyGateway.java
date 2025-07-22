@@ -21,11 +21,11 @@ public class MyGateway {
 
                 // Route cho user-service
                 .route("user-service", r -> r.path("/users/**")
-                        .uri("lb://USER-SERVICE"))
+                        .uri("lb://AUTHENTICATION-SERVICE"))
 
                 // Route cho product-service
-                .route("product-service", r -> r.path("/products/**", "/categories/**", "/reviews/**")
-                        .uri("lb://PRODUCT-SERVICE"))
+                .route("room-management", r -> r.path("/api/rooms/**")
+                        .uri("lb://ROOM-MANAGEMENT"))
 
                 // Route cho hotel-service
                 .route("hotel-service", r -> r.path("/hotels/**", "/rooms/**", "/bookings/**")
