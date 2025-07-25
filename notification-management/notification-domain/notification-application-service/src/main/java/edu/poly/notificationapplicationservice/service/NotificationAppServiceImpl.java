@@ -10,7 +10,7 @@ import edu.poly.notificationdomaincore.entity.NotificationStatus;
 import edu.poly.notificationdomaincore.exception.NotificationException;
 import edu.poly.notificationdomaincore.service.NotificationPersistencePort;
 import edu.poly.notificationdomaincore.service.NotificationSenderService;
-import edu.poly.notificationdomaincore.service.NotificationValidationService;
+import edu.poly.notificationdomaincore.service.impl.NotificationValidationService;
 import edu.poly.notificationdomaincore.value_object.MessageContent;
 import edu.poly.notificationdomaincore.value_object.NotificationMethod;
 import edu.poly.notificationdomaincore.value_object.NotificationPriority;

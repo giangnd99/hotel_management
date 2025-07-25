@@ -3,13 +3,14 @@ package com.poly.booking.management.domain.service.impl;
 import com.poly.booking.management.domain.entity.*;
 import com.poly.booking.management.domain.event.*;
 import com.poly.booking.management.domain.service.BookingDomainService;
-import com.poly.domain.valueobject.CustomerId;
+import com.poly.domain.valueobject.Money;
 
 import java.util.List;
 
 public class BookingDomainServiceImpl implements BookingDomainService {
+
     @Override
-    public BookingCreatedEvent validateAndInitiateBooking(Booking booking, Order order, List<Service> service, CustomerId customerId) {
+    public BookingCreatedEvent validateAndInitiateBooking(Booking booking, Order order, List<Service> service , List<Room> rooms) {
 
 
         return null;
@@ -65,10 +66,17 @@ public class BookingDomainServiceImpl implements BookingDomainService {
 
     }
 
-    private void validateRestaurantAvailability(RestaurantManagement restaurantManagement){
+    private void validateRestaurantAvailability(Order order){
+        RestaurantManagement restaurantManagement = new RestaurantManagement(order);
+    }
+
+    private void validateServiceAvailability(List<Service> services){
+        ServiceManagement management = new ServiceManagement(services);
 
     }
 
-    private void validateServiceAvailability(ServiceManagement serviceManagement){
+    private void validateRoomAvailabilityAndGetPrices(Booking booking, List<Room> rooms){
+        RoomManagement management = new RoomManagement(rooms);
+        management.setRoomsInformation(booking);
     }
 }

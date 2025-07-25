@@ -1,4 +1,4 @@
-package edu.poly.notificationdomaincore.service;
+package edu.poly.notificationdomaincore.service.impl;
 
 import edu.poly.notificationdomaincore.entity.Notification;
 import edu.poly.notificationdomaincore.exception.NotificationValidationException;

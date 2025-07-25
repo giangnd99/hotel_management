@@ -6,16 +6,16 @@ import java.util.List;
 
 public class ServiceManagement {
 
-    private List<Service> service;
+    private List<Service> services;
     private Money totalCost;
     private boolean isAvailable;
 
 
-    public ServiceManagement(List<Service> service) {
-        this.service = service;
+    public ServiceManagement(List<Service> services) {
+        this.services = services;
     }
 
     public List<Service> getService() {
-        return service;
+        return services;
     }
 }

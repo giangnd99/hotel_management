@@ -1,9 +1,6 @@
 package com.poly.booking.management.domain.service;
 
-import com.poly.booking.management.domain.entity.Booking;
-import com.poly.booking.management.domain.entity.Deposit;
-import com.poly.booking.management.domain.entity.Order;
-import com.poly.booking.management.domain.entity.Service;
+import com.poly.booking.management.domain.entity.*;
 import com.poly.booking.management.domain.event.*;
 import com.poly.domain.valueobject.CustomerId;
 
@@ -11,7 +8,10 @@ import java.util.List;
 
 public interface BookingDomainService {
 
-    BookingCreatedEvent validateAndInitiateBooking(Booking booking, Order order, List<Service> service, CustomerId customerId);
+    BookingCreatedEvent validateAndInitiateBooking(Booking booking,
+                                                   Order order,
+                                                   List<Service> service,
+                                                   List<Room> rooms);
 
     DepositCreatedEvent validateAndInitiateDeposit(Deposit deposit, Booking booking);
 

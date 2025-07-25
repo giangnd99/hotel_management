@@ -118,4 +118,9 @@ public class Booking extends AggregateRoot<BookingId> {
         }
     }
 
+    public void setTotalPrice(Money totalPrice) {
+        validateTotalPrice();
+        this.totalPrice = totalPrice;
+    }
+
 }

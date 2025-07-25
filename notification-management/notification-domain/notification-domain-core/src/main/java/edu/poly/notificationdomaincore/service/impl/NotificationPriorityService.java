@@ -1,10 +1,8 @@
-package edu.poly.notificationdomaincore.service;
+package edu.poly.notificationdomaincore.service.impl;
 
 
 
 import edu.poly.notificationdomaincore.value_object.NotificationPriority;
-
-import static edu.poly.notificationdomaincore.value_object.NotificationPriority.*;
 
 /**
  * Service xử lý logic ưu tiên của thông báo

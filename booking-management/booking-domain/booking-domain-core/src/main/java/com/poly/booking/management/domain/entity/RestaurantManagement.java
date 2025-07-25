@@ -11,4 +11,7 @@ public class RestaurantManagement {
     private boolean isAvailable;
 
 
+    public RestaurantManagement(Order order) {
+        this.order = order;
+    }
 }
