@@ -2,7 +2,6 @@ package com.poly.booking.management.domain.service;
 
 import com.poly.booking.management.domain.entity.*;
 import com.poly.booking.management.domain.event.*;
-import com.poly.domain.valueobject.CustomerId;
 
 import java.util.List;
 
@@ -17,9 +16,9 @@ public interface BookingDomainService {
 
     DepositPaidEvent payDeposit(Deposit deposit, Booking booking);
 
-    DepositRefundedEvent refundDeposit(Deposit deposit, Booking booking);
+    DepositRefundedEvent refundDeposit(Deposit deposit, Booking booking,String reason);
 
-    DepositCancelledEvent cancelPaymentDeposit(Deposit deposit, Booking booking);
+    DepositCancelledEvent cancelPaymentDeposit(Deposit deposit, Booking booking,List<String> failureMessages);
 
     BookingCancelledEvent cancelDepositBooking(Booking booking);
 
@@ -31,6 +30,6 @@ public interface BookingDomainService {
 
     CheckOutEvent checkOutBooking(Booking booking);
 
-    void cancelBooking(Booking booking);
+    BookingCancelledEvent cancelBooking(Booking booking);
 
 }

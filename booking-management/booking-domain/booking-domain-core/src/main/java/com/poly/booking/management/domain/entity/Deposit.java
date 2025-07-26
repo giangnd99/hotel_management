@@ -77,4 +77,7 @@ public class Deposit extends BaseEntity<DepositId> {
         this.bookingId = bookingId;
     }
 
+    public void setCustomerId(CustomerId customerId) {
+        this.customerId = customerId;
+    }
 }

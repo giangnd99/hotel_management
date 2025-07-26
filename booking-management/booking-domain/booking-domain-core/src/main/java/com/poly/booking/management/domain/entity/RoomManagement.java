@@ -39,7 +39,7 @@ public class RoomManagement {
     private HashMap<RoomId, Room> getRoomMapById() {
         return rooms.stream().collect(
                 HashMap::new,
-                (key, value) -> key.put(value.getId(), value),
+                (map, value) -> map.put(value.getId(), value),
                 HashMap::putAll);
     }
 

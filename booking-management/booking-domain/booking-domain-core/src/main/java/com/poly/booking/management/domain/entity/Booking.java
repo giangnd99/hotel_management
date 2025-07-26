@@ -28,7 +28,7 @@ public class Booking extends AggregateRoot<BookingId> {
     private QRCodeCheckIn qrCodeCheckIn;
 
     private Order order;
-    private List<Service> service;
+    private List<Service> services;
     public List<BookingRoom> bookingRooms;
 
     private List<String> failureMessages;
@@ -41,10 +41,11 @@ public class Booking extends AggregateRoot<BookingId> {
     }
 
     public void validateTotalPrice() {
-        if(!totalPrice.isGreaterThanZero()){
+        if (!totalPrice.isGreaterThanZero()) {
             throw new BookingDomainException("Total price must be greater than zero");
         }
     }
+
     //Khi khoi tao booking se o trang thai pending
     public void initiateBooking() {
         setId(new BookingId(UUID.randomUUID()));
@@ -69,6 +70,12 @@ public class Booking extends AggregateRoot<BookingId> {
         status = EBookingStatus.CHECKED_IN;
     }
 
+    public void paidBooking(){
+        if (!EBookingStatus.CHECKED_IN.equals(status)) {
+            throw new BookingDomainException("Booking is not checked-in for payment");
+        }
+        status = EBookingStatus.PAID;
+    }
     ///
     public void cancelWhilePaidFailed() {
         if (!EBookingStatus.CHECKED_OUT.equals(status)) {
@@ -123,4 +130,33 @@ public class Booking extends AggregateRoot<BookingId> {
         this.totalPrice = totalPrice;
     }
 
+    public List<Service> getServices() {
+        return services;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public void updateAndValidateTotalPrice() {
+        Money currentTotalRoomPrice = bookingRooms.stream()
+                .map(BookingRoom::getRoom)
+                .map(Room::getBasePrice)
+                .reduce(Money.ZERO, Money::add);
+        Money currentTotalServicePrice = services.stream()
+                .map(Service::getTotalCost)
+                .reduce(Money.ZERO, Money::add);
+        Money currentTotalOrderPrice = order.getTotalCost();
+
+        this.totalPrice = currentTotalRoomPrice
+                .add(currentTotalServicePrice)
+                .add(currentTotalOrderPrice);
+    }
+    public Money getTotalPrice() {
+        return totalPrice;
+    }
+
+    public CustomerId getCustomerId() {
+        return customerId;
+    }
 }

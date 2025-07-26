@@ -1,7 +1,10 @@
 package com.poly.booking.management.domain.event;
 
-public class BookingCreatedEvent extends BookingEvent{
-    public BookingCreatedEvent(Object source, com.poly.booking.management.domain.entity.Booking booking, com.poly.domain.valueobject.DateCustom createdAt) {
+import com.poly.booking.management.domain.entity.Booking;
+import com.poly.domain.valueobject.DateCustom;
+
+public class BookingCreatedEvent extends BookingEvent {
+    public BookingCreatedEvent(Booking booking, DateCustom createdAt) {
         super(booking, createdAt);
     }
 }
