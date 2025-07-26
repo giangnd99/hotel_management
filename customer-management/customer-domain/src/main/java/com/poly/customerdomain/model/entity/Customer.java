@@ -1,146 +1,116 @@
 package com.poly.customerdomain.model.entity;
 
-import com.poly.customerdomain.model.exception.CustomerDomainException;
-import com.poly.customerdomain.model.exception.ErrorDomainCode;
-import com.poly.customerdomain.model.valueobject.*;
+import com.poly.customerdomain.model.entity.valueobject.*;
 import com.poly.domain.entity.AggregateRoot;
 import com.poly.domain.valueobject.CustomerId;
 import com.poly.domain.valueobject.Money;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
+@Getter
+@Setter
 public class Customer extends AggregateRoot<CustomerId> {
 
-    private UUID userId;
-    private Name name;
+    private UserId userId;
+    private Name fullName;
     private Address address;
-    private LocalDate dateOfBirth;
-    private Nationality nationality;
-    private CustomerType customerType;
-    private Money accumulatedSpending;
+    private DateOfBirth dateOfBirth;
     private Level level;
-    private final BehaviorData behaviorData;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
+    private ImageUrl image;
+    private BehaviorData behaviorData;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     private Customer(Builder builder) {
-        super.setId(builder.customerId != null ? builder.customerId : new CustomerId(UUID.randomUUID()));
-        this.userId = builder.userId;
-        this.name = builder.name;
-        this.address = builder.address;
-        this.dateOfBirth = builder.dateOfBirth;
-        this.nationality = builder.nationality;
-        this.customerType = builder.customerType;
-        this.accumulatedSpending = builder.accumulatedSpending;
-        this.level = builder.level;
-        this.behaviorData = builder.behaviorData;
+        this.setId(builder.customerId);
+        this.userId = builder.userId != null ? builder.userId : null;
+        this.fullName = builder.name != null ? builder.name : Name.empty();
+        this.address = builder.address != null ? builder.address : Address.empty();
+        this.level = builder.level != null ? builder.level : Level.NONE;
+        this.dateOfBirth = builder.dateOfBirth != null ? builder.dateOfBirth : DateOfBirth.empty();
+        this.behaviorData = builder.behaviorData != null ? builder.behaviorData : BehaviorData.empty();
+        this.image = builder.image != null ? builder.image : ImageUrl.empty();
         this.createdAt = builder.createdAt != null ? builder.createdAt : LocalDateTime.now();
         this.updatedAt = builder.updatedAt != null ? builder.updatedAt : LocalDateTime.now();
     }
 
-    public static class Builder {
+    public static final class Builder {
         private CustomerId customerId;
-        private UUID userId;
+        private UserId userId;
         private Name name;
         private Address address;
-        private LocalDate dateOfBirth;
-        private Nationality nationality;
-        private CustomerType customerType;
-        private Money accumulatedSpending;
+        private DateOfBirth dateOfBirth;
         private Level level;
+        private ImageUrl image;
         private BehaviorData behaviorData;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
         public Builder() {
-            this.accumulatedSpending = new Money(BigDecimal.valueOf(1));
-            this.level = Level.None;
         }
 
-        public Builder customerId(CustomerId customerId) {
-            this.customerId = customerId;
+        public Builder customerId(CustomerId id) {
+            this.customerId = id;
             return this;
         }
 
-        public Builder userId(UUID userId) {
-            this.userId = userId;
+        public Builder userId(UserId val) {
+            userId = val;
             return this;
         }
 
-        public Builder name(Name name) {
-            this.name = name;
+        public Builder image(ImageUrl val) {
+            image = val;
             return this;
         }
 
-        public Builder address(Address address) {
-            this.address = address;
+        public Builder name(Name val) {
+            name = val;
             return this;
         }
 
-        public Builder dateOfBirth(LocalDate dateOfBirth) {
-            this.dateOfBirth = dateOfBirth;
+        public Builder address(Address val) {
+            address = val;
             return this;
         }
 
-        public Builder nationality(Nationality nationality) {
-            this.nationality = nationality;
+        public Builder dateOfBirth(DateOfBirth val) {
+            dateOfBirth = val;
             return this;
         }
 
-        public Builder customerType(CustomerType customerType) {
-            this.customerType = customerType;
+        public Builder level(Level val) {
+            level = val;
             return this;
         }
 
-        public Builder accumulatedSpending(Money accumulatedSpending) {
-            this.accumulatedSpending = accumulatedSpending;
+        public Builder behaviorData(BehaviorData val) {
+            behaviorData = val;
             return this;
         }
 
-        public Builder level(Level level) {
-            this.level = level;
+        public Builder createdAt(LocalDateTime val) {
+            createdAt = val;
             return this;
         }
 
-        public Builder behaviorData(BehaviorData behaviorData) {
-            this.behaviorData = behaviorData;
-            return this;
-        }
-
-        public Builder createdAt(LocalDateTime createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
-
-        public Builder updatedAt(LocalDateTime updatedAt) {
-            this.updatedAt = updatedAt;
+        public Builder updatedAt(LocalDateTime val) {
+            updatedAt = val;
             return this;
         }
 
         public Customer build() {
-            if (name == null) {
-                throw new CustomerDomainException(ErrorDomainCode.NAME_INVALID);
-            }
-            if (userId == null) {
-                throw new CustomerDomainException(ErrorDomainCode.USERID_INVALID);
-            }
             return new Customer(this);
         }
     }
 
-    // Getters
-    public UUID getUserId() { return userId; }
-    public Name getName() { return name; }
-    public Address getAddress() { return address; }
-    public LocalDate getDateOfBirth() { return dateOfBirth; }
-    public Nationality getNationality() { return nationality; }
-    public CustomerType getCustomerType() { return customerType; }
-    public Money getAccumulatedSpending() { return accumulatedSpending; }
-    public Level getLevel() { return level; }
-    public BehaviorData getBehaviorData() { return behaviorData; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public void upgradeTo(Level level) {
+        this.setLevel(level);
+    }
 }
