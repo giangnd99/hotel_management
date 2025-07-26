@@ -5,14 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.poly</groupId>
-        <artifactId>api-gateway</artifactId>
+        <artifactId>booking-management</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>business-management</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>business-application</module>
-    </modules>
+    <artifactId>booking-messaging</artifactId>
 
 </project>

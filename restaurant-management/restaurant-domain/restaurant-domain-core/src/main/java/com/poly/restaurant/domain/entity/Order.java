@@ -15,6 +15,7 @@ public class Order {
     private final BigDecimal totalPrice;
     private final OrderStatus status;
 
+
     public Order(OrderId orderId, int customerId, LocalDateTime orderDate,
                  List<OrderItem> items, BigDecimal totalPrice, OrderStatus status) {
         this.orderId = orderId;

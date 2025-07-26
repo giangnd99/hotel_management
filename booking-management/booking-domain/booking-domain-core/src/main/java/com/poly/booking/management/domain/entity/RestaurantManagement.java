@@ -1,30 +1,16 @@
 package com.poly.booking.management.domain.entity;
 
-import java.util.List;
-
 public class RestaurantManagement {
 
-    private List<FoodItem> foodItems;
-    private boolean isAvailable;
+    private Order order;
 
-    public RestaurantManagement(List<FoodItem> foodItems, boolean isAvailable) {
-        this.foodItems = foodItems;
-        this.isAvailable = isAvailable;
+
+    public RestaurantManagement(Order order) {
+        this.order = order;
     }
 
-    public List<FoodItem> getFoodItems() {
-        return foodItems;
-    }
-
-    public boolean isAvailable() {
-        return isAvailable;
-    }
-
-    public void setFoodItems(List<FoodItem> foodItems) {
-        this.foodItems = foodItems;
-    }
-
-    public void setAvailable(boolean available) {
-        isAvailable = available;
+    public void setInformationAndPriceService(Booking booking) {
+           Order orderInHotel = order;
+           booking.setOrder(orderInHotel);
     }
 }
