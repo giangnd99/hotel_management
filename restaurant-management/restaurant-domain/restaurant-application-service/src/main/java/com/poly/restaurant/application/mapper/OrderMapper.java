@@ -3,11 +3,7 @@ package com.poly.restaurant.application.mapper;
 import com.poly.restaurant.application.dto.OrderDTO;
 import com.poly.restaurant.domain.entity.Order;
 import com.poly.restaurant.domain.entity.OrderItem;
-import com.poly.restaurant.domain.value_object.MenuItemId;
-import com.poly.restaurant.domain.value_object.OrderId;
-import com.poly.restaurant.domain.value_object.OrderStatus;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,21 +19,19 @@ public class OrderMapper {
                 .collect(Collectors.toList());
 
         return new Order(
-                new OrderId(dto.orderId()),
+                dto.id(),
+                dto.customerId(),
                 dto.tableId(),
-                dto.orderDate() != null ? dto.orderDate() : LocalDateTime.now(),
                 items,
-                dto.totalPrice() != null ? dto.totalPrice() : calculateTotalPrice(items),
-                OrderStatus.valueOf(dto.status())
+                dto.createdAt() != null ? dto.createdAt() : LocalDateTime.now()
         );
     }
 
     public static OrderItem toEntity(OrderDTO.OrderItem dtoItem) {
         return new OrderItem(
-                dtoItem.orderItemId() != null ? dtoItem.orderItemId() : 0,
-                new MenuItemId(dtoItem.menuId()),
+                dtoItem.menuItemId(),
                 dtoItem.quantity(),
-                dtoItem.unitPrice()
+                dtoItem.price()
         );
     }
 
@@ -48,27 +42,21 @@ public class OrderMapper {
                 .collect(Collectors.toList());
 
         return new OrderDTO(
-                order.getOrderId().getValue(),
+                order.getId(),
                 order.getCustomerId(),
+                order.getTableId(),
                 dtoItems,
-                order.getTotalPrice(),
                 order.getStatus().name(),
-                order.getOrderDate()
+                order.getCreatedAt(),
+                order.getCustomerNote()
         );
     }
 
     public static OrderDTO.OrderItem toDto(OrderItem item) {
         return new OrderDTO.OrderItem(
-                item.getOrderItemId(),
-                item.getMenuItemId().getValue(),
+                item.getMenuItemId(),
                 item.getQuantity(),
-                item.getUnitPrice()
+                item.getPrice()
         );
-    }
-
-    private static BigDecimal calculateTotalPrice(List<OrderItem> items) {
-        return items.stream()
-                .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

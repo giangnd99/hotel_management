@@ -1,0 +1,392 @@
+{
+	"info": {
+		"_postman_id": "36de6a95-c99d-4406-a0ed-3a42a87e76ec",
+		"name": "Restaurant Management API",
+		"description": "API collection for testing Restaurant Management Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40521251"
+	},
+	"item": [
+		{
+			"name": "Menu Management",
+			"item": [
+				{
+					"name": "Get All Menu Items",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/restaurant/menu",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"restaurant",
+								"menu"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Menu Item by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/restaurant/menu/101",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"restaurant",
+								"menu",
+								"101"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Menu Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 106,\n  \"name\": \"Bánh mì thịt nướng\",\n  \"description\": \"Bánh mì thịt nướng truyền thống\",\n  \"price\": 45000,\n  \"category\": \"Món chính\",\n  \"quantity\": 50,\n  \"status\": \"AVAILABLE\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/restaurant/menu",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"restaurant",
+								"menu"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Menu Item",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 101,\n  \"name\": \"Phở bò đặc biệt\",\n  \"description\": \"Phở bò truyền thống với nhiều thịt\",\n  \"price\": 180000,\n  \"category\": \"Món chính\",\n  \"quantity\": 80,\n  \"status\": \"AVAILABLE\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/restaurant/menu/101",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"restaurant",
+								"menu",
+								"101"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Menu Item",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/restaurant/menu/105",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"restaurant",
+								"menu",
+								"105"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Menu Items by Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/restaurant/menu/category/Đồ uống",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"restaurant",
+								"menu",
+								"category",
+								"Đồ uống"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order Management",
+			"item": [
+				{
+					"name": "Get All Orders",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/restaurant/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"restaurant",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/restaurant/orders/order_001",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"restaurant",
+								"orders",
+								"order_001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"order_004\",\n  \"customerId\": \"customer_001\",\n  \"tableId\": \"table_005\",\n  \"items\": [\n    {\n      \"menuItemId\": \"101\",\n      \"quantity\": 2,\n      \"price\": 150000\n    },\n    {\n      \"menuItemId\": \"102\",\n      \"quantity\": 3,\n      \"price\": 25000\n    }\n  ],\n  \"status\": \"NEW\",\n  \"createdAt\": \"2025-01-15T14:30:00\",\n  \"customerNote\": \"Không cay, thêm rau\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/restaurant/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"restaurant",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Order Status",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/restaurant/orders/order_003/status?status=IN_PROGRESS",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"restaurant",
+								"orders",
+								"order_003",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "IN_PROGRESS"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Order",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/restaurant/orders/order_003",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"restaurant",
+								"orders",
+								"order_003"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Table Management",
+			"item": [
+				{
+					"name": "Get All Tables",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/restaurant/tables",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"restaurant",
+								"tables"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Table",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"table_006\",\n  \"number\": 6,\n  \"status\": \"AVAILABLE\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/restaurant/tables",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"restaurant",
+								"tables"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Table",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"table_004\",\n  \"number\": 4,\n  \"status\": \"AVAILABLE\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/restaurant/tables/table_004",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"restaurant",
+								"tables",
+								"table_004"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Table",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/restaurant/tables/table_006",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"restaurant",
+								"tables",
+								"table_006"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

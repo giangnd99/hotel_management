@@ -15,19 +15,20 @@ import java.math.BigDecimal;
 @Builder
 public class OrderItemJpaEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_item_id")
-    private int orderItemId;
+    private Long orderItemId;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
     private OrderJpaEntity order;
 
     @Column(name = "menu_item_id")
-    private int menuItemId;
+    private String menuItemId;
 
     @Column(name = "quantity")
     private int quantity;
 
-    @Column(name = "unit_price")
-    private BigDecimal unitPrice;
+    @Column(name = "price")
+    private BigDecimal price;
 }

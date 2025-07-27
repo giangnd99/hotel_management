@@ -3,44 +3,64 @@ USE db_restaurant;
 
 CREATE TABLE menu_items (
     menu_item_id INT PRIMARY KEY,
-    item_name VARCHAR(100),
-    description TEXT,
-    price DECIMAL(10,2),
-    category VARCHAR(50),
-    quantity INT
+    item_name VARCHAR(100) NOT NULL,
+    description TEXT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    quantity INT NOT NULL DEFAULT 0,
+    status VARCHAR(20) NOT NULL DEFAULT 'AVAILABLE'
 );
 
 CREATE TABLE orders (
-    order_id INT PRIMARY KEY,
-    customer_id INT,
-    order_date DATETIME,
-    total_price DECIMAL(10,2),
-    status VARCHAR(50)
+    order_id VARCHAR(50) PRIMARY KEY,
+    customer_id VARCHAR(50) NOT NULL,
+    table_id VARCHAR(50) NOT NULL,
+    created_at DATETIME NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'NEW',
+    customer_note TEXT
 );
 
 CREATE TABLE order_items (
-    order_item_id INT,
-    menu_item_id INT,
-    order_id INT,
-    quantity INT,
-    unit_price DECIMAL,
-    FOREIGN KEY (order_id) REFERENCES orders(order_id),
-    FOREIGN KEY (menu_item_id) REFERENCES menu_items(menu_item_id)
-    );
+    order_item_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    menu_item_id VARCHAR(50) NOT NULL,
+    order_id VARCHAR(50) NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE
+);
+
+CREATE TABLE tables (
+    table_id VARCHAR(50) PRIMARY KEY,
+    number INT NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'AVAILABLE'
+);
 
 -- Menu Items
-INSERT INTO `menu_items` (`menu_item_id`, `item_name`, `description`, `price`, `category`, `quantity`) VALUES
-    (101, 'Phở bò', 'Phở bò truyền thống', 150000, 'Món chính', 100),
-    (102, 'Trà đá', 'Trà đá mát lạnh', 25000, 'Đồ uống', 200),
-    (103, 'Cà phê sữa', 'Cà phê pha với sữa đặc', 90000, 'Đồ uống', 150);
+INSERT INTO `menu_items` (`menu_item_id`, `item_name`, `description`, `price`, `category`, `quantity`, `status`) VALUES
+    (101, 'Phở bò', 'Phở bò truyền thống', 150000, 'Món chính', 100, 'AVAILABLE'),
+    (102, 'Trà đá', 'Trà đá mát lạnh', 25000, 'Đồ uống', 200, 'AVAILABLE'),
+    (103, 'Cà phê sữa', 'Cà phê pha với sữa đặc', 90000, 'Đồ uống', 150, 'AVAILABLE'),
+    (104, 'Bún chả', 'Bún chả Hà Nội', 120000, 'Món chính', 80, 'AVAILABLE'),
+    (105, 'Gỏi cuốn', 'Gỏi cuốn tôm thịt', 80000, 'Khai vị', 60, 'AVAILABLE');
+
+-- Tables
+INSERT INTO `tables` (`table_id`, `number`, `status`) VALUES
+    ('table_001', 1, 'AVAILABLE'),
+    ('table_002', 2, 'AVAILABLE'),
+    ('table_003', 3, 'AVAILABLE'),
+    ('table_004', 4, 'OCCUPIED'),
+    ('table_005', 5, 'AVAILABLE');
 
 -- Restaurant Orders
-INSERT INTO `orders` (`order_id`, `customer_id`, `order_date`, `total_price`, `status`) VALUES
-    (1, 1001, '2025-07-15 10:00:00', 110000, 'COMPLETED'),
-    (2, 1002, '2025-07-15 11:00:00', 20000, 'IN_PROGRESS');
+INSERT INTO `orders` (`order_id`, `customer_id`, `table_id`, `created_at`, `status`, `customer_note`) VALUES
+    ('order_001', 'customer_001', 'table_001', '2025-01-15 10:00:00', 'COMPLETED', 'Không cay'),
+    ('order_002', 'customer_001', 'table_002', '2025-01-15 11:00:00', 'IN_PROGRESS', 'Thêm rau'),
+    ('order_003', 'customer_001', 'table_003', '2025-01-15 12:00:00', 'NEW', NULL);
 
 -- Order Items
-INSERT INTO `order_items` (`order_item_id`, `menu_item_id`, `order_id`, `quantity`, `unit_price`) VALUES
-    (1, 101, 1, 2, 50000),
-    (2, 102, 1, 2, 5000),
-    (3, 103, 2, 1, 20000);
+INSERT INTO `order_items` (`menu_item_id`, `order_id`, `quantity`, `price`) VALUES
+    ('101', 'order_001', 2, 150000),
+    ('102', 'order_001', 2, 25000),
+    ('103', 'order_002', 1, 90000),
+    ('104', 'order_002', 1, 120000),
+    ('105', 'order_003', 1, 80000);
