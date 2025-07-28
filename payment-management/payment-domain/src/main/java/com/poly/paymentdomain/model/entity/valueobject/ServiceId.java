@@ -12,6 +12,10 @@ public class ServiceId {
         this.value = value;
     }
 
+    public static ServiceId from(UUID value) {
+        return new ServiceId(value);
+    }
+
     public UUID getValue() {
         return value;
     }

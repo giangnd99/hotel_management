@@ -78,4 +78,8 @@ public class Payment {
             return new Payment(this);
         }
     }
+
+    public static Builder builder() {
+        return new Builder();
+    }
 }

@@ -31,7 +31,7 @@ public class InvoiceApplicationService implements InvoiceUsecase {
                 .customerId(CustomerId.fromValue(command.getCustomerId()))
                 .createdBy(StaffId.from(command.getStaffIdCreated()))
                 .voucherId(VoucherId.from(command.getVoucherId()))
-                .items(command.getInvoiceItemCommandList())
+                .items(CreateInvoiceItemCommand.mapToInvoiceItems(command.getInvoiceItemCommandList()))
                 .payments(command.getPaymentCommandList())
                 .build();
 
