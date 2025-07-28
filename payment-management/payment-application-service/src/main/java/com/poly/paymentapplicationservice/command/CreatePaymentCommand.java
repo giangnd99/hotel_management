@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -17,4 +18,5 @@ public class CreatePaymentCommand {
     private BigDecimal amount;
     private PaymentMethod method;
     private PaymentReference referenceCode;
+    private LocalDateTime paidAt;
 }

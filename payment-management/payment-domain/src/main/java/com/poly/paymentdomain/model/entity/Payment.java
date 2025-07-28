@@ -1,9 +1,12 @@
 package com.poly.paymentdomain.model.entity;
 
 import com.poly.paymentdomain.model.entity.valueobject.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Getter
 public class Payment {
 //    private PaymentId id;
     private StaffId  staffId; // Người thực hiện xác nhận thanh toán của khách hàng, SYSTEM - CK, ID nhân viên - tiền mặt

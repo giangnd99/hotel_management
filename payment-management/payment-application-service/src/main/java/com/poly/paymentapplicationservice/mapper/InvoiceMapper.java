@@ -1,0 +1,93 @@
+package com.poly.paymentapplicationservice.mapper;
+
+import com.poly.paymentapplicationservice.command.CreateInvoiceItemCommand;
+import com.poly.paymentapplicationservice.command.CreatePaymentCommand;
+import com.poly.paymentapplicationservice.dto.InvoiceDto;
+import com.poly.paymentapplicationservice.dto.InvoiceItemDto;
+import com.poly.paymentapplicationservice.dto.PaymentDto;
+import com.poly.paymentdomain.model.entity.Invoice;
+import com.poly.paymentdomain.model.entity.InvoiceItem;
+import com.poly.paymentdomain.model.entity.Payment;
+import com.poly.paymentdomain.model.entity.valueobject.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class InvoiceMapper {
+
+    public static InvoiceDto from(Invoice invoice) {
+        InvoiceDto invoiceDto = new InvoiceDto();
+        invoiceDto.setId(invoice.getId().getValue());
+        invoiceDto.setBookingId(invoice.getBookingId().getValue());
+        invoiceDto.setCustomerId(invoice.getCustomerId().getValue());
+        invoiceDto.setStaffIdCreated(invoice.getCreatedBy().getValue());
+        invoiceDto.setStaffIdUpdated(invoice.getLastUpdatedBy().getValue());
+        invoiceDto.setVoucherId(invoice.getVoucherId().getValue());
+        invoiceDto.setSubTotal(invoice.getSubTotal().getValue());
+        invoiceDto.setTaxAmount(invoice.getTaxAmount().getValue());
+        invoiceDto.setDiscountAmount(invoice.getDiscountAmount().getValue());
+        invoiceDto.setTotalAmount(invoice.getTotalAmount().getValue());
+        invoiceDto.setPaidAmount(invoice.getPaidAmount().getValue());
+        invoiceDto.setStatus(invoice.getStatus());
+        invoiceDto.setCreatedAt(invoice.getCreatedAt());
+        invoiceDto.setLastUpdatedAt(invoice.getLastUpdatedAt());
+        invoiceDto.setItems(toInvoiceItemDtos(invoice.getItems()));
+        invoiceDto.setPayments(toPaymentDtos(invoice.getPayments()));
+        invoiceDto.setNote(invoice.getNote().getValue());
+        return invoiceDto;
+    }
+
+    private static List<InvoiceItemDto> toInvoiceItemDtos(List<InvoiceItem> items) {
+        return items.stream()
+                .map(item -> InvoiceItemDto.builder()
+                        .serviceId(item.getServiceId().getValue())
+                        .description(item.getDescription().getValue())
+                        .serviceType(item.getServiceType())
+                        .quantity(item.getQuantity().getValue())
+                        .unitPrice(item.getUnitPrice().getValue())
+                        .usedAt(item.getUsedAt())
+                        .note(item.getNote().getValue())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private static List<PaymentDto> toPaymentDtos(List<Payment> payments) {
+        return payments.stream()
+                .map(payment -> PaymentDto.builder()
+                        .staffId(payment.getStaffId().getValue())
+                        .paymentStatus(payment.getPaymentStatus())
+                        .amount(payment.getAmount().getValue())
+                        .method(payment.getMethod())
+                        .paidAt(payment.getPaidAt())
+                        .referenceCode(payment.getReferenceCode().getValue())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public static List<InvoiceItem> mapToInvoiceItems(List<CreateInvoiceItemCommand> commandList) {
+        return commandList.stream()
+                .map(cmd -> InvoiceItem.builder()
+                        .serviceId(ServiceId.from(cmd.getServiceId()))
+                        .description(Description.from(cmd.getDescription()))
+                        .serviceType(cmd.getServiceType())
+                        .quantity(Quantity.from(cmd.getQuantity()))
+                        .unitPrice(Money.from(cmd.getUnitPrice()))
+                        .note(Description.from(cmd.getNote()))
+                        .build()
+                ).collect(Collectors.toList());
+    }
+
+    public static List<Payment> mapToPayments(List<CreatePaymentCommand> commandList) {
+        return commandList.stream()
+                .map(
+                        cmd -> Payment.builder()
+                                .staffId(StaffId.from(cmd.getStaffId()))
+                                .paymentStatus(cmd.getPaymentStatus())
+                                .amount(Money.from(cmd.getAmount()))
+                                .method(cmd.getMethod())
+                                .paidAt(cmd.getPaidAt())
+                                .referenceCode(cmd.getReferenceCode())
+                                .build()
+                ).collect(Collectors.toList());
+    }
+}

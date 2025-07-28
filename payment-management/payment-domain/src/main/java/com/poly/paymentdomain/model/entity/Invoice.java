@@ -3,11 +3,13 @@ package com.poly.paymentdomain.model.entity;
 import com.poly.domain.entity.AggregateRoot;
 import com.poly.domain.valueobject.InvoiceId;
 import com.poly.paymentdomain.model.entity.valueobject.*;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class Invoice extends AggregateRoot<InvoiceId> {
     private BookingId bookingId; // Mã Phòng
     private CustomerId customerId; // Mã khách hàng

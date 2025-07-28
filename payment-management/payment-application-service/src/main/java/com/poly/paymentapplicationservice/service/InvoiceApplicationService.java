@@ -2,8 +2,8 @@ package com.poly.paymentapplicationservice.service;
 
 import com.poly.domain.valueobject.InvoiceId;
 import com.poly.paymentapplicationservice.command.CreateInvoiceCommand;
-import com.poly.paymentapplicationservice.command.CreateInvoiceItemCommand;
 import com.poly.paymentapplicationservice.dto.InvoiceDto;
+import com.poly.paymentapplicationservice.mapper.InvoiceMapper;
 import com.poly.paymentapplicationservice.port.input.InvoiceUsecase;
 import com.poly.paymentdomain.model.entity.Invoice;
 import com.poly.paymentdomain.model.entity.valueobject.BookingId;
@@ -11,8 +11,6 @@ import com.poly.paymentdomain.model.entity.valueobject.CustomerId;
 import com.poly.paymentdomain.model.entity.valueobject.StaffId;
 import com.poly.paymentdomain.model.entity.valueobject.VoucherId;
 import com.poly.paymentdomain.output.InvoiceRepository;
-
-import java.util.UUID;
 
 public class InvoiceApplicationService implements InvoiceUsecase {
 
@@ -31,11 +29,11 @@ public class InvoiceApplicationService implements InvoiceUsecase {
                 .customerId(CustomerId.fromValue(command.getCustomerId()))
                 .createdBy(StaffId.from(command.getStaffIdCreated()))
                 .voucherId(VoucherId.from(command.getVoucherId()))
-                .items(CreateInvoiceItemCommand.mapToInvoiceItems(command.getInvoiceItemCommandList()))
-                .payments(command.getPaymentCommandList())
+                .items(InvoiceMapper.mapToInvoiceItems(command.getInvoiceItemCommandList()))
+                .payments(InvoiceMapper.mapToPayments(command.getPaymentCommandList()))
                 .build();
 
-        CreateInvoiceItemCommand createInvoiceItemCommand = invoiceRepository.createInvoice();
-        return null;
+        invoiceRepository.createInvoice(invoiceCreated);
+        return InvoiceMapper.from(invoiceCreated);
     }
 }

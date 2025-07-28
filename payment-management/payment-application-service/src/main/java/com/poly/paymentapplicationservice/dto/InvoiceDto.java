@@ -1,6 +1,8 @@
 package com.poly.paymentapplicationservice.dto;
 
+import com.poly.domain.valueobject.InvoiceId;
 import com.poly.paymentapplicationservice.command.CreateInvoiceItemCommand;
+import com.poly.paymentdomain.model.entity.Invoice;
 import com.poly.paymentdomain.model.entity.valueobject.InvoiceStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,11 +17,11 @@ import java.util.UUID;
 public class InvoiceDto {
     private UUID id;
     private UUID bookingId;
+    private UUID customerId;
     private UUID staffIdCreated;
     private UUID staffIdUpdated;
     private UUID voucherId;
     private BigDecimal subTotal;
-    private BigDecimal total;
     private BigDecimal taxAmount;
     private BigDecimal discountAmount;
     private BigDecimal totalAmount;
@@ -30,10 +32,4 @@ public class InvoiceDto {
     List<InvoiceItemDto> items;
     List<PaymentDto> payments;
     private String note;
-
-//    public static InvoiceDto from(CreateInvoiceItemCommand invoice) {
-//        InvoiceDto invoiceDto = new InvoiceDto();
-//        invoiceDto.id = UUID.randomUUID();
-//    }
-
 }

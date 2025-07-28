@@ -1,10 +1,12 @@
 package com.poly.paymentdomain.model.entity;
 
 import com.poly.paymentdomain.model.entity.valueobject.*;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Getter
 public class InvoiceItem {
     private ServiceId serviceId;
     private Description description; // Mô tả dịch vụ
