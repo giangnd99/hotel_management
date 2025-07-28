@@ -1,6 +1,6 @@
 package com.poly.domain.event.publisher;
 
-import com.food.ordering.system.domain.event.DomainEvent;
+import com.poly.domain.event.DomainEvent;
 
 public interface DomainEventPublisher<T extends DomainEvent> {
 
