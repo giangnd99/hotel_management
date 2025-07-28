@@ -43,6 +43,7 @@
         <module>notification-management</module>
         <module>restaurant-management</module>
         <module>promotion-management</module>
+        <module>service-management</module>
     </modules>
 
     <scm>
@@ -58,7 +59,7 @@
         <mockito.version>5.2.0</mockito.version>
         <spring-kafka.version>3.3.7</spring-kafka.version>
         <kafka-avro-serializer.version>7.3.3</kafka-avro-serializer.version>
-        <avro.version>1.11.1</avro.version>
+        <avro.version>1.11.4</avro.version>
         <java.version>17</java.version>
         <graphql-java.version>22.0</graphql-java.version>
         <graphql-java-extended-scalars.version>2022-12-18T02-09-15-8bb2279</graphql-java-extended-scalars.version>
@@ -74,6 +75,31 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>outbox</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>kafka-config-data</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>kafka-consumer</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>kafka-producer</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>kafka-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.poly</groupId>
                 <artifactId>common-domain</artifactId>
@@ -195,12 +221,23 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>booking-messaging</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>service-management</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
                 <version>${junitt.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
         </dependencies>
 
     </dependencyManagement>
