@@ -5,16 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.poly</groupId>
-        <artifactId>hotel_management</artifactId>
+        <artifactId>kafka</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>infrastructure</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>kafka</module>
-        <module>outbox</module>
-        <module>saga</module>
-    </modules>
+    <artifactId>kafka-config-data</artifactId>
 
 </project>
