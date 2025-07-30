@@ -8,5 +8,7 @@ import java.util.UUID;
 public interface VoucherApi {
     VoucherModel applyVoucher(String voucherCode, UUID customerId);
     List<VoucherModel> getAvailableVouchers(UUID customerId);
+    List<VoucherModel> getAllVouchersWithStatus(UUID customerId, Integer status);
     void closeExpireVoucher();
+    VoucherModel redeemVoucherFromPack(Long voucherPackId);
 }
