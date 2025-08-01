@@ -27,7 +27,8 @@ public class MenuItemMapper {
                 entity.getDescription(),
                 entity.getPrice().abs(),
                 entity.getCategory(),
-                entity.getQuantity()
+                entity.getQuantity(),
+                entity.getStatus().name()
         );
     }
 }
