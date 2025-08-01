@@ -12,7 +12,7 @@ import java.util.List;
 public class BookingDomainServiceImpl implements BookingDomainService {
 
     @Override
-    public BookingCreatedEvent validateAndInitiateBooking(Booking booking, Order order, List<Service> service, List<Room> rooms) {
+    public BookingCreatedEvent validateAndInitiateBooking(Booking booking, List<Room> rooms) {
 
 //        validateRestaurantAvailability(booking, order);
 //        validateServiceAvailabilityAndGetPrices(booking, service); i
@@ -73,6 +73,13 @@ public class BookingDomainServiceImpl implements BookingDomainService {
     @Override
     public void updateBooking(Booking booking) {
 
+    }
+
+    @Override
+    public BookingDepositEvent confirmDepositBooking(Booking booking) {
+        booking.confirmDepositBooking();
+        log.info("Booking confirmed with id: {} ", booking.getId().getValue());
+        return new BookingDepositEvent(booking, DateCustom.now());
     }
 
     @Override

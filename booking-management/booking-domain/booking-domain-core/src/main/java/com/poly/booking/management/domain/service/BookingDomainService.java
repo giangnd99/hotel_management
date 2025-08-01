@@ -8,8 +8,6 @@ import java.util.List;
 public interface BookingDomainService {
 
     BookingCreatedEvent validateAndInitiateBooking(Booking booking,
-                                                   Order order,
-                                                   List<Service> service,
                                                    List<Room> rooms);
 
     DepositCreatedEvent validateAndInitiateDeposit(Deposit deposit, Booking booking);
@@ -21,6 +19,8 @@ public interface BookingDomainService {
     DepositCancelledEvent cancelPaymentDeposit(Deposit deposit, Booking booking,List<String> failureMessages);
 
     BookingCancelledEvent cancelDepositBooking(Booking booking);
+
+    BookingDepositEvent confirmDepositBooking(Booking booking);
 
     CheckInEvent checkInBooking(Booking booking);
 
