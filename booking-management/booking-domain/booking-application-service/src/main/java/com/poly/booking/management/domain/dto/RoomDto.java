@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoomDto {
-    private Long roomId;
+    private Integer roomId;
     private String roomNumber;
     private Long roomTypeId;
     private String roomTypeName; // Added for convenience in DTO

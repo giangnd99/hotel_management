@@ -1,6 +1,7 @@
 package com.poly.booking.management.domain.outbox.model.payment;
 
 import com.poly.domain.valueobject.DateCustom;
+import com.poly.domain.valueobject.EBookingStatus;
 import com.poly.domain.valueobject.OrderStatus;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;
@@ -23,7 +24,7 @@ public class BookingPaymentOutboxMessage {
     private String type;
     private String payload;
     private SagaStatus sagaStatus;
-    private OrderStatus orderStatus;
+    private EBookingStatus bookingStatus;
     private OutboxStatus outboxStatus;
     private int version;
 
@@ -36,8 +37,8 @@ public class BookingPaymentOutboxMessage {
         this.sagaStatus = sagaStatus;
     }
 
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
+    public void setBookingStatus(EBookingStatus bookingStatus) {
+        this.bookingStatus = bookingStatus;
     }
 
     public void setOutboxStatus(OutboxStatus outboxStatus) {
