@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class VoucherPackModel {
-    Integer id;
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class VoucherPackModel extends BaseModel {
+    Long id;
     String description;
     Double discountAmount;
     String validRange;
