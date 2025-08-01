@@ -8,5 +8,6 @@ public record MenuDTO(
         String description,
         BigDecimal price,
         String category,
-        Integer quantity
+        Integer quantity,
+        String status
 ) {}

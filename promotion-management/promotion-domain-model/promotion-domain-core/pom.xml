@@ -19,6 +19,9 @@
     </properties>
 
     <dependencies>
-
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>common-domain</artifactId>
+        </dependency>
     </dependencies>
 </project>

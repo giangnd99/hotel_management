@@ -21,11 +21,6 @@ import java.util.List;
 public class RestaurantController {
     private final RestaurantUseCase restaurantUseCase;
 
-    @GetMapping("/tables")
-    public ResponseEntity<List<TableDTO>> getTables() {
-        return ResponseEntity.ok(restaurantUseCase.getAllTables());
-    }
-
     @GetMapping("/staff")
     public ResponseEntity<List<StaffDTO>> getStaff() {
         return ResponseEntity.ok(restaurantUseCase.getAllStaff());

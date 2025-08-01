@@ -1,5 +1,6 @@
 package com.poly.promotion.domain.application.model;
 
+import com.poly.promotion.domain.core.valueobject.Discount;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -9,9 +10,9 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class PromotionModel {
-    Integer id;
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class PromotionModel extends BaseModel {
+    Long id;
     String name;
     String description;
     Double discountAmount;
