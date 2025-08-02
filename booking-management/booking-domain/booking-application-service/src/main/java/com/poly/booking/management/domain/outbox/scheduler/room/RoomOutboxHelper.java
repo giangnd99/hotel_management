@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poly.booking.management.domain.event.BookingPaidEvent;
 import com.poly.booking.management.domain.exception.BookingDomainException;
 import com.poly.booking.management.domain.mapper.BookingDataMapper;
-import com.poly.booking.management.domain.outbox.model.room.BookingApprovalEventPayload;
+import com.poly.booking.management.domain.outbox.model.room.BookingReservedEventPayload;
 import com.poly.booking.management.domain.outbox.model.room.BookingRoomOutboxMessage;
 import com.poly.booking.management.domain.port.out.repository.RoomReserveOutBoxRepository;
 import com.poly.domain.valueobject.EBookingStatus;
@@ -66,7 +66,7 @@ public class RoomOutboxHelper {
                                                                      SagaStatus sagaStatus,
                                                                      OutboxStatus outboxStatus,
                                                                      UUID sagaId) {
-        BookingApprovalEventPayload payload = BookingDataMapper.orderPaidEventToOrderApprovalEventPayload(domainEvent);
+        BookingReservedEventPayload payload = bookingDataMapper.bookingEventToRoomBookingEventPayload(domainEvent);
 
         return BookingRoomOutboxMessage.builder()
                 .id(UUID.randomUUID())
@@ -80,7 +80,7 @@ public class RoomOutboxHelper {
                 .build();
     }
 
-    private String createPayload(BookingApprovalEventPayload payload) {
+    private String createPayload(BookingReservedEventPayload payload) {
         try {
             return objectMapper.writeValueAsString(payload);
         } catch (JsonProcessingException e) {

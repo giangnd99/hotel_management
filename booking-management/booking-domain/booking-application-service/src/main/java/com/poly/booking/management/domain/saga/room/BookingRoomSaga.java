@@ -10,6 +10,8 @@ import com.poly.booking.management.domain.outbox.scheduler.room.RoomOutboxHelper
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.saga.BookingSagaHelper;
 import com.poly.booking.management.domain.service.BookingDomainService;
+import com.poly.domain.valueobject.PaymentStatus;
+import com.poly.domain.valueobject.ReservationStatus;
 import com.poly.saga.SagaStatus;
 import com.poly.saga.SagaStep;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +69,26 @@ public class BookingRoomSaga implements SagaStep<RoomMessageResponse> {
 
     @Override
     public void rollback(RoomMessageResponse data) {
+        Optional<BookingRoomOutboxMessage> response =
+                roomOutboxHelper.getApprovalOutboxMessageBySagaIdAndSagaStatus(
+                        UUID.fromString(data.getSagaId()),
+                        getCurrentSagaStatus(data.getReservationStatus()));
+        if (response.isEmpty()) {
+            log.info("An outbox message with saga id: {} is already roll backed!", data.getSagaId());
+            return;
+        }
+        BookingRoomOutboxMessage bookingRoomOutboxMessage = response.get();
+        Booking booking = bookingSagaHelper.findBooking(bookingRoomOutboxMessage.getBookingId());
+        bookingDomainService.cancelBooking(booking);
+        bookingRepository.save(booking);
+        log.info("Booking with id: {} has been roll backed successfully!", booking.getId().getValue());
+    }
 
+
+    private SagaStatus[] getCurrentSagaStatus(ReservationStatus reservationStatus) {
+        return switch (reservationStatus) {
+            case SUCCESS -> new SagaStatus[]{SagaStatus.PROCESSING};
+            case FAILED, CANCELLED -> new SagaStatus[]{SagaStatus.STARTED, SagaStatus.PROCESSING};
+        };
     }
 }

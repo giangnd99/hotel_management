@@ -1,7 +1,5 @@
 package com.poly.booking.management.domain.port.in.service.command;
 
-import com.poly.booking.management.domain.dto.BookingDto;
-import com.poly.booking.management.domain.dto.RoomDto;
 import com.poly.booking.management.domain.dto.request.CreateBookingCommand;
 import com.poly.booking.management.domain.dto.response.BookingCreatedResponse;
 import com.poly.booking.management.domain.entity.Booking;
@@ -16,6 +14,7 @@ import com.poly.booking.management.domain.saga.BookingSagaHelper;
 import com.poly.booking.management.domain.service.BookingDomainService;
 import com.poly.domain.dto.response.room.RoomResponse;
 import com.poly.domain.valueobject.*;
+import com.poly.outbox.OutboxStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -52,11 +51,20 @@ public class BookingCreateCommendHandler {
                 .checkOutDate(DateCustom.of(createBookingCommand.getCheckOutDate()))
                 .build();
 
-        BookingCreatedEvent bookingCreatedEvent = bookingDomainService.validateAndInitiateBooking(booking, allRooms);
+        BookingCreatedEvent bookingCreatedEvent =
+                bookingDomainService.validateAndInitiateBooking(booking, allRooms);
 
         saveBooking(bookingCreatedEvent.getBooking());
 
-        return bookingDataMapper.bookingCreatedEventToBookingCreatedResponse(bookingCreatedEvent, createBookingCommand);
+        paymentOutboxHelper.savePaymentOutboxMessage(
+                bookingDataMapper.bookingEventToRoomBookingEventPayload(bookingCreatedEvent),
+                bookingCreatedEvent.getBooking().getStatus(),
+                bookingSagaHelper.bookingStatusToSagaStatus(bookingCreatedEvent.getBooking().getStatus()),
+                OutboxStatus.STARTED,
+                UUID.randomUUID());
+
+        return bookingDataMapper.bookingCreatedEventToBookingCreatedResponse(bookingCreatedEvent,
+                createBookingCommand);
     }
 
     private List<Room> getRooms() {

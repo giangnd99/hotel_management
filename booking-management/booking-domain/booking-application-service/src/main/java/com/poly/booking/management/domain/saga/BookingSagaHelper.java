@@ -35,8 +35,8 @@ public class BookingSagaHelper {
 
     public SagaStatus bookingStatusToSagaStatus(EBookingStatus status) {
         return switch (status) {
-            case PAID -> SagaStatus.PROCESSING;
-            case CONFIRMED -> SagaStatus.SUCCEEDED;
+            case PAID, CONFIRMED, CHECKED_IN -> SagaStatus.PROCESSING;
+            case CHECKED_OUT -> SagaStatus.FINISHED;
             case CANCELLED -> SagaStatus.COMPENSATED;
             case CANCELLING -> SagaStatus.COMPENSATING;
             default -> SagaStatus.STARTED;
