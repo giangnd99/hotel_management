@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -19,8 +20,8 @@ public class BookingPaymentOutboxMessage {
 
     private UUID id;
     private UUID sagaId;
-    private DateCustom createdAt;
-    private DateCustom processedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime processedAt;
     private String type;
     private String payload;
     private SagaStatus sagaStatus;
@@ -29,7 +30,7 @@ public class BookingPaymentOutboxMessage {
     private int version;
 
 
-    public void setProcessedAt(DateCustom processedAt) {
+    public void setProcessedAt(LocalDateTime processedAt) {
         this.processedAt = processedAt;
     }
 
