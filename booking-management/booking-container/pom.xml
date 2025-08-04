@@ -17,7 +17,6 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
-
         <!-- Web hoặc WebFlux tùy nhu cầu -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -40,6 +39,10 @@
         <dependency>
             <groupId>com.poly</groupId>
             <artifactId>booking-application</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>booking-data-access</artifactId>
         </dependency>
     </dependencies>
     <dependencyManagement>

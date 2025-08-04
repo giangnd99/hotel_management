@@ -1,5 +1,7 @@
 package com.poly.domain.valueobject;
 
+import com.poly.domain.exception.DomainException;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
@@ -11,6 +13,17 @@ public class Money {
 
     public Money(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public Money(double v) {
+        this(BigDecimal.valueOf(v));
+        if (Double.isNaN(v) || Double.isInfinite(v)) {
+            throw new DomainException("Invalid money amount: " + v);
+        }
+        if (v < 0) {
+            throw new DomainException("Money amount must be greater than zero: " + v);
+        }
+
     }
 
     public boolean isGreaterThanZero() {
@@ -33,6 +46,14 @@ public class Money {
         return new Money(setScale(this.amount.multiply(new BigDecimal(multiplier))));
     }
 
+    public Money multiply(BigDecimal multiplier) {
+        return new Money(setScale(this.amount.multiply(multiplier)));
+    }
+
+    public Money divide(BigDecimal divisor) {
+        return new Money(setScale(this.amount.divide(divisor, RoundingMode.HALF_EVEN)));
+    }
+
     public BigDecimal getAmount() {
         return amount;
     }
@@ -43,6 +64,18 @@ public class Money {
         if (o == null || getClass() != o.getClass()) return false;
         Money money = (Money) o;
         return amount.equals(money.amount);
+    }
+
+    public static Money from(BigDecimal amount) {
+        return new Money(amount);
+    }
+
+    public static Money from(double amount) {
+        return new Money(amount);
+    }
+
+    public static Money from(String amount) {
+        return new Money(new BigDecimal(amount));
     }
 
     @Override

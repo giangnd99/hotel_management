@@ -1,0 +1,227 @@
+package edu.poly.notificationmanagement.service;
+
+import edu.poly.notificationmanagement.model.Notification;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class NotificationService {
+    @Autowired
+    private EmailService emailService;
+
+    /**
+     * Lấy tất cả các thông báo mẫu hiện có.
+     * Trong một ứng dụng thực tế, dữ liệu này sẽ được lấy từ cơ sở dữ liệu.
+     *
+     * @return Danh sách các đối tượng Notification.
+     */
+    public List<Notification> getAllNotifications() {
+        List<Notification> notifications = new ArrayList<>();
+        // Dữ liệu mẫu hiện có
+        notifications.add(new Notification(1, 101, "Email", "Chào mừng đến với niko!", "High", new Date(), "Sent"));
+        notifications.add(new Notification(2, 102, "SMS", "Đặt phòng thành công.", "Medium", new Date(), "Sent"));
+        notifications.add(new Notification(3, 103, "Push", "khuyen mãi 50%!", "Low", new Date(), "Sent"));
+
+        // Thêm dữ liệu mẫu mới
+        notifications.add(new Notification(4, 104, "Email", "Đổi mật khẩu thành công.", "High", new Date(), "Sent"));
+        notifications.add(new Notification(5, 105, "SMS", "bạn đã đặt hàng thành công", "Medium", new Date(), "Sent"));
+        notifications.add(new Notification(6, 106, "Push", "Khuyến mãi hết hạn vào ngày 30-7-2025", "Low", new Date(), "Sent"));
+        notifications.add(new Notification(9, 108, "Email", "Cảm ơn bạn đã feedback!", "Low", new Date(), "Sent"));
+
+        return notifications;
+    }
+
+    /**
+     * Gửi xác nhận đặt phòng qua Email.
+     *
+     * @param userId          ID người dùng.
+     * @param userEmail       Email người dùng.
+     * @param userPhoneNumber Số điện thoại người dùng (tham số này có thể được giữ lại hoặc xóa nếu không còn dùng).
+     * @return Trạng thái gửi thông báo Email.
+     */
+    public String sendBookingConfirmation(int userId, String userEmail, String userPhoneNumber) {
+        String emailStatus = "Email not sent.";
+        try {
+            Map<String, Object> emailVariables = new HashMap<>();
+            emailVariables.put("subject", "Xác Nhận Đặt Phòng Khách Sạn Thành Công!");
+            emailVariables.put("userName", "Khách Hàng " + userId);
+            emailVariables.put("mainMessage", "Đơn đặt phòng của bạn đã được xác nhận thành công. Chúng tôi rất mong được chào đón bạn!");
+
+            Map<String, String> bookingDetails = new HashMap<>();
+            bookingDetails.put("Mã đặt phòng", "BK" + System.currentTimeMillis()); // Mã đặt phòng giả định
+            bookingDetails.put("Ngày đặt", new Date().toString());
+            bookingDetails.put("Loại phòng", "Phòng Deluxe");
+            bookingDetails.put("Tổng tiền", "2.500.000 VNĐ");
+            emailVariables.put("bookingDetails", bookingDetails);
+
+            emailVariables.put("actionLink", "http://localhost:8080/my-bookings/" + userId);
+
+            emailService.sendHtmlEmail(userEmail, (String) emailVariables.get("subject"), "email-template", emailVariables);
+            emailStatus = "Email xác nhận đã gửi thành công tới " + userEmail;
+        } catch (Exception e) {
+            emailStatus = "Lỗi gửi email xác nhận: " + e.getMessage();
+            System.err.println(emailStatus);
+            e.printStackTrace();
+        }
+        return emailStatus;
+    }
+
+    /**
+     * Gửi thông báo hủy đặt phòng qua Email.
+     *
+     * @param userId          ID người dùng.
+     * @param userEmail       Email người dùng.
+     * @param userPhoneNumber Số điện thoại người dùng (tham số này có thể được giữ lại hoặc xóa nếu không còn dùng).
+     * @return Trạng thái gửi thông báo Email.
+     */
+    public String sendBookingCancellation(int userId, String userEmail, String userPhoneNumber) {
+        String emailStatus = "Email not sent.";
+        try {
+            Map<String, Object> emailVariables = new HashMap<>();
+            emailVariables.put("subject", "Thông Báo Hủy Đặt Phòng Khách Sạn");
+            emailVariables.put("userName", "Khách Hàng " + userId);
+            emailVariables.put("mainMessage", "Đơn đặt phòng của bạn đã được hủy thành công. Chúng tôi hy vọng sẽ được phục vụ bạn trong tương lai.");
+
+            // Có thể thêm chi tiết đặt phòng đã hủy nếu cần
+            // Map<String, String> bookingDetails = new HashMap<>();
+            // bookingDetails.put("Mã đặt phòng đã hủy", "BK_CANCELED_" + System.currentTimeMillis());
+            // emailVariables.put("bookingDetails", bookingDetails);
+
+            emailService.sendHtmlEmail(userEmail, (String) emailVariables.get("subject"), "email-template", emailVariables);
+            emailStatus = "Email hủy đặt phòng đã gửi thành công tới " + userEmail;
+        } catch (Exception e) {
+            emailStatus = "Lỗi gửi email hủy đặt phòng: " + e.getMessage();
+            System.err.println(emailStatus);
+            e.printStackTrace();
+        }
+        return emailStatus;
+    }
+
+    /**
+     * Gửi thông báo hoàn tiền qua Email.
+     *
+     * @param userId    ID người dùng.
+     * @param userEmail Email người dùng.
+     * @param amount    Số tiền đã hoàn.
+     * @param bookingId ID đặt phòng liên quan.
+     * @return Trạng thái gửi thông báo Email.
+     */
+    public String sendRefundNotification(int userId, String userEmail, String amount, String bookingId) {
+        String emailStatus = "Email not sent.";
+        try {
+            Map<String, Object> emailVariables = new HashMap<>();
+            emailVariables.put("subject", "Thông Báo Hoàn Tiền Thành Công");
+            emailVariables.put("userName", "Khách Hàng " + userId);
+            emailVariables.put("mainMessage", "Yêu cầu hoàn tiền cho đặt phòng " + bookingId + " của bạn đã được xử lý thành công. Số tiền " + amount + " đã được hoàn trả.");
+
+            // Có thể thêm chi tiết giao dịch hoàn tiền nếu cần
+            Map<String, String> refundDetails = new HashMap<>();
+            refundDetails.put("Số tiền hoàn", amount);
+            refundDetails.put("Mã đặt phòng", bookingId);
+            refundDetails.put("Ngày hoàn tiền", new Date().toString());
+            emailVariables.put("bookingDetails", refundDetails); // Tái sử dụng bookingDetails cho mục đích hiển thị
+
+            emailService.sendHtmlEmail(userEmail, (String) emailVariables.get("subject"), "email-template", emailVariables);
+            emailStatus = "Email thông báo hoàn tiền đã gửi thành công tới " + userEmail;
+        } catch (Exception e) {
+            emailStatus = "Lỗi gửi email thông báo hoàn tiền: " + e.getMessage();
+            System.err.println(emailStatus);
+            e.printStackTrace();
+        }
+        return emailStatus;
+    }
+
+    /**
+     * Gửi thông báo nhắc nhở đặt phòng sắp tới qua Email.
+     *
+     * @param userId      ID người dùng.
+     * @param userEmail   Email người dùng.
+     * @param bookingId   ID đặt phòng.
+     * @param checkInDate Ngày nhận phòng.
+     * @return Trạng thái gửi thông báo Email.
+     */
+    public String sendBookingReminder(int userId, String userEmail, String bookingId, String checkInDate) {
+        String emailStatus = "Email not sent.";
+        try {
+            Map<String, Object> emailVariables = new HashMap<>();
+            emailVariables.put("subject", "Nhắc Nhở Đặt Phòng Sắp Tới Của Bạn");
+            emailVariables.put("userName", "Khách Hàng " + userId);
+            emailVariables.put("mainMessage", "Đây là lời nhắc nhở về đặt phòng của bạn (Mã: " + bookingId + ") vào ngày " + checkInDate + ". Chúng tôi rất mong được chào đón bạn!");
+
+            Map<String, String> reminderDetails = new HashMap<>();
+            reminderDetails.put("Mã đặt phòng", bookingId);
+            reminderDetails.put("Ngày nhận phòng", checkInDate);
+            emailVariables.put("bookingDetails", reminderDetails); // Tái sử dụng bookingDetails
+
+            emailVariables.put("actionLink", "http://localhost:8080/my-bookings/" + userId);
+
+            emailService.sendHtmlEmail(userEmail, (String) emailVariables.get("subject"), "email-template", emailVariables);
+            emailStatus = "Email nhắc nhở đặt phòng đã gửi thành công tới " + userEmail;
+        } catch (Exception e) {
+            emailStatus = "Lỗi gửi email nhắc nhở đặt phòng: " + e.getMessage();
+            System.err.println(emailStatus);
+            e.printStackTrace();
+        }
+        return emailStatus;
+    }
+
+    /**
+     * Gửi thông báo xác nhận đặt lại mật khẩu thành công qua Email.
+     *
+     * @param userId    ID người dùng.
+     * @param userEmail Email người dùng.
+     * @return Trạng thái gửi thông báo Email.
+     */
+    public String sendPasswordResetSuccess(int userId, String userEmail) {
+        String emailStatus = "Email not sent.";
+        try {
+            Map<String, Object> emailVariables = new HashMap<>();
+            emailVariables.put("subject", "Thông Báo: Mật Khẩu Của Bạn Đã Được Đặt Lại Thành Công!");
+            emailVariables.put("userName", "Khách Hàng " + userId);
+            emailVariables.put("mainMessage", "Mật khẩu tài khoản của bạn đã được đặt lại thành công. Nếu bạn không thực hiện hành động này, vui lòng liên hệ hỗ trợ ngay lập tức.");
+
+            emailVariables.put("actionLink", "http://localhost:8080/login"); // Link đến trang đăng nhập
+
+            emailService.sendHtmlEmail(userEmail, (String) emailVariables.get("subject"), "email-template", emailVariables);
+            emailStatus = "Email thông báo đặt lại mật khẩu thành công đã gửi tới " + userEmail;
+        } catch (Exception e) {
+            emailStatus = "Lỗi gửi email thông báo đặt lại mật khẩu thành công: " + e.getMessage();
+            System.err.println(emailStatus);
+            e.printStackTrace();
+        }
+        return emailStatus;
+    }
+
+    /**
+     * Gửi thông báo xác nhận đổi mật khẩu thành công qua Email.
+     *
+     * @param userId    ID người dùng.
+     * @param userEmail Email người dùng.
+     * @return Trạng thái gửi thông báo Email.
+     */
+    public String sendPasswordChangeSuccess(int userId, String userEmail) {
+        String emailStatus = "Email not sent.";
+        try {
+            Map<String, Object> emailVariables = new HashMap<>();
+            emailVariables.put("subject", "Thông Báo: Mật Khẩu Của Bạn Đã Được Đổi Thành Công!");
+            emailVariables.put("userName", "Khách Hàng " + userId);
+            emailVariables.put("mainMessage", "Mật khẩu tài khoản của bạn đã được đổi thành công. Nếu bạn không thực hiện hành động này, vui lòng liên hệ hỗ trợ ngay lập tức.");
+
+            emailVariables.put("actionLink", "http://localhost:8080/profile"); // Link đến trang hồ sơ hoặc cài đặt
+
+            emailService.sendHtmlEmail(userEmail, (String) emailVariables.get("subject"), "email-template", emailVariables);
+            emailStatus = "Email thông báo đổi mật khẩu thành công đã gửi tới " + userEmail;
+        } catch (Exception e) {
+            emailStatus = "Lỗi gửi email thông báo đổi mật khẩu thành công: " + e.getMessage();
+            System.err.println(emailStatus);
+            e.printStackTrace();
+        }
+        return emailStatus;
+    }
+}

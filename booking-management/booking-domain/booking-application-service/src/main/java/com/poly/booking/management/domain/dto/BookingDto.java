@@ -1,6 +1,6 @@
 package com.poly.booking.management.domain.dto;
 
-import com.poly.domain.valueobject.BookingStatus;
+import com.poly.domain.valueobject.EBookingStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,9 +12,6 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class BookingDto {
     private UUID bookingId;
     private Long customerId;
@@ -26,6 +23,6 @@ public class BookingDto {
     private int numberOfGuests;
     private BigDecimal totalAmount;
     private LocalDateTime bookingDate;
-    private BookingStatus status;
+    private EBookingStatus status;
     private String specialRequests;
 }
