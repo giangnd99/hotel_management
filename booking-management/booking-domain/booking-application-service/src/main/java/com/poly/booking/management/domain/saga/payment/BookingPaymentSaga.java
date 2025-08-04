@@ -66,14 +66,7 @@ public class BookingPaymentSaga implements SagaStep<PaymentMessageResponse> {
                         sagaStatus);
         paymentOutboxHelper.save(paymentUpdatedMessage);
 
-        BookingRoomOutboxMessage approvalCreatedMessage =
-                roomOutboxHelper.getConfirmedDepositOutboxMessage(
-                        bookingPaidEvent,
-                        bookingPaidEvent.getBooking().getStatus(),
-                        sagaStatus, paymentUpdatedMessage.getOutboxStatus(),
-                        UUID.fromString(data.getSagaId()));
-
-        roomOutboxHelper.save(approvalCreatedMessage);
+        roomOutboxHelper.save(reserveRoomMessage);
         log.info("Booking with id: {} has been paid successfully!", bookingPaidEvent.getBooking().getId().getValue());
     }
 
@@ -82,6 +75,11 @@ public class BookingPaymentSaga implements SagaStep<PaymentMessageResponse> {
     @Transactional
     public void rollback(PaymentMessageResponse paymentResponse) {
 
+        //Tìm các khoảng thanh toán có saga id tương ứng và có status là STARTED hoặc PROCESSING vì
+        //có thể có nhiều khoảng thanh toán cùng lúc
+        //Nếu không tìm thấy thì trả về vì đã rollback
+        //Nếu tìm thấy thì lấy ra và rollback
+        //Lưu lại trạng thái của khoảng thanh toán
         Optional<BookingPaymentOutboxMessage> bookingPaymentOutboxMessageResponse =
                 paymentOutboxHelper.getPaymentOutboxMessageBySagaIdAndSagaStatus(
                         UUID.fromString(paymentResponse.getSagaId()),
@@ -91,13 +89,20 @@ public class BookingPaymentSaga implements SagaStep<PaymentMessageResponse> {
             log.info("An outbox message with saga id: {} is already roll backed!", paymentResponse.getSagaId());
             return;
         }
-
+        //Lấy ra khoảng thanh toán
         BookingPaymentOutboxMessage bookingPaymentOutboxMessage = bookingPaymentOutboxMessageResponse.get();
-
+        //Rollback khoảng thanh toán
+        //Lấy ra booking
         Booking booking = rollbackPaymentForBooking(paymentResponse);
-
+        //Lấy ra trạng thái saga từ booking
+        //Lưu lại trạng thái của khoảng thanh toán
         SagaStatus sagaStatus = bookingSagaHelper.bookingStatusToSagaStatus(booking.getStatus());
 
+        //Lưu lại trạng thái của khoảng thanh toán
+        //Trạng thái saga là COMPENSATING
+        //Trạng thái payment là CANCELLED
+        //Trạng thái booking là CANCELLED
+        //Trạng thái outbox là COMPLETED
         paymentOutboxHelper.save(paymentOutboxHelper.getUpdatePaymentOutboxMessage(
                 bookingPaymentOutboxMessage,
                 booking.getStatus(),
@@ -108,11 +113,21 @@ public class BookingPaymentSaga implements SagaStep<PaymentMessageResponse> {
         log.info("Booking with id: {} has been roll backed successfully!", booking.getId().getValue());
     }
 
+    //Rollback khoảng thanh toán
+    //Lấy ra booking
+    //Cancel booking
+    //Lưu lại booking
+    //Trả về booking
     private Booking rollbackPaymentForBooking(PaymentMessageResponse paymentResponse) {
+        //Lấy ra booking
         log.info("Rolling back payment for booking with id: {}", paymentResponse.getBookingId());
         Booking booking = bookingSagaHelper.findBooking(paymentResponse.getBookingId());
+        //Cancel booking
         bookingDomainService.cancelBooking(booking);
+        //Lưu lại booking
         bookingRepository.save(booking);
+        //Trả về booking đã cancel
+        //Trạng thái saga là COMPENSATING
         return booking;
     }
 

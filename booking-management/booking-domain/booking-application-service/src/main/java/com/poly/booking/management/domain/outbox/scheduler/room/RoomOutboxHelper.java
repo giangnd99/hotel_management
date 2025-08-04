@@ -6,6 +6,7 @@ import com.poly.booking.management.domain.event.BookingPaidEvent;
 import com.poly.booking.management.domain.exception.BookingDomainException;
 import com.poly.booking.management.domain.mapper.BookingDataMapper;
 import com.poly.booking.management.domain.outbox.model.room.BookingReservedEventPayload;
+import com.poly.booking.management.domain.outbox.model.room.BookingRoomEventPayload;
 import com.poly.booking.management.domain.outbox.model.room.BookingRoomOutboxMessage;
 import com.poly.booking.management.domain.port.out.repository.RoomReserveOutBoxRepository;
 import com.poly.domain.valueobject.EBookingStatus;
@@ -54,30 +55,30 @@ public class RoomOutboxHelper {
         log.info("Saved booking approval outbox message with id: {}", bookingRoomOutboxMessage.getId());
     }
 
-    public BookingRoomOutboxMessage getUpdatedRoomOutBoxMessage(BookingRoomOutboxMessage bookingRoomOutboxMessage, EBookingStatus status, SagaStatus sagaStatus) {
-        bookingRoomOutboxMessage.setBookingStatus(status);
-        bookingRoomOutboxMessage.setSagaStatus(sagaStatus);
-        bookingRoomOutboxMessage.setProcessedAt(LocalDateTime.now());
-        return bookingRoomOutboxMessage;
-    }
-
-    public BookingRoomOutboxMessage getConfirmedDepositOutboxMessage(BookingPaidEvent domainEvent,
-                                                                     EBookingStatus status,
-                                                                     SagaStatus sagaStatus,
-                                                                     OutboxStatus outboxStatus,
-                                                                     UUID sagaId) {
-        BookingReservedEventPayload payload = bookingDataMapper.bookingEventToRoomBookingEventPayload(domainEvent);
-
-        return BookingRoomOutboxMessage.builder()
+    public void saveRoomReserveOutboxMessage(BookingReservedEventPayload bookingRoomEventPayload,
+                                             EBookingStatus status,
+                                             SagaStatus sagaStatus,
+                                             OutboxStatus outboxStatus,
+                                             UUID sagaId) {
+        save(
+            BookingRoomOutboxMessage.builder()
                 .id(UUID.randomUUID())
                 .sagaId(sagaId)
                 .type(BOOKING_SAGA_NAME)
                 .bookingStatus(status)
                 .sagaStatus(sagaStatus)
                 .outboxStatus(outboxStatus)
-                .payload(createPayload(payload))
-                .createdAt(payload.getCreatedAt())
-                .build();
+                .payload(createPayload(bookingRoomEventPayload))
+                .createdAt(bookingRoomEventPayload.getCreatedAt())
+                .build()
+        );
+    }
+
+    public BookingRoomOutboxMessage getUpdatedRoomOutBoxMessage(BookingRoomOutboxMessage bookingRoomOutboxMessage, EBookingStatus status, SagaStatus sagaStatus) {
+        bookingRoomOutboxMessage.setBookingStatus(status);
+        bookingRoomOutboxMessage.setSagaStatus(sagaStatus);
+        bookingRoomOutboxMessage.setProcessedAt(LocalDateTime.now());
+        return bookingRoomOutboxMessage;
     }
 
     private String createPayload(BookingReservedEventPayload payload) {
