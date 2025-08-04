@@ -1,14 +1,15 @@
 package com.poly.promotion.domain.application.service;
 
 import com.poly.promotion.domain.core.entity.VoucherPack;
+import com.poly.promotion.domain.core.valueobject.VoucherPackStatus;
 
 import java.util.List;
 
 public interface VoucherPackService {
     VoucherPack getVoucherPackById(Long voucherPackId);
-    List<VoucherPack> getAllVoucherPacksWithStatus(Integer status);
-    VoucherPack createVoucherPack(VoucherPack voucherPack);
-    VoucherPack updatePendingVoucherPack(Long voucherPackId, VoucherPack voucherPack);
+    List<VoucherPack> getAllVoucherPacksWithStatus(VoucherPackStatus... status);
+    VoucherPack createVoucherPack(VoucherPack voucherPack, String createdBy);
+    VoucherPack updatePendingVoucherPack(Long voucherPackId, VoucherPack voucherPack, String updatedBy);
 
     /**
      * Closes a voucher pack by setting its status to closed.

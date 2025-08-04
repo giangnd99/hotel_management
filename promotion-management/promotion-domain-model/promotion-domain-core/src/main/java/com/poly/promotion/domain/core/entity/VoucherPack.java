@@ -1,6 +1,12 @@
 package com.poly.promotion.domain.core.entity;
 
 import com.poly.domain.entity.BaseEntity;
+import com.poly.domain.valueobject.Money;
+import com.poly.promotion.domain.core.exception.PromotionDomainException;
+import com.poly.promotion.domain.core.valueobject.DateRange;
+import com.poly.promotion.domain.core.valueobject.Discount;
+import com.poly.promotion.domain.core.valueobject.DiscountAmount;
+import com.poly.promotion.domain.core.valueobject.DiscountPercentage;
 import com.poly.promotion.domain.core.valueobject.VoucherPackId;
 import com.poly.promotion.domain.core.valueobject.VoucherPackStatus;
 import lombok.AccessLevel;
@@ -11,8 +17,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -21,12 +29,12 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VoucherPack extends BaseEntity<VoucherPackId> {
     String description;
-    Double discountAmount;
-    String validRange;
+    Discount discountAmount;
+    DateRange voucherValidRange;
     Long requiredPoints;
     Integer quantity;
-    LocalDate validFrom;
-    LocalDate validTo;
+    LocalDate packValidFrom;
+    LocalDate packValidTo;
     LocalDateTime createdAt;
     String createdBy;
     LocalDateTime updatedAt;
@@ -40,12 +48,12 @@ public class VoucherPack extends BaseEntity<VoucherPackId> {
     private VoucherPack(Builder builder) {
         super.setId(builder.id);
         setDescription(builder.description);
-        setDiscountAmount(builder.discountAmount);
-        setValidRange(builder.validRange);
+        setDiscountAmount(builder.discount);
+        setVoucherValidRange(builder.validRange);
         setRequiredPoints(builder.requiredPoints);
         setQuantity(builder.quantity);
-        setValidFrom(builder.validFrom);
-        setValidTo(builder.validTo);
+        setPackValidFrom(builder.validFrom);
+        setPackValidTo(builder.validTo);
         setCreatedAt(builder.createdAt);
         setCreatedBy(builder.createdBy);
         setUpdatedAt(builder.updatedAt);
@@ -56,8 +64,8 @@ public class VoucherPack extends BaseEntity<VoucherPackId> {
     public static final class Builder {
         private VoucherPackId id;
         private String description;
-        private Double discountAmount;
-        private String validRange;
+        private Discount discount;
+        private DateRange validRange;
         private Long requiredPoints;
         private Integer quantity;
         private LocalDate validFrom;
@@ -82,12 +90,32 @@ public class VoucherPack extends BaseEntity<VoucherPackId> {
         }
 
         public Builder discountAmount(Double val) {
-            discountAmount = val;
+            if (val == null) {return this;}
+            if(val>= 0 && val <= 100) {
+                discount = new DiscountPercentage(val);
+            } else if(val >= 1000) {
+                discount = new DiscountAmount(new Money(BigDecimal.valueOf(val)));
+            } else {
+                throw new PromotionDomainException("Invalid discount amount: " + val);
+            }
             return this;
         }
 
         public Builder validRange(String val) {
-            validRange = val;
+            if (val != null && !val.isBlank()) {
+                String[] parts = val.split(" ");
+                if (parts.length >= 2) {
+                    throw new PromotionDomainException("Invalid date range format. Expected format: '<value> <unit>'");
+                }
+                try{
+                    int value = Integer.parseInt(parts[0]);
+                    ChronoUnit unit = ChronoUnit.valueOf(parts[1]);
+                    validRange = new DateRange(value, unit);
+                } catch (IllegalArgumentException e) {
+                    throw new PromotionDomainException("Invalid date range format. Expected format: '<value: int> <unit: ChronoUnit string>'", e);
+                }
+
+            }
             return this;
         }
 
@@ -131,8 +159,8 @@ public class VoucherPack extends BaseEntity<VoucherPackId> {
             return this;
         }
 
-        public Builder status(Integer val) {
-            status = VoucherPackStatus.fromStatusCode(val);
+        public Builder status(String val) {
+            status = VoucherPackStatus.fromString(val);
             return this;
         }
 
