@@ -5,8 +5,8 @@ import com.poly.outbox.OutboxStatus;
 
 import java.util.function.BiConsumer;
 
-public interface PaymentRequestMessagePublisher {
+public interface DepositPaymentRequestMessagePublisher {
 
-    void sendTotalBookingAmount(BookingPaymentOutboxMessage paymentOutboxMessage,
-                                BiConsumer<BookingPaymentOutboxMessage, OutboxStatus> outboxCallback);
+    void sendDepositRequest(BookingPaymentOutboxMessage paymentOutboxMessage,
+                            BiConsumer<BookingPaymentOutboxMessage, OutboxStatus> outboxCallback);
 }

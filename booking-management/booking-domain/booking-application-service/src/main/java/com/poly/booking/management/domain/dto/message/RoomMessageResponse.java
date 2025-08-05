@@ -1,4 +1,4 @@
-package com.poly.booking.management.domain.dto.message.room;
+package com.poly.booking.management.domain.dto.message;
 
 import com.poly.booking.management.domain.entity.Room;
 import com.poly.domain.valueobject.ERoomStatus;
