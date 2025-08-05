@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -26,4 +27,7 @@ public class BookingRoomEventPayload {
     private int capacity;
     @JsonProperty
     private BigDecimal basePrice;
+    @JsonProperty
+    private LocalDateTime createdAt;
+
 }
