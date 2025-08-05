@@ -1,7 +1,6 @@
 package com.poly.paymentapplicationservice.mapper;
 
 import com.poly.paymentapplicationservice.command.CreateInvoiceItemCommand;
-import com.poly.paymentapplicationservice.command.CreatePaymentCommand;
 import com.poly.paymentapplicationservice.dto.InvoiceDto;
 import com.poly.paymentapplicationservice.dto.InvoiceItemDto;
 import com.poly.paymentapplicationservice.dto.PaymentDto;
@@ -24,7 +23,7 @@ public class InvoiceMapper {
         invoiceDto.setStaffIdUpdated(invoice.getLastUpdatedBy().getValue());
         invoiceDto.setVoucherId(invoice.getVoucherId().getValue());
         invoiceDto.setSubTotal(invoice.getSubTotal().getValue());
-        invoiceDto.setTaxAmount(invoice.getTaxAmount().getValue());
+        invoiceDto.setTaxAmount(invoice.getTaxRate().getValue());
         invoiceDto.setDiscountAmount(invoice.getDiscountAmount().getValue());
         invoiceDto.setTotalAmount(invoice.getTotalAmount().getValue());
         invoiceDto.setPaidAmount(invoice.getPaidAmount().getValue());
@@ -32,7 +31,7 @@ public class InvoiceMapper {
         invoiceDto.setCreatedAt(invoice.getCreatedAt());
         invoiceDto.setLastUpdatedAt(invoice.getLastUpdatedAt());
         invoiceDto.setItems(toInvoiceItemDtos(invoice.getItems()));
-        invoiceDto.setPayments(toPaymentDtos(invoice.getPayments()));
+//        invoiceDto.setPayments(toPaymentDtos(invoice.getPayments()));
         invoiceDto.setNote(invoice.getNote().getValue());
         return invoiceDto;
     }
@@ -54,7 +53,7 @@ public class InvoiceMapper {
     private static List<PaymentDto> toPaymentDtos(List<Payment> payments) {
         return payments.stream()
                 .map(payment -> PaymentDto.builder()
-                        .staffId(payment.getStaffId().getValue())
+//                        .staffId(payment.getStaffId().getValue())
                         .paymentStatus(payment.getPaymentStatus())
                         .amount(payment.getAmount().getValue())
                         .method(payment.getMethod())
@@ -77,17 +76,17 @@ public class InvoiceMapper {
                 ).collect(Collectors.toList());
     }
 
-    public static List<Payment> mapToPayments(List<CreatePaymentCommand> commandList) {
-        return commandList.stream()
-                .map(
-                        cmd -> Payment.builder()
-                                .staffId(StaffId.from(cmd.getStaffId()))
-                                .paymentStatus(cmd.getPaymentStatus())
-                                .amount(Money.from(cmd.getAmount()))
-                                .method(cmd.getMethod())
-                                .paidAt(cmd.getPaidAt())
-                                .referenceCode(cmd.getReferenceCode())
-                                .build()
-                ).collect(Collectors.toList());
-    }
+//    public static List<Payment> mapToPayments(List<CreatePaymentCommand> commandList) {
+//        return commandList.stream()
+//                .map(
+//                        cmd -> Payment.builder()
+////                                .staffId(StaffId.from(cmd.getStaffId()))
+//                                .paymentStatus(cmd.getPaymentStatus())
+//                                .amount(Money.from(cmd.getAmount()))
+//                                .method(cmd.getMethod())
+//                                .paidAt(cmd.getPaidAt())
+//                                .referenceCode(cmd.getReferenceCode())
+//                                .build()
+//                ).collect(Collectors.toList());
+//    }
 }

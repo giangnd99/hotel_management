@@ -1,4 +1,4 @@
-package com.poly.paymentcontainer.config;
+package com.poly.paymentdataaccess.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

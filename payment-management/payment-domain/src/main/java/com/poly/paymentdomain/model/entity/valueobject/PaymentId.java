@@ -15,6 +15,10 @@ public class PaymentId {
         this.value = value;
     }
 
+    public static PaymentId randomPaymentId() {
+        return new PaymentId(UUID.randomUUID());
+    }
+
     public static PaymentId from(UUID value) {
         return new PaymentId(value);
     }

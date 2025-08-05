@@ -30,6 +30,5 @@ public class InvoiceDto {
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdatedAt;
     List<InvoiceItemDto> items;
-    List<PaymentDto> payments;
     private String note;
 }

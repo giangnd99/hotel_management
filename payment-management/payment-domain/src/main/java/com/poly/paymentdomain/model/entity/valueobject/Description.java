@@ -23,4 +23,8 @@ public class Description {
     public String getValue() {
         return value.toString();
     }
+
+    public static Description empty() {
+        return new Description("Empty");
+    }
 }

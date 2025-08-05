@@ -17,7 +17,7 @@ public class Invoice extends AggregateRoot<InvoiceId> {
     private StaffId lastUpdatedBy; // Update bởi nhân viên nào
     private VoucherId voucherId;   // Nếu có mã khuyến mãi liên kết
     private Money subTotal;        // Tổng các InvoiceItem trước khi tính thuế/giảm
-    private Money taxAmount;       // Tiền thuế (nếu có)
+    private Money taxRate;       // Tiền thuế (nếu có)
     private Money discountAmount;  // Mã giảm giá (nếu có)
     private Money totalAmount;     // = subTotal + tax - discount
     private Money paidAmount; // Tổng tiền đã trả / thanh toán
@@ -25,27 +25,24 @@ public class Invoice extends AggregateRoot<InvoiceId> {
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdatedAt;
     private List<InvoiceItem> items = new ArrayList<>(); // Chứa danh sách các dịch vụ, phòng, ...
-    private List<Payment> payments = new ArrayList<>(); // Chứa danh sách thanh toán nếu có 2 loại tiền mặt, ck
     private Description note;  // Ghi chú nếu cần, mặc định trống
+    private Money changeAmount; // Tiền thối khách đưa dư
 
     private Invoice(Builder builder) {
         this.setId(builder.invoiceId);
-        bookingId = builder.bookingId;
-        customerId = builder.customerId;
-        createdBy = builder.createdBy == null ? StaffId.system() : builder.createdBy;
-        lastUpdatedBy = builder.lastUpdatedBy;
-        voucherId = builder.voucherId;
-        subTotal = builder.subTotal;
-        taxAmount = builder.taxAmount;
-        discountAmount = builder.discountAmount;
-        totalAmount = builder.totalAmount;
-        paidAmount = builder.paidAmount;
-        status = builder.status ;
-        createdAt = builder.createdAt != null ? builder.createdAt : LocalDateTime.now();
-        lastUpdatedAt = builder.lastUpdatedAt != null ? builder.lastUpdatedAt : LocalDateTime.now();
-        items = builder.items != null ? builder.items : new ArrayList<>();
-        payments = builder.payments != null ? builder.payments : new ArrayList<>();
-        note = builder.note == null ? Description.from("Nothing any where." ): builder.note;
+        this.bookingId = builder.bookingId;
+        this.customerId = builder.customerId;
+        this.createdBy = builder.createdBy == null ? StaffId.system() : builder.createdBy;
+        this.lastUpdatedBy = builder.lastUpdatedBy;
+        this.voucherId = builder.voucherId == null ? VoucherId.system() : builder.voucherId;
+        this.taxRate = builder.taxRate;
+        this.discountAmount = builder.discountAmount != null ? builder.discountAmount : Money.zero();
+        this.paidAmount = builder.paidAmount != null ? builder.paidAmount : Money.zero();
+        this.status = InvoiceStatus.DRAFT;
+        this.createdAt = LocalDateTime.now();
+        this.lastUpdatedAt = builder.lastUpdatedAt != null ? builder.lastUpdatedAt : LocalDateTime.now();
+        this.items = builder.items != null ? builder.items : new ArrayList<>();
+        this.note = builder.note != null ? builder.note : Description.empty();
     }
 
     public static final class Builder {
@@ -55,16 +52,12 @@ public class Invoice extends AggregateRoot<InvoiceId> {
         private StaffId createdBy;
         private StaffId lastUpdatedBy;
         private VoucherId voucherId;
-        private Money subTotal;
-        private Money taxAmount;
+        private Money taxRate;
         private Money discountAmount;
-        private Money totalAmount;
         private Money paidAmount;
         private InvoiceStatus status;
-        private LocalDateTime createdAt;
         private LocalDateTime lastUpdatedAt;
         private List<InvoiceItem> items;
-        private List<Payment> payments;
         private Description note;
 
         public Builder() {
@@ -100,23 +93,13 @@ public class Invoice extends AggregateRoot<InvoiceId> {
             return this;
         }
 
-        public Builder subTotal(Money val) {
-            subTotal = val;
-            return this;
-        }
-
-        public Builder taxAmount(Money val) {
-            taxAmount = val;
+        public Builder taxRate(Money val) {
+            taxRate = val;
             return this;
         }
 
         public Builder discountAmount(Money val) {
             discountAmount = val;
-            return this;
-        }
-
-        public Builder totalAmount(Money val) {
-            totalAmount = val;
             return this;
         }
 
@@ -130,11 +113,6 @@ public class Invoice extends AggregateRoot<InvoiceId> {
             return this;
         }
 
-        public Builder createdAt(LocalDateTime val) {
-            createdAt = val;
-            return this;
-        }
-
         public Builder lastUpdatedAt(LocalDateTime val) {
             lastUpdatedAt = val;
             return this;
@@ -145,18 +123,15 @@ public class Invoice extends AggregateRoot<InvoiceId> {
             return this;
         }
 
-        public Builder payments(List<Payment> val) {
-            payments = val;
-            return this;
-        }
-
         public Builder note(Description val) {
             note = val;
             return this;
         }
 
         public Invoice build() {
-            return new Invoice(this);
+            Invoice invoice = new Invoice(this);
+            invoice.recalculateTotals();
+            return invoice;
         }
     }
 
@@ -164,23 +139,69 @@ public class Invoice extends AggregateRoot<InvoiceId> {
         return new Builder();
     }
 
+    // -- Functions calculate amount
+
     public Money calculateSubTotal() {
         return items.stream().map(InvoiceItem::amount).reduce(Money.zero(),(money1 , money2) -> money1.add(money2));
     }
 
     public Money calculateTotalAmount() {
-        return calculateSubTotal()
-                .add((this.taxAmount != null) ? calculateSubTotal().multiply(this.taxAmount.getValue()) : Money.zero())
-                .subtract((this.discountAmount != null) ? calculateSubTotal().subtract(this.discountAmount) : Money.zero());
-    }
-
-    public Money calculatePaidAmount() {
-        return payments.stream().map(Payment::amount).reduce(Money.zero(), ((money1, money2) -> money1.add(money2)));
+        Money subTotal = this.subTotal;
+        Money tax = subTotal.multiply(taxRate.getValue());
+        Money discount = discountAmount;
+        return subTotal.add(tax).subtract(discount);
     }
 
     public void recalculateTotals() {
         this.subTotal = calculateSubTotal();
         this.totalAmount = calculateTotalAmount();
-        this.paidAmount = calculatePaidAmount();
+    }
+
+    public void pay(Money amountPaid) {
+        if (this.paidAmount == null) {
+            this.paidAmount = amountPaid;
+        } else {
+            this.paidAmount = this.paidAmount.add(amountPaid);
+        }
+        recalculateChange();
+    }
+
+    private void recalculateChange() {
+        if (this.paidAmount != null && this.totalAmount != null) {
+            this.changeAmount = this.paidAmount.isGreaterThan(this.totalAmount)
+                    ? this.paidAmount.subtract(this.totalAmount)
+                    : Money.zero();
+
+            this.status = this.paidAmount.isGreaterThanOrEqualTo(this.totalAmount)
+                    ? InvoiceStatus.PAID
+                    : InvoiceStatus.PENDING;
+        } else {
+            this.changeAmount = Money.zero();
+            throw new RuntimeException("Tiền khách trả hoặc tổng tiền đang trống.");
+        }
+    }
+
+    // ---- Function add & remote item
+
+    public void addItem(InvoiceItem item) {
+        if (items == null) throw new NullPointerException("items cannot be null");
+        this.items.add(item);
+        recalculateTotals();
+        this.lastUpdatedAt = LocalDateTime.now();
+    }
+
+    public void removeItem(InvoiceItem item) {
+        if (items == null) throw new NullPointerException("items cannot be null");
+        this.items.remove(item);
+        recalculateTotals();
+        this.lastUpdatedAt = LocalDateTime.now();
+    }
+
+    public void cancel() {
+        if (this.status == InvoiceStatus.PAID) {
+            throw new IllegalStateException("Cannot cancel a PAID invoice.");
+        }
+        this.status = InvoiceStatus.CANCELED;
+        this.lastUpdatedAt = LocalDateTime.now();
     }
 }

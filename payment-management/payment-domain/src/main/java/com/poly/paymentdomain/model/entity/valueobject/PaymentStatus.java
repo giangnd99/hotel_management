@@ -6,16 +6,26 @@ public class PaymentStatus {
 
     private final Status value;
 
+    public static PaymentStatus PENDING = new PaymentStatus(Status.PENDING);
+
+    public static PaymentStatus COMPLETED = new PaymentStatus(Status.COMPLETED);
+
+    public static PaymentStatus CANCELLED = new PaymentStatus(Status.CANCELLED);
+
+    public static PaymentStatus FAILED = new PaymentStatus(Status.FAILED);
+
+    public static PaymentStatus EXPIRED = new PaymentStatus(Status.EXPIRED);
+
     public PaymentStatus(Status value) {
         if (value == null) throw new InvalidValueException(null, "status", "PaymentStatus");
         this.value = value;
     }
 
-    public Status getValue() {
-        return value;
+    public String getValue() {
+        return  value.toString();
     }
 
-    public PaymentStatus from(String value) {
+    public static PaymentStatus from(String value) {
         return new PaymentStatus(Status.valueOf(value));
     }
 
@@ -24,7 +34,7 @@ public class PaymentStatus {
     }
 
     public enum Status {
-        COMPLETED, CANCELLED, FAILED
+        PENDING, COMPLETED, CANCELLED, FAILED, EXPIRED
     }
 
 }

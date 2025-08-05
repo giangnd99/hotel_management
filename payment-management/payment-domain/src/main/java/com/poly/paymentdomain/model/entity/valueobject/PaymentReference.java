@@ -22,4 +22,8 @@ public class PaymentReference {
     public String getValue() {
         return value.toString();
     }
+
+    public static PaymentReference empty() {
+        return  new PaymentReference("Empty PaymentReference");
+    }
 }

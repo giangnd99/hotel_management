@@ -1,71 +1,62 @@
-package com.poly.paymentcontainer.controller;
+    package com.poly.paymentcontainer.controller;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.function.EntityResponse;
-import vn.payos.PayOS;
-import vn.payos.type.CheckoutResponseData;
-import vn.payos.type.ItemData;
-import vn.payos.type.PaymentData;
+    import com.poly.paymentapplicationservice.command.ConfirmDepositPaymentCommand;
+    import com.poly.paymentapplicationservice.command.CreateDepositCommand;
+    import com.poly.paymentapplicationservice.dto.CreatePaymentLinkCommand;
+    import com.poly.paymentapplicationservice.port.input.PaymentUsecase;
+    import com.poly.paymentcontainer.dto.CreateDepositCommandController;
+    import com.poly.paymentcontainer.dto.PayOSWebhookPayload;
+    import com.poly.paymentdomain.model.entity.valueobject.PaymentMethod;
+    import com.poly.paymentdomain.model.entity.valueobject.PaymentStatus;
+    import lombok.RequiredArgsConstructor;
+    import lombok.extern.slf4j.Slf4j;
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.web.bind.annotation.PostMapping;
+    import org.springframework.web.bind.annotation.RequestBody;
+    import org.springframework.web.bind.annotation.RequestMapping;
+    import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-import java.util.List;
+    @Slf4j
+    @RestController
+    @RequestMapping("/api/payment")
+    @RequiredArgsConstructor
+    public class PaymentController {
 
-@Slf4j
-@RestController
-@RequestMapping("/api/payment")
-@RequiredArgsConstructor
-public class PaymentController {
+        private final PaymentUsecase paymentUsecase;
 
-    private final PayOS payOS;
+        @PostMapping("/deposit")
+        public ResponseEntity createPaymentLink(@RequestBody CreateDepositCommandController command) throws Exception {
+            CreateDepositCommand createPaymentLinkCommand = new CreateDepositCommand();
+            createPaymentLinkCommand.setAmount(command.getAmount());
+            createPaymentLinkCommand.setMethod(PaymentMethod.from(command.getMethod().name()));
+            createPaymentLinkCommand.setQuantity(command.getQuantity());
+            createPaymentLinkCommand.setBookingId(command.getBookingId());
+            createPaymentLinkCommand.setName(command.getName());
+            return ResponseEntity.ok().body(paymentUsecase.makeBookingDeposit(createPaymentLinkCommand));
+        }
 
-    @PostMapping("/create-payment-link")
-    public ResponseEntity createPaymentLink() throws Exception {
+        @PostMapping("/webhook/payos")
+        public ResponseEntity<Void> handlePayOSWebhook(@RequestBody PayOSWebhookPayload payload) {
+            PaymentStatus paymentStatus = new PaymentStatus(PaymentStatus.Status.FAILED);
 
-        String domain = "http://localhost:3000";
+            if ( payload.getData().getDesc().equals("success")) {
+                paymentStatus = new PaymentStatus(PaymentStatus.Status.COMPLETED);
+            }
 
-        Long orderCode = System.currentTimeMillis() / 1000;
+            if (payload.getData().getDesc().equals("failed")) {
+                paymentStatus = new PaymentStatus(PaymentStatus.Status.FAILED);
+            }
 
-        ItemData item_1 = ItemData
-                .builder()
-                .name("Phòng Tổng Thống")
-                .quantity(1)
-                .price(1000)
-                .build();
+            ConfirmDepositPaymentCommand command = ConfirmDepositPaymentCommand.builder()
+                    .paymentStatus(paymentStatus)
+                    .referenceCode(payload.getData().getOrderCode())
+                    .amount(payload.getData().getAmount())
+                    .transactionDateTime(payload.getData().getTransactionDateTime())
+                    .build();
 
-        ItemData item_2 = ItemData
-                .builder()
-                .name("Gà Hảo Hạn")
-                .quantity(1)
-                .price(1000)
-                .build();
 
-        ItemData item_3 = ItemData
-                .builder()
-                .name("Phở Bò")
-                .quantity(2)
-                .price(1000)
-                .build();
+            paymentUsecase.handleWebhookPayment(command);
+            return ResponseEntity.ok().build();
+        }
 
-        List<ItemData> items = Arrays.asList(item_1, item_2, item_3);
-
-        PaymentData paymentData = PaymentData
-                .builder()
-                .orderCode(orderCode)
-                .amount(2000)
-                .description("Thanh toán đơn hàng")
-                .returnUrl(domain)
-                .cancelUrl("")
-                .items(items)
-                .build();
-
-        CheckoutResponseData result = payOS.createPaymentLink(paymentData);
-
-        return ResponseEntity.ok().body(result);
     }
-}

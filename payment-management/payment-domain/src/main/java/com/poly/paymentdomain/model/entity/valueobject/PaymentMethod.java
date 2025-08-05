@@ -11,16 +11,20 @@ public class PaymentMethod {
         this.value = value;
     }
 
-    public PaymentMethod from(String value) {
-        return new PaymentMethod(PaymentMethod.Status.valueOf(value));
-    }
-
     public String to(PaymentMethod paymentMethod) {
         return paymentMethod.value.toString();
     }
 
-    public Status getValue() {
-        return value;
+    public String getValue() {
+        return value.toString();
+    }
+
+    public static PaymentMethod from(String paymentMethod) {
+        return new PaymentMethod(PaymentMethod.Status.valueOf(paymentMethod));
+    }
+
+    public String getValueString() {
+        return value.toString();
     }
 
     public enum Status {

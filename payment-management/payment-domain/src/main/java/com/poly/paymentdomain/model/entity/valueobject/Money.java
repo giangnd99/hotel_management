@@ -45,4 +45,12 @@ public class Money {
     public BigDecimal getValue() {
         return value;
     }
+
+    public boolean isGreaterThan(Money moneyCanCheck) {
+        return this.getValue().compareTo(moneyCanCheck.getValue()) > 0;
+    }
+
+    public boolean isGreaterThanOrEqualTo(Money moneyCanCheck) {
+        return this.getValue().compareTo(moneyCanCheck.getValue()) >= 0;
+    }
 }

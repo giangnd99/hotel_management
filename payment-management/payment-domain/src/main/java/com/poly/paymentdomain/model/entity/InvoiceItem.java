@@ -17,17 +17,13 @@ public class InvoiceItem {
     private Description note;
 
     private InvoiceItem(Builder builder) {
-        serviceId = builder.serviceId;
-        description = builder.description;
-        serviceType = builder.serviceType;
-        quantity = builder.quantity;
-        unitPrice = builder.unitPrice;
-        usedAt = builder.usedAt;
-        note = builder.note;
-    }
-
-    public Money amount() {
-        return unitPrice.multiply(BigDecimal.valueOf(quantity.getValue())); // Quantity.value() trả int
+        this.serviceId = builder.serviceId;
+        this.description = builder.description;
+        this.serviceType = builder.serviceType;
+        this.quantity = builder.quantity;
+        this.unitPrice = builder.unitPrice;
+        this.usedAt = LocalDateTime.now();
+        this.note = builder.note == null ? Description.empty() : builder.note;
     }
 
     public static final class Builder {
@@ -84,5 +80,9 @@ public class InvoiceItem {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public Money amount() {
+        return unitPrice.multiply(BigDecimal.valueOf(quantity.getValue())); // Quantity.value() trả int
     }
 }

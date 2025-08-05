@@ -1,59 +1,68 @@
 package com.poly.paymentdomain.model.entity;
 
+import com.poly.domain.entity.AggregateRoot;
+import com.poly.domain.valueobject.InvoiceId;
 import com.poly.paymentdomain.model.entity.valueobject.*;
+import com.poly.paymentdomain.model.exception.AlreadyConfirmedPaymentException;
 import lombok.Getter;
-import lombok.Setter;
+import org.springframework.cglib.core.Local;
 
+import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
-public class Payment {
-//    private PaymentId id;
-    private StaffId  staffId; // Người thực hiện xác nhận thanh toán của khách hàng, SYSTEM - CK, ID nhân viên - tiền mặt
+public class Payment extends AggregateRoot<PaymentId> {
+    private InvoiceId invoiceId;
+    private BookingId bookingId;
     private PaymentStatus paymentStatus; // Trạng thái thanh toán
     private Money amount; // Tổng số tiền thanh toán
     private PaymentMethod method; // CASH, PAYOS
     private LocalDateTime paidAt; // Thời gian trả
+    private LocalDateTime createdAt;
+    private PaymentTransactionType paymentTransactionType; // Loại dịch vụ chi trả
     private PaymentReference referenceCode; // mã QR hoặc mã giao dịch
 
     private Payment(Builder builder) {
-//        id = builder.id;
-        staffId = builder.staffId;
-        paymentStatus = builder.paymentStatus;
-        amount = builder.amount;
-        method = builder.method;
-        paidAt = builder.paidAt;
-        referenceCode = builder.referenceCode;
-    }
-
-    public Money amount() {
-        return amount;
+        this.setId(builder.paymentId);
+        this.bookingId = builder.bookingId;
+        this.invoiceId = builder.invoiceId != null ? builder.invoiceId : null;
+        this.paymentStatus = PaymentStatus.PENDING;
+        this.amount = builder.amount;
+        this.method = builder.method;
+        this.paidAt = LocalDateTime.now() != null ? builder.paidAt : LocalDateTime.now();
+        this.createdAt = builder.createdAt != null ? builder.createdAt : LocalDateTime.now();
+        this.paymentTransactionType = builder.paymentTransactionType != null ? builder.paymentTransactionType : PaymentTransactionType.OTHER;
+        this.referenceCode = builder.referenceCode != null ? builder.referenceCode : PaymentReference.empty();
     }
 
     public static final class Builder {
-//        private PaymentId id;
-        private StaffId staffId;
-        private PaymentStatus paymentStatus;
+        private PaymentId paymentId;
+        private InvoiceId invoiceId;
+        private BookingId bookingId;
         private Money amount;
         private PaymentMethod method;
         private LocalDateTime paidAt;
+        private LocalDateTime createdAt;
+        private PaymentTransactionType paymentTransactionType;
         private PaymentReference referenceCode;
 
         public Builder() {
         }
 
-//        public Builder id(PaymentId val) {
-//            id = val;
-//            return this;
-//        }
-
-        public Builder staffId(StaffId val) {
-            staffId = val;
+        public Builder id(PaymentId val) {
+            paymentId = val;
             return this;
         }
 
-        public Builder paymentStatus(PaymentStatus val) {
-            paymentStatus = val;
+        public Builder invoiceId(InvoiceId val) {
+            invoiceId = val;
+            return this;
+        }
+
+        public Builder bookingId(BookingId val) {
+            bookingId = val;
             return this;
         }
 
@@ -72,6 +81,16 @@ public class Payment {
             return this;
         }
 
+        public Builder createdAt(LocalDateTime val) {
+            createdAt = val;
+            return this;
+        }
+
+        public Builder paymentTransactionType(PaymentTransactionType val) {
+            paymentTransactionType = val;
+            return this;
+        }
+
         public Builder referenceCode(PaymentReference val) {
             referenceCode = val;
             return this;
@@ -84,5 +103,45 @@ public class Payment {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public void markAsPaid(LocalDateTime paidAt) {
+        if (this.paymentStatus != PaymentStatus.PENDING) {
+            throw new IllegalStateException("Cannot mark payment as COMPLETED from status: " + paymentStatus);
+        }
+        this.paymentStatus = PaymentStatus.COMPLETED;
+        this.paidAt = paidAt;
+    }
+
+    public void markAsCancelled(LocalDateTime paidAt) {
+        if (this.paymentStatus != PaymentStatus.PENDING) {
+            throw new IllegalStateException("Cannot mark payment as CANCELLED from status: " + paymentStatus);
+        }
+        this.paymentStatus = PaymentStatus.CANCELLED;
+        this.paidAt = paidAt;
+    }
+
+    public void markAsFailed(LocalDateTime paidAt) {
+        if (this.paymentStatus != PaymentStatus.PENDING) {
+            throw new IllegalStateException("Cannot mark payment as FAILED from status: " + paymentStatus);
+        }
+        this.paymentStatus = PaymentStatus.FAILED;
+        this.paidAt = paidAt;
+    }
+
+    public void markAsExpired() {
+        if (this.paymentStatus != PaymentStatus.PENDING) {
+            return ;
+        }
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between(this.getCreatedAt(), now);
+        if (duration.toMinutes() > 20) {
+            this.paymentStatus = PaymentStatus.EXPIRED;
+        }
+    }
+
+    public boolean isExpired() {
+        if (this.createdAt == null) return false;
+        return this.createdAt.plusMinutes(10).isBefore(LocalDateTime.now());
     }
 }

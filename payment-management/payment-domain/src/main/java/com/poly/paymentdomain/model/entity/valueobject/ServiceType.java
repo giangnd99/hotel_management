@@ -15,7 +15,7 @@ public class ServiceType {
         return value;
     }
 
-    public ServiceType from(String value) {
+    public static ServiceType from(String value) {
         return new ServiceType(Status.valueOf(value));
     }
 
