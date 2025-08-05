@@ -1,6 +1,6 @@
 package com.poly.booking.management.domain.saga;
 
-import com.poly.booking.management.domain.dto.message.payment.PaymentMessageResponse;
+import com.poly.booking.management.domain.dto.message.PaymentMessageResponse;
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.event.BookingPaidEvent;
 import com.poly.booking.management.domain.exception.BookingDomainException;
@@ -47,11 +47,4 @@ public class BookingSagaHelper {
         bookingRepository.save(booking);
     }
 
-    public BookingPaidEvent completePaymentForBooking(PaymentMessageResponse data) {
-        log.info("Completing payment for booking with id: {}", data.getBookingId());
-        Booking booking = findBooking(data.getBookingId());
-        BookingPaidEvent domainEvent = bookingDomainService.payBooking(booking);
-        bookingRepository.save(booking);
-        return domainEvent;
-    }
 }

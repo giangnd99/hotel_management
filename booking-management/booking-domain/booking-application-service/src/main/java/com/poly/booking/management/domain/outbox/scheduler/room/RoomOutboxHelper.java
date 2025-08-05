@@ -29,7 +29,6 @@ import static com.poly.saga.booking.SagaConstant.BOOKING_SAGA_NAME;
 public class RoomOutboxHelper {
 
     private final RoomReserveOutBoxRepository roomReserveOutBoxRepository;
-    private final BookingDataMapper bookingDataMapper;
     private final ObjectMapper objectMapper;
 
     @Transactional(readOnly = true)
@@ -54,30 +53,13 @@ public class RoomOutboxHelper {
         log.info("Saved booking approval outbox message with id: {}", bookingRoomOutboxMessage.getId());
     }
 
-    public BookingRoomOutboxMessage getUpdatedRoomOutBoxMessage(BookingRoomOutboxMessage bookingRoomOutboxMessage, EBookingStatus status, SagaStatus sagaStatus) {
+    public BookingRoomOutboxMessage getUpdatedRoomOutBoxMessage(BookingRoomOutboxMessage bookingRoomOutboxMessage,
+                                                                EBookingStatus status,
+                                                                SagaStatus sagaStatus) {
         bookingRoomOutboxMessage.setBookingStatus(status);
         bookingRoomOutboxMessage.setSagaStatus(sagaStatus);
         bookingRoomOutboxMessage.setProcessedAt(LocalDateTime.now());
         return bookingRoomOutboxMessage;
-    }
-
-    public BookingRoomOutboxMessage getConfirmedDepositOutboxMessage(BookingPaidEvent domainEvent,
-                                                                     EBookingStatus status,
-                                                                     SagaStatus sagaStatus,
-                                                                     OutboxStatus outboxStatus,
-                                                                     UUID sagaId) {
-        BookingReservedEventPayload payload = bookingDataMapper.bookingEventToRoomBookingEventPayload(domainEvent);
-
-        return BookingRoomOutboxMessage.builder()
-                .id(UUID.randomUUID())
-                .sagaId(sagaId)
-                .type(BOOKING_SAGA_NAME)
-                .bookingStatus(status)
-                .sagaStatus(sagaStatus)
-                .outboxStatus(outboxStatus)
-                .payload(createPayload(payload))
-                .createdAt(payload.getCreatedAt())
-                .build();
     }
 
     private String createPayload(BookingReservedEventPayload payload) {
@@ -94,5 +76,20 @@ public class RoomOutboxHelper {
                                                                        SagaStatus... sagaStatus) {
         roomReserveOutBoxRepository.deleteByTypeAndOutboxStatusAndSagaStatus(BOOKING_SAGA_NAME, outboxStatus, sagaStatus);
         log.info("Deleted booking approval outbox message with outbox status: {} and saga status: {}", outboxStatus, sagaStatus);
+    }
+
+    @Transactional
+    public void saveRoomOutboxMessage(BookingReservedEventPayload bookingReservedEventPayload, EBookingStatus status, SagaStatus sagaStatus, OutboxStatus outboxStatus, UUID uuid) {
+
+        save(BookingRoomOutboxMessage.builder()
+                .id(UUID.randomUUID())
+                .sagaId(uuid)
+                .type(BOOKING_SAGA_NAME)
+                .sagaStatus(sagaStatus)
+                .outboxStatus(outboxStatus)
+                .payload(createPayload(bookingReservedEventPayload))
+                .bookingStatus(status)
+                .createdAt(bookingReservedEventPayload.getCreatedAt())
+                .build());
     }
 }

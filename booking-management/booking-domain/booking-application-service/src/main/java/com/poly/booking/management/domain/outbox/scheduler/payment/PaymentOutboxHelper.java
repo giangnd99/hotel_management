@@ -39,12 +39,6 @@ public class PaymentOutboxHelper {
         log.info("Saved booking approval outbox message with id: {}", updatePaymentOutboxMessage.getId());
     }
 
-    public BookingPaymentOutboxMessage getUpdatePaymentOutboxMessage(BookingPaymentOutboxMessage bookingPaymentOutboxMessage, EBookingStatus status, SagaStatus sagaStatus) {
-        bookingPaymentOutboxMessage.setProcessedAt(DateCustom.now().getValue());
-        bookingPaymentOutboxMessage.setBookingStatus(status);
-        bookingPaymentOutboxMessage.setSagaStatus(sagaStatus);
-        return bookingPaymentOutboxMessage;
-    }
 
     public void savePaymentOutboxMessage(BookingPaymentEventPayload paymentEventPayload,
                                          EBookingStatus orderStatus,
