@@ -1,7 +1,7 @@
 package com.poly.restaurant.controller;
 
 import com.poly.restaurant.application.dto.TableDTO;
-import com.poly.restaurant.application.port.in.RestaurantUseCase;
+import com.poly.restaurant.application.port.in.TableUseCase;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.List;
 @Validated
 public class TableController {
 
-    private final RestaurantUseCase restaurantUseCase;
+    private final TableUseCase restaurantUseCase;
 
     @GetMapping
     public ResponseEntity<List<TableDTO>> getAllTables() {

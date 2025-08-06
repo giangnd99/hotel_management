@@ -1,5 +1,6 @@
 package com.poly.restaurant.application.handler;
 
+import com.poly.restaurant.application.dto.OrderDTO;
 import com.poly.restaurant.domain.entity.Order;
 import com.poly.restaurant.domain.entity.OrderStatus;
 
@@ -46,4 +47,24 @@ public interface OrderHandler extends GenericHandler<Order, String> {
      * Hoàn thành đơn hàng (chuyển từ IN_PROGRESS sang COMPLETED)
      */
     Order completeOrder(String orderId);
+
+    /**
+     * Tạo đơn hàng hoàn chỉnh với validation, payment và notification
+     */
+    OrderDTO createOrderWithPayment(OrderDTO orderDTO);
+    
+    /**
+     * Xử lý đơn hàng với notification
+     */
+    OrderDTO processOrderWithNotification(String orderId);
+    
+    /**
+     * Hoàn thành đơn hàng với notification
+     */
+    OrderDTO completeOrderWithNotification(String orderId);
+    
+    /**
+     * Hủy đơn hàng với refund và notification
+     */
+    OrderDTO cancelOrderWithRefundAndNotification(String orderId, String reason);
 }
