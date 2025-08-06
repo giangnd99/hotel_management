@@ -5,18 +5,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record OrderDTO(
-        Integer orderId,
-        Integer tableId,
+        String id,
+        String customerId,
+        String tableId,
         List<OrderItem> items,
-        BigDecimal totalPrice,
         String status,
-        LocalDateTime orderDate
+        LocalDateTime createdAt,
+        String customerNote
 ) {
     public record OrderItem(
-            Integer orderItemId,
-            Integer menuId,
+            String menuItemId,
             Integer quantity,
-            BigDecimal unitPrice
+            BigDecimal price
     ) {
     }
 }

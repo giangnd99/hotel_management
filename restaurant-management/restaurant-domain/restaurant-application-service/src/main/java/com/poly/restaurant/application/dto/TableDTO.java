@@ -1,4 +1,4 @@
 package com.poly.restaurant.application.dto;
 
-public record TableDTO(Integer id, String name, String status) {
+public record TableDTO(String id, Integer number, String status) {
 }

@@ -14,16 +14,45 @@ public class Booking extends AggregateRoot<BookingId> {
     private DateCustom checkInDate;
     private DateCustom checkOutDate;
     private EBookingStatus status;
-    private Deposit deposit;
+
     private TrackingId trackingId;
+
     private DateCustom actualCheckInDate;
     private DateCustom actualCheckOutDate;
+
     private RestaurantId restaurantId;
     private ServiceId serviceId;
+
     private Money totalPrice;
     private String upgradeSuggestion;
     private QRCodeCheckIn qrCodeCheckIn;
-    public List<BookingRoom> bookingRooms;
+
+    private Order order;
+    private List<Service> services;
+    public List<Room> rooms;
+
+    private List<String> failureMessages;
+    public static final String FAILURE_MESSAGE_DELIMITER = ",";
+
+    private Booking(Builder builder) {
+        super.setId(builder.id);
+        customerId = builder.customerId;
+        checkInDate = builder.checkInDate;
+        checkOutDate = builder.checkOutDate;
+        status = builder.status;
+        trackingId = builder.trackingId;
+        setActualCheckInDate(builder.actualCheckInDate);
+        setActualCheckOutDate(builder.actualCheckOutDate);
+        restaurantId = builder.restaurantId;
+        serviceId = builder.serviceId;
+        setTotalPrice(builder.totalPrice);
+        upgradeSuggestion = builder.upgradeSuggestion;
+        qrCodeCheckIn = builder.qrCodeCheckIn;
+        setOrder(builder.order);
+        services = builder.services;
+        rooms = builder.rooms;
+        failureMessages = builder.failureMessages;
+    }
 
     private void validateDateRange() {
         if (checkInDate.isAfter(checkOutDate)) {
@@ -31,12 +60,9 @@ public class Booking extends AggregateRoot<BookingId> {
         }
     }
 
-    public void validateRoomsPrice() {
-        Money finalPrice = bookingRooms.stream().map(
-                bookingRoom ->
-                        bookingRoom.getRoom().getBasePrice()).reduce(Money.ZERO, Money::add);
-        if (!finalPrice.equals(totalPrice)) {
-            throw new BookingDomainException("Total price of rooms is not equal to total price of booking");
+    public void validateTotalPrice() {
+        if (!totalPrice.isGreaterThanZero()) {
+            throw new BookingDomainException("Total price must be greater than zero");
         }
     }
 
@@ -53,10 +79,6 @@ public class Booking extends AggregateRoot<BookingId> {
         if (!EBookingStatus.PENDING.equals(status)) {
             throw new BookingDomainException("Booking is not pending for confirmation");
         }
-        if (deposit == null) {
-            throw new BookingDomainException("Deposit is not set for confirmation");
-        }
-        deposit.payDeposit();
         status = EBookingStatus.CONFIRMED;
     }
 
@@ -67,7 +89,15 @@ public class Booking extends AggregateRoot<BookingId> {
         }
         status = EBookingStatus.CHECKED_IN;
     }
-///
+
+    public void paidBooking() {
+        if (!EBookingStatus.CHECKED_IN.equals(status)) {
+            throw new BookingDomainException("Booking is not checked-in for payment");
+        }
+        status = EBookingStatus.PAID;
+    }
+
+    ///
     public void cancelWhilePaidFailed() {
         if (!EBookingStatus.CHECKED_OUT.equals(status)) {
             throw new BookingDomainException("Booking is not checked-out for cancellation");
@@ -107,16 +137,76 @@ public class Booking extends AggregateRoot<BookingId> {
         this.actualCheckOutDate = actualCheckOutDate;
     }
 
-    private Booking(Builder builder) {
-        super.setId(builder.id);
-        customerId = builder.customerId;
-        checkInDate = builder.checkInDate;
-        checkOutDate = builder.checkOutDate;
-        status = builder.status;
-        actualCheckInDate = builder.actualCheckInDate;
-        actualCheckOutDate = builder.actualCheckOutDate;
-        totalPrice = builder.totalPrice;
-        upgradeSuggestion = builder.upgradeSuggestion;
+    private void updateFailureMessages(List<String> failureMessages) {
+        if (this.failureMessages != null && failureMessages != null) {
+            this.failureMessages.addAll(failureMessages.stream().filter(message -> !message.isEmpty()).toList());
+        }
+        if (this.failureMessages == null) {
+            this.failureMessages = failureMessages;
+        }
+    }
+
+    public EBookingStatus getStatus() {
+        return status;
+    }
+
+    public void setTotalPrice(Money totalPrice) {
+        validateTotalPrice();
+        this.totalPrice = totalPrice;
+    }
+
+    public List<Service> getServices() {
+        return services;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public void updateAndValidateTotalPrice() {
+        Money currentTotalRoomPrice = rooms.stream()
+                .map(Room::getBasePrice)
+                .reduce(Money.ZERO, Money::add);
+        Money currentTotalServicePrice = services.stream()
+                .map(Service::getTotalCost)
+                .reduce(Money.ZERO, Money::add);
+        Money currentTotalOrderPrice = order.getTotalCost();
+
+        this.totalPrice = currentTotalRoomPrice
+                .add(currentTotalServicePrice)
+                .add(currentTotalOrderPrice);
+    }
+
+    public Money getTotalPrice() {
+        return totalPrice;
+    }
+
+    public CustomerId getCustomerId() {
+        return customerId;
+    }
+
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    public DateCustom getCheckInDate() {
+        return checkInDate;
+    }
+
+    public DateCustom getCheckOutDate() {
+        return checkOutDate;
+    }
+
+    public TrackingId getTrackingId() {
+        return trackingId;
+    }
+
+    public DateCustom getActualCheckInDate() {
+        return actualCheckInDate;
+    }
+
+    public DateCustom getActualCheckOutDate() {
+        return actualCheckOutDate;
     }
 
     public static final class Builder {
@@ -125,10 +215,18 @@ public class Booking extends AggregateRoot<BookingId> {
         private DateCustom checkInDate;
         private DateCustom checkOutDate;
         private EBookingStatus status;
+        private TrackingId trackingId;
         private DateCustom actualCheckInDate;
         private DateCustom actualCheckOutDate;
+        private RestaurantId restaurantId;
+        private ServiceId serviceId;
         private Money totalPrice;
         private String upgradeSuggestion;
+        private QRCodeCheckIn qrCodeCheckIn;
+        private Order order;
+        private List<Service> services;
+        private List<Room> rooms;
+        private List<String> failureMessages;
 
         private Builder() {
         }
@@ -162,6 +260,11 @@ public class Booking extends AggregateRoot<BookingId> {
             return this;
         }
 
+        public Builder trackingId(TrackingId val) {
+            trackingId = val;
+            return this;
+        }
+
         public Builder actualCheckInDate(DateCustom val) {
             actualCheckInDate = val;
             return this;
@@ -172,6 +275,16 @@ public class Booking extends AggregateRoot<BookingId> {
             return this;
         }
 
+        public Builder restaurantId(RestaurantId val) {
+            restaurantId = val;
+            return this;
+        }
+
+        public Builder serviceId(ServiceId val) {
+            serviceId = val;
+            return this;
+        }
+
         public Builder totalPrice(Money val) {
             totalPrice = val;
             return this;
@@ -179,6 +292,31 @@ public class Booking extends AggregateRoot<BookingId> {
 
         public Builder upgradeSuggestion(String val) {
             upgradeSuggestion = val;
+            return this;
+        }
+
+        public Builder qrCodeCheckIn(QRCodeCheckIn val) {
+            qrCodeCheckIn = val;
+            return this;
+        }
+
+        public Builder order(Order val) {
+            order = val;
+            return this;
+        }
+
+        public Builder services(List<Service> val) {
+            services = val;
+            return this;
+        }
+
+        public Builder rooms(List<Room> val) {
+            rooms = val;
+            return this;
+        }
+
+        public Builder failureMessages(List<String> val) {
+            failureMessages = val;
             return this;
         }
 

@@ -1,0 +1,58 @@
+{
+  "type": "record",
+  "name": "NotificationModelAvro",
+  "namespace": "com.poly.booking.management.domain.kafka.model",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "sagaId",
+      "type": "string"
+    },
+    {
+      "name": "bookingId",
+      "type": "string"
+    },
+    {
+      "name": "customerId",
+      "type": "string"
+    },
+    {
+      "name": "qrCode",
+      "type": "string"
+    },
+    {
+      "name": "checkInTime",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    },
+    {
+      "name": "notificationStatus",
+      "type": {
+        "type": "enum",
+        "name": "NotificationStatus",
+        "symbols": [
+          "SUCCESS",
+          "FAILED",
+          "PENDING",
+          "CANCELLED"
+        ]
+      }
+    },
+    {
+      "name": "bookingStatus",
+      "type": "string"
+    },
+    {
+      "name": "failureMessages",
+      "type": {
+        "type": "array",
+        "items": "string"
+      }
+    }
+  ]
+}

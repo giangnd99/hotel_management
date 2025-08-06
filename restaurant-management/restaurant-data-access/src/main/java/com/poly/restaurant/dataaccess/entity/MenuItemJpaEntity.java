@@ -1,5 +1,6 @@
 package com.poly.restaurant.dataaccess.entity;
 
+import com.poly.restaurant.domain.entity.MenuItemStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,4 +23,8 @@ public class MenuItemJpaEntity {
     private BigDecimal price;
     private String category;
     private Integer quantity;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private MenuItemStatus status;
 }

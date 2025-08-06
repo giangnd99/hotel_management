@@ -15,6 +15,7 @@
         <module>booking-application</module>
         <module>booking-container</module>
         <module>booking-data-access</module>
+        <module>booking-messaging</module>
     </modules>
     <artifactId>booking-management</artifactId>
 

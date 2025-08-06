@@ -1,39 +1,22 @@
 package com.poly.restaurant.domain.entity;
 
-import com.poly.restaurant.domain.value_object.MenuItemId;
-
 import java.math.BigDecimal;
 
 public class OrderItem {
-    private final int orderItemId;
-    private final MenuItemId menuItemId;
+    private final String menuItemId;
     private final int quantity;
-    private final BigDecimal unitPrice;
+    private final BigDecimal price;
 
-    public OrderItem(int orderItemId, MenuItemId menuItemId, int quantity, BigDecimal unitPrice) {
-        this.orderItemId = orderItemId;
+    public OrderItem(String menuItemId, int quantity, BigDecimal price) {
+        if (menuItemId == null || menuItemId.isEmpty()) throw new IllegalArgumentException("MenuItemId must not be empty");
+        if (quantity <= 0) throw new IllegalArgumentException("Quantity must be positive");
+        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) throw new IllegalArgumentException("Price must be non-negative");
         this.menuItemId = menuItemId;
         this.quantity = quantity;
-        this.unitPrice = unitPrice;
+        this.price = price;
     }
 
-    public int getOrderItemId() {
-        return orderItemId;
-    }
-
-    public MenuItemId getMenuItemId() {
-        return menuItemId;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public BigDecimal getUnitPrice() {
-        return unitPrice;
-    }
-
-    public BigDecimal getTotalPrice() {
-        return unitPrice.multiply(BigDecimal.valueOf(quantity));
-    }
+    public String getMenuItemId() { return menuItemId; }
+    public int getQuantity() { return quantity; }
+    public BigDecimal getPrice() { return price; }
 }

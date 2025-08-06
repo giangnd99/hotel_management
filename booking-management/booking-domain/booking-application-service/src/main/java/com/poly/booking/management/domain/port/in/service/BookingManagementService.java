@@ -1,7 +1,7 @@
 package com.poly.booking.management.domain.port.in.service;
 
 import com.poly.booking.management.domain.dto.BookingDto;
-import com.poly.booking.management.domain.dto.CreateBookingCommand;
+import com.poly.booking.management.domain.dto.request.CreateBookingCommand;
 import com.poly.booking.management.domain.dto.RoomDto;
 import com.poly.booking.management.domain.dto.RoomSearchQuery;
 import com.poly.domain.valueobject.EBookingStatus;
