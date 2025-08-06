@@ -8,11 +8,15 @@ import com.poly.paymentapplicationservice.dto.PageResult;
 import com.poly.paymentapplicationservice.mapper.InvoiceMapper;
 import com.poly.paymentapplicationservice.port.input.InvoiceUsecase;
 import com.poly.paymentdomain.model.entity.Invoice;
+import com.poly.paymentdomain.model.entity.InvoiceItem;
+import com.poly.paymentdomain.model.entity.Payment;
 import com.poly.paymentdomain.model.entity.valueobject.*;
+import com.poly.paymentdomain.output.InvoiceItemRepository;
 import com.poly.paymentdomain.output.InvoiceRepository;
 import com.poly.paymentdomain.output.PaymentRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -22,9 +26,12 @@ public class InvoiceApplicationService implements InvoiceUsecase {
 
     private final PaymentRepository paymentRepository;
 
+//    private final InvoiceItemRepository  invoiceItemRepository;
+
     public InvoiceApplicationService(InvoiceRepository invoiceRepository, PaymentRepository paymentRepository) {
         this.invoiceRepository = invoiceRepository;
         this.paymentRepository = paymentRepository;
+//        this.invoiceItemRepository = invoiceItemRepository;
     }
 
     @Override
@@ -33,26 +40,29 @@ public class InvoiceApplicationService implements InvoiceUsecase {
         validateCommand(command);
 
         var bookingId = BookingId.from(command.getBookingId());
-        var existingInvoice = invoiceRepository.findByBookingId(bookingId.getValue());
+        Optional<Invoice> existingInvoice = invoiceRepository.findByBookingId(bookingId.getValue());
 
         if (existingInvoice.isPresent()) {
             throw new RuntimeException("Hóa đơn đã tồn tại cho bookingId: " + bookingId.getValue());
         }
 
-        var bookingDeposit = paymentRepository.findByBookingIdAndType(command.getBookingId(), PaymentTransactionType.DEPOSIT);
+        Optional<Payment> bookingDeposit = paymentRepository.findByBookingIdAndType(command.getBookingId(), PaymentTransactionType.DEPOSIT);
+
+        List<InvoiceItem> invoiceItems = InvoiceMapper.mapToInvoiceItems(command.getInvoiceItemCommandList());
 
         Invoice invoiceCreated = Invoice.builder()
                 .id(InvoiceId.generate())
                 .bookingId(BookingId.from(command.getBookingId()))
                 .customerId(CustomerId.fromValue(command.getCustomerId()))
                 .createdBy(StaffId.from(command.getStaffIdCreated()))
+//                .lastUpdatedBy(StaffId.from(command.getStaffIdCreated()))
                 .paidAmount(bookingDeposit.get().getAmount())
                 .status(InvoiceStatus.PENDING)
                 .voucherId(VoucherId.from(command.getVoucherId()))
-                .items(InvoiceMapper.mapToInvoiceItems(command.getInvoiceItemCommandList()))
+                .items(invoiceItems)
                 .build();
 
-        invoiceRepository.createInvoice(invoiceCreated, invoiceCreated.getItems());
+        invoiceRepository.createInvoice(invoiceCreated);
         return InvoiceMapper.from(invoiceCreated);
     }
 

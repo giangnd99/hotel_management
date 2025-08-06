@@ -6,6 +6,10 @@ public class PaymentMethod {
 
     private final Status value;
 
+    public static final PaymentMethod PAYOS = new PaymentMethod(Status.PAYOS);
+
+    public static final PaymentMethod CASH = new PaymentMethod(Status.CASH);
+
     public PaymentMethod(Status value) {
         if (value == null) throw new InvalidValueException(null, "status", "PaymentMethod");
         this.value = value;

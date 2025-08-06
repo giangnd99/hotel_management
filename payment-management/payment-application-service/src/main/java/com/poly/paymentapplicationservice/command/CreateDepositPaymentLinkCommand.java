@@ -6,11 +6,10 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 @Builder
 @Getter
-public class CreateDepositPaymentLinkConmand {
+public class CreateDepositPaymentLinkCommand {
     private long referenceCode;
     private BigDecimal amount;
     private String description;

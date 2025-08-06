@@ -1,31 +1,41 @@
 package com.poly.paymentapplicationservice.service;
 
+import com.poly.domain.valueobject.InvoiceId;
 import com.poly.paymentapplicationservice.command.ConfirmDepositPaymentCommand;
 import com.poly.paymentapplicationservice.command.CreateDepositCommand;
-import com.poly.paymentapplicationservice.command.CreateDepositPaymentLinkConmand;
+import com.poly.paymentapplicationservice.command.CreateDepositPaymentLinkCommand;
+import com.poly.paymentapplicationservice.command.CreatePaymentCommand;
+import com.poly.paymentapplicationservice.mapper.InvoiceItemMapper;
 import com.poly.paymentapplicationservice.share.CheckoutResponseData;
 import com.poly.paymentapplicationservice.port.input.PaymentUsecase;
 import com.poly.paymentapplicationservice.port.output.PaymentGateway;
 import com.poly.paymentapplicationservice.share.ItemData;
+import com.poly.paymentdomain.model.entity.Invoice;
 import com.poly.paymentdomain.model.entity.Payment;
 import com.poly.paymentdomain.model.entity.valueobject.*;
 import com.poly.paymentdomain.model.exception.ExistingDepositException;
 import com.poly.paymentdomain.model.exception.PaymentNotFoundException;
+import com.poly.paymentdomain.output.InvoiceRepository;
 import com.poly.paymentdomain.output.PaymentRepository;
 import lombok.extern.log4j.Log4j2;
 
+import javax.swing.text.html.Option;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
+
+import static com.poly.paymentdomain.model.entity.valueobject.PaymentTransactionType.*;
 
 @Log4j2
 public class PaymentApplicationService implements PaymentUsecase {
 
-    private PaymentRepository paymentRepository;
+    private final PaymentRepository paymentRepository;
+    private final InvoiceRepository invoiceRepository;
     private final PaymentGateway payOS;
 
-    public PaymentApplicationService(PaymentRepository paymentRepository, PaymentGateway payOS) {
+    public PaymentApplicationService(PaymentRepository paymentRepository, InvoiceRepository invoiceRepository, PaymentGateway payOS) {
         this.paymentRepository = paymentRepository;
+        this.invoiceRepository = invoiceRepository;
         this.payOS = payOS;
     }
 
@@ -34,33 +44,31 @@ public class PaymentApplicationService implements PaymentUsecase {
 
         Optional<Payment> existingDeposit = paymentRepository.findByBookingIdAndType(
                 command.getBookingId(),
-                PaymentTransactionType.DEPOSIT
+                DEPOSIT
         );
 
         if (existingDeposit.isPresent()) {
             throw new ExistingDepositException();
         }
-        long referenceCode = System.currentTimeMillis() * 1000 + ThreadLocalRandom.current().nextInt(1000);
 
         Payment newDeposit = Payment.builder()
                 .id(PaymentId.randomPaymentId())
                 .bookingId(BookingId.from(command.getBookingId()))
                 .amount(Money.from(command.getAmount()))
                 .method(command.getMethod())
-                .paymentTransactionType(PaymentTransactionType.DEPOSIT)
-                .referenceCode(PaymentReference.from(String.valueOf(referenceCode)))
+                .paymentTransactionType(DEPOSIT)
+                .referenceCode(PaymentReference.generate())
                 .build();
 
-
-        CreateDepositPaymentLinkConmand comand = CreateDepositPaymentLinkConmand.builder()
+        CreateDepositPaymentLinkCommand comand = CreateDepositPaymentLinkCommand.builder()
                 .referenceCode(Long.valueOf(newDeposit.getReferenceCode().getValue()))
                 .amount(newDeposit.getAmount().getValue())
                 .description("Thanh toán đặt cọc.")
-                .items(List.of( // <- Chuyển thành List<ItemData>
+                .items(List.of(
                         ItemData.builder()
                                 .name(command.getName())
                                 .quantity(command.getQuantity())
-                                .price(command.getAmount().intValue())
+                                .price(command.getAmount())
                                 .build()
                 )).build();
 
@@ -72,32 +80,31 @@ public class PaymentApplicationService implements PaymentUsecase {
 
     @Override
     public void handleWebhookPayment(ConfirmDepositPaymentCommand command) {
-        Optional<Payment>paymentOpt = paymentRepository.findByReferenceCode(command.getReferenceCode());
-        if (paymentOpt.get().getPaymentStatus().equals(PaymentStatus.Status.COMPLETED) || paymentOpt.get().getPaymentStatus().equals(PaymentStatus.Status.CANCELLED)) {
+        Payment payment = paymentRepository.findByReferenceCode(command.getReferenceCode())
+                .orElseThrow(PaymentNotFoundException::new);
+
+        if (payment.isPaid()) {
             log.info("Webhook đã xử lý giao dịch này rồi: {}", command.getPaymentStatus().getValue());
             return;
         }
-        if (paymentOpt.isEmpty()) {
-            throw new PaymentNotFoundException();
+
+        switch (command.getPaymentStatus().getValue()) {
+            case "COMPLETED":
+                payment.markAsPaid(command.getTransactionDateTime());
+                break;
+            case "FAILED":
+                payment.markAsFailed(command.getTransactionDateTime());
+                break;
+            case "CANCELLED":
+                payment.markAsCancelled(command.getTransactionDateTime());
+                break;
+            default:
+                log.warn("Không hỗ trợ xử lý trạng thái: {}", command.getPaymentStatus().getValue());
+                return;
         }
 
-        Payment payment = paymentOpt.get();
-
-        if (command.getPaymentStatus().getValue().equals("COMPLETED")) {
-            payment.markAsPaid(command.getTransactionDateTime());
-        }
-
-        if (command.getPaymentStatus().getValue().equals("CANCELED")) {
-            payment.markAsCancelled(command.getTransactionDateTime());
-        }
-
-        if (payment.getPaymentStatus().getValue().equals("EXPIRED") || payment.getPaymentStatus().getValue().equals("FAILED")) {
-            payment.markAsFailed(command.getTransactionDateTime());
-        }
-
-        paymentRepository.updatePayment(payment); // cập nhật lại trạng thái
+        paymentRepository.updatePayment(payment);
     }
-
 
     @Override
     public void cancelExpiredPayments() throws Exception {
@@ -111,7 +118,46 @@ public class PaymentApplicationService implements PaymentUsecase {
         }
     }
 
+    @Override
+    public CheckoutResponseData makeServicePuchardPaymentOnline(CreatePaymentCommand command) throws Exception {
 
-////    CheckoutResponseData MakeOnlinePayment(CreatePaymentCommand command);
+        Invoice newInvoice = Invoice.builder()
+                .id(InvoiceId.generate())
+                .createdBy(StaffId.from(command.getStaffId()))
+                .items(InvoiceItemMapper.mapToDomain(command.getItems()))
+                .status(InvoiceStatus.PENDING)
+                .note(Description.from(command.getNote()))
+                .build();
 
+        Payment newPayment = Payment.builder()
+                .id(PaymentId.randomPaymentId())
+                .invoiceId(newInvoice.getId())
+                .bookingId(BookingId.from(command.getBookingId()))
+                .amount(newInvoice.getTotalAmount())
+                .method(PaymentMethod.PAYOS)
+                .createdAt(LocalDateTime.now())
+                .paymentTransactionType(command.getPaymentTransactionType())
+                .referenceCode(PaymentReference.generate())
+                .build();
+
+        CreateDepositPaymentLinkCommand comand = CreateDepositPaymentLinkCommand.builder()
+                .referenceCode(Long.valueOf(newPayment.getReferenceCode().getValue()))
+                .amount(newPayment.getAmount().getValue())
+                .description(command.getTypeService() + newPayment.getReferenceCode().getValue())
+                .items(command.getItems())
+                .build();
+
+        CheckoutResponseData result = payOS.createDepositPaymentLink(comand);
+        invoiceRepository.createInvoice(newInvoice);
+        paymentRepository.createPayment(newPayment);
+
+        return result;
+    }
+
+    @Override
+    public CheckoutResponseData makePaymentCheckoutOnline(CreatePaymentCommand command) throws Exception {
+
+//        Option<Invoice> exitstisInvoice = invoiceRepository.findInvoiceById(command.getInvoiceId())
+        return null;
+    }
 }

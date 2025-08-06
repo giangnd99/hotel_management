@@ -10,7 +10,6 @@ public class StaffId {
     private final UUID value;
 
     public StaffId(UUID value) {
-        if (value == null) throw new InvalidValueException("StaffId");
         this.value = value;
     }
 

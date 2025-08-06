@@ -14,7 +14,7 @@ public interface PaymentJpaRepository extends JpaRepository<PaymentEntity, UUID>
     Optional<PaymentEntity> findByBookingIdAndPaymentTransactionTypeEntity(UUID bookingId, PaymentTransactionTypeEntity paymentTransactionType);
     Optional<PaymentEntity> findByReferenceCode(String referenceCode);
 
-    @Query(value = "select * from payment p where p.payment_status = 'PENDING' AND p.payment_transaction_type = 'DEPOSIT'", nativeQuery = true)
+    @Query(value = "select * from payment p where p.payment_status = 'PENDING' ", nativeQuery = true)
     List<PaymentEntity> findExpiredDepositPayments();
 
 

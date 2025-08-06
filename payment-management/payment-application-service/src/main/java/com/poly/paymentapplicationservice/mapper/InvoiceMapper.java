@@ -76,17 +76,4 @@ public class InvoiceMapper {
                 ).collect(Collectors.toList());
     }
 
-//    public static List<Payment> mapToPayments(List<CreatePaymentCommand> commandList) {
-//        return commandList.stream()
-//                .map(
-//                        cmd -> Payment.builder()
-////                                .staffId(StaffId.from(cmd.getStaffId()))
-//                                .paymentStatus(cmd.getPaymentStatus())
-//                                .amount(Money.from(cmd.getAmount()))
-//                                .method(cmd.getMethod())
-//                                .paidAt(cmd.getPaidAt())
-//                                .referenceCode(cmd.getReferenceCode())
-//                                .build()
-//                ).collect(Collectors.toList());
-//    }
 }

@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface InvoiceRepository {
-    Invoice createInvoice(Invoice invoice, List<InvoiceItem> items);
+    Invoice createInvoice(Invoice invoice);
     Invoice updateInvoice(Invoice invoice, List<InvoiceItem> items);
     void deleteInvoice(Invoice invoice);
     Optional<Invoice> findInvoiceById(Invoice invoice);

@@ -9,6 +9,8 @@ import com.poly.paymentdataaccess.repository.InvoiceJpaRepository;
 import com.poly.paymentdomain.model.entity.Invoice;
 import com.poly.paymentdomain.model.entity.InvoiceItem;
 import com.poly.paymentdomain.output.InvoiceRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,18 +18,20 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Repository
+@RequiredArgsConstructor
 public class InvoiceRepositoryImpl implements InvoiceRepository {
 
-    private InvoiceJpaRepository invoiceJpaRepository;
+    private final InvoiceJpaRepository invoiceJpaRepository;
 
-    private InvoiceItemJpaRepository invoiceItemJpaRepository;
+    private final InvoiceItemJpaRepository invoiceItemJpaRepository;
 
     @Override
-    public Invoice createInvoice(Invoice invoice, List<InvoiceItem> items) {
+    public Invoice createInvoice(Invoice invoice) {
         var invoiceEntity = InvoiceMapper.toEntity(invoice);
         var savedInvoiceEntity = invoiceJpaRepository.save(invoiceEntity);
 
-        var itemEntities = items.stream()
+        var itemEntities = invoice.getItems().stream()
                 .map(item -> InvoiceItemMapper.toEntity(item, savedInvoiceEntity.getId()))
                 .collect(Collectors.toList());
 

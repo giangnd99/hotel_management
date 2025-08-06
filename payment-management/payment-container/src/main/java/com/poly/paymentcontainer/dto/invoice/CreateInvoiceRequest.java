@@ -1,21 +1,18 @@
-package com.poly.paymentapplicationservice.command;
+package com.poly.paymentcontainer.dto.invoice;
 
-import lombok.Builder;
+import com.poly.paymentcontainer.dto.invoiceitem.CreateInvoiceItemRequest;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
 @Getter
-@Setter
-@Builder
-public class CreateInvoiceCommand {
+public class CreateInvoiceRequest {
     private UUID bookingId;
     private UUID customerId;
     private UUID staffIdCreated;
     private UUID voucherId;
     private BigDecimal amountVoucher;
-    private List<CreateInvoiceItemCommand> invoiceItemCommandList;
+    private List<CreateInvoiceItemRequest> invoiceItems;
 }

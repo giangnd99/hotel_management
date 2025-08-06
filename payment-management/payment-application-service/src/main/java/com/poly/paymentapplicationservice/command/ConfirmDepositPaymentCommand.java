@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ConfirmDepositPaymentCommand {
     private final PaymentStatus paymentStatus;
-    private final String referenceCode;      // Mã giao dịch ngân hàng
+    private final String referenceCode;
     private final long amount;
     private final LocalDateTime transactionDateTime;
 

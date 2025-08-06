@@ -37,17 +37,17 @@ public class InvoiceMapper {
     public static InvoiceEntity toEntity(Invoice invoice) {
         InvoiceEntity entity = new InvoiceEntity();
         entity.setId(invoice.getId().getValue());
-        entity.setBookingId(invoice.getBookingId().getValue());
-        entity.setCustomerId(invoice.getCustomerId().getValue());
+        entity.setBookingId(invoice.getBookingId() != null ?  invoice.getBookingId().getValue() : null);
+        entity.setCustomerId(invoice.getCustomerId() !=  null ?  invoice.getCustomerId().getValue() : null);
         entity.setCreatedByStaffId(invoice.getCreatedBy().getValue());
-        entity.setUpdateByStaffId(invoice.getLastUpdatedBy().getValue());
+        entity.setUpdateByStaffId(invoice.getLastUpdatedBy() != null ?  invoice.getLastUpdatedBy().getValue() : null);
         entity.setVoucherId(invoice.getVoucherId() != null ? invoice.getVoucherId().getValue() : null);
         entity.setSubTotal(invoice.getSubTotal().getValue());
         entity.setTaxAmount(invoice.getTaxRate().getValue());
         entity.setDiscountAmount(invoice.getDiscountAmount().getValue());
         entity.setTotalAmount(invoice.getTotalAmount().getValue());
         entity.setPaidAmount(invoice.getPaidAmount().getValue());
-        entity.setInvoiceStatusEntity(InvoiceStatusEntity.valueOf(invoice.getStatus().toString()));
+        entity.setInvoiceStatusEntity(InvoiceStatusEntity.valueOf(invoice.getStatus().getValue().name()));
         entity.setCreatedDate(invoice.getCreatedAt());
         entity.setUpdatedDate(invoice.getLastUpdatedAt());
         entity.setNote(invoice.getNote() != null ? invoice.getNote().getValue() : null);

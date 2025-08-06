@@ -5,6 +5,7 @@ import com.poly.domain.valueobject.InvoiceId;
 import com.poly.paymentdomain.model.entity.valueobject.*;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,15 +31,15 @@ public class Invoice extends AggregateRoot<InvoiceId> {
 
     private Invoice(Builder builder) {
         this.setId(builder.invoiceId);
-        this.bookingId = builder.bookingId;
-        this.customerId = builder.customerId;
+        this.bookingId = builder.bookingId != null ? builder.bookingId : null;
+        this.customerId = builder.customerId != null ? builder.customerId : null;
         this.createdBy = builder.createdBy == null ? StaffId.system() : builder.createdBy;
-        this.lastUpdatedBy = builder.lastUpdatedBy;
-        this.voucherId = builder.voucherId == null ? VoucherId.system() : builder.voucherId;
-        this.taxRate = builder.taxRate;
+        this.lastUpdatedBy = builder.lastUpdatedBy == null ? StaffId.system() : builder.lastUpdatedBy;
+        this.voucherId = builder.voucherId == null ? null : builder.voucherId;
+        this.taxRate = builder.taxRate != null ? builder.taxRate : Money.zero();
         this.discountAmount = builder.discountAmount != null ? builder.discountAmount : Money.zero();
         this.paidAmount = builder.paidAmount != null ? builder.paidAmount : Money.zero();
-        this.status = InvoiceStatus.DRAFT;
+        this.status = builder.status != null ? builder.status : InvoiceStatus.DRAFT;
         this.createdAt = LocalDateTime.now();
         this.lastUpdatedAt = builder.lastUpdatedAt != null ? builder.lastUpdatedAt : LocalDateTime.now();
         this.items = builder.items != null ? builder.items : new ArrayList<>();

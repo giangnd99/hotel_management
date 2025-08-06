@@ -2,6 +2,8 @@ package com.poly.paymentdomain.model.entity.valueobject;
 
 import com.poly.paymentdomain.model.exception.InvalidValueException;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class PaymentReference {
 
     private final String value;
@@ -9,6 +11,11 @@ public class PaymentReference {
     public PaymentReference(String value) {
         if (value == null) throw new InvalidValueException("PaymentReference");
         this.value = value;
+    }
+
+    public static PaymentReference generate() {
+        long code = System.currentTimeMillis() * 1000 + ThreadLocalRandom.current().nextInt(1000);
+        return new PaymentReference(String.valueOf(code));
     }
 
     public static PaymentReference from(String value) {

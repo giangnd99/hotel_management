@@ -10,7 +10,6 @@ public class VoucherId {
     private final UUID value;
 
     public VoucherId(UUID value) {
-        if (value == null) throw new InvalidValueException("VoucherId");
         this.value = value;
     }
 

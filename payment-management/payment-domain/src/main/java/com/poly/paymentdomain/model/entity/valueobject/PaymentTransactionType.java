@@ -10,6 +10,10 @@ public class PaymentTransactionType {
 
     public static final PaymentTransactionType OTHER = new PaymentTransactionType(PaymentTransactionType.Status.OTHER);
 
+    public static final PaymentTransactionType INVOICE_PAYMENT = new PaymentTransactionType(PaymentTransactionType.Status.INVOICE_PAYMENT);
+
+    public static final PaymentTransactionType REFUND = new PaymentTransactionType(PaymentTransactionType.Status.REFUND);
+
     public PaymentTransactionType(Status value) {
         if (value == null) throw new InvalidValueException(null, "status", "PaymentTransactionType");
         this.value = value;

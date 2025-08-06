@@ -1,14 +1,10 @@
 package com.poly.paymentdataaccess.payos;
 
-import com.poly.paymentapplicationservice.command.CreateDepositPaymentLinkConmand;
+import com.poly.paymentapplicationservice.command.CreateDepositPaymentLinkCommand;
 import com.poly.paymentapplicationservice.command.CreatePaymentLinkConmand;
-import com.poly.paymentapplicationservice.port.input.PaymentUsecase;
 import com.poly.paymentapplicationservice.port.output.PaymentGateway;
 import com.poly.paymentapplicationservice.share.CheckoutResponseData;
 import com.poly.paymentdataaccess.mapper.PayOSMapper;
-import com.poly.paymentdomain.model.entity.Payment;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import vn.payos.PayOS;
 import vn.payos.type.ItemData;
@@ -30,13 +26,13 @@ public class PayOsPaymentGateway implements PaymentGateway {
     }
 
     @Override
-    public CheckoutResponseData createDepositPaymentLink(CreateDepositPaymentLinkConmand command) throws Exception {
+    public CheckoutResponseData createDepositPaymentLink(CreateDepositPaymentLinkCommand command) throws Exception {
         List<vn.payos.type.ItemData> itemData = command.getItems()
                 .stream()
                 .map(item -> vn.payos.type.ItemData.builder()
                         .name(item.getName())
                         .quantity(item.getQuantity())
-                        .price(item.getPrice())
+                        .price(item.getPrice().intValue())
                         .build())
                 .toList();
 
@@ -59,7 +55,7 @@ public class PayOsPaymentGateway implements PaymentGateway {
                 .map(item -> ItemData.builder()
                         .name(item.getName())
                         .quantity(item.getQuantity())
-                        .price(item.getPrice())
+                        .price(item.getPrice().intValue())
                         .build())
                 .toList();
 

@@ -4,6 +4,8 @@ import com.poly.paymentapplicationservice.share.ItemData;
 import com.poly.paymentdomain.model.entity.valueobject.PaymentMethod;
 import com.poly.paymentdomain.model.entity.valueobject.PaymentReference;
 import com.poly.paymentdomain.model.entity.valueobject.PaymentStatus;
+import com.poly.paymentdomain.model.entity.valueobject.PaymentTransactionType;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,13 +16,16 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
 public class CreatePaymentCommand {
     private UUID bookingId;
-    private PaymentStatus paymentStatus;
-    private BigDecimal amount;
+    private UUID invoiceId;
+    private UUID staffId;
+    private UUID voucherId;
+    private BigDecimal amountVoucher;
     private PaymentMethod method;
-    private PaymentReference referenceCode;
-    private LocalDateTime paidAt;
+    private PaymentTransactionType paymentTransactionType;
     private List<ItemData> items;
     private String note;
+    private String typeService;
 }

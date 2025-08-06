@@ -10,7 +10,6 @@ public class CustomerId {
     private final UUID value;
 
     public CustomerId(UUID value) {
-        if (value == null) throw new InvalidValueException("CustomerId");
         this.value = value;
     }
 

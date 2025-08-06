@@ -11,5 +11,5 @@ public class CreateDepositCommandController {
     private String name;
     private Integer quantity;
     private BigDecimal amount;
-    private PaymentMethod method;
+//    private PaymentMethod method;
 }

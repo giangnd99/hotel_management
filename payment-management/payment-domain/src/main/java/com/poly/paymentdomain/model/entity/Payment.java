@@ -31,7 +31,7 @@ public class Payment extends AggregateRoot<PaymentId> {
         this.paymentStatus = PaymentStatus.PENDING;
         this.amount = builder.amount;
         this.method = builder.method;
-        this.paidAt = LocalDateTime.now() != null ? builder.paidAt : LocalDateTime.now();
+        this.paidAt = builder.paidAt;
         this.createdAt = builder.createdAt != null ? builder.createdAt : LocalDateTime.now();
         this.paymentTransactionType = builder.paymentTransactionType != null ? builder.paymentTransactionType : PaymentTransactionType.OTHER;
         this.referenceCode = builder.referenceCode != null ? builder.referenceCode : PaymentReference.empty();
@@ -144,4 +144,9 @@ public class Payment extends AggregateRoot<PaymentId> {
         if (this.createdAt == null) return false;
         return this.createdAt.plusMinutes(10).isBefore(LocalDateTime.now());
     }
+
+    public boolean isPaid() {
+        return this.paymentStatus.equals(new PaymentStatus(PaymentStatus.Status.COMPLETED));
+    }
+
 }
