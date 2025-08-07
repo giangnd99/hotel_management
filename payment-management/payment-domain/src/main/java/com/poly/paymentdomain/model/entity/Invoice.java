@@ -148,9 +148,10 @@ public class Invoice extends AggregateRoot<InvoiceId> {
 
     public Money calculateTotalAmount() {
         Money subTotal = this.subTotal;
-        Money tax = subTotal.multiply(taxRate.getValue());
-        Money discount = discountAmount;
-        return subTotal.add(tax).subtract(discount);
+        Money tax = subTotal.multiply(this.taxRate.getValue().divide(BigDecimal.valueOf(100)));
+        Money discount = this.discountAmount;
+        Money paidAmount = this.paidAmount != null ? this.paidAmount : Money.zero();
+        return subTotal.add(tax).subtract(discount).subtract(paidAmount);
     }
 
     public void recalculateTotals() {
@@ -180,6 +181,22 @@ public class Invoice extends AggregateRoot<InvoiceId> {
             this.changeAmount = Money.zero();
             throw new RuntimeException("Tiền khách trả hoặc tổng tiền đang trống.");
         }
+    }
+
+    // --- Check Status
+
+    public boolean isPaid() {
+        return this.status.equals(InvoiceStatus.PAID);
+    }
+
+    public void markAsPaid(LocalDateTime val) {
+        this.status = InvoiceStatus.PAID;
+        this.lastUpdatedAt = val;
+    }
+
+    public void markAsCancel(LocalDateTime val) {
+        this.status = InvoiceStatus.CANCELED;
+        this.lastUpdatedAt = val;
     }
 
     // ---- Function add & remote item

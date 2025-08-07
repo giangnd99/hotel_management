@@ -15,11 +15,11 @@ import com.poly.paymentdomain.model.entity.Payment;
 import com.poly.paymentdomain.model.entity.valueobject.*;
 import com.poly.paymentdomain.model.exception.ExistingDepositException;
 import com.poly.paymentdomain.model.exception.PaymentNotFoundException;
+import com.poly.paymentdomain.model.exception.invoice.InvoiceNotFoundException;
 import com.poly.paymentdomain.output.InvoiceRepository;
 import com.poly.paymentdomain.output.PaymentRepository;
 import lombok.extern.log4j.Log4j2;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +63,7 @@ public class PaymentApplicationService implements PaymentUsecase {
         CreateDepositPaymentLinkCommand comand = CreateDepositPaymentLinkCommand.builder()
                 .referenceCode(Long.valueOf(newDeposit.getReferenceCode().getValue()))
                 .amount(newDeposit.getAmount().getValue())
-                .description("Thanh toán đặt cọc.")
+                .description("TTDC- " + newDeposit.getReferenceCode().getValue())
                 .items(List.of(
                         ItemData.builder()
                                 .name(command.getName())
@@ -80,40 +80,78 @@ public class PaymentApplicationService implements PaymentUsecase {
 
     @Override
     public void handleWebhookPayment(ConfirmDepositPaymentCommand command) {
-        Payment payment = paymentRepository.findByReferenceCode(command.getReferenceCode())
+        Payment payment = paymentRepository.findByReferenceCode(command.getReferenceCode()) 
                 .orElseThrow(PaymentNotFoundException::new);
 
         if (payment.isPaid()) {
-            log.info("Webhook đã xử lý giao dịch này rồi: {}", command.getPaymentStatus().getValue());
+            log.info("Webhook đã xử lý giao dịch này rồi: PaymentId %s ".formatted(payment.getPaymentStatus().getValue()));
             return;
         }
 
-        switch (command.getPaymentStatus().getValue()) {
-            case "COMPLETED":
-                payment.markAsPaid(command.getTransactionDateTime());
-                break;
-            case "FAILED":
-                payment.markAsFailed(command.getTransactionDateTime());
-                break;
-            case "CANCELLED":
-                payment.markAsCancelled(command.getTransactionDateTime());
-                break;
-            default:
-                log.warn("Không hỗ trợ xử lý trạng thái: {}", command.getPaymentStatus().getValue());
+        String status = command.getPaymentStatus().getValue();
+        LocalDateTime dateTime = command.getTransactionDateTime();
+
+        // Xử lý theo transaction type
+        switch (payment.getPaymentTransactionType().getValue()) {
+            case "DEPOSIT" -> handleDeposit(payment, status, dateTime);
+            case "INVOICE_PAYMENT", "OTHER" -> handleInvoicePayment(payment, status, dateTime);
+            default -> {
+                log.warn("Không hỗ trợ transaction type: {}", payment.getPaymentTransactionType());
                 return;
+            }
         }
 
         paymentRepository.updatePayment(payment);
     }
 
+//-------------------
+// Xử lý riêng biệt
+
+    private void handleDeposit(Payment payment, String status, LocalDateTime dateTime) {
+        switch (status) {
+            case "COMPLETED" -> payment.markAsPaid(dateTime);
+            case "FAILED" -> payment.markAsFailed(dateTime);
+            case "CANCELLED" -> payment.markAsCancelled(dateTime);
+            default -> log.warn("Không hỗ trợ trạng thái: {}", status);
+        }
+    }
+
+    private void handleInvoicePayment(Payment payment, String status, LocalDateTime dateTime) {
+        Invoice invoice = invoiceRepository.findInvoiceById(payment.getInvoiceId().getValue())
+                .orElseThrow(InvoiceNotFoundException::new);
+
+        switch (status) {
+            case "COMPLETED" -> {
+                payment.markAsPaid(dateTime);
+                invoice.markAsPaid(dateTime);
+            }
+            case "FAILED" -> payment.markAsFailed(dateTime);
+            case "CANCELLED" -> {
+                payment.markAsCancelled(dateTime);
+                invoice.markAsCancel(dateTime);
+            }
+            default -> {
+                log.warn("Không hỗ trợ trạng thái: {}", status);
+                return;
+            }
+        }
+
+        invoiceRepository.createInvoice(invoice);
+    }
+
     @Override
     public void cancelExpiredPayments() throws Exception {
         List<Payment> pendingPayments = paymentRepository.findExpiredPendingPayments();
-        for (Payment payment : pendingPayments) {
-            if (payment.isExpired()) {
-                payOS.cancelPaymentLink(Long.valueOf(payment.getReferenceCode().getValue()), "Expired");
-                payment.markAsExpired();
-                paymentRepository.updatePayment(payment);
+        if (!pendingPayments.isEmpty()) {
+            for (Payment payment : pendingPayments) {
+                if (payment.isExpired()) {
+                    try {
+                        payOS.cancelPaymentLink(Long.valueOf(payment.getReferenceCode().getValue()), "Expired");
+                    } finally {
+                        payment.markAsExpired();
+                    }
+                    paymentRepository.updatePayment(payment);
+                }
             }
         }
     }
@@ -143,7 +181,7 @@ public class PaymentApplicationService implements PaymentUsecase {
         CreateDepositPaymentLinkCommand comand = CreateDepositPaymentLinkCommand.builder()
                 .referenceCode(Long.valueOf(newPayment.getReferenceCode().getValue()))
                 .amount(newPayment.getAmount().getValue())
-                .description(command.getTypeService() + newPayment.getReferenceCode().getValue())
+                .description("TTDV-" + newPayment.getReferenceCode().getValue())
                 .items(command.getItems())
                 .build();
 
@@ -157,7 +195,31 @@ public class PaymentApplicationService implements PaymentUsecase {
     @Override
     public CheckoutResponseData makePaymentCheckoutOnline(CreatePaymentCommand command) throws Exception {
 
-//        Option<Invoice> exitstisInvoice = invoiceRepository.findInvoiceById(command.getInvoiceId())
-        return null;
+       Optional<Invoice> existedInvoice = invoiceRepository.findInvoiceById(command.getInvoiceId());
+
+       if (existedInvoice.isEmpty()) {
+           throw new InvoiceNotFoundException();
+       }
+       
+        Payment newPayment = Payment.builder()
+                .id(PaymentId.randomPaymentId())
+                .invoiceId(existedInvoice.get().getId())
+                .bookingId(existedInvoice.get().getBookingId())
+                .amount(existedInvoice.get().getTotalAmount())
+                .method(command.getMethod())
+                .paymentTransactionType(INVOICE_PAYMENT)
+                .referenceCode(PaymentReference.generate())
+                .build();
+
+        CreateDepositPaymentLinkCommand comand = CreateDepositPaymentLinkCommand.builder()
+                .referenceCode(Long.valueOf(newPayment.getReferenceCode().getValue()))
+                .amount(newPayment.getAmount().getValue())
+                .description("TTHD- " + newPayment.getReferenceCode().getValue())
+                .items(InvoiceItemMapper.mapToEntity(existedInvoice.get().getItems())).build();
+
+        CheckoutResponseData result = payOS.createDepositPaymentLink(comand);
+        paymentRepository.createPayment(newPayment);
+
+        return result;
     }
 }

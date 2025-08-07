@@ -29,6 +29,7 @@ public class InvoiceController {
                 .staffIdCreated(request.getStaffIdCreated())
                 .voucherId(request.getVoucherId())
                 .amountVoucher(request.getAmountVoucher())
+                .taxAmount(request.getTaxAmount())
                 .invoiceItemCommandList(request.getInvoiceItems()
                         .stream()
                         .map(item -> CreateInvoiceItemCommand.builder()

@@ -22,7 +22,7 @@ public class CreatePaymentCommand {
     private UUID invoiceId;
     private UUID staffId;
     private UUID voucherId;
-    private BigDecimal amountVoucher;
+//    private BigDecimal amountVoucher;
     private PaymentMethod method;
     private PaymentTransactionType paymentTransactionType;
     private List<ItemData> items;

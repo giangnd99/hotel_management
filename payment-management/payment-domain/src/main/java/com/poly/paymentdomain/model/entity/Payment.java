@@ -5,6 +5,7 @@ import com.poly.domain.valueobject.InvoiceId;
 import com.poly.paymentdomain.model.entity.valueobject.*;
 import com.poly.paymentdomain.model.exception.AlreadyConfirmedPaymentException;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.cglib.core.Local;
 
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Getter
+@Setter
 public class Payment extends AggregateRoot<PaymentId> {
     private InvoiceId invoiceId;
     private BookingId bookingId;

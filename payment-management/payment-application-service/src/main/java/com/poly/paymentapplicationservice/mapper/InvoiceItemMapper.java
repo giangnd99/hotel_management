@@ -20,4 +20,15 @@ public class InvoiceItemMapper {
                         .unitPrice(Money.from(item.getPrice()))
                         .build()).collect(Collectors.toList());
     }
+
+    public static List<ItemData> mapToEntity(List<InvoiceItem> items) {
+        return items.stream()
+                .map(item -> ItemData.builder()
+                        .serviceId(item.getServiceId().getValue())
+                        .name(item.getDescription().getValue())
+                        .quantity(item.getQuantity().getValue())
+                        .price(item.getUnitPrice().getValue())
+                        .serviceType(item.getServiceType().toString())
+                        .build()).collect(Collectors.toList());
+    }
 }

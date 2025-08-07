@@ -16,6 +16,7 @@ public class CreateInvoiceCommand {
     private UUID customerId;
     private UUID staffIdCreated;
     private UUID voucherId;
+    private BigDecimal taxAmount;
     private BigDecimal amountVoucher;
     private List<CreateInvoiceItemCommand> invoiceItemCommandList;
 }

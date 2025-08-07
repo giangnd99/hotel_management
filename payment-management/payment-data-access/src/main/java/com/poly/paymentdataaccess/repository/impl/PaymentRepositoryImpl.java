@@ -8,6 +8,8 @@ import com.poly.paymentdataaccess.share.PaymentTransactionTypeEntity;
 import com.poly.paymentdomain.model.entity.Payment;
 import com.poly.paymentdomain.model.entity.valueobject.PaymentTransactionType;
 import com.poly.paymentdomain.output.PaymentRepository;
+import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,13 +20,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Repository
+@RequiredArgsConstructor
 public class PaymentRepositoryImpl implements PaymentRepository {
 
     private final PaymentJpaRepository paymentJpaRepository;
 
-    public PaymentRepositoryImpl(PaymentJpaRepository paymentJpaRepository) {
-        this.paymentJpaRepository = paymentJpaRepository;
-    }
 
     @Override
     @Transactional
@@ -35,6 +35,7 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     }
 
     @Override
+    @Transactional
     public Payment updatePayment(Payment payment) {
         var entity = PaymentMapper.mapToEntity(payment);
         var newEntity = paymentJpaRepository.save(entity);
@@ -46,11 +47,18 @@ public class PaymentRepositoryImpl implements PaymentRepository {
 
     }
 
+//    @Override
+//    public Optional<Payment> findByBookingIdAndType(UUID bookingId, PaymentTransactionType type) {
+//        PaymentTransactionTypeEntity paymentStatusEntity = PaymentTransactionTypeEntity.DEPOSIT;
+//        return paymentJpaRepository.findByBookingIdAndPaymentTransactionTypeEntity(bookingId, paymentStatusEntity)
+//                .map(PaymentMapper::mapToDomain);
+//    }
+
     @Override
     public Optional<Payment> findByBookingIdAndType(UUID bookingId, PaymentTransactionType type) {
         PaymentTransactionTypeEntity paymentStatusEntity = PaymentTransactionTypeEntity.DEPOSIT;
-        return paymentJpaRepository.findByBookingIdAndPaymentTransactionTypeEntity(bookingId, paymentStatusEntity)
-                .map(PaymentMapper::mapToDomain);
+        Optional<PaymentEntity> entityOpt = paymentJpaRepository.findByBookingIdAndPaymentTransactionTypeEntity(bookingId, paymentStatusEntity);
+        return entityOpt.map(PaymentMapper::mapToDomain);
     }
 
 

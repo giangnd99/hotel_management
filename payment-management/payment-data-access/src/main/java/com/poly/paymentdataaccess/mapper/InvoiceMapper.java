@@ -28,7 +28,6 @@ public class InvoiceMapper {
                 .discountAmount(Money.from(entity.getDiscountAmount()))
                 .paidAmount(Money.from(entity.getPaidAmount()))
                 .status(InvoiceStatus.from(entity.getInvoiceStatusEntity().toString()))
-//                .createdAt(entity.getCreatedDate())
                 .lastUpdatedAt(entity.getUpdatedDate())
                 .items(items)
                 .build();
