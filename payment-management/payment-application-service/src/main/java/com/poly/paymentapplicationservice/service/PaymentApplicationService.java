@@ -135,7 +135,7 @@ public class PaymentApplicationService implements PaymentUsecase {
                 return;
             }
         }
-
+//        paymentRepository.updatePayment(payment);
         invoiceRepository.createInvoice(invoice);
     }
 

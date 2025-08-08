@@ -56,8 +56,9 @@ public class PaymentRepositoryImpl implements PaymentRepository {
 
     @Override
     public Optional<Payment> findByBookingIdAndType(UUID bookingId, PaymentTransactionType type) {
-        PaymentTransactionTypeEntity paymentStatusEntity = PaymentTransactionTypeEntity.DEPOSIT;
-        Optional<PaymentEntity> entityOpt = paymentJpaRepository.findByBookingIdAndPaymentTransactionTypeEntity(bookingId, paymentStatusEntity);
+//        PaymentTransactionTypeEntity paymentStatusEntity = PaymentTransactionTypeEntity.DEPOSIT;
+        PaymentTransactionTypeEntity paymentTransactionType = PaymentTransactionTypeEntity.valueOf(type.getValue());
+        Optional<PaymentEntity> entityOpt = paymentJpaRepository.findByBookingIdAndPaymentTransactionTypeEntity(bookingId, paymentTransactionType);
         return entityOpt.map(PaymentMapper::mapToDomain);
     }
 

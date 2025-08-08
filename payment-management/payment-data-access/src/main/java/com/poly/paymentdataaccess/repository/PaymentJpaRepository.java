@@ -15,7 +15,7 @@ public interface PaymentJpaRepository extends JpaRepository<PaymentEntity, UUID>
 //    @Query(value = "SELECT * FROM PaymentEntity p WHERE p.booking_id = UUID_TO_BIN(:bookingId) AND p.payment_transaction_type = :paymentTransactionType", nativeQuery = true)
 //    Optional<PaymentEntity> findByBookingIdAndPaymentTransactionType(@Param("bookingId") UUID bookingId, @Param("paymentTransactionType") PaymentTransactionTypeEntity paymentTransactionType);
 
-    Optional<PaymentEntity> findByBookingIdAndPaymentTransactionTypeEntity(UUID bookingId,PaymentTransactionTypeEntity paymentTransactionType);
+    Optional<PaymentEntity> findByBookingIdAndPaymentTransactionTypeEntity(UUID bookingId, PaymentTransactionTypeEntity paymentTransactionTypeEntity);
 
 
     Optional<PaymentEntity> findByReferenceCode(String referenceCode);

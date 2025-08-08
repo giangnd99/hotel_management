@@ -15,6 +15,7 @@ public class PaymentMapper {
         return PaymentEntity.builder()
                 .id(UUID.fromString(domain.getId().getValue()))
                 .bookingId(domain.getBookingId().getValue())
+                .invoiceId(domain.getInvoiceId() != null ? domain.getInvoiceId().getValue() : null)
                 .paymentStatusEntity(PaymentStatusEntity.valueOf(domain.getPaymentStatus().getValue()))
                 .amount(domain.getAmount().getValue())
                 .paymentMethodEntity(PaymentMethodEntity.valueOf(domain.getMethod().getValue()))
@@ -31,11 +32,12 @@ public class PaymentMapper {
                 .id(PaymentId.from(entity.getId()))
                 .bookingId(BookingId.from(entity.getBookingId()))
                 .invoiceId(InvoiceId.from(entity.getInvoiceId()))
-                .paymentTransactionType(PaymentTransactionType.from(entity.getPaymentTransactionTypeEntity().toString()))
                 .amount(Money.from(entity.getAmount()))
+                .paidAt(entity.getPaidAt())
+                .paymentStatus(PaymentStatus.from(entity.getPaymentStatusEntity().name()))
                 .createdAt(entity.getCreatedAt())
                 .method(PaymentMethod.from(entity.getPaymentMethodEntity().toString()))
-                .paymentTransactionType(PaymentTransactionType.from(entity.getPaymentTransactionTypeEntity().toString()))
+                .paymentTransactionType(PaymentTransactionType.from(entity.getPaymentTransactionTypeEntity().name()))
                 .referenceCode(PaymentReference.from(entity.getReferenceCode()))
                 .build();
     }
