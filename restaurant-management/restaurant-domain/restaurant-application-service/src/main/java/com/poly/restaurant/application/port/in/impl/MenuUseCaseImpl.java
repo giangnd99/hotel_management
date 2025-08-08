@@ -52,4 +52,18 @@ public class MenuUseCaseImpl implements MenuUseCase {
     public Object getReviews(Long menuId) {
         return null;
     }
+
+    @Override
+    public MenuDTO getMenuItemById(Integer id) {
+        MenuItem item = menuItemHandler.getById(id);
+        return item != null ? MenuItemMapper.toDto(item) : null;
+    }
+
+    @Override
+    public List<MenuDTO> getMenuItemsByCategory(String category) {
+        return menuItemHandler.getByCategory(category)
+                .stream()
+                .map(MenuItemMapper::toDto)
+                .collect(Collectors.toList());
+    }
 }

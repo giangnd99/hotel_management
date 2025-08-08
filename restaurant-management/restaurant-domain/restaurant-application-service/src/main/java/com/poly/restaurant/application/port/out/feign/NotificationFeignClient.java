@@ -1,7 +1,7 @@
-package com.poly.restaurant.feign;
+package com.poly.restaurant.application.port.out.feign;
 
-import com.poly.restaurant.dto.NotificationRequestDTO;
-import com.poly.restaurant.dto.NotificationResponseDTO;
+import com.poly.restaurant.application.dto.NotificationRequestDTO;
+import com.poly.restaurant.application.dto.NotificationResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 

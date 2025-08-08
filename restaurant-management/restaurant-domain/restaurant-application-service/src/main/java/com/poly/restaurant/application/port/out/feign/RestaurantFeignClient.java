@@ -1,7 +1,7 @@
-package com.poly.restaurant.feign;
+package com.poly.restaurant.application.port.out.feign;
 
 import com.poly.restaurant.application.dto.OrderDTO;
-import com.poly.restaurant.dto.OrderStatusUpdateDTO;
+import com.poly.restaurant.application.dto.OrderStatusUpdateDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
