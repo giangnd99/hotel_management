@@ -2,12 +2,13 @@ package com.poly.promotion.domain.core.entity;
 
 import com.poly.domain.entity.BaseEntity;
 import com.poly.domain.valueobject.CustomerId;
+import com.poly.promotion.domain.core.valueobject.DateRange;
+import com.poly.promotion.domain.core.valueobject.Discount;
 import com.poly.promotion.domain.core.valueobject.VoucherId;
 import com.poly.promotion.domain.core.valueobject.VoucherPackId;
 import com.poly.promotion.domain.core.valueobject.VoucherStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -25,7 +26,7 @@ public class Voucher extends BaseEntity<VoucherId> {
     CustomerId customerId;
     VoucherPackId voucherPackId;
     String voucherCode;
-    Double discountAmount;
+    Discount discount;
     LocalDateTime redeemedAt;
     LocalDateTime validTo;
     VoucherStatus voucherStatus;
@@ -35,10 +36,26 @@ public class Voucher extends BaseEntity<VoucherId> {
         setCustomerId(builder.customerId);
         setVoucherPackId(builder.voucherPackId);
         setVoucherCode(builder.voucherCode);
-        setDiscountAmount(builder.discountAmount);
+        setDiscount(builder.discount);
         setRedeemedAt(builder.redeemedAt);
         setValidTo(builder.validTo);
         setVoucherStatus(builder.voucherStatus);
+    }
+
+    public static Voucher initRedeem(String customerId, Long voucherPackId, Discount discount, DateRange voucherValidRange) {
+        return Voucher.builder()
+                .customerId(customerId)
+                .voucherPackId(voucherPackId)
+                .voucherCode(UUID.randomUUID().toString()) // Should use a more proper voucher code generation strategy
+                .discount(discount)
+                .redeemedAt(LocalDateTime.now())
+                .validTo(LocalDateTime.now().plus(voucherValidRange.getValue(), voucherValidRange.getUnit()))
+                .voucherStatus(VoucherStatus.PENDING)
+                .build();
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public static final class Builder {
@@ -46,7 +63,7 @@ public class Voucher extends BaseEntity<VoucherId> {
         private CustomerId customerId;
         private VoucherPackId voucherPackId;
         private String voucherCode;
-        private Double discountAmount;
+        private Discount discount;
         private LocalDateTime redeemedAt;
         private LocalDateTime validTo;
         private VoucherStatus voucherStatus;
@@ -54,17 +71,13 @@ public class Voucher extends BaseEntity<VoucherId> {
         private Builder() {
         }
 
-        public static Builder newBuilder() {
-            return new Builder();
-        }
-
-        public Builder id(UUID val) {
-            id = new VoucherId(val);
+        public Builder id(String val) {
+            id = new VoucherId(UUID.fromString(val));
             return this;
         }
 
-        public Builder customerId(CustomerId val) {
-            customerId = val;
+        public Builder customerId(String val) {
+            customerId = new CustomerId(UUID.fromString(val));
             return this;
         }
 
@@ -78,8 +91,8 @@ public class Voucher extends BaseEntity<VoucherId> {
             return this;
         }
 
-        public Builder discountAmount(Double val) {
-            discountAmount = val;
+        public Builder discount(Discount val) {
+            discount = val;
             return this;
         }
 
@@ -93,8 +106,8 @@ public class Voucher extends BaseEntity<VoucherId> {
             return this;
         }
 
-        public Builder voucherStatus(Integer val) {
-            voucherStatus = VoucherStatus.fromStatusCode(val);
+        public Builder voucherStatus(VoucherStatus val) {
+            voucherStatus = val;
             return this;
         }
 

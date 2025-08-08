@@ -9,20 +9,16 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public enum VoucherPackStatus {
-    PENDING(0, "pending"),
-    PUBLISHED(1, "published"),
-    CLOSED(2, "closed"),
-    EXPIRED(3, "expired");
-
-    Integer statusCode;
-    String statusName;
-
-    public static VoucherPackStatus fromStatusCode(Integer statusCode) {
-        for (VoucherPackStatus status : values()) {
-            if (status.getStatusCode().equals(statusCode)) {
-                return status;
+    PENDING,
+    PUBLISHED,
+    CLOSED,
+    EXPIRED;
+    public static VoucherPackStatus fromString(String status) {
+        for (VoucherPackStatus voucherPackStatus : VoucherPackStatus.values()) {
+            if (voucherPackStatus.name().equalsIgnoreCase(status)) {
+                return voucherPackStatus;
             }
         }
-        return null;
+        throw new IllegalArgumentException("Unknown VoucherPackStatus: " + status);
     }
 }

@@ -1,12 +1,13 @@
 package com.poly.promotion.domain.application.spi.repository;
 
 import com.poly.promotion.domain.core.entity.VoucherPack;
+import com.poly.promotion.domain.core.valueobject.VoucherPackStatus;
 
 import java.util.List;
 
 public interface VoucherPackRepository {
     boolean existsById(Long voucherPackId);
-    boolean isOfStatus(Long voucherPackId, Integer status);
+    boolean isOfStatus(Long voucherPackId, VoucherPackStatus status);
     long getVoucherPackQuantity(Long voucherPackId);
     /**
      * Retrieves a voucher pack by its ID.
@@ -22,7 +23,7 @@ public interface VoucherPackRepository {
      * @param status the status of the voucher packs to retrieve.
      * @return a list of voucher packs with the specified status.
      */
-    List<VoucherPack> getAllVoucherPacksWithStatus(Integer status);
+    List<VoucherPack> getAllVoucherPacksWithStatus(VoucherPackStatus... status);
 
     /**
      * Creates a new voucher pack.
@@ -35,11 +36,10 @@ public interface VoucherPackRepository {
     /**
      * Updates a pending voucher pack.
      *
-     * @param voucherPackId the ID of the voucher pack to update.
-     * @param voucherPack   the updated voucher pack data.
+     * @param updatingVoucherPack   the updated voucher pack data.
      * @return the updated voucher pack.
      */
-    VoucherPack updatePendingVoucherPack(Long voucherPackId, VoucherPack voucherPack);
+    VoucherPack updatePendingVoucherPack(VoucherPack updatingVoucherPack);
 
     /**
      * Closes a voucher pack by setting its status to closed.
