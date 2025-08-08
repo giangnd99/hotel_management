@@ -18,17 +18,16 @@ public class RoomManagement {
 
         Set<RoomId> availableRooms = new HashSet<>();
 
-        booking.bookingRooms.forEach(
+        booking.getRooms().forEach(
                 bookingRoom -> {
-                    Room bookingTargetRoom = bookingRoom.getRoom();
-                    RoomId roomId = bookingRoom.getRoom().getId();
-                    Room roomInHotel = roomMapById.get(bookingRoom.getRoom().getId());
+                    RoomId roomId = bookingRoom.getId();
+                    Room roomInHotel = roomMapById.get(bookingRoom.getId());
                     if (roomInHotel != null
-                            && !availableRooms.contains(bookingRoom.getRoom().getId())
+                            && !availableRooms.contains(bookingRoom.getId())
                             && roomInHotel.checkAvailableRoom()) {
 
                         availableRooms.add(roomId);
-                        bookingTargetRoom.updateBookedRoom(
+                        bookingRoom.updateBookedRoom(
                                 roomInHotel.getRoomNumber(),
                                 roomInHotel.getBasePrice());
                     }
@@ -45,8 +44,7 @@ public class RoomManagement {
 
     public Money getTotalCost(Booking booking) {
         Money totalCost = Money.ZERO;
-        for (BookingRoom bookingRoom : booking.bookingRooms) {
-            Room room = bookingRoom.getRoom();
+        for (Room room : booking.getRooms()) {
             totalCost = totalCost.add(room.getBasePrice());
         }
         return totalCost;

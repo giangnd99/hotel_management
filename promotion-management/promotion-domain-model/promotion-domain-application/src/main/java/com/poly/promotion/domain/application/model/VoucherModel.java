@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class VoucherModel {
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class VoucherModel extends BaseModel {
     String voucherCode;
-    Integer voucherPackId;
+    Long voucherPackId;
     Double discountAmount;
     LocalDateTime redeemedAt;
     LocalDateTime validTo;

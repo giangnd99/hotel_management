@@ -1,6 +1,6 @@
 package com.poly.restaurant.dataaccess.entity;
 
-import com.poly.restaurant.domain.value_object.OrderStatus;
+import com.poly.restaurant.domain.entity.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,20 +18,23 @@ import java.util.List;
 public class OrderJpaEntity {
     @Id
     @Column(name = "order_id")
-    private int orderId;
+    private String id;
 
     @Column(name = "customer_id")
-    private int customerId;
+    private String customerId;
 
-    @Column(name = "order_date")
-    private LocalDateTime orderDate;
+    @Column(name = "table_id")
+    private String tableId;
 
-    @Column(name = "total_price")
-    private BigDecimal totalPrice;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private OrderStatus status;
+
+    @Column(name = "customer_note")
+    private String customerNote;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItemJpaEntity> items;

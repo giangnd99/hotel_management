@@ -26,7 +26,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
     }
 
     @Override
-    public Optional<Order> findById(Integer id) {
+    public Optional<Order> findById(String id) {
         return jpaOrderRepository.findById(id)
                 .map(OrderEntityMapper::toDomain);
     }
@@ -39,12 +39,12 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
     }
 
     @Override
-    public boolean existsById(Integer id) {
+    public boolean existsById(String id) {
         return jpaOrderRepository.existsById(id);
     }
 
     @Override
-    public void deleteById(Integer id) {
+    public void deleteById(String id) {
         jpaOrderRepository.deleteById(id);
     }
 }

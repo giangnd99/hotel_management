@@ -1,7 +1,8 @@
 package com.poly.restaurant.controller;
 
 import com.poly.restaurant.application.dto.OrderDTO;
-import com.poly.restaurant.application.port.in.RestaurantUseCase;
+import com.poly.restaurant.application.port.in.OrderUseCase;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,17 +22,79 @@ import java.util.List;
 @Validated
 public class OrderController {
 
-    private final RestaurantUseCase restaurantUseCase;
+    private final OrderUseCase orderUseCase;
 
-    @PostMapping("/order")
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody @Valid OrderDTO request) {
-        OrderDTO created = restaurantUseCase.createOrder(request);
+    @PostMapping
+    @Operation(summary = "Tạo đơn hàng mới với payment")
+    public ResponseEntity<OrderDTO> createOrderWithPayment(@RequestBody @Valid OrderDTO request) {
+        log.info("Creating new order with payment: {}", request.id());
+        OrderDTO created = orderUseCase.createOrderWithPayment(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
 
+    @PutMapping("/{id}/process")
+    @Operation(summary = "Xử lý đơn hàng (chuyển sang IN_PROGRESS)")
+    public ResponseEntity<OrderDTO> processOrder(@PathVariable String id) {
+        log.info("Processing order: {}", id);
+        OrderDTO processed = orderUseCase.processOrderWithNotification(id);
+        return ResponseEntity.ok(processed);
+    }
+
+    @PutMapping("/{id}/complete")
+    @Operation(summary = "Hoàn thành đơn hàng")
+    public ResponseEntity<OrderDTO> completeOrder(@PathVariable String id) {
+        log.info("Completing order: {}", id);
+        OrderDTO completed = orderUseCase.completeOrderWithNotification(id);
+        return ResponseEntity.ok(completed);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Hủy đơn hàng với refund")
+    public ResponseEntity<OrderDTO> cancelOrderWithRefund(
+            @PathVariable String id,
+            @RequestParam(required = false, defaultValue = "Customer request") String reason) {
+        log.info("Cancelling order with refund: {}", id);
+        OrderDTO cancelled = orderUseCase.cancelOrderWithRefundAndNotification(id, reason);
+        return ResponseEntity.ok(cancelled);
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderDTO>> getOrders() {
-        return ResponseEntity.ok(restaurantUseCase.getAllOrders());
+    @Operation(summary = "Lấy danh sách tất cả đơn hàng")
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
+        log.info("Getting all orders");
+        List<OrderDTO> orders = orderUseCase.getAllOrders();
+        return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Lấy đơn hàng theo ID")
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable String id) {
+        log.info("Getting order by id: {}", id);
+        OrderDTO order = orderUseCase.getOrderById(id);
+        return ResponseEntity.ok(order);
+    }
+
+    @GetMapping("/customer/{customerId}")
+    @Operation(summary = "Lấy đơn hàng theo khách hàng")
+    public ResponseEntity<List<OrderDTO>> getOrdersByCustomer(@PathVariable String customerId) {
+        log.info("Getting orders by customer: {}", customerId);
+        List<OrderDTO> orders = orderUseCase.getOrdersByCustomer(customerId);
+        return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping("/table/{tableId}")
+    @Operation(summary = "Lấy đơn hàng theo bàn")
+    public ResponseEntity<List<OrderDTO>> getOrdersByTable(@PathVariable String tableId) {
+        log.info("Getting orders by table: {}", tableId);
+        List<OrderDTO> orders = orderUseCase.getOrdersByTable(tableId);
+        return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping("/status/{status}")
+    @Operation(summary = "Lấy đơn hàng theo trạng thái")
+    public ResponseEntity<List<OrderDTO>> getOrdersByStatus(@PathVariable String status) {
+        log.info("Getting orders by status: {}", status);
+        List<OrderDTO> orders = orderUseCase.getOrdersByStatus(status);
+        return ResponseEntity.ok(orders);
     }
 }

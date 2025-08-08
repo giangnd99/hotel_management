@@ -9,8 +9,10 @@ public class MenuItemMapper {
     public static MenuItem toEntity(MenuDTO dto) {
         if (dto == null) return null;
 
+        MenuItemId id = dto.id() != null ? new MenuItemId(dto.id()) : null;
+
         return new MenuItem(
-                new MenuItemId(dto.id()),
+                id,
                 dto.name(),
                 dto.description(),
                 dto.price(),
@@ -27,7 +29,8 @@ public class MenuItemMapper {
                 entity.getDescription(),
                 entity.getPrice().abs(),
                 entity.getCategory(),
-                entity.getQuantity()
+                entity.getQuantity(),
+                entity.getStatus().name()
         );
     }
 }

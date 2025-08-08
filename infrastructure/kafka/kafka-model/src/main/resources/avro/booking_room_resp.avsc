@@ -1,0 +1,64 @@
+{
+  "type": "record",
+  "name": "BookingRoomResponseAvro",
+  "namespace": "com.poly.booking.management.domain.kafka.model",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "sagaId",
+      "type": "string"
+    },
+    {
+      "name": "bookingId",
+      "type": "string"
+    },
+    {
+      "name": "rooms",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "Room",
+          "fields": [
+            {
+              "name": "id",
+              "type": "string"
+            },
+            {
+              "name": "roomNumber",
+              "type": "string"
+            },
+            {
+              "name": "basePrice",
+              "type": "string"
+            },
+            {
+              "name": "status",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "totalPrice",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 20,
+        "scale": 2
+      }
+    },
+    {
+      "name": "reason",
+      "type": "string"
+    },
+    {
+      "name": "reservationStatus",
+      "type": "string"
+    }
+  ]
+}

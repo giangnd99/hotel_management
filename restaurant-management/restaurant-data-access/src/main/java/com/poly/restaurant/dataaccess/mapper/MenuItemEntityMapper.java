@@ -20,6 +20,7 @@ public class MenuItemEntityMapper {
                 .price(item.getPrice())
                 .category(item.getCategory())
                 .quantity(item.getQuantity())
+                .status(item.getStatus())
                 .build();
     }
 
