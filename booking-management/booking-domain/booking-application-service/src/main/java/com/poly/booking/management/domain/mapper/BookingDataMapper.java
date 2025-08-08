@@ -1,46 +1,52 @@
 package com.poly.booking.management.domain.mapper;
 
 import com.poly.booking.management.domain.dto.RoomDto;
+import com.poly.booking.management.domain.dto.message.CustomerCreatedMessageResponse;
 import com.poly.booking.management.domain.dto.request.CreateBookingCommand;
 import com.poly.booking.management.domain.dto.response.BookingCreatedResponse;
+import com.poly.booking.management.domain.entity.Customer;
 import com.poly.booking.management.domain.entity.Room;
-import com.poly.booking.management.domain.event.BookingCreatedEvent;
-import com.poly.booking.management.domain.event.BookingEvent;
-import com.poly.booking.management.domain.event.BookingPaidEvent;
-import com.poly.booking.management.domain.outbox.model.payment.BookingPaymentEventPayload;
+import com.poly.booking.management.domain.event.*;
+import com.poly.booking.management.domain.outbox.model.notification.BookingNotifiEventPayload;
 import com.poly.booking.management.domain.outbox.model.room.BookingReservedEventPayload;
+import com.poly.booking.management.domain.outbox.model.room.BookingRoomEventPayload;
+import com.poly.domain.valueobject.EBookingStatus;
 import com.poly.domain.valueobject.Money;
 import com.poly.domain.valueobject.RoomId;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
+/**
+ * BookingDataMapper - Mapper class để chuyển đổi dữ liệu giữa các layer
+ * <p>
+ * Mục đích:
+ * - Mapping giữa Domain Entity và DTO cho Frontend
+ * - Mapping giữa Domain Event và Event Payload cho Kafka Message
+ * - Đảm bảo tính nhất quán dữ liệu giữa các layer
+ * - Tối ưu hóa việc serialize/deserialize cho JSON và Avro
+ * <p>
+ * EVENT DRIVEN MAPPING:
+ * - CustomerCreatedMessageResponse -> Customer Entity
+ * - Booking Events -> Event Payloads
+ * - Domain Events -> Response DTOs
+ */
 @Component
 public class BookingDataMapper {
-    public BookingReservedEventPayload orderPaidEventToOrderApprovalEventPayload(BookingPaidEvent domainEvent) {
-        return null;
-    }
 
-    public List<Room> roomsDtoToRooms(List<RoomDto> roomsDto) {
-        return roomsDto.stream().map(
-                roomDto ->
-                        new Room(new RoomId(roomDto.getRoomId()),
-                                roomDto.getRoomNumber(),
-                                Money.from(roomDto.getBasePrice()),
-                                roomDto.getStatus())
-        ).toList();
-    }
-
-    public BookingPaymentEventPayload bookingEventToRoomBookingEventPayload(BookingEvent bookingCreatedEvent) {
-        return BookingPaymentEventPayload.builder()
-                .bookingId(bookingCreatedEvent.getBooking().getId().getValue().toString())
-                .customerId(bookingCreatedEvent.getBooking().getCustomerId().getValue().toString())
-                .paymentBookingStatus(bookingCreatedEvent.getBooking().getStatus().toString())
-                .price(bookingCreatedEvent.getBooking().getTotalPrice().getAmount())
-                .createdAt(bookingCreatedEvent.getCreatedAt().getValue())
-                .build();
-    }
-
+    /**
+     * Chuyển đổi BookingCreatedEvent thành BookingCreatedResponse
+     * <p>
+     * Mục đích: Tạo response DTO cho frontend sau khi tạo booking thành công
+     * Sử dụng: Trả về thông tin booking cho client
+     *
+     * @param bookingCreatedEvent  BookingCreatedEvent từ domain
+     * @param createBookingCommand Command ban đầu từ request
+     * @return BookingCreatedResponse cho frontend
+     */
     public BookingCreatedResponse bookingCreatedEventToBookingCreatedResponse(BookingCreatedEvent bookingCreatedEvent, CreateBookingCommand createBookingCommand) {
         return BookingCreatedResponse.builder()
                 .bookingId(bookingCreatedEvent.getBooking().getId().getValue())
@@ -55,13 +61,5 @@ public class BookingDataMapper {
                 .build();
     }
 
-    public BookingReservedEventPayload bookingEventToRoomBookingEventPayload(BookingPaidEvent domainEvent) {
-        return BookingReservedEventPayload.builder()
-                .bookingId(domainEvent.getBooking().getId().getValue().toString())
-                .customerId(domainEvent.getBooking().getCustomerId().getValue().toString())
-                .roomBookingStatus(domainEvent.getBooking().getStatus().toString())
-                .price(domainEvent.getBooking().getTotalPrice().getAmount())
-                .createdAt(domainEvent.getCreatedAt().getValue())
-                .build();
-    }
+
 }

@@ -51,4 +51,7 @@ public interface MenuUseCase {
      * @return an Object containing the reviews for the menu item
      */
     Object getReviews(Long menuId);
+
+    MenuDTO getMenuItemById(Integer id);
+    List<MenuDTO> getMenuItemsByCategory(String category);
 }

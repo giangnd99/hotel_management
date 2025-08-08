@@ -10,7 +10,12 @@
 
 	<artifactId>payment-domain</artifactId>
 	<name>payment-domain</name>
-
+    <dependencies>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>common-domain</artifactId>
+        </dependency>
+    </dependencies>
 
 
 </project>

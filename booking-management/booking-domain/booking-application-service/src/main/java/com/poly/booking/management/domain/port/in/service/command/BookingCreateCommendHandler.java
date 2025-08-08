@@ -7,6 +7,9 @@ import com.poly.booking.management.domain.entity.Room;
 import com.poly.booking.management.domain.event.BookingCreatedEvent;
 import com.poly.booking.management.domain.exception.BookingDomainException;
 import com.poly.booking.management.domain.mapper.BookingDataMapper;
+import com.poly.booking.management.domain.mapper.CustomerDataMapper;
+import com.poly.booking.management.domain.mapper.PaymentDataMapper;
+import com.poly.booking.management.domain.mapper.RoomDataMapper;
 import com.poly.booking.management.domain.outbox.scheduler.payment.PaymentOutboxHelper;
 import com.poly.booking.management.domain.port.out.client.RoomClient;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
@@ -30,6 +33,9 @@ public class BookingCreateCommendHandler {
 
     private final BookingRepository bookingRepository;
     private final RoomClient roomClient;
+    private final RoomDataMapper roomDataMapper;
+    private final CustomerDataMapper customerDataMapper;
+    private final PaymentDataMapper paymentDataMapper;
     private final BookingDataMapper bookingDataMapper;
     private final BookingSagaHelper bookingSagaHelper;
     private final PaymentOutboxHelper paymentOutboxHelper;
@@ -42,7 +48,7 @@ public class BookingCreateCommendHandler {
 
         List<Room> allRooms = getRooms();
 
-        List<Room> bookedRooms = bookingDataMapper.roomsDtoToRooms(createBookingCommand.getRooms());
+        List<Room> bookedRooms = roomDataMapper.roomsDtoToRooms(createBookingCommand.getRooms());
 
         Booking booking = Booking.Builder.builder()
                 .customerId(new CustomerId(UUID.fromString(createBookingCommand.getCustomerId())))
@@ -57,7 +63,7 @@ public class BookingCreateCommendHandler {
         saveBooking(bookingCreatedEvent.getBooking());
 
         paymentOutboxHelper.savePaymentOutboxMessage(
-                bookingDataMapper.bookingEventToRoomBookingEventPayload(bookingCreatedEvent),
+                paymentDataMapper.bookingCreatedEventToRoomBookingEventPayload(bookingCreatedEvent),
                 bookingCreatedEvent.getBooking().getStatus(),
                 bookingSagaHelper.bookingStatusToSagaStatus(bookingCreatedEvent.getBooking().getStatus()),
                 OutboxStatus.STARTED,
@@ -74,7 +80,7 @@ public class BookingCreateCommendHandler {
             throw new BookingDomainException("Could not get all rooms! Please check the server status and try again later!");
         }
         return allRooms.stream().map(roomResponse ->
-                new Room(new RoomId(roomResponse.getId()), roomResponse.getRoomNumber(),
+                new Room(new RoomId(UUID.fromString(roomResponse.getId())), roomResponse.getRoomNumber(),
                         Money.from(roomResponse.getRoomType().getBasePrice()),
                         ERoomStatus.valueOf(roomResponse.getRoomStatus()))).toList();
     }
