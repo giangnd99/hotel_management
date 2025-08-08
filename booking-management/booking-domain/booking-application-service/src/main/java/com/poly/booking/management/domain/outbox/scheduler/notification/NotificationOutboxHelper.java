@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poly.booking.management.domain.exception.BookingDomainException;
 import com.poly.booking.management.domain.outbox.model.notification.BookingNotifiEventPayload;
 import com.poly.booking.management.domain.outbox.model.notification.BookingNotifiOutboxMessage;
+import com.poly.booking.management.domain.outbox.model.room.BookingRoomOutboxMessage;
 import com.poly.booking.management.domain.port.out.repository.NotificationOutboxRepository;
 import com.poly.domain.valueobject.EBookingStatus;
 import com.poly.outbox.OutboxStatus;
@@ -148,4 +149,5 @@ public class NotificationOutboxHelper {
             throw new BookingDomainException("Could not create notification outbox message payload!", e);
         }
     }
+
 }

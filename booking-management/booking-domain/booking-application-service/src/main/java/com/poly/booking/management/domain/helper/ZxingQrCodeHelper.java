@@ -1,4 +1,4 @@
-package com.poly.booking.management.domain.port.in.service.impl;
+package com.poly.booking.management.domain.helper;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
