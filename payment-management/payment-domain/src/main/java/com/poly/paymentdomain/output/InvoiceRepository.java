@@ -11,7 +11,7 @@ public interface InvoiceRepository {
     Invoice createInvoice(Invoice invoice);
     Invoice updateInvoice(Invoice invoice, List<InvoiceItem> items);
     void deleteInvoice(Invoice invoice);
-    Optional<Invoice> findInvoiceById(Invoice invoice);
+    Optional<Invoice> findInvoiceById(UUID invoiceId);
     Optional<Invoice> findByBookingId(UUID bookingId);
     List<Invoice> findAll(UUID customerId);
 }

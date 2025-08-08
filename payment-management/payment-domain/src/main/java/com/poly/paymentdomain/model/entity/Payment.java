@@ -5,6 +5,7 @@ import com.poly.domain.valueobject.InvoiceId;
 import com.poly.paymentdomain.model.entity.valueobject.*;
 import com.poly.paymentdomain.model.exception.AlreadyConfirmedPaymentException;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.cglib.core.Local;
 
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Getter
+@Setter
 public class Payment extends AggregateRoot<PaymentId> {
     private InvoiceId invoiceId;
     private BookingId bookingId;
@@ -28,7 +30,7 @@ public class Payment extends AggregateRoot<PaymentId> {
         this.setId(builder.paymentId);
         this.bookingId = builder.bookingId;
         this.invoiceId = builder.invoiceId != null ? builder.invoiceId : null;
-        this.paymentStatus = PaymentStatus.PENDING;
+        this.paymentStatus = builder.paymentStatus != null ? builder.paymentStatus : PaymentStatus.PENDING;
         this.amount = builder.amount;
         this.method = builder.method;
         this.paidAt = builder.paidAt;
@@ -42,6 +44,7 @@ public class Payment extends AggregateRoot<PaymentId> {
         private InvoiceId invoiceId;
         private BookingId bookingId;
         private Money amount;
+        private PaymentStatus paymentStatus;
         private PaymentMethod method;
         private LocalDateTime paidAt;
         private LocalDateTime createdAt;
@@ -86,6 +89,11 @@ public class Payment extends AggregateRoot<PaymentId> {
             return this;
         }
 
+        public Builder paymentStatus(PaymentStatus val) {
+            paymentStatus = val;
+            return this;
+        }
+
         public Builder paymentTransactionType(PaymentTransactionType val) {
             paymentTransactionType = val;
             return this;
@@ -106,8 +114,8 @@ public class Payment extends AggregateRoot<PaymentId> {
     }
 
     public void markAsPaid(LocalDateTime paidAt) {
-        if (this.paymentStatus != PaymentStatus.PENDING) {
-            throw new IllegalStateException("Cannot mark payment as COMPLETED from status: " + paymentStatus);
+        if (this.paymentStatus == PaymentStatus.COMPLETED) {
+            throw new IllegalStateException("Cannot mark payment as COMPLETED from status: " + paymentStatus.getValue());
         }
         this.paymentStatus = PaymentStatus.COMPLETED;
         this.paidAt = paidAt;

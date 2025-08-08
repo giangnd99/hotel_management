@@ -42,7 +42,7 @@
         @PostMapping("/checkout/online")
         public ResponseEntity createCheckoutOnlineLink(@RequestBody CreatePaymentRequest request) throws Exception {
             CreatePaymentCommand command = CreatePaymentCommand.builder()
-                    .bookingId(request.getBookingId())
+//                    .bookingId(request.getBookingId())
                     .invoiceId(request.getInvoiceId())
                     .staffId(request.getStaffId())
                     .method(PaymentMethod.PAYOS)

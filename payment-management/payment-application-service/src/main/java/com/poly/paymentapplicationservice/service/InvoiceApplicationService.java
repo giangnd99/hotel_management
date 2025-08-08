@@ -26,12 +26,10 @@ public class InvoiceApplicationService implements InvoiceUsecase {
 
     private final PaymentRepository paymentRepository;
 
-//    private final InvoiceItemRepository  invoiceItemRepository;
 
     public InvoiceApplicationService(InvoiceRepository invoiceRepository, PaymentRepository paymentRepository) {
         this.invoiceRepository = invoiceRepository;
         this.paymentRepository = paymentRepository;
-//        this.invoiceItemRepository = invoiceItemRepository;
     }
 
     @Override
@@ -39,30 +37,32 @@ public class InvoiceApplicationService implements InvoiceUsecase {
 
         validateCommand(command);
 
-        var bookingId = BookingId.from(command.getBookingId());
-        Optional<Invoice> existingInvoice = invoiceRepository.findByBookingId(bookingId.getValue());
+        Optional<Invoice> existingInvoice = invoiceRepository.findByBookingId(command.getBookingId());
 
         if (existingInvoice.isPresent()) {
-            throw new RuntimeException("Hóa đơn đã tồn tại cho bookingId: " + bookingId.getValue());
+            throw new RuntimeException("Hóa đơn đã tồn tại cho bookingId: " + existingInvoice.get().getBookingId());
         }
 
-        Optional<Payment> bookingDeposit = paymentRepository.findByBookingIdAndType(command.getBookingId(), PaymentTransactionType.DEPOSIT);
-
         List<InvoiceItem> invoiceItems = InvoiceMapper.mapToInvoiceItems(command.getInvoiceItemCommandList());
+
+        Payment bookingDeposit = paymentRepository.findByBookingIdAndType(command.getBookingId(), PaymentTransactionType.DEPOSIT).orElseThrow();
 
         Invoice invoiceCreated = Invoice.builder()
                 .id(InvoiceId.generate())
                 .bookingId(BookingId.from(command.getBookingId()))
                 .customerId(CustomerId.fromValue(command.getCustomerId()))
                 .createdBy(StaffId.from(command.getStaffIdCreated()))
-//                .lastUpdatedBy(StaffId.from(command.getStaffIdCreated()))
-                .paidAmount(bookingDeposit.get().getAmount())
+                .paidAmount(bookingDeposit.getAmount())
                 .status(InvoiceStatus.PENDING)
+                .taxRate(Money.from(command.getTaxAmount()))
                 .voucherId(VoucherId.from(command.getVoucherId()))
+                .discountAmount(Money.from(command.getAmountVoucher()))
                 .items(invoiceItems)
                 .build();
 
+        bookingDeposit.setInvoiceId(invoiceCreated.getId());
         invoiceRepository.createInvoice(invoiceCreated);
+        paymentRepository.updatePayment(bookingDeposit);
         return InvoiceMapper.from(invoiceCreated);
     }
 

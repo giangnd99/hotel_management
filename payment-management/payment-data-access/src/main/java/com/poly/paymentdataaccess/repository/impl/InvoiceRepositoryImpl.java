@@ -61,17 +61,22 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
     }
 
     @Override
-    public Optional<Invoice> findInvoiceById(Invoice invoice) {
-        var entity = InvoiceMapper.toEntity(invoice);
-        var entityFinded = invoiceJpaRepository.findById(entity.getId());
-        
-        var invoiceItem = invoiceItemJpaRepository.findByInvoiceId(entityFinded.get().getId());
-        return Optional.of(InvoiceMapper.toDomain(entity, invoiceItem));
+    public Optional<Invoice> findInvoiceById(UUID invoiceId) {
+        Optional<InvoiceEntity> invoiceEntity = invoiceJpaRepository.findById(invoiceId);
+        List<InvoiceItemEntity> itemEntities = invoiceItemJpaRepository.findByInvoiceId(invoiceId);
+        return Optional.of(InvoiceMapper.toDomain(invoiceEntity.get(), itemEntities));
     }
 
     @Override
     public Optional<Invoice> findByBookingId(UUID bookingId) {
-        return Optional.empty();
+        Optional<InvoiceEntity> invoiceEntityOpt = invoiceJpaRepository.findByBookingId(bookingId);
+        if (invoiceEntityOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        InvoiceEntity invoiceEntity = invoiceEntityOpt.get();
+        List<InvoiceItemEntity> itemEntities = invoiceItemJpaRepository.findByInvoiceId(invoiceEntity.getId());
+        return Optional.of(InvoiceMapper.toDomain(invoiceEntity, itemEntities));
     }
 
 //    @Override

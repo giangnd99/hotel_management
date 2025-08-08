@@ -38,19 +38,19 @@ CREATE TABLE invoice_item
     FOREIGN KEY (invoice_id) REFERENCES invoice (invoice_id) ON DELETE CASCADE
 );
 
-CREATE TABLE payment
-(
-    payment_id               BINARY(16) NOT NULL PRIMARY KEY,
-    booking_id               BINARY(16),
-    invoice_id               BINARY(16),
-    payment_status           ENUM ('PENDING', 'COMPLETED', 'CANCELLED', 'FAILED', 'EXPIRED'), -- PENDING, COMPLETED, CANCELLED, FAILED
-    amount                   DECIMAL(15, 2),
-    payment_method           ENUM ('CASH', 'PAYOS'), -- CASH, PAYOS
-    paid_at                  DATETIME,
-    created_at               DATETIME,
-    payment_transaction_type ENUM ('DEPOSIT', 'INVOICE_PAYMENT', 'REFUND', 'OTHER'), -- , etc.
-    reference_code           VARCHAR(100)
-);
+    CREATE TABLE payment
+    (
+        payment_id               BINARY(16) NOT NULL PRIMARY KEY,
+        booking_id               BINARY(16),
+        invoice_id               BINARY(16),
+        payment_status           ENUM ('PENDING', 'COMPLETED', 'CANCELLED', 'FAILED', 'EXPIRED'), -- PENDING, COMPLETED, CANCELLED, FAILED
+        amount                   DECIMAL(15, 2),
+        payment_method           ENUM ('CASH', 'PAYOS'), -- CASH, PAYOS
+        paid_at                  DATETIME,
+        created_at               DATETIME,
+        payment_transaction_type ENUM ('DEPOSIT', 'INVOICE_PAYMENT', 'REFUND', 'OTHER'), -- , etc.
+        reference_code           VARCHAR(100)
+    );
 
 select * from payment p where p.payment_status = 'PENDING' AND p.payment_transaction_type = 'DEPOSIT' AND p.created_at <= NOW() - INTERVAL 20 MINUTE ;
 select * from payment p where p.created_at < NOW() ;
@@ -59,4 +59,20 @@ FROM payment;
 SELECT payment_id, created_at FROM payment WHERE created_at IS NOT NULL;
 SELECT NOW(), @@global.time_zone, @@session.time_zone;
 SET time_zone = '+07:00';
+
+SELECT *
+FROM payment
+WHERE booking_id = '4aee8407-3034-4172-a31a-10bbe199f848'
+  AND payment_transaction_type = 'DEPOSIT';
+
+SELECT booking_id FROM payment;
+SELECT DISTINCT payment_transaction_type FROM payment;
+
+SELECT *
+FROM payment
+WHERE booking_id = '4aee8407-3034-4172-a31a-10bbe199f848';
+SELECT *
+FROM payment
+WHERE booking_id = UUID_TO_BIN('4aee8407-3034-4172-a31a-10bbe199f848')
+AND payment_transaction_type = 'DEPOSIT';
 
