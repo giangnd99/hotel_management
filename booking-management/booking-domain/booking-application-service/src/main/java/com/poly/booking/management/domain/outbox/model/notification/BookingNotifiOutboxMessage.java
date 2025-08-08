@@ -42,6 +42,7 @@ public class BookingNotifiOutboxMessage {
     private UUID id;
     private UUID sagaId;
     private String type;
+    private String bookingId;
     private SagaStatus sagaStatus;
     private OutboxStatus outboxStatus;
     private String payload;

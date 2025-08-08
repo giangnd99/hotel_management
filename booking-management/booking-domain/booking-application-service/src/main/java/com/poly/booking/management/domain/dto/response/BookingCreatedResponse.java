@@ -20,7 +20,7 @@ public class BookingCreatedResponse {
 
     private UUID bookingId;
     private UUID customerId;
-    private String customerName; // Added for display
+    private String customerName;
     private List<Room> rooms;
     private LocalDateTime checkInDate;
     private LocalDateTime checkOutDate;

@@ -12,7 +12,7 @@ public class QRCodeCheckIn {
     private String qrCodeUrl;
     private File qrCodeFile;
 
-    public static final String QRCODE_FORMAT = "PNG";
+    public static final String BARCODE_FORMAT = "PNG";
     public static final int SIZE_QRCODE = 200;
     public static final String QR_CODE_PATH_SYSTEM_PROPERTY = "src/main/resources/static/images/qr_code_check_in/";
 
@@ -25,6 +25,9 @@ public class QRCodeCheckIn {
         initFilePath();
     }
 
+    public String getQrCodeData() {
+        return qrCodeData;
+    }
 
     public File initQRCodeFile() {
         if (qrCodePath == null)

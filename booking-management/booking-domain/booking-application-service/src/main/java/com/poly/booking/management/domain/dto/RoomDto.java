@@ -6,12 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoomDto {
-    private Integer roomId;
+    private String roomId;
     private String roomNumber;
     private Long roomTypeId;
     private String roomTypeName; // Added for convenience in DTO

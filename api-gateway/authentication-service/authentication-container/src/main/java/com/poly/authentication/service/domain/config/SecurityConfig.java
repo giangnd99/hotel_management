@@ -46,6 +46,7 @@ public class SecurityConfig {
             // Nếu có các phương thức HTTP cụ thể cho public URLs, bạn có thể thêm:
             // HttpMethod.GET + "/some-public-read-only-endpoint",
             // "/some-other-public-path"
+
     };
 
     @Bean

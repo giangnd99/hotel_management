@@ -1,5 +1,6 @@
 package com.poly.booking.management.domain.outbox.model.notification;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.poly.domain.valueobject.EBookingStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,12 +11,12 @@ import java.util.UUID;
 
 /**
  * BookingNotifiEventPayload - Event Payload for Notification Processing
- * 
+ * <p>
  * CHỨC NĂNG:
  * - Chứa dữ liệu event cho notification processing
  * - Được sử dụng trong outbox pattern để serialize/deserialize notification data
  * - Track thông tin check-in và notification status
- * 
+ * <p>
  * CÁC TRƯỜNG DỮ LIỆU:
  * - id: Unique identifier cho event
  * - bookingId: Booking identifier
@@ -30,19 +31,18 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 public class BookingNotifiEventPayload {
+    @JsonProperty
     private UUID id;
+    @JsonProperty
     private UUID bookingId;
+    @JsonProperty
     private UUID customerId;
-    private String qrCode;
+    @JsonProperty
     private LocalDateTime checkInTime;
-    private NotificationStatus notificationStatus;
+    @JsonProperty
+    private String notificationStatus;
+    @JsonProperty
     private EBookingStatus bookingStatus;
+    @JsonProperty
     private LocalDateTime createdAt;
-    
-    /**
-     * NotificationStatus - Enum định nghĩa trạng thái notification
-     */
-    public enum NotificationStatus {
-        SUCCESS, FAILED, PENDING, CANCELLED
-    }
 } 

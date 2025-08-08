@@ -5,6 +5,8 @@ import com.poly.booking.management.domain.entity.Customer;
 import com.poly.booking.management.domain.event.CustomerCreatedEvent;
 import com.poly.booking.management.domain.exception.BookingDomainException;
 import com.poly.booking.management.domain.mapper.BookingDataMapper;
+import com.poly.booking.management.domain.mapper.CustomerDataMapper;
+import com.poly.booking.management.domain.mapper.PaymentDataMapper;
 import com.poly.booking.management.domain.port.in.message.listener.customer.CustomerMessageListener;
 import com.poly.booking.management.domain.port.out.repository.CustomerRepository;
 import com.poly.booking.management.domain.service.CustomerDomainService;
@@ -17,23 +19,23 @@ import java.util.UUID;
 
 /**
  * CustomerListenerImpl - Implementation of Customer Message Listener
- * 
+ * <p>
  * CHỨC NĂNG CHÍNH:
  * - Xử lý customer events từ Kafka messages
  * - Tích hợp với Event Driven Architecture
  * - Quản lý customer lifecycle trong booking system
- * 
+ * <p>
  * EVENT DRIVEN FEATURES:
  * - CustomerCreatedEvent: Xử lý khi customer được tạo mới
  * - CustomerUpdatedEvent: Xử lý khi customer được cập nhật
  * - CustomerDeletedEvent: Xử lý khi customer bị xóa
- * 
+ * <p>
  * CLEAN CODE PRINCIPLES:
  * - Single Responsibility: Chỉ xử lý customer events
  * - Dependency Injection: Sử dụng constructor injection
  * - Error Handling: Comprehensive exception handling
  * - Logging: Detailed logging cho monitoring
- * 
+ * <p>
  * TRANSACTIONAL BEHAVIOR:
  * - @Transactional để đảm bảo data consistency
  * - Rollback tự động khi có exception
@@ -46,27 +48,27 @@ public class CustomerListenerImpl implements CustomerMessageListener {
 
     // ==================== DEPENDENCIES ====================
 
-    private final BookingDataMapper bookingDataMapper;
+    private final CustomerDataMapper customerDataMapper;
+    private final PaymentDataMapper paymentDataMapper;
     private final CustomerRepository customerRepository;
-    private final CustomerDomainService customerDomainService;
 
     // ==================== EVENT HANDLING METHODS ====================
 
     /**
      * Xử lý Customer Created Event
-     * 
+     * <p>
      * EVENT FLOW:
      * 1. Nhận CustomerCreatedMessageResponse từ Kafka
      * 2. Validate và transform thành Customer entity
      * 3. Lưu customer vào database
      * 4. Publish CustomerCreatedEvent
      * 5. Log kết quả xử lý
-     * 
+     * <p>
      * ERROR HANDLING:
      * - Validate customer data trước khi lưu
      * - Throw BookingDomainException nếu có lỗi
      * - Rollback transaction tự động
-     * 
+     *
      * @param customerCreatedEvent CustomerCreatedMessageResponse từ Kafka
      */
     @Override
@@ -86,7 +88,7 @@ public class CustomerListenerImpl implements CustomerMessageListener {
             }
 
             // Step 3: Transform message to domain entity
-            Customer customer = bookingDataMapper.customerCreatedEventToCustomer(customerCreatedEvent);
+            Customer customer = customerDataMapper.customerCreatedEventToCustomer(customerCreatedEvent);
 
             // Step 4: Validate customer entity
             validateCustomerEntity(customer);
@@ -107,7 +109,7 @@ public class CustomerListenerImpl implements CustomerMessageListener {
     // ==================== PRIVATE HELPER METHODS ====================
 
     private Customer saveCustomerToRepo(Customer customer) {
-        Customer savedCustomer = customerDomainService.createCustomer(customer);
+        Customer savedCustomer = customerRepository.save(customer);
         if (customerRepository.save(savedCustomer) == null) {
             log.debug("Failed to saved the customer with id: {} in repository domain application",
                     savedCustomer.getId().getValue());
@@ -119,7 +121,7 @@ public class CustomerListenerImpl implements CustomerMessageListener {
 
     /**
      * Validate CustomerCreatedMessageResponse
-     * 
+     *
      * @param customerCreatedEvent Event cần validate
      * @throws BookingDomainException nếu validation fail
      */
@@ -156,7 +158,7 @@ public class CustomerListenerImpl implements CustomerMessageListener {
 
     /**
      * Validate Customer entity
-     * 
+     *
      * @param customer Customer entity cần validate
      * @throws BookingDomainException nếu validation fail
      */

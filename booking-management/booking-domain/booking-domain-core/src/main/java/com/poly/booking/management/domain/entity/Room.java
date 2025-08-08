@@ -1,6 +1,6 @@
 package com.poly.booking.management.domain.entity;
 
-import com.poly.booking.management.domain.exception.BookingDomainException;
+
 import com.poly.domain.entity.BaseEntity;
 import com.poly.domain.valueobject.ERoomStatus;
 import com.poly.domain.valueobject.Money;
@@ -29,6 +29,10 @@ public class Room extends BaseEntity<RoomId> {
         this.status = ERoomStatus.BOOKED;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Phòng %s (%s)  - Giá: %.2f", roomNumber, basePrice);
+    }
 
     public void setRoomNumber(String roomNumber) {
         this.roomNumber = roomNumber;

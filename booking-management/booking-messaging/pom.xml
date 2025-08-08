@@ -11,4 +11,22 @@
 
     <artifactId>booking-messaging</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>kafka-consumer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>kafka-producer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>kafka-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>booking-application-service</artifactId>
+        </dependency>
+    </dependencies>
 </project>

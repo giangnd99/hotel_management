@@ -1,7 +1,9 @@
 package com.poly.domain.valueobject;
 
-public class RoomId extends BaseId<Integer> {
-    public RoomId(Integer id) {
+import java.util.UUID;
+
+public class RoomId extends BaseId<UUID> {
+    public RoomId(UUID id) {
         super(id);
     }
 }

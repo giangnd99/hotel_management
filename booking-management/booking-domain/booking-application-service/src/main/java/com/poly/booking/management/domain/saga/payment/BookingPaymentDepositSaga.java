@@ -3,9 +3,7 @@ package com.poly.booking.management.domain.saga.payment;
 import com.poly.booking.management.domain.dto.message.PaymentMessageResponse;
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.event.BookingDepositedEvent;
-import com.poly.booking.management.domain.event.BookingPaidEvent;
 import com.poly.booking.management.domain.exception.BookingDomainException;
-import com.poly.booking.management.domain.mapper.BookingDataMapper;
 import com.poly.booking.management.domain.mapper.RoomDataMapper;
 import com.poly.booking.management.domain.outbox.model.room.BookingRoomOutboxMessage;
 import com.poly.booking.management.domain.outbox.model.payment.BookingPaymentOutboxMessage;
@@ -64,7 +62,7 @@ import java.util.UUID;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class BookingPaymentSaga implements SagaStep<PaymentMessageResponse> {
+public class BookingPaymentDepositSaga implements SagaStep<PaymentMessageResponse> {
 
     // ==================== DEPENDENCIES ====================
 
@@ -103,7 +101,7 @@ public class BookingPaymentSaga implements SagaStep<PaymentMessageResponse> {
     @Override
     @Transactional
     public void process(PaymentMessageResponse paymentResponse) {
-        log.info("Processing payment for saga id: {}", paymentResponse.getSagaId());
+        log.info("Processing deposit payment for saga id: {}", paymentResponse.getSagaId());
 
         // Step 1: Validate outbox message to prevent duplicate processing
         BookingPaymentOutboxMessage outboxMessage = validateAndGetPaymentOutboxMessage(paymentResponse);
