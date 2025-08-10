@@ -4,6 +4,7 @@ import com.poly.domain.entity.AggregateRoot;
 import com.poly.domain.valueobject.PaymentMethod;
 import com.poly.domain.valueobject.PaymentStatus;
 import com.poly.paymentdomain.model.entity.value_object.*;
+import com.poly.paymentdomain.model.exception.DomainException;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -32,5 +33,35 @@ public class Payment extends AggregateRoot<PaymentId> {
         this.createdAt = createdAt;
         this.referenceCode = referenceCode;
         this.paymentTransactionType = paymentTransactionType;
+    }
+
+    public boolean setStatus(PaymentStatus paymentStatus) {
+        if (paymentStatus == null) {
+            throw new DomainException("Payment status cannot be null");
+        }
+        if (paymentStatus == this.paymentStatus) {
+            throw new DomainException("Payment status already set");
+        }
+        if (paymentStatus != this.paymentStatus && paymentStatus == PaymentStatus.PENDING) {
+            this.paymentStatus = paymentStatus;
+            return true;
+        }
+        if (paymentStatus != this.paymentStatus && paymentStatus == PaymentStatus.COMPLETED) {
+            this.paymentStatus = paymentStatus;
+            return true;
+        }
+        if (paymentStatus != this.paymentStatus && paymentStatus == PaymentStatus.CANCELLED) {
+            this.paymentStatus = paymentStatus;
+            return true;
+        }
+        if (paymentStatus != this.paymentStatus && paymentStatus == PaymentStatus.FAILED) {
+            this.paymentStatus = paymentStatus;
+            return true;
+        }
+        if (paymentStatus != this.paymentStatus && paymentStatus == PaymentStatus.EXPIRED) {
+            this.paymentStatus = paymentStatus;
+            return true;
+        }
+        return false;
     }
 }

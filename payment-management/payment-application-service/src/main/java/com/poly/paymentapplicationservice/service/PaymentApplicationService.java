@@ -76,32 +76,41 @@ public class PaymentApplicationService implements PaymentUsecase {
         // 1) Nhận webhook từ payos
         // 2) Lấy orderCode(reference code)
         // 3) Tìm payment từ orderCode
-        // 4) Check status của payment đó đã là COMPLETE hay FAILED -> Nếu đã là COMPLETE thì return
+        // 4) Check status của payment đó đã là COMPLETE hay FAILED -> Nếu đã là COMPLETE thì return status, paymentId, bookingId, orderCode
         // 5) Check xem payment transaction là gì DEPOSIT, INVOICE, SERVICE, REFUND, OTHER
         // 6) Nếu là:
         // 6.1) DEPOSIT -> Check trạng thái PayOS trả về là true hay false -> Chuyển status thành COMPLETE hay FAILED
-        // 6.2) INVOICE -> Check trạng thái
-        Payment payment = paymentRepository.findByReferenceCode(command.getReferenceCode()).orElseThrow();
+        // 6.2) INVOICE -> Check trạng thái -> Sửa
+        // 6.3) SERVICE -> Check trạng thái -> Sửa
+        Optional<Payment> payment = paymentRepository.findByReferenceCode(command.getReferenceCode());
 
-        if (payment.isPaid()) {
-            log.info("Webhook đã xử lý giao dịch này rồi: PaymentId %s ".formatted(payment.getPaymentStatus().getValue()));
+        if (payment.isPresent()) {
+            log.info("Webhook đã xử lý giao dịch này rồi: PaymentId %s ".formatted(payment.get().getId()));
             return;
         }
 
-        String status = command.getPaymentStatus().getValue();
-        LocalDateTime dateTime = command.getTransactionDateTime();
-
-        // Xử lý theo transaction type
-        switch (payment.getPaymentTransactionType().getValue()) {
-            case "DEPOSIT" -> handleDeposit(payment, status, dateTime);
-            case "INVOICE_PAYMENT", "OTHER" -> handleInvoicePayment(payment, status, dateTime);
+        switch (payment.get().getPaymentTransactionType()) {
+            case DEPOSIT -> {
+                payment.get().setStatus(command.getPaymentStatus());
+                break;
+            }
+            case INVOICE -> {
+                payment.get().setStatus(command.getPaymentStatus());
+                break;
+            }
+            case REFUND -> {
+                payment.get().setStatus(command.getPaymentStatus());
+                break;
+            }
+            case OTHER -> {
+                payment.get().setStatus(command.getPaymentStatus());
+                break;
+            }
             default -> {
-                log.warn("Không hỗ trợ transaction type: {}", payment.getPaymentTransactionType());
-                return;
+                payment.get().setStatus(PaymentStatus.FAILED);
             }
         }
-
-        paymentRepository.updatePayment(payment);
+        paymentRepository.update(payment.get());
     }
 
 ////-------------------
