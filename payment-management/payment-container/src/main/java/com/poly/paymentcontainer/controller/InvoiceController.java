@@ -1,10 +1,10 @@
 package com.poly.paymentcontainer.controller;
 
-import com.poly.paymentapplicationservice.command.CreateInvoiceCommand;
-import com.poly.paymentapplicationservice.command.CreateInvoiceItemCommand;
+import com.poly.paymentapplicationservice.dto.command.invoice.CreateInvoiceCommand;
+import com.poly.paymentapplicationservice.dto.command.CreateInvoiceItemCommand;
 import com.poly.paymentapplicationservice.port.input.InvoiceUsecase;
 import com.poly.paymentcontainer.dto.invoice.CreateInvoiceRequest;
-import com.poly.paymentdomain.model.entity.valueobject.ServiceType;
+import com.poly.paymentdomain.model.entity.valueobject2.ServiceType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

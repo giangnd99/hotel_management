@@ -3,17 +3,14 @@ package com.poly.paymentdataaccess.repository.impl;
 import com.poly.paymentdataaccess.entity.PaymentEntity;
 import com.poly.paymentdataaccess.mapper.PaymentMapper;
 import com.poly.paymentdataaccess.repository.PaymentJpaRepository;
-import com.poly.paymentdataaccess.share.PaymentStatusEntity;
 import com.poly.paymentdataaccess.share.PaymentTransactionTypeEntity;
 import com.poly.paymentdomain.model.entity.Payment;
-import com.poly.paymentdomain.model.entity.valueobject.PaymentTransactionType;
+import com.poly.paymentdomain.model.entity.value_object.PaymentTransactionType;
 import com.poly.paymentdomain.output.PaymentRepository;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

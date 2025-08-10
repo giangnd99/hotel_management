@@ -7,5 +7,5 @@ public abstract class DomainException extends RuntimeException {
     public DomainException(String message, Throwable cause) {
         super(message, cause);
     }
-    public abstract String getErrorCode();
+//    public abstract String getErrorCode();
 }

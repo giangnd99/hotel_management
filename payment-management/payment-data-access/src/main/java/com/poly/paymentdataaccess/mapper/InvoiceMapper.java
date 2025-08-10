@@ -5,8 +5,8 @@ import com.poly.paymentdataaccess.entity.InvoiceEntity;
 import com.poly.paymentdataaccess.entity.InvoiceItemEntity;
 import com.poly.paymentdataaccess.share.InvoiceStatusEntity;
 import com.poly.paymentdomain.model.entity.Invoice;
-import com.poly.paymentdomain.model.entity.InvoiceItem;
-import com.poly.paymentdomain.model.entity.valueobject.*;
+import com.poly.paymentdomain.model.entity.InvoiceBooking;
+import com.poly.paymentdomain.model.entity.value_object.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class InvoiceMapper {
 
     public static Invoice toDomain(InvoiceEntity entity, List<InvoiceItemEntity> itemEntities) {
-        List<InvoiceItem> items = itemEntities.stream()
+        List<InvoiceBooking> items = itemEntities.stream()
                 .map(InvoiceItemMapper::toDomain)
                 .collect(Collectors.toList());
         return Invoice.builder()

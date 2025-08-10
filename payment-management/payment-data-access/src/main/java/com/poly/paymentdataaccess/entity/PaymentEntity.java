@@ -3,9 +3,6 @@ package com.poly.paymentdataaccess.entity;
 import com.poly.paymentdataaccess.share.PaymentMethodEntity;
 import com.poly.paymentdataaccess.share.PaymentStatusEntity;
 import com.poly.paymentdataaccess.share.PaymentTransactionTypeEntity;
-import com.poly.paymentdomain.model.entity.valueobject.PaymentMethod;
-import com.poly.paymentdomain.model.entity.valueobject.PaymentStatus;
-import com.poly.paymentdomain.model.entity.valueobject.PaymentTransactionType;
 import jakarta.persistence.*;
 import lombok.*;
 

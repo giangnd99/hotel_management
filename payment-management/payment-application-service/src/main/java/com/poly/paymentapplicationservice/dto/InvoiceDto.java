@@ -1,9 +1,6 @@
 package com.poly.paymentapplicationservice.dto;
 
-import com.poly.domain.valueobject.InvoiceId;
-import com.poly.paymentapplicationservice.command.CreateInvoiceItemCommand;
-import com.poly.paymentdomain.model.entity.Invoice;
-import com.poly.paymentdomain.model.entity.valueobject.InvoiceStatus;
+import com.poly.paymentdomain.model.entity.value_object.InvoiceStatus;
 import lombok.Getter;
 import lombok.Setter;
 

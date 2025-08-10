@@ -5,7 +5,6 @@ import com.poly.paymentapplicationservice.port.input.PaymentUsecase;
 import com.poly.paymentapplicationservice.port.output.PaymentGateway;
 import com.poly.paymentapplicationservice.service.InvoiceApplicationService;
 import com.poly.paymentapplicationservice.service.PaymentApplicationService;
-import com.poly.paymentdomain.output.InvoiceItemRepository;
 import com.poly.paymentdomain.output.InvoiceRepository;
 import com.poly.paymentdomain.output.PaymentRepository;
 import org.springframework.boot.autoconfigure.domain.EntityScan;

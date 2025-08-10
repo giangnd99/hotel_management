@@ -1,7 +1,6 @@
 package com.poly.paymentdataaccess.entity;
 
 import com.poly.paymentdataaccess.share.InvoiceStatusEntity;
-import com.poly.paymentdomain.model.entity.valueobject.InvoiceStatus;
 import jakarta.persistence.*;
 import lombok.*;
 

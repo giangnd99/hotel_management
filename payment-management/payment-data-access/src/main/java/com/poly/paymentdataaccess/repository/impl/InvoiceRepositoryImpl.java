@@ -7,12 +7,11 @@ import com.poly.paymentdataaccess.mapper.InvoiceMapper;
 import com.poly.paymentdataaccess.repository.InvoiceItemJpaRepository;
 import com.poly.paymentdataaccess.repository.InvoiceJpaRepository;
 import com.poly.paymentdomain.model.entity.Invoice;
-import com.poly.paymentdomain.model.entity.InvoiceItem;
+import com.poly.paymentdomain.model.entity.InvoiceBooking;
 import com.poly.paymentdomain.output.InvoiceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,7 +41,7 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
 
 
     @Override
-    public Invoice updateInvoice(Invoice invoice, List<InvoiceItem> items) {
+    public Invoice updateInvoice(Invoice invoice, List<InvoiceBooking> items) {
         var invoiceEntity = InvoiceMapper.toEntity(invoice);
         var savedInvoiceEntity = invoiceJpaRepository.save(invoiceEntity);
 

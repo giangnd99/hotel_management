@@ -6,7 +6,8 @@ import com.poly.paymentdataaccess.share.PaymentMethodEntity;
 import com.poly.paymentdataaccess.share.PaymentStatusEntity;
 import com.poly.paymentdataaccess.share.PaymentTransactionTypeEntity;
 import com.poly.paymentdomain.model.entity.Payment;
-import com.poly.paymentdomain.model.entity.valueobject.*;
+import com.poly.paymentdomain.model.entity.value_object.*;
+import com.poly.paymentdomain.model.entity.valueobject2.*;
 
 import java.util.UUID;
 

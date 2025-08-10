@@ -2,8 +2,9 @@ package com.poly.paymentdomain;
 
 import com.poly.domain.valueobject.InvoiceId;
 import com.poly.paymentdomain.model.entity.Invoice;
-import com.poly.paymentdomain.model.entity.InvoiceItem;
-import com.poly.paymentdomain.model.entity.valueobject.*;
+import com.poly.paymentdomain.model.entity.InvoiceBooking;
+import com.poly.paymentdomain.model.entity.value_object.*;
+import com.poly.paymentdomain.model.entity.valueobject2.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,8 +22,8 @@ class InvoiceTest {
 
     private final Money tax = Money.from(BigDecimal.valueOf(0.08));
 
-    private List<InvoiceItem> itemList = Arrays.asList(
-            InvoiceItem.builder()
+    private List<InvoiceBooking> itemList = Arrays.asList(
+            InvoiceBooking.builder()
                     .serviceId(ServiceId.from(UUID.randomUUID()))
                     .description(Description.from("Test Invoice 1"))
                     .serviceType(new ServiceType(ServiceType.Status.FOOD))
@@ -31,7 +32,7 @@ class InvoiceTest {
                     .usedAt(LocalDateTime.now())
                     .note(Description.from("Khách khó tính như quỷ"))
                     .build(),
-            InvoiceItem.builder()
+            InvoiceBooking.builder()
                     .serviceId(ServiceId.from(UUID.randomUUID()))
                     .description(Description.from("Test Invoice 2"))
                     .serviceType(new ServiceType(ServiceType.Status.FOOD))
@@ -40,7 +41,7 @@ class InvoiceTest {
                     .usedAt(LocalDateTime.now())
                     .note(Description.from("Khách khó tính như quỷ"))
                     .build(),
-            InvoiceItem.builder()
+            InvoiceBooking.builder()
                     .serviceId(ServiceId.from(UUID.randomUUID()))
                     .description(Description.from("Test Invoice 3"))
                     .serviceType(new ServiceType(ServiceType.Status.FOOD))
@@ -51,7 +52,7 @@ class InvoiceTest {
                     .build()
     );
 
-    private Invoice sampleInvoice(List<InvoiceItem> items) {
+    private Invoice sampleInvoice(List<InvoiceBooking> items) {
         return Invoice.builder()
                 .id(InvoiceId.generate())
                 .bookingId(BookingId.from(UUID.randomUUID()))
@@ -63,8 +64,8 @@ class InvoiceTest {
                 .build();
     }
 
-    public InvoiceItem sampleInvoiceItem(UUID serviceId, String description, ServiceType serviceType, Integer quantity, BigDecimal unitPrice, String note) {
-        return InvoiceItem.builder()
+    public InvoiceBooking sampleInvoiceItem(UUID serviceId, String description, ServiceType serviceType, Integer quantity, BigDecimal unitPrice, String note) {
+        return InvoiceBooking.builder()
                 .serviceId(ServiceId.from(serviceId))
                 .description(Description.from(description))
                 .serviceType(serviceType)
@@ -91,7 +92,7 @@ class InvoiceTest {
 
     @Test
     void shouldAddItem_ShouldUpdateSubTotalAndTotal() {
-        List <InvoiceItem> items = new ArrayList<InvoiceItem>();
+        List <InvoiceBooking> items = new ArrayList<InvoiceBooking>();
         var invoice = sampleInvoice(items);
         invoice.addItem(
                 sampleInvoiceItem(UUID.randomUUID(),
@@ -108,7 +109,7 @@ class InvoiceTest {
 
     @Test
     void removeItem_shouldUpdateSubTotalAndTotal() {
-        List <InvoiceItem> items = new ArrayList<InvoiceItem>();
+        List <InvoiceBooking> items = new ArrayList<InvoiceBooking>();
         var invoice = sampleInvoice(items);
         var item1 = sampleInvoiceItem(UUID.randomUUID(),
                 "Des test 1",
@@ -133,7 +134,7 @@ class InvoiceTest {
 
     @Test
     void payWithExactAmount_shouldHaveZeroChange() {
-        List <InvoiceItem> items = new ArrayList<InvoiceItem>();
+        List <InvoiceBooking> items = new ArrayList<InvoiceBooking>();
         var invoice = sampleInvoice(items);
         var item1 = sampleInvoiceItem(UUID.randomUUID(),
                 "Des test 1",
@@ -151,7 +152,7 @@ class InvoiceTest {
 
     @Test
     void payWithExcessAmount_shouldCalculateChange() {
-        List <InvoiceItem> items = new ArrayList<InvoiceItem>();
+        List <InvoiceBooking> items = new ArrayList<InvoiceBooking>();
         var invoice = sampleInvoice(items);
         var item1 = sampleInvoiceItem(UUID.randomUUID(),
                 "Des test 1",
@@ -173,7 +174,7 @@ class InvoiceTest {
 
     @Test
     void payWithInsufficientAmount_shouldNotMarkAsPaid() {
-        List <InvoiceItem> items = new ArrayList<InvoiceItem>();
+        List <InvoiceBooking> items = new ArrayList<InvoiceBooking>();
         var invoice = sampleInvoice(items);
         var item1 = sampleInvoiceItem(UUID.randomUUID(),
                 "Des test 1",

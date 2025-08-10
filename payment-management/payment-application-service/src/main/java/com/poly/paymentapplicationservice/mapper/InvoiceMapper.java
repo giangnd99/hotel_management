@@ -1,13 +1,16 @@
 package com.poly.paymentapplicationservice.mapper;
 
-import com.poly.paymentapplicationservice.command.CreateInvoiceItemCommand;
+import com.poly.paymentapplicationservice.dto.command.CreateInvoiceItemCommand;
 import com.poly.paymentapplicationservice.dto.InvoiceDto;
 import com.poly.paymentapplicationservice.dto.InvoiceItemDto;
 import com.poly.paymentapplicationservice.dto.PaymentDto;
 import com.poly.paymentdomain.model.entity.Invoice;
-import com.poly.paymentdomain.model.entity.InvoiceItem;
+import com.poly.paymentdomain.model.entity.InvoiceBooking;
 import com.poly.paymentdomain.model.entity.Payment;
-import com.poly.paymentdomain.model.entity.valueobject.*;
+import com.poly.paymentdomain.model.entity.value_object.Description;
+import com.poly.paymentdomain.model.entity.value_object.Money;
+import com.poly.paymentdomain.model.entity.value_object.Quantity;
+import com.poly.paymentdomain.model.entity.value_object.ServiceId;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,7 +39,7 @@ public class InvoiceMapper {
         return invoiceDto;
     }
 
-    private static List<InvoiceItemDto> toInvoiceItemDtos(List<InvoiceItem> items) {
+    private static List<InvoiceItemDto> toInvoiceItemDtos(List<InvoiceBooking> items) {
         return items.stream()
                 .map(item -> InvoiceItemDto.builder()
                         .serviceId(item.getServiceId().getValue())
@@ -63,9 +66,9 @@ public class InvoiceMapper {
                 .collect(Collectors.toList());
     }
 
-    public static List<InvoiceItem> mapToInvoiceItems(List<CreateInvoiceItemCommand> commandList) {
+    public static List<InvoiceBooking> mapToInvoiceItems(List<CreateInvoiceItemCommand> commandList) {
         return commandList.stream()
-                .map(cmd -> InvoiceItem.builder()
+                .map(cmd -> InvoiceBooking.builder()
                         .serviceId(ServiceId.from(cmd.getServiceId()))
                         .description(Description.from(cmd.getDescription()))
                         .serviceType(cmd.getServiceType())

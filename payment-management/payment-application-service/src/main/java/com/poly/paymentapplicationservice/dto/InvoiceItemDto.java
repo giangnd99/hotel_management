@@ -1,6 +1,6 @@
 package com.poly.paymentapplicationservice.dto;
 
-import com.poly.paymentdomain.model.entity.valueobject.*;
+import com.poly.paymentdomain.model.entity.valueobject2.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

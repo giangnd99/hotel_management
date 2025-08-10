@@ -2,15 +2,19 @@ package com.poly.paymentdataaccess.mapper;
 
 import com.poly.paymentdataaccess.entity.InvoiceItemEntity;
 import com.poly.paymentdataaccess.share.ServiceTypeEntity;
-import com.poly.paymentdomain.model.entity.InvoiceItem;
-import com.poly.paymentdomain.model.entity.valueobject.*;
+import com.poly.paymentdomain.model.entity.InvoiceBooking;
+import com.poly.paymentdomain.model.entity.value_object.Description;
+import com.poly.paymentdomain.model.entity.value_object.Money;
+import com.poly.paymentdomain.model.entity.value_object.Quantity;
+import com.poly.paymentdomain.model.entity.value_object.ServiceId;
+import com.poly.paymentdomain.model.entity.valueobject2.*;
 
 import java.util.UUID;
 
 public class InvoiceItemMapper {
 
-    public static InvoiceItem toDomain(InvoiceItemEntity entity) {
-        return InvoiceItem.builder()
+    public static InvoiceBooking toDomain(InvoiceItemEntity entity) {
+        return InvoiceBooking.builder()
                 .serviceId(ServiceId.from(entity.getServiceId()))
                 .description(Description.from(entity.getDescription()))
                 .serviceType(ServiceType.from(entity.getServiceTypeEntity().toString()))
@@ -21,7 +25,7 @@ public class InvoiceItemMapper {
                 .build();
     }
 
-    public static InvoiceItemEntity toEntity(InvoiceItem item, UUID invoiceId) {
+    public static InvoiceItemEntity toEntity(InvoiceBooking item, UUID invoiceId) {
         return InvoiceItemEntity.builder()
                 .id(UUID.randomUUID())
                 .invoiceId(invoiceId)

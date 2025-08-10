@@ -1,7 +1,6 @@
 package com.poly.paymentdataaccess.entity;
 
 import com.poly.paymentdataaccess.share.ServiceTypeEntity;
-import com.poly.paymentdomain.model.entity.valueobject.ServiceType;
 import jakarta.persistence.*;
 import lombok.*;
 

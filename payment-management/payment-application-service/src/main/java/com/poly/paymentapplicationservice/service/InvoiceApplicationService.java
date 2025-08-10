@@ -1,24 +1,24 @@
 package com.poly.paymentapplicationservice.service;
 
 import com.poly.domain.valueobject.InvoiceId;
-import com.poly.paymentapplicationservice.command.CreateInvoiceCommand;
-import com.poly.paymentapplicationservice.command.RetrieveInvoiceCommand;
 import com.poly.paymentapplicationservice.dto.InvoiceDto;
 import com.poly.paymentapplicationservice.dto.PageResult;
+import com.poly.paymentapplicationservice.dto.command.RetrieveInvoiceCommand;
+import com.poly.paymentapplicationservice.dto.command.invoice.CreateInvoiceCommand;
+import com.poly.paymentapplicationservice.dto.command.invoice.InvoiceItemCommand;
+import com.poly.paymentapplicationservice.dto.result.CreateInvoiceResult;
+import com.poly.paymentapplicationservice.exception.ApplicationServiceException;
 import com.poly.paymentapplicationservice.mapper.InvoiceMapper;
 import com.poly.paymentapplicationservice.port.input.InvoiceUsecase;
 import com.poly.paymentdomain.model.entity.Invoice;
-import com.poly.paymentdomain.model.entity.InvoiceItem;
-import com.poly.paymentdomain.model.entity.Payment;
-import com.poly.paymentdomain.model.entity.valueobject.*;
-import com.poly.paymentdomain.output.InvoiceItemRepository;
+import com.poly.paymentdomain.model.entity.value_object.InvoiceStatus;
+import com.poly.paymentdomain.model.entity.value_object.Money;
 import com.poly.paymentdomain.output.InvoiceRepository;
 import com.poly.paymentdomain.output.PaymentRepository;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-
-import static java.util.stream.Collectors.toList;
 
 public class InvoiceApplicationService implements InvoiceUsecase {
 
@@ -32,50 +32,71 @@ public class InvoiceApplicationService implements InvoiceUsecase {
         this.paymentRepository = paymentRepository;
     }
 
+//    @Override
+//    public InvoiceDto makeInvoice(CreateInvoiceCommand command) {
+//
+//        validateCommand(command);
+//
+//        Optional<Invoice> existingInvoice = invoiceRepository.findByBookingId(command.getBookingId());
+//
+//        if (existingInvoice.isPresent()) {
+//            throw new RuntimeException("Hóa đơn đã tồn tại cho bookingId: " + existingInvoice.get().getBookingId());
+//        }
+//
+//        List<InvoiceBooking> invoiceBookings = InvoiceMapper.mapToInvoiceItems(command.getInvoiceItemCommandList());
+//
+//        Payment bookingDeposit = paymentRepository.findByBookingIdAndType(command.getBookingId(), PaymentTransactionType.DEPOSIT).orElseThrow();
+//
+//        Invoice invoiceCreated = Invoice.builder()
+//                .id(InvoiceId.generate())
+//                .bookingId(BookingId.from(command.getBookingId()))
+//                .customerId(CustomerId.fromValue(command.getCustomerId()))
+//                .createdBy(StaffId.from(command.getStaffIdCreated()))
+//                .paidAmount(bookingDeposit.getAmount())
+//                .status(InvoiceStatus.PENDING)
+//                .taxRate(Money.from(command.getTaxAmount()))
+//                .voucherId(VoucherId.from(command.getVoucherId()))
+//                .discountAmount(Money.from(command.getAmountVoucher()))
+//                .items(invoiceBookings)
+//                .build();
+//
+//        bookingDeposit.setInvoiceId(invoiceCreated.getId());
+//        invoiceRepository.createInvoice(invoiceCreated);
+//        paymentRepository.updatePayment(bookingDeposit);
+//        return InvoiceMapper.from(invoiceCreated);
+//    }
+//
+//    @Override
+//    public InvoiceDto updateInvoice(CreateInvoiceCommand command) {
+//        return null;
+//    }
     @Override
-    public InvoiceDto makeInvoice(CreateInvoiceCommand command) {
+    public CreateInvoiceResult createInvoice(CreateInvoiceCommand cmd) {
 
-        validateCommand(command);
-
-        Optional<Invoice> existingInvoice = invoiceRepository.findByBookingId(command.getBookingId());
-
-        if (existingInvoice.isPresent()) {
-            throw new RuntimeException("Hóa đơn đã tồn tại cho bookingId: " + existingInvoice.get().getBookingId());
-        }
-
-        List<InvoiceItem> invoiceItems = InvoiceMapper.mapToInvoiceItems(command.getInvoiceItemCommandList());
-
-        Payment bookingDeposit = paymentRepository.findByBookingIdAndType(command.getBookingId(), PaymentTransactionType.DEPOSIT).orElseThrow();
-
-        Invoice invoiceCreated = Invoice.builder()
-                .id(InvoiceId.generate())
-                .bookingId(BookingId.from(command.getBookingId()))
-                .customerId(CustomerId.fromValue(command.getCustomerId()))
-                .createdBy(StaffId.from(command.getStaffIdCreated()))
-                .paidAmount(bookingDeposit.getAmount())
-                .status(InvoiceStatus.PENDING)
-                .taxRate(Money.from(command.getTaxAmount()))
-                .voucherId(VoucherId.from(command.getVoucherId()))
-                .discountAmount(Money.from(command.getAmountVoucher()))
-                .items(invoiceItems)
+        Invoice invoice = Invoice.builder()
+                .invoiceId(InvoiceId.generate())
+                .customerId(cmd.getCustomerId())
+                .createdBy(cmd.getCreatedBy())
+                .invoiceStatus(InvoiceStatus.DRAFT)
+                .subTotal(calculateSubTotal(cmd.getItems()))
+                .totalAmount(calculateTotal(cmd.getItems()))
+                .createdAt(LocalDateTime.now())
+                .note(cmd.getNote())
                 .build();
 
-        bookingDeposit.setInvoiceId(invoiceCreated.getId());
-        invoiceRepository.createInvoice(invoiceCreated);
-        paymentRepository.updatePayment(bookingDeposit);
-        return InvoiceMapper.from(invoiceCreated);
-    }
+        invoiceRepository.save(invoice);
 
-    @Override
-    public InvoiceDto updateInvoice(CreateInvoiceCommand command) {
-        return null;
+        return CreateInvoiceResult.builder()
+                .invoiceId(invoice.getId().getValue())
+                .invoiceStatus(invoice.getInvoiceStatus().name())
+                .build();
     }
 
     @Override
     public PageResult<InvoiceDto> retrieveInvoices(RetrieveInvoiceCommand command) {
         if (command.getCustomerId() == null) throw new RuntimeException("CustomerId không được để trống.");
 
-        List<Invoice> invoiceList = invoiceRepository.findAll(command.getCustomerId());
+        List<Invoice> invoiceList = invoiceRepository.findAllById(command.getCustomerId());
         int totalItems = invoiceList.size();
         int fromIndex = Math.min(command.getPage() * command.getSize(), totalItems);
         int toIndex = Math.min(fromIndex + command.getSize(), totalItems);
@@ -86,9 +107,15 @@ public class InvoiceApplicationService implements InvoiceUsecase {
         return new PageResult<>(pageItems, command.getPage(), command.getSize(), totalItems);
     }
 
-    private void validateCommand(CreateInvoiceCommand command) {
-        if (command.getBookingId() == null) throw new RuntimeException("BookingId không được để trống.");
-        if (command.getInvoiceItemCommandList() == null) throw new RuntimeException("Invoice Item không được trống.");
-        if (command.getCustomerId() == null) throw new RuntimeException("CustomerId không được để trống.");
+    private Money calculateSubTotal(List<InvoiceItemCommand> items) {
+        if (items == null || items.isEmpty()) throw new ApplicationServiceException("Invoice items cannot be empty");
+        return items.stream()
+                .map(i -> i.getUnitPrice().multiply(BigDecimal.valueOf(i.getQuantity().getValue())))
+                .reduce(Money.zero(), Money::add);
+    }
+
+    private Money calculateTotal(List<InvoiceItemCommand> items) {
+        // Ở đây có thể cộng thêm thuế, phí nếu cần
+        return calculateSubTotal(items);
     }
 }
