@@ -16,5 +16,6 @@
         <module>room-container</module>
         <module>room-data-access</module>
         <module>room-application</module>
+        <module>room-messaging</module>
     </modules>
 </project>

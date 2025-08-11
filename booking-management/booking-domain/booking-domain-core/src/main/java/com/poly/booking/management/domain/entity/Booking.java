@@ -22,12 +22,8 @@ public class Booking extends AggregateRoot<BookingId> {
     private TrackingId trackingId;
     private DateCustom actualCheckInDate;
     private DateCustom actualCheckOutDate;
-    private RestaurantId restaurantId;
-    private ServiceId serviceId;
     private Money totalPrice;
     private String upgradeSuggestion;
-    private QRCodeCheckIn qrCodeCheckIn;
-    private Order order;
     private List<Room> rooms;
     private List<String> failureMessages;
     public static final String FAILURE_MESSAGE_DELIMITER = ",";
@@ -41,12 +37,8 @@ public class Booking extends AggregateRoot<BookingId> {
         trackingId = builder.trackingId;
         setActualCheckInDate(builder.actualCheckInDate);
         setActualCheckOutDate(builder.actualCheckOutDate);
-        restaurantId = builder.restaurantId;
-        serviceId = builder.serviceId;
         setTotalPrice(builder.totalPrice);
         upgradeSuggestion = builder.upgradeSuggestion;
-        qrCodeCheckIn = builder.qrCodeCheckIn;
-        setOrder(builder.order);
         rooms = builder.rooms;
         failureMessages = builder.failureMessages;
     }
@@ -74,7 +66,6 @@ public class Booking extends AggregateRoot<BookingId> {
      */
     public void confirmBooking() {
         validateStatusForConfirmDeposit();
-        qrCodeCheckIn = initQrCode();
         status = EBookingStatus.CONFIRMED;
     }
 
@@ -133,12 +124,6 @@ public class Booking extends AggregateRoot<BookingId> {
         return String.format(
                 "Mã booking: %s|Tên khách hàng: %s|Ngày check-in: %s|Ngày check-out: %s|Phòng đã đặt: %s|Tổng tiền: %s",
                 bookingId, customerName, checkInDateStr, checkOutDateStr, roomsListString, totalPriceStr);
-    }
-
-    private QRCodeCheckIn initQrCode() {
-        qrCodeCheckIn = new QRCodeCheckIn();
-        qrCodeCheckIn.initQRCode(formatData());
-        return qrCodeCheckIn;
     }
 
     private void validateDateRange() {
@@ -212,18 +197,11 @@ public class Booking extends AggregateRoot<BookingId> {
         validateTotalPrice();
     }
 
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
     public void updateAndValidateTotalPrice() {
         Money currentTotalRoomPrice = rooms != null ? rooms.stream()
                 .map(Room::getBasePrice)
                 .reduce(Money.ZERO, Money::add) : Money.ZERO;
-        Money currentTotalOrderPrice = order != null ? order.getTotalCost() : Money.ZERO;
-        this.totalPrice = currentTotalRoomPrice
-                .add(currentTotalOrderPrice);
+        this.totalPrice = currentTotalRoomPrice;
         validateTotalPrice();
     }
 
@@ -281,8 +259,6 @@ public class Booking extends AggregateRoot<BookingId> {
         private ServiceId serviceId;
         private Money totalPrice;
         private String upgradeSuggestion;
-        private QRCodeCheckIn qrCodeCheckIn;
-        private Order order;
         private List<Room> rooms;
         private List<String> failureMessages;
 
@@ -333,16 +309,6 @@ public class Booking extends AggregateRoot<BookingId> {
             return this;
         }
 
-        public Builder restaurantId(RestaurantId val) {
-            restaurantId = val;
-            return this;
-        }
-
-        public Builder serviceId(ServiceId val) {
-            serviceId = val;
-            return this;
-        }
-
         public Builder totalPrice(Money val) {
             totalPrice = val;
             return this;
@@ -350,16 +316,6 @@ public class Booking extends AggregateRoot<BookingId> {
 
         public Builder upgradeSuggestion(String val) {
             upgradeSuggestion = val;
-            return this;
-        }
-
-        public Builder qrCodeCheckIn(QRCodeCheckIn val) {
-            qrCodeCheckIn = val;
-            return this;
-        }
-
-        public Builder order(Order val) {
-            order = val;
             return this;
         }
 

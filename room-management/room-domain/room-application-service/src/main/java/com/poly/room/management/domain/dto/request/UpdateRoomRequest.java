@@ -8,13 +8,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateRoomRequest {
     @NotNull(message = "Room ID is required for update")
-    private Integer roomId;
+    private UUID roomId;
 
     @NotBlank(message = "New room number is required")
     private String roomNumber;

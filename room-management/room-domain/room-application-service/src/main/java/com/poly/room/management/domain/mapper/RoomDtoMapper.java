@@ -44,7 +44,7 @@ public class RoomDtoMapper {
                 .roomNumber(room.getRoomNumber())
                 .floor(room.getFloor())
                 .roomType(roomTypeMapper.toResponse(room.getRoomType()))
-                .roomStatus(room.getRoomStatus().getRoomStatus())
+                .roomStatus(room.getRoomStatus())
                 .build();
     }
 }

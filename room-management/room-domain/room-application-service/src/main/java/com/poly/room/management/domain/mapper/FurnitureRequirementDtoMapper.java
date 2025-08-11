@@ -22,16 +22,10 @@ public class FurnitureRequirementDtoMapper {
     private final RoomTypeRepository roomTypeRepository;
 
     public FurnitureRequirement toEntity(FurnitureRequirementRequest request) {
-        FurnitureRequirementId id = new FurnitureRequirementId(new CompositeKey<>(
-                new FurnitureId(request.getFurnitureId()),
-                new RoomTypeId(request.getRoomTypeId())));
-        Furniture fur = furnitureRepository.findById(request.getFurnitureId()).get();
-        RoomType roomType = roomTypeRepository.findById(request.getRoomTypeId()).get();
 
         return FurnitureRequirement.Builder.builder()
-                .id(id)
-                .furniture(fur)
-                .roomTypeId(roomType.getId())
+                .furnitureId(new FurnitureId(request.getFurnitureId()))
+                .roomTypeId(new RoomTypeId(request.getRoomTypeId()))
                 .requiredQuantity(request.getQuantity())
                 .build();
     }
@@ -41,7 +35,7 @@ public class FurnitureRequirementDtoMapper {
                 .furnitureId(furnitureRequirement.getFurniture().getId().getValue())
                 .furnitureInventoryItemId(furnitureRequirement.getFurniture().getInventoryItemId().getValue())
                 .requiredQuantity(furnitureRequirement.getRequiredQuantity())
-                .roomTypeId(new RoomTypeId(furnitureRequirement.getId().getValue().getId2().getValue()).getValue())
+                .roomTypeId(furnitureRequirement.getFurniture().getId().getValue())
                 .build();
     }
 }

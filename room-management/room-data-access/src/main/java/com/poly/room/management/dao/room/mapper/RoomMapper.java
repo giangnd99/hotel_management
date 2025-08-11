@@ -1,16 +1,13 @@
 package com.poly.room.management.dao.room.mapper;
 
 
-import com.poly.domain.valueobject.ERoomStatus;
-import com.poly.domain.valueobject.Money;
+import com.poly.domain.valueobject.RoomStatus;
 import com.poly.domain.valueobject.RoomId;
 import com.poly.room.management.dao.room.entity.RoomEntity;
 import com.poly.room.management.dao.room.entity.RoomTypeFurnitureEntity;
 import com.poly.room.management.dao.room.repository.RoomTypeFurnitureJpaRepository;
 import com.poly.room.management.domain.entity.Room;
-import com.poly.room.management.domain.entity.RoomStatus;
 import com.poly.room.management.domain.entity.RoomType;
-import com.poly.room.management.domain.valueobject.RoomTypeId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +29,7 @@ public class RoomMapper {
         return Room.Builder.builder()
                 .id(new RoomId(entity.getRoomId()))
                 .roomType(roomType)
-                .roomStatus(new RoomStatus(ERoomStatus.valueOf(entity.getStatus().getStatusName())))
+                .roomStatus(new RoomStatus(RoomStatus.valueOf(entity.getStatus().getStatusName())))
                 .roomNumber(entity.getRoomNumber())
                 .floor(entity.getFloor())
                 .build();

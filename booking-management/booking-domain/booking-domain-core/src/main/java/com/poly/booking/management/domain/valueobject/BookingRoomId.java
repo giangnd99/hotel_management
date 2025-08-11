@@ -1,13 +1,12 @@
 package com.poly.booking.management.domain.valueobject;
 
-import com.poly.domain.valueobject.BookingId;
-import com.poly.domain.valueobject.CompositeId;
-import com.poly.domain.valueobject.CompositeKey;
-import com.poly.domain.valueobject.RoomId;
+import com.poly.domain.valueobject.*;
 
-public class BookingRoomId extends CompositeId<BookingId, RoomId> {
+import java.util.UUID;
 
-    public BookingRoomId(CompositeKey<BookingId, RoomId> value) {
+public class BookingRoomId extends BaseId<UUID> {
+
+    public BookingRoomId(UUID value) {
         super(value);
     }
 }
