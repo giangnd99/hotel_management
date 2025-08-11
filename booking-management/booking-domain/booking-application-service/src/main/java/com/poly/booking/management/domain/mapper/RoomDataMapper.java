@@ -3,9 +3,11 @@ package com.poly.booking.management.domain.mapper;
 import com.poly.booking.management.domain.dto.RoomDto;
 import com.poly.booking.management.domain.entity.Room;
 import com.poly.booking.management.domain.event.BookingDepositedEvent;
-import com.poly.booking.management.domain.event.BookingEvent;
-import com.poly.booking.management.domain.outbox.model.room.BookingReservedEventPayload;
-import com.poly.booking.management.domain.outbox.model.room.BookingRoomEventPayload;
+import com.poly.booking.management.domain.event.CheckInEvent;
+import com.poly.booking.management.domain.event.CheckOutEvent;
+import com.poly.booking.management.domain.outbox.payload.PaymentEventPayload;
+import com.poly.booking.management.domain.outbox.payload.ReservedEventPayload;
+import com.poly.booking.management.domain.outbox.payload.RoomEventPayload;
 import com.poly.domain.valueobject.Money;
 import com.poly.domain.valueobject.ReservationStatus;
 import com.poly.domain.valueobject.RoomId;
@@ -47,11 +49,10 @@ public class RoomDataMapper {
      * @param domainEvent BookingPaidEvent từ domain
      * @return BookingReservedEventPayload cho Kafka message
      */
-    public BookingReservedEventPayload bookingDepositedEventToBookingReservedEventPayload(BookingDepositedEvent domainEvent) {
-        return BookingReservedEventPayload.builder()
+    public ReservedEventPayload bookingDepositedEventToBookingReservedEventPayload(BookingDepositedEvent domainEvent) {
+        return ReservedEventPayload.builder()
                 .bookingId(domainEvent.getBooking().getId().getValue().toString())
                 .customerId(domainEvent.getBooking().getCustomerId().getValue().toString())
-                .bookingRoomId(domainEvent.getBooking().getId().getValue().toString())
                 .price(domainEvent.getBooking().getTotalPrice().getAmount())
                 .createdAt(domainEvent.getCreatedAt().getValue())
                 .roomBookingStatus(ReservationStatus.PENDING.toString())
@@ -70,12 +71,25 @@ public class RoomDataMapper {
      * @param room Room entity
      * @return BookingRoomEventPayload
      */
-    private BookingRoomEventPayload roomToBookingRoomEventPayload(Room room) {
-        return new BookingRoomEventPayload(
+    private RoomEventPayload roomToBookingRoomEventPayload(Room room) {
+        return new RoomEventPayload(
                 room.getId().getValue().toString(),
                 room.getRoomNumber(),
                 room.getBasePrice().getAmount(),
                 LocalDateTime.now()
         );
+    }
+
+    public ReservedEventPayload bookingCheckInEventToRoomBookedEventPayload(CheckInEvent domainEvent) {
+        return ReservedEventPayload.builder()
+                .bookingId(domainEvent.getBooking().getId().getValue().toString())
+                .roomBookingStatus(ReservationStatus.SUCCESS.name())
+                .rooms(domainEvent.getBooking().getRooms().stream()
+                        .map(this::roomToBookingRoomEventPayload)
+                        .collect(Collectors.toList()))
+                .price(domainEvent.getBooking().getTotalPrice().getAmount())
+                .customerId(domainEvent.getBooking().getCustomerId().getValue().toString())
+                .createdAt(domainEvent.getCreatedAt().getValue())
+                .build();
     }
 }

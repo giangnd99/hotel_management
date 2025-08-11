@@ -3,7 +3,6 @@ package com.poly.room.management.dao.room.adapter;
 import com.poly.room.management.dao.room.entity.RoomStatusEntity;
 import com.poly.room.management.dao.room.mapper.RoomStatusMapper;
 import com.poly.room.management.dao.room.repository.RoomStatusJpaRepository;
-import com.poly.room.management.domain.entity.RoomStatus;
 import com.poly.room.management.domain.exception.RoomDomainException;
 import com.poly.room.management.domain.port.out.repository.RoomStatusRepository;
 import lombok.RequiredArgsConstructor;

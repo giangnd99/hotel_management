@@ -60,8 +60,16 @@ public class InvoiceApplicationService implements InvoiceUsecase {
                 .items(invoiceItems)
                 .build();
 
+
+
         bookingDeposit.setInvoiceId(invoiceCreated.getId());
         invoiceRepository.createInvoice(invoiceCreated);
+        //validate booking .. invoice status = processing
+        //validate service nullable .. invoice status = processing
+        //validate order nullable .. invoice status = processing
+        //processing payment invoice status == processing , payment status == pending -> make payment
+        //Receive payment response invoice status == processing  , payment status == success --> update invoice == success
+        //Receive payment response invoice status == processing  , payment status == failed --> update invoice == rollback/ retry, invoice status === cancelling
         paymentRepository.updatePayment(bookingDeposit);
         return InvoiceMapper.from(invoiceCreated);
     }

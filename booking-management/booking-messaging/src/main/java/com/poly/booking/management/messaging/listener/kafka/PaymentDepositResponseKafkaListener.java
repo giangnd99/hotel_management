@@ -63,7 +63,7 @@ public class PaymentDepositResponseKafkaListener implements KafkaConsumer<Bookin
      * @param offsets Kafka message offsets
      */
     @Override
-    @KafkaListener(topics = "${kafka.topic.payment.response}", groupId = "${kafka.group.id}")
+    @KafkaListener(topics = "${booking-service.payment-response-topic-name}", id = "${kafka-consumer-config.payment-consumer-group-id}")
     public void receive(@Payload List<BookingPaymentResponseAvro> messages,
                         @Header(KafkaHeaders.RECEIVED_KEY) List<String> keys,
                         @Header(KafkaHeaders.RECEIVED_PARTITION) List<Integer> partitions,

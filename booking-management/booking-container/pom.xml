@@ -44,6 +44,10 @@
             <groupId>com.poly</groupId>
             <artifactId>booking-data-access</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>booking-messaging</artifactId>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
