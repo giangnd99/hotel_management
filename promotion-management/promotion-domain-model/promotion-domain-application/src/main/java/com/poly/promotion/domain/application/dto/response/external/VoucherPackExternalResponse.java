@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VoucherPackExternalResponse {
     String description;
-    Double discountAmount;
+    BigDecimal discountAmount;
     String validRange;
     Long requiredPoints;
     Integer quantity;

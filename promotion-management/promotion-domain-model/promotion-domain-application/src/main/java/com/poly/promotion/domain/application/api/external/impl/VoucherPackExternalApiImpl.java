@@ -3,7 +3,6 @@ package com.poly.promotion.domain.application.api.external.impl;
 import com.poly.promotion.domain.application.api.external.VoucherPackExternalApi;
 import com.poly.promotion.domain.application.dto.response.external.VoucherPackExternalResponse;
 import com.poly.promotion.domain.application.service.VoucherPackService;
-import com.poly.promotion.domain.application.service.impl.VoucherPackServiceImpl;
 import com.poly.promotion.domain.core.valueobject.VoucherPackStatus;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -15,8 +14,8 @@ public class VoucherPackExternalApiImpl implements VoucherPackExternalApi {
 
     VoucherPackService voucherPackService;
 
-    public VoucherPackExternalApiImpl() {
-        this.voucherPackService = new VoucherPackServiceImpl();
+    public VoucherPackExternalApiImpl(VoucherPackService voucherPackService) {
+        this.voucherPackService = voucherPackService;
     }
 
     @Override

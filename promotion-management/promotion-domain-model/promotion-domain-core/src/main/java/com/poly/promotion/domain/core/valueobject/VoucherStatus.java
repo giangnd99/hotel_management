@@ -9,20 +9,33 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public enum VoucherStatus {
-    PENDING(0, "pending"),
-    REDEEMED(1, "redeemed"),
-    EXPIRED(2, "expired"),
-    USED(3, "used");
+    PENDING("pending"),
+    REDEEMED("redeemed"),
+    EXPIRED("expired"),
+    USED("used");
 
-    Integer statusCode;
     String statusName;
 
-    public static VoucherStatus fromStatusCode(Integer statusCode) {
-        for (VoucherStatus status : values()) {
-            if (status.getStatusCode().equals(statusCode)) {
-                return status;
+    public static VoucherStatus fromString(String status) {
+        for (VoucherStatus voucherStatus : values()) {
+            if (voucherStatus.getStatusName().equalsIgnoreCase(status)) {
+                return voucherStatus;
             }
         }
-        throw new IllegalArgumentException("Invalid VoucherStatus code: " + statusCode);
+        throw new IllegalArgumentException("Unknown VoucherStatus: " + status);
+    }
+
+    public boolean canTransitionTo(VoucherStatus newStatus) {
+        switch (this) {
+            case PENDING:
+                return newStatus == REDEEMED || newStatus == EXPIRED;
+            case REDEEMED:
+                return newStatus == USED || newStatus == EXPIRED;
+            case EXPIRED:
+            case USED:
+                return false; // Terminal states
+            default:
+                return false;
+        }
     }
 }

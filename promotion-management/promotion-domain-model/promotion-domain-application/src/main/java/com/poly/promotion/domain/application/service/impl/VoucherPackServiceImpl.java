@@ -17,7 +17,7 @@ public class VoucherPackServiceImpl implements VoucherPackService {
 
     @Override
     public VoucherPack getVoucherPackById(Long voucherPackId) {
-        if(voucherPackRepository.existsById(voucherPackId)){
+        if(!voucherPackRepository.existsById(voucherPackId)){
             throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
         }
         return voucherPackRepository.getVoucherPackById(voucherPackId);
@@ -66,7 +66,7 @@ public class VoucherPackServiceImpl implements VoucherPackService {
 
     @Override
     public void closeVoucherPack(Long voucherPackId) {
-        if(voucherPackRepository.existsById(voucherPackId)){
+        if(!voucherPackRepository.existsById(voucherPackId)){
             throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
         }
         if(voucherPackRepository.isOfStatus(voucherPackId, VoucherPackStatus.CLOSED) ||
@@ -78,7 +78,7 @@ public class VoucherPackServiceImpl implements VoucherPackService {
 
     @Override
     public void reduceVoucherPackStockAfterRedeem(Long voucherPackId, Integer quantity) {
-        if(voucherPackRepository.existsById(voucherPackId)){
+        if(!voucherPackRepository.existsById(voucherPackId)){
             throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
         }
         if(!voucherPackRepository.isOfStatus(voucherPackId, VoucherPackStatus.PUBLISHED)){

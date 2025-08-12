@@ -9,6 +9,7 @@ import com.poly.promotion.domain.core.valueobject.VoucherPackId;
 import com.poly.promotion.domain.core.valueobject.VoucherStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,11 +17,13 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import com.poly.promotion.domain.core.exception.PromotionDomainException;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Voucher extends BaseEntity<VoucherId> {
     CustomerId customerId;
@@ -31,21 +34,10 @@ public class Voucher extends BaseEntity<VoucherId> {
     LocalDateTime validTo;
     VoucherStatus voucherStatus;
 
-    private Voucher(Builder builder) {
-        super.setId(builder.id);
-        setCustomerId(builder.customerId);
-        setVoucherPackId(builder.voucherPackId);
-        setVoucherCode(builder.voucherCode);
-        setDiscount(builder.discount);
-        setRedeemedAt(builder.redeemedAt);
-        setValidTo(builder.validTo);
-        setVoucherStatus(builder.voucherStatus);
-    }
-
     public static Voucher initRedeem(String customerId, Long voucherPackId, Discount discount, DateRange voucherValidRange) {
         return Voucher.builder()
-                .customerId(customerId)
-                .voucherPackId(voucherPackId)
+                .customerId(new CustomerId(UUID.fromString(customerId)))
+                .voucherPackId(new VoucherPackId(voucherPackId))
                 .voucherCode(UUID.randomUUID().toString()) // Should use a more proper voucher code generation strategy
                 .discount(discount)
                 .redeemedAt(LocalDateTime.now())
@@ -54,65 +46,30 @@ public class Voucher extends BaseEntity<VoucherId> {
                 .build();
     }
 
-    public static Builder builder() {
-        return new Builder();
+    // Domain validation methods
+    public boolean isValid() {
+        return voucherStatus == VoucherStatus.REDEEMED && 
+               LocalDateTime.now().isBefore(validTo);
     }
 
-    public static final class Builder {
-        private VoucherId id;
-        private CustomerId customerId;
-        private VoucherPackId voucherPackId;
-        private String voucherCode;
-        private Discount discount;
-        private LocalDateTime redeemedAt;
-        private LocalDateTime validTo;
-        private VoucherStatus voucherStatus;
+    public boolean canUse() {
+        return voucherStatus == VoucherStatus.REDEEMED && isValid();
+    }
 
-        private Builder() {
+    public void use() {
+        if (!canUse()) {
+            throw new PromotionDomainException("Voucher cannot be used. Status: " + voucherStatus + ", Valid: " + isValid());
         }
+        this.voucherStatus = VoucherStatus.USED;
+    }
 
-        public Builder id(String val) {
-            id = new VoucherId(UUID.fromString(val));
-            return this;
+    public void expire() {
+        if (voucherStatus == VoucherStatus.REDEEMED && LocalDateTime.now().isAfter(validTo)) {
+            this.voucherStatus = VoucherStatus.EXPIRED;
         }
+    }
 
-        public Builder customerId(String val) {
-            customerId = new CustomerId(UUID.fromString(val));
-            return this;
-        }
-
-        public Builder voucherPackId(Long val) {
-            voucherPackId = new VoucherPackId(val);
-            return this;
-        }
-
-        public Builder voucherCode(String val) {
-            voucherCode = val;
-            return this;
-        }
-
-        public Builder discount(Discount val) {
-            discount = val;
-            return this;
-        }
-
-        public Builder redeemedAt(LocalDateTime val) {
-            redeemedAt = val;
-            return this;
-        }
-
-        public Builder validTo(LocalDateTime val) {
-            validTo = val;
-            return this;
-        }
-
-        public Builder voucherStatus(VoucherStatus val) {
-            voucherStatus = val;
-            return this;
-        }
-
-        public Voucher build() {
-            return new Voucher(this);
-        }
+    public boolean isExpired() {
+        return LocalDateTime.now().isAfter(validTo);
     }
 }

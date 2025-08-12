@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 public class VoucherPackInternalResponse {
     Long id;
     String description;
-    Double discountAmount;
+    BigDecimal discountAmount;
     String validRange;
     Long requiredPoints;
     Integer quantity;
