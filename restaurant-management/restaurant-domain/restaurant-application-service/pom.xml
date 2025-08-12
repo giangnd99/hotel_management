@@ -27,6 +27,11 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
             <version>${openfeign.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>restaurant-messaging</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>
