@@ -3,9 +3,11 @@ package com.poly.promotion.domain.application.service.impl;
 import com.poly.promotion.domain.application.service.VoucherPackService;
 import com.poly.promotion.domain.application.spi.repository.VoucherPackRepository;
 import com.poly.promotion.domain.core.entity.VoucherPack;
+import com.poly.promotion.domain.core.exception.PromotionDomainException;
 import com.poly.promotion.domain.core.valueobject.VoucherPackStatus;
 import lombok.NonNull;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,46 +18,60 @@ public class VoucherPackServiceImpl implements VoucherPackService {
     @Override
     public VoucherPack getVoucherPackById(Long voucherPackId) {
         if(!voucherPackRepository.existsById(voucherPackId)){
-            throw new IllegalArgumentException("Voucher pack with ID " + voucherPackId + " does not exist.");
+            throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
         }
         return voucherPackRepository.getVoucherPackById(voucherPackId);
     }
 
     @Override
-    public List<VoucherPack> getAllVoucherPacksWithStatus(@NonNull Integer status) {
-        if(Objects.isNull(VoucherPackStatus.fromStatusCode(status))){
-            throw new IllegalArgumentException("Invalid voucher pack status code");
-        }
+    public List<VoucherPack> getAllVoucherPacksWithStatus(VoucherPackStatus... status) {
         return voucherPackRepository.getAllVoucherPacksWithStatus(status);
     }
 
     @Override
-    public VoucherPack createVoucherPack(@NonNull VoucherPack voucherPack) {
+    public VoucherPack createVoucherPack(@NonNull VoucherPack voucherPack, String createdBy) {
         if (!Objects.isNull(voucherPack.getId())) {
-            throw new IllegalArgumentException("Creating a new voucher pack should not have an ID.");
+            throw new PromotionDomainException("Creating a new voucher pack should not have an ID.");
         }
+        if (createdBy == null || createdBy.isEmpty()) {
+            throw new PromotionDomainException("Created by field cannot be null or empty.");
+        }
+        voucherPack.setCreatedBy(createdBy);
+        voucherPack.setCreatedAt(LocalDateTime.now());
+        voucherPack.setStatus(VoucherPackStatus.PENDING);
         return voucherPackRepository.createVoucherPack(voucherPack);
     }
 
     @Override
-    public VoucherPack updatePendingVoucherPack(Long voucherPackId, VoucherPack voucherPack) {
+    public VoucherPack updatePendingVoucherPack(Long voucherPackId, VoucherPack updatingVoucherPack, String updatedBy) {
         if(!voucherPackRepository.existsById(voucherPackId)){
-            throw new IllegalArgumentException("Voucher pack with ID " + voucherPackId + " does not exist.");
+            throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
         }
-        if(!voucherPackRepository.isOfStatus(voucherPackId, VoucherPackStatus.PENDING.getStatusCode())){
-            throw new IllegalArgumentException("Voucher pack with ID " + voucherPackId + " is not in PENDING status.");
+        if(!voucherPackRepository.isOfStatus(voucherPackId, VoucherPackStatus.PENDING)){
+            throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " is not in PENDING status.");
         }
-        return voucherPackRepository.updatePendingVoucherPack(voucherPackId, voucherPack);
+        VoucherPack updatedVoucherPack = voucherPackRepository.getVoucherPackById(voucherPackId);
+        if(updatingVoucherPack.getDescription() != null) updatedVoucherPack.setDescription(updatingVoucherPack.getDescription());
+        if(updatingVoucherPack.getQuantity() != null) updatedVoucherPack.setQuantity(updatingVoucherPack.getQuantity());
+        if(updatingVoucherPack.getDiscountAmount() != null) updatedVoucherPack.setDiscountAmount(updatingVoucherPack.getDiscountAmount());
+        if(updatingVoucherPack.getRequiredPoints() != null) updatedVoucherPack.setRequiredPoints(updatingVoucherPack.getRequiredPoints());
+        if(updatingVoucherPack.getVoucherValidRange() != null) updatedVoucherPack.setVoucherValidRange(updatingVoucherPack.getVoucherValidRange());
+        if(updatingVoucherPack.getPackValidFrom() != null) updatedVoucherPack.setPackValidFrom(updatingVoucherPack.getPackValidFrom());
+        if(updatingVoucherPack.getPackValidTo() != null) updatedVoucherPack.setPackValidTo(updatingVoucherPack.getPackValidTo());
+        updatedVoucherPack.setUpdatedAt(LocalDateTime.now());
+        updatedVoucherPack.setUpdatedBy(updatedBy);
+
+        return voucherPackRepository.updatePendingVoucherPack(updatedVoucherPack);
     }
 
     @Override
     public void closeVoucherPack(Long voucherPackId) {
         if(!voucherPackRepository.existsById(voucherPackId)){
-            throw new IllegalArgumentException("Voucher pack with ID " + voucherPackId + " does not exist.");
+            throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
         }
-        if(voucherPackRepository.isOfStatus(voucherPackId, VoucherPackStatus.CLOSED.getStatusCode()) ||
-        voucherPackRepository.isOfStatus(voucherPackId, VoucherPackStatus.EXPIRED.getStatusCode())){
-            throw new IllegalArgumentException("Voucher pack with ID " + voucherPackId + " is already closed or expired.");
+        if(voucherPackRepository.isOfStatus(voucherPackId, VoucherPackStatus.CLOSED) ||
+        voucherPackRepository.isOfStatus(voucherPackId, VoucherPackStatus.EXPIRED)){
+            throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " is already closed or expired.");
         }
         voucherPackRepository.closeVoucherPack(voucherPackId);
     }
@@ -63,15 +79,19 @@ public class VoucherPackServiceImpl implements VoucherPackService {
     @Override
     public void reduceVoucherPackStockAfterRedeem(Long voucherPackId, Integer quantity) {
         if(!voucherPackRepository.existsById(voucherPackId)){
-            throw new IllegalArgumentException("Voucher pack with ID " + voucherPackId + " does not exist.");
+            throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
         }
-        if(!voucherPackRepository.isOfStatus(voucherPackId, VoucherPackStatus.PUBLISHED.getStatusCode())){
-            throw new IllegalArgumentException("Voucher pack with ID " + voucherPackId + " is not in PUBLISHED status.");
+        if(!voucherPackRepository.isOfStatus(voucherPackId, VoucherPackStatus.PUBLISHED)){
+            throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " is not yet published.");
         }
         long currentQuantity = voucherPackRepository.getVoucherPackQuantity(voucherPackId);
         if (currentQuantity < quantity) {
-            throw new IllegalArgumentException("Insufficient stock for voucher pack with ID " + voucherPackId + ". Current stock: " + currentQuantity);
+            throw new PromotionDomainException("Insufficient stock for voucher pack with ID " + voucherPackId + ". Current stock: " + currentQuantity);
         }
         voucherPackRepository.reduceVoucherPackStockAfterRedeem(voucherPackId, quantity);
+        currentQuantity = voucherPackRepository.getVoucherPackQuantity(voucherPackId);
+        if (currentQuantity <= 0) {
+            voucherPackRepository.closeVoucherPack(voucherPackId);
+        }
     }
 }
