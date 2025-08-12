@@ -57,7 +57,7 @@ public class CustomerResponseKafkaListener implements KafkaConsumer<CustomerMode
      * @param offsets Kafka message offsets
      */
     @Override
-    @KafkaListener(topics = "${kafka.topic.customer.response}", groupId = "${kafka.group.id}")
+    @KafkaListener(topics = "${booking-service.customer-topic-name}", id = "${kafka-consumer-config.customer-group-id}")
     public void receive(@Payload List<CustomerModelAvro> messages,
                         @Header(KafkaHeaders.RECEIVED_KEY) List<String> keys,
                         @Header(KafkaHeaders.RECEIVED_PARTITION) List<Integer> partitions,

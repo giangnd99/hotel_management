@@ -63,7 +63,7 @@ public class RoomApprovalResponseKafkaListener implements KafkaConsumer<BookingR
      * @param offsets Kafka message offsets
      */
     @Override
-    @KafkaListener(topics = "${kafka.topic.room.response}", groupId = "${kafka.group.id}")
+    @KafkaListener(topics = "${booking-service.room-reserve-response-topic-name}", groupId = "${kafka-consumer-config.room-consumer-group-id}")
     public void receive(@Payload List<BookingRoomResponseAvro> messages,
                         @Header(KafkaHeaders.RECEIVED_KEY) List<String> keys,
                         @Header(KafkaHeaders.RECEIVED_PARTITION) List<Integer> partitions,

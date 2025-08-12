@@ -1,6 +1,7 @@
 package com.poly.booking.management.domain.dto.message;
 
 import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.NotificationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,11 +11,11 @@ import java.util.List;
 
 /**
  * NotificationMessageResponse - DTO for QR Check-in Notification Processing
- * 
+ * <p>
  * CHỨC NĂNG:
  * - Chứa thông tin response từ notification service sau khi xử lý QR check-in
  * - Được sử dụng trong Saga pattern để xử lý check-in flow
- * 
+ * <p>
  * CÁC TRƯỜNG DỮ LIỆU:
  * - id: Unique identifier cho notification message
  * - sagaId: Saga identifier để track transaction
@@ -39,11 +40,4 @@ public class NotificationMessageResponse {
     private NotificationStatus notificationStatus;
     private EBookingStatus bookingStatus;
     private List<String> failureMessages;
-    
-    /**
-     * NotificationStatus - Enum định nghĩa trạng thái xử lý notification
-     */
-    public enum NotificationStatus {
-        SUCCESS, FAILED, PENDING, CANCELLED
-    }
 }

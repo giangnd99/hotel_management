@@ -5,9 +5,9 @@ import com.poly.booking.management.domain.dto.message.PaymentMessageResponse;
 import com.poly.booking.management.domain.dto.message.RoomMessageResponse;
 import com.poly.booking.management.domain.entity.Room;
 import com.poly.booking.management.domain.kafka.model.*;
-import com.poly.booking.management.domain.outbox.model.payment.BookingPaymentEventPayload;
-import com.poly.booking.management.domain.outbox.model.room.BookingRoomEventPayload;
-import com.poly.booking.management.domain.outbox.model.notification.BookingNotifiEventPayload;
+import com.poly.booking.management.domain.outbox.payload.PaymentEventPayload;
+import com.poly.booking.management.domain.outbox.payload.RoomEventPayload;
+import com.poly.booking.management.domain.outbox.payload.NotifiEventPayload;
 import com.poly.domain.valueobject.*;
 import com.poly.domain.valueobject.PaymentStatus;
 import com.poly.booking.management.domain.kafka.model.NotificationStatus;
@@ -60,66 +60,65 @@ public class BookingMessageDataMapper {
                 new Room(new RoomId(UUID.fromString(roomAvro.getId())),
                         roomAvro.getRoomNumber(),
                         Money.from(roomAvro.getBasePrice()),
-                        ERoomStatus.valueOf(roomAvro.getStatus()))
+                        RoomStatus.valueOf(roomAvro.getStatus()))
         ).toList();
     }
 
-    public BookingPaymentRequestAvro bookingPaymentEventToPaymentRequestAvroModel(String sagaId, BookingPaymentEventPayload bookingPaymentEventPayload) {
+    public BookingPaymentRequestAvro bookingPaymentEventToPaymentRequestAvroModel(String sagaId, PaymentEventPayload paymentEventPayload) {
         return BookingPaymentRequestAvro.newBuilder()
                 .setId(UUID.randomUUID().toString())
                 .setSagaId(UUID.fromString(sagaId).toString())
-                .setCustomerId(bookingPaymentEventPayload.getCustomerId())
-                .setPaymentBookingStatus(PaymentBookingStatus.valueOf(bookingPaymentEventPayload.getPaymentBookingStatus()))
-                .setPrice(bookingPaymentEventPayload.getPrice())
-                .setBookingId(bookingPaymentEventPayload.getBookingId())
-                .setCreatedAt(Instant.from(bookingPaymentEventPayload.getCreatedAt()))
+                .setCustomerId(paymentEventPayload.getCustomerId())
+                .setPaymentBookingStatus(PaymentBookingStatus.valueOf(paymentEventPayload.getPaymentBookingStatus()))
+                .setPrice(paymentEventPayload.getPrice())
+                .setBookingId(paymentEventPayload.getBookingId())
+                .setCreatedAt(Instant.from(paymentEventPayload.getCreatedAt()))
                 .build();
     }
 
     /**
      * Chuyển đổi BookingRoomEventPayload thành BookingRoomRequestAvro
-     * 
+     * <p>
      * Mục đích: Tạo Avro model để gửi yêu cầu đặt phòng đến room service
      * Sử dụng: Trong RoomRequestKafkaPublisher để gửi message đến Kafka
-     * 
-     * @param sagaId Saga ID để theo dõi quy trình
-     * @param bookingRoomEventPayload Thông tin phòng cần đặt
+     *
+     * @param sagaId           Saga ID để theo dõi quy trình
+     * @param roomEventPayload Thông tin phòng cần đặt
      * @return BookingRoomRequestAvro model
      */
-    public BookingRoomRequestAvro bookingRoomEventToRoomRequestAvroModel(String sagaId, BookingRoomEventPayload bookingRoomEventPayload) {
+    public BookingRoomRequestAvro bookingRoomEventToRoomRequestAvroModel(String sagaId, RoomEventPayload roomEventPayload) {
         return BookingRoomRequestAvro.newBuilder()
                 .setId(UUID.randomUUID())
                 .setSagaId(UUID.fromString(sagaId))
-                .setBookingId(bookingRoomEventPayload.getRoomId()) // Sử dụng roomId làm bookingId
+                .setBookingId(roomEventPayload.getRoomId()) // Sử dụng roomId làm bookingId
                 .setCreatedAt(Instant.now())
                 .setProcessedAt(null)
                 .setType("ROOM_RESERVATION_REQUEST")
                 .setSagaStatus("STARTED")
                 .setBookingStatus("PENDING")
-                .setPrice(bookingRoomEventPayload.getBasePrice())
+                .setPrice(roomEventPayload.getBasePrice())
                 .build();
     }
 
     /**
      * Chuyển đổi BookingNotifiEventPayload thành NotificationModelAvro
-     * 
+     * <p>
      * Mục đích: Tạo Avro model để gửi thông báo xác nhận booking đến notification service
      * Sử dụng: Trong ConfirmedRequestKafkaPublisher để gửi message đến Kafka
-     * 
-     * @param sagaId Saga ID để theo dõi quy trình
-     * @param bookingNotifiEventPayload Thông tin notification cần gửi
+     *
+     * @param sagaId             Saga ID để theo dõi quy trình
+     * @param notifiEventPayload Thông tin notification cần gửi
      * @return NotificationModelAvro model
      */
-    public NotificationModelAvro bookingNotificationEventToNotificationModelAvro(String sagaId, BookingNotifiEventPayload bookingNotifiEventPayload) {
+    public NotificationModelAvro bookingNotificationEventToNotificationModelAvro(String sagaId, NotifiEventPayload notifiEventPayload) {
         return NotificationModelAvro.newBuilder()
-                .setId(bookingNotifiEventPayload.getId().toString())
+                .setId(notifiEventPayload.getId().toString())
                 .setSagaId(sagaId)
-                .setBookingId(bookingNotifiEventPayload.getBookingId().toString())
-                .setCustomerId(bookingNotifiEventPayload.getCustomerId().toString())
-                .setQrCode(bookingNotifiEventPayload.getQrCode())
-                .setCheckInTime(bookingNotifiEventPayload.getCheckInTime().atZone(java.time.ZoneOffset.UTC).toInstant())
-                .setNotificationStatus(NotificationStatus.valueOf(bookingNotifiEventPayload.getNotificationStatus().name()))
-                .setBookingStatus(bookingNotifiEventPayload.getBookingStatus().toString())
+                .setBookingId(notifiEventPayload.getBookingId().toString())
+                .setCustomerId(notifiEventPayload.getCustomerId().toString())
+                .setCheckInTime(notifiEventPayload.getCheckInTime().atZone(java.time.ZoneOffset.UTC).toInstant())
+                .setNotificationStatus(NotificationStatus.valueOf(notifiEventPayload.getNotificationStatus()))
+                .setBookingStatus(notifiEventPayload.getBookingStatus().toString())
                 .setFailureMessages(new java.util.ArrayList<>()) // Empty list for success case
                 .build();
     }

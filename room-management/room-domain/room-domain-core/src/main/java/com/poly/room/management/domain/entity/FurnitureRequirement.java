@@ -1,13 +1,18 @@
 package com.poly.room.management.domain.entity;
 
 import com.poly.domain.entity.BaseEntity;
+import com.poly.domain.valueobject.Money;
+import com.poly.domain.valueobject.RoomId;
 import com.poly.room.management.domain.exception.RoomDomainException;
+import com.poly.room.management.domain.valueobject.FurnitureId;
 import com.poly.room.management.domain.valueobject.FurnitureRequirementId;
 import com.poly.room.management.domain.valueobject.RoomTypeId;
 
 public class FurnitureRequirement extends BaseEntity<FurnitureRequirementId> {
 
     private Furniture furniture;
+    private FurnitureId furnitureId;
+    private RoomType roomType;
     private int requiredQuantity;
     private RoomTypeId roomTypeId;
     public static final int DEFAULT_QUANTITY = 1;
@@ -16,15 +21,15 @@ public class FurnitureRequirement extends BaseEntity<FurnitureRequirementId> {
         this.furniture = furniture;
         this.requiredQuantity = requirementQuantity;
         this.roomTypeId = roomTypeId;
-        validate();
     }
 
     private FurnitureRequirement(Builder builder) {
         super.setId(builder.id);
         setFurniture(builder.furniture);
+        furnitureId = builder.furnitureId;
+        roomType = builder.roomType;
         setRequiredQuantity(builder.requiredQuantity);
         setRoomTypeId(builder.roomTypeId);
-        validate();
     }
 
     public void validate() {
@@ -73,10 +78,12 @@ public class FurnitureRequirement extends BaseEntity<FurnitureRequirementId> {
     }
 
     public static final class Builder {
-        private FurnitureRequirementId id;
         private Furniture furniture;
+        private FurnitureId furnitureId;
+        private RoomType roomType;
         private int requiredQuantity;
         private RoomTypeId roomTypeId;
+        private FurnitureRequirementId id;
 
         private Builder() {
         }
@@ -87,6 +94,16 @@ public class FurnitureRequirement extends BaseEntity<FurnitureRequirementId> {
 
         public Builder furniture(Furniture val) {
             furniture = val;
+            return this;
+        }
+
+        public Builder furnitureId(FurnitureId val) {
+            furnitureId = val;
+            return this;
+        }
+
+        public Builder roomType(RoomType val) {
+            roomType = val;
             return this;
         }
 
