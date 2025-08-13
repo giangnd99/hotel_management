@@ -1,4 +1,4 @@
-package com.poly.paymentapplicationservice.port.input.ok2;
+package com.poly.paymentapplicationservice.port.input;
 
 import com.poly.paymentapplicationservice.dto.command.ConfirmPaymentCommand;
 

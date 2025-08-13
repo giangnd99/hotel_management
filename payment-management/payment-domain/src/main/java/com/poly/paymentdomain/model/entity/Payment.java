@@ -18,6 +18,7 @@ public class Payment extends AggregateRoot<PaymentId> {
     private PaymentStatus status;
     private Money amount;
     private PaymentMethod method;
+    @Setter
     private LocalDateTime paidAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

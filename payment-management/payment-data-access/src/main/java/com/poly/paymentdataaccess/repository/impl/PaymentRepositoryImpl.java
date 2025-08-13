@@ -31,7 +31,7 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     }
 
     @Override
-    public Optional<Payment> findByOrderCode(String orderCode) {
+    public Optional<Payment> findByOrderCode(long orderCode) {
         Optional<PaymentEntity> paymentEntity = paymentJpaRepository.findByOrderCode(orderCode);
         if (paymentEntity.isPresent()) {
             PaymentEntity paymentEntity1 = paymentEntity.get();

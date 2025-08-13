@@ -1,4 +1,4 @@
-package com.poly.paymentapplicationservice.service.ok2;
+package com.poly.paymentapplicationservice.service;
 
 import com.poly.domain.valueobject.PaymentMethod;
 import com.poly.domain.valueobject.PaymentStatus;
@@ -7,7 +7,7 @@ import com.poly.paymentapplicationservice.dto.command.CreatePaymentDepositComman
 import com.poly.paymentapplicationservice.dto.command.CreatePaymentLinkCommand;
 import com.poly.paymentapplicationservice.dto.result.PaymentLinkResult;
 import com.poly.paymentapplicationservice.exception.ApplicationServiceException;
-import com.poly.paymentapplicationservice.port.input.ok2.CreateDepositPaymentLinkUsecase;
+import com.poly.paymentapplicationservice.port.input.CreateDepositPaymentLinkUsecase;
 import com.poly.paymentapplicationservice.port.output.PaymentGateway;
 import com.poly.paymentapplicationservice.share.CheckoutResponseData;
 import com.poly.paymentapplicationservice.share.ItemData;
@@ -68,7 +68,7 @@ public class CreateDepositPaymentLinkUsecaseImpl implements CreateDepositPayment
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .orderCode(OrderCode.generate())
-                .description(Description.from(command.getDescription()))
+                .description(Description.from("deposit"))
                 .build();
 
         InvoicePayment invoicePayment = InvoicePayment.builder()
@@ -105,7 +105,7 @@ public class CreateDepositPaymentLinkUsecaseImpl implements CreateDepositPayment
         // Lưu lại payment vào cuối để tránh lỗi từ PayOS
         invoicePaymentRepository.save(invoicePayment);
         paymentRepository.save(payment);
-
+//publish(message)
         // Result trả về: id payment, mã orderCode, link thanh toán , trạng thái
         return result;
     }

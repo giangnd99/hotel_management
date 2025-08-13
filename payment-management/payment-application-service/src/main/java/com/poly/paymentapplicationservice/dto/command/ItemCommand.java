@@ -1,4 +1,4 @@
-package com.poly.paymentapplicationservice.dto.command.ok;
+package com.poly.paymentapplicationservice.dto.command;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +11,6 @@ import java.util.UUID;
 public class ItemCommand {
     private UUID id;
     private String name;
-    private Integer quantity;
     private BigDecimal amount;
+    private Integer quantity;
 }

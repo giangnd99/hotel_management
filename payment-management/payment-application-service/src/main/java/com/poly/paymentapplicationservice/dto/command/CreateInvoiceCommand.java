@@ -1,8 +1,6 @@
-package com.poly.paymentapplicationservice.dto.command.invoice;
+package com.poly.paymentapplicationservice.dto.command;
 
-import com.poly.paymentdomain.model.entity.value_object.CustomerId;
 import com.poly.paymentdomain.model.entity.value_object.Description;
-import com.poly.paymentdomain.model.entity.value_object.StaffId;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,9 +12,9 @@ import java.util.UUID;
 @Setter
 @Builder
 public class CreateInvoiceCommand {
-    private UUID bookingId;
-    private CustomerId customerId;
-    private StaffId staffId;
+    private UUID referenceId;
+    private UUID customerId;
+    private UUID staffId;
     private BigDecimal tax;
     private BigDecimal subTotal;
     private BigDecimal totalAmount;

@@ -1,15 +1,14 @@
-package com.poly.paymentapplicationservice.dto.command.ok;
+package com.poly.paymentapplicationservice.dto.command;
 
 import lombok.Builder;
 import lombok.Getter;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
 @Builder
 public class CreateInvoicePaymentCommand {
     private UUID invoiceId;
-    private UUID voucherId;
-    private BigDecimal amount;
+    private String method;
+    private String description;
 }

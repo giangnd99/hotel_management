@@ -1,10 +1,12 @@
 package com.poly.paymentcontainer.controller;
 
-import com.poly.paymentapplicationservice.dto.command.invoice.CreateInvoiceCommand;
-import com.poly.paymentapplicationservice.port.input.ok.CreateFinalInvoiceUseCase;
+import com.poly.paymentapplicationservice.dto.command.CreateInvoiceCommand;
+import com.poly.paymentapplicationservice.port.input.CreateInvoiceUsecase;
 import com.poly.paymentcontainer.dto.CreateInvoiceRequest;
+import com.poly.paymentdomain.model.entity.value_object.Description;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,14 +16,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class InvoiceController {
 
-//    private final CreateFinalInvoiceUseCase invoiceUseCase;
-//
-//    public ResponseEntity createInvoice(@RequestBody CreateInvoiceRequest createInvoiceRequest) {
-//        CreateInvoiceCommand command = CreateInvoiceCommand.builder()
-//
-//                .build();
-//        return ResponseEntity.ok().body(invoiceUseCase.createInvoice(command));
-//    }
+    private final CreateInvoiceUsecase createInvoiceUsecase;
+
+    @PostMapping("/create")
+    public ResponseEntity createInvoice(@RequestBody CreateInvoiceRequest createInvoiceRequest) {
+        CreateInvoiceCommand command = CreateInvoiceCommand.builder()
+                .referenceId(createInvoiceRequest.getReferenceId())
+                .customerId(createInvoiceRequest.getCustomerId())
+                .staffId(createInvoiceRequest.getStaffId())
+                .tax(createInvoiceRequest.getTax())
+                .subTotal(createInvoiceRequest.getSubTotal())
+                .totalAmount(createInvoiceRequest.getTotalAmount())
+                .note(Description.from(createInvoiceRequest.getNote()))
+                .build();
+        return ResponseEntity.ok().body(createInvoiceUsecase.createInvoice(command));
+    }
 
 //    @PostMapping("/create")
 //    public ResponseEntity createInvoice(@RequestBody CreateInvoiceRequest request) throws Exception {

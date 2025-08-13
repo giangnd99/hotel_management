@@ -14,7 +14,7 @@
 //        this.customerUsecase = customerUsecase;
 //    }
 //
-//    @KafkaListener(topics = "customer-created", groupId = "customer-service-test")
+//    @KafkaListener(topics = "customer-created", id = "customer-service-test")
 //    public void listen(CreateCustomerCommand command) {
 //        customerUsecase.initializeCustomerProfile(command);
 //    }

@@ -60,4 +60,22 @@ public class InvoicePaymentRepositoryImpl implements InvoicePaymentRepository {
     public InvoicePayment remove(InvoicePayment id) {
         return null;
     }
+
+    @Override
+    public Optional<InvoicePayment> findByPaymentId(UUID paymentId) {
+        Optional<InvoicePaymentEntity> entity = invoicePaymentJpaRepository.findByPaymentId(paymentId);
+        if (entity.isPresent()) {
+            return Optional.of(InvoicePaymentMapper.toDomain(entity.get()));
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<InvoicePayment> findByInvoiceId(UUID invoiceId) {
+        Optional<InvoicePaymentEntity> entity = invoicePaymentJpaRepository.findByInvoiceId(invoiceId);
+        if (entity.isPresent()) {
+            return Optional.of(InvoicePaymentMapper.toDomain(entity.get()));
+        }
+        return Optional.empty();
+    }
 }

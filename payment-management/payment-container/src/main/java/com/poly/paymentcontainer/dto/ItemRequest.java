@@ -1,6 +1,6 @@
 package com.poly.paymentcontainer.dto;
 
-import com.poly.paymentapplicationservice.dto.command.ok.ItemCommand;
+import com.poly.paymentapplicationservice.dto.command.ItemCommand;
 import lombok.Getter;
 
 import java.math.BigDecimal;

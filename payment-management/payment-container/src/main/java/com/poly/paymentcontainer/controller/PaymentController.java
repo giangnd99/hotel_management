@@ -1,22 +1,19 @@
     package com.poly.paymentcontainer.controller;
 
-    import com.poly.domain.valueobject.PaymentMethod;
+    import com.poly.paymentapplicationservice.dto.command.ConfirmPaymentCommand;
+    import com.poly.paymentapplicationservice.dto.command.CreateInvoicePaymentCommand;
     import com.poly.paymentapplicationservice.dto.command.CreatePaymentDepositCommand;
-    import com.poly.paymentapplicationservice.dto.command.ok.CreateDepositCommand;
-    import com.poly.paymentapplicationservice.dto.command.ok.CreatePaymentImmediateCommand;
-    import com.poly.paymentapplicationservice.port.input.ok.DepositPaymentLinkUseCase;
-    import com.poly.paymentapplicationservice.port.input.ok.InvoicePaymentLinkUseCase;
-    import com.poly.paymentapplicationservice.port.input.ok.ProcessDirectPaymentUseCase;
-    import com.poly.paymentapplicationservice.port.input.ok2.CreateDepositPaymentLinkUsecase;
+    import com.poly.paymentapplicationservice.port.input.CreateDepositPaymentLinkUsecase;
+    import com.poly.paymentapplicationservice.port.input.CreateInvoicePaymentLinkUsecase;
+    import com.poly.paymentapplicationservice.port.input.ProcessWebhookDataUseCase;
     import com.poly.paymentapplicationservice.share.ItemData;
-    import com.poly.paymentcontainer.dto.CreateDepositRequest;
-    import com.poly.paymentcontainer.dto.CreateProcessDirectRequest;
-    import com.poly.paymentcontainer.dto.ItemRequest;
+    import com.poly.paymentcontainer.dto.*;
     import lombok.RequiredArgsConstructor;
     import lombok.extern.slf4j.Slf4j;
     import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.*;
 
+    import java.time.LocalDateTime;
     import java.util.stream.Collectors;
 
     @Slf4j
@@ -26,6 +23,10 @@
     public class PaymentController {
 
         private final CreateDepositPaymentLinkUsecase createDepositPaymentLinkUsecase;
+
+        private final ProcessWebhookDataUseCase  processWebhookDataUseCase;
+
+        private final CreateInvoicePaymentLinkUsecase createInvoicePaymentLinkUsecase;
 
         @PostMapping("/deposit")
         public ResponseEntity createDepositLink(@RequestBody CreateDepositRequest request) throws Exception {
@@ -41,6 +42,24 @@
                     .method("PAYOS")
                     .build();
             return ResponseEntity.ok().body(createDepositPaymentLinkUsecase.createPaymentLinkUseCase(command));
+        }
+
+        @PostMapping("/invoice/online")
+        public ResponseEntity createPaymentInvoiceLink(@RequestBody CreateInvoicePaymentRequest request) throws Exception {
+            CreateInvoicePaymentCommand command = CreateInvoicePaymentCommand.builder().invoiceId(request.getInvoiceId()).build();
+            return ResponseEntity.ok().body(createInvoicePaymentLinkUsecase.createPaymentLinkUseCase(command));
+        }
+
+        @PostMapping("/webhook/payos")
+        public ResponseEntity<Void> handlePayOSWebhook(@RequestBody PayOSWebhookPayloadRequest payload) {
+            ConfirmPaymentCommand command = ConfirmPaymentCommand.builder()
+                    .status(payload.isSuccess())
+                    .referenceCode(Long.parseLong(payload.getData().getOrderCode()))
+                    .amount(payload.getData().getAmount())
+                    .transactionDateTime(LocalDateTime.now())
+                    .build();
+            processWebhookDataUseCase.handleProcessWebhook(command);
+            return ResponseEntity.ok().build();
         }
 
 //        @PostMapping("/service/restaurant/online")

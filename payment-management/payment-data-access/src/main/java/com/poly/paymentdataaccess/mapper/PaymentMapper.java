@@ -39,7 +39,7 @@ public class PaymentMapper {
                 .updatedAt(payment.getUpdatedAt())
                 .orderCode(payment.getOrderCode().getValue())
                 .paymentLink(payment.getPaymentLink())
-                .description(payment.getDescription().getValue())
+                .description(payment.getDescription() != null ? payment.getDescription().getValue() : "empty")
                 .build();
     }
 }

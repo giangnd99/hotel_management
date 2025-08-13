@@ -7,5 +7,5 @@ import java.util.UUID;
 
 public interface PaymentRepository extends RepositoryGeneric<Payment, UUID> {
     Optional<Payment> findByReferenceId(UUID referenceId);
-    Optional<Payment> findByOrderCode(String orderCode);
+    Optional<Payment> findByOrderCode(long orderCode);
 }
