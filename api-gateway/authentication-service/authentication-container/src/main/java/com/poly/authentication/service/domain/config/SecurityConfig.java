@@ -1,7 +1,5 @@
 package com.poly.authentication.service.domain.config;
 
-import com.poly.authentication.service.domain.service.AuthDomainService;
-import com.poly.authentication.service.domain.service.impl.AuthDomainServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,6 +44,7 @@ public class SecurityConfig {
             // Nếu có các phương thức HTTP cụ thể cho public URLs, bạn có thể thêm:
             // HttpMethod.GET + "/some-public-read-only-endpoint",
             // "/some-other-public-path"
+
     };
 
     @Bean

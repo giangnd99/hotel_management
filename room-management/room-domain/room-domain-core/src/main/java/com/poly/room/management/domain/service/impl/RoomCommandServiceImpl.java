@@ -1,6 +1,6 @@
 package com.poly.room.management.domain.service.impl;
 
-import com.poly.domain.valueobject.ERoomStatus;
+import com.poly.domain.valueobject.RoomStatus;
 import com.poly.domain.valueobject.InventoryItemId;
 import com.poly.domain.valueobject.StaffId;
 import com.poly.room.management.domain.entity.Room;
@@ -32,9 +32,9 @@ public class RoomCommandServiceImpl implements RoomCommandService {
 
     @Override
     public void deleteRoom(Room room) {
-        if (room.getRoomStatus().getRoomStatus().equals(ERoomStatus.OCCUPIED.name()) ||
-                room.getRoomStatus().getRoomStatus().equalsIgnoreCase(ERoomStatus.BOOKED.name())) {
-            throw new RoomDomainException("Cannot delete room with status " + room.getRoomStatus().getRoomStatus());
+        if (room.getRoomStatus() == RoomStatus.CHECKED_IN ||
+                room.getRoomStatus() == RoomStatus.BOOKED) {
+            throw new RoomDomainException("Cannot delete room with status " + room.getRoomStatus());
         }
     }
 

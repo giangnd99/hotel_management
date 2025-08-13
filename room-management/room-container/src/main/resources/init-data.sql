@@ -10,7 +10,7 @@ INSERT INTO maintenance_type_entity (maintenance_type_id, name) VALUES
 INSERT INTO room_status_entity (status_id, status_name) VALUES
 (1, 'VACANT'),
 (2, 'BOOKED'),
-(3, 'OCCUPIED'),
+(3, 'CHECKED_IN'),
 (4, 'MAINTENANCE'),
 (5, 'CLEANING');
 

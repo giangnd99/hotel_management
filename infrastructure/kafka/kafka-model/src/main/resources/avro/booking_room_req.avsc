@@ -1,0 +1,64 @@
+{
+  "type": "record",
+  "name": "BookingRoomRequestAvro",
+  "namespace": "com.poly.booking.management.domain.kafka.model",
+  "fields": [
+    {
+      "name": "id",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      }
+    },
+    {
+      "name": "sagaId",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      }
+    },
+    {
+      "name": "bookingId",
+      "type": "string"
+    },
+    {
+      "name": "createdAt",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    },
+    {
+      "name": "processedAt",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "timestamp-millis"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "type",
+      "type": "string"
+    },
+    {
+      "name": "sagaStatus",
+      "type": "string"
+    },
+    {
+      "name": "bookingStatus",
+      "type": "string"
+    },
+    {
+      "name": "price",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 10,
+        "scale": 2
+      }
+    }
+  ]
+}

@@ -13,8 +13,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>authentication-service</module>
-        <module>business-management</module>
         <module>eureka-server</module>
+        <module>swagger-hub</module>
     </modules>
 
 </project>

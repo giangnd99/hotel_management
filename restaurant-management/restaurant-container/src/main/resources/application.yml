@@ -1,3 +1,49 @@
 spring:
   profiles:
     active: dev
+  application:
+    name: restaurant-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/db_restaurant
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+# Service URLs for Feign clients
+payment:
+  service:
+    url: http://localhost:8082
+
+customer:
+  service:
+    url: http://localhost:8083
+
+notification:
+  service:
+    url: http://localhost:8084
+
+restaurant:
+  service:
+    url: http://localhost:8081
+
+# Feign client configuration
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 10000
+        loggerLevel: full
+
+# Logging configuration
+logging:
+  level:
+    com.poly.restaurant: DEBUG
+    feign: DEBUG

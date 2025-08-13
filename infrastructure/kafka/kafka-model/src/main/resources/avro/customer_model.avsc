@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "CustomerModelAvro",
+  "namespace": "com.poly.booking.management.domain.kafka.model",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "username",
+      "type": "string"
+    },
+    {
+      "name": "firstName",
+      "type": "string"
+    },
+    {
+      "name": "lastName",
+      "type": "string"
+    }
+  ]
+}

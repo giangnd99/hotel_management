@@ -1,7 +1,5 @@
 package com.poly.room.management.domain.port.out.repository;
 
-import com.poly.room.management.domain.entity.RoomStatus;
-
 import java.util.List;
 import java.util.Optional;
 

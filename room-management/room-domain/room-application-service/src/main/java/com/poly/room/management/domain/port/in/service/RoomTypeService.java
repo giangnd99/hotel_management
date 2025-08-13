@@ -1,6 +1,6 @@
 package com.poly.room.management.domain.port.in.service;
 
-import com.poly.application.handler.AppException;
+import com.poly.domain.handler.AppException;
 import com.poly.room.management.domain.dto.request.CreateRoomTypeRequest;
 import com.poly.room.management.domain.dto.request.FurnitureRequirementRequest;
 import com.poly.room.management.domain.dto.request.UpdateRoomTypeRequest;
