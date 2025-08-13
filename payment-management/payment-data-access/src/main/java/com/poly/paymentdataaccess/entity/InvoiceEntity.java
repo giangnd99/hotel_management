@@ -18,11 +18,8 @@ import java.util.UUID;
 public class InvoiceEntity {
 
     @Id
-    @Column(name = "invoice_id", columnDefinition = "BINARY(16)")
+    @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
-
-    @Column(name = "booking_id", columnDefinition = "BINARY(16)")
-    private UUID bookingId;
 
     @Column(name = "customer_id", columnDefinition = "BINARY(16)")
     private UUID customerId;
@@ -30,26 +27,14 @@ public class InvoiceEntity {
     @Column(name = "created_by", columnDefinition = "BINARY(16)")
     private UUID createdByStaffId;
 
-    @Column(name = "updated_by", columnDefinition = "BINARY(16)")
-    private UUID updateByStaffId;
-
-    @Column(name = "voucher_id", columnDefinition = "BINARY(16)")
-    private UUID voucherId;
-
     @Column(name = "sub_total")
     private BigDecimal subTotal;
 
-    @Column(name = "tax_amount")
-    private BigDecimal taxAmount;
-
-    @Column(name = "discount_amount")
-    private BigDecimal discountAmount;
+    @Column(name = "tax_rate")
+    private BigDecimal taxRate;
 
     @Column(name = "total_amount")
     private BigDecimal totalAmount;
-
-    @Column(name = "paid_amount")
-    private BigDecimal paidAmount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "invoice_status", nullable = false)
@@ -60,9 +45,6 @@ public class InvoiceEntity {
 
     @Column(name = "update_at")
     private LocalDateTime updatedDate;
-
-    @Column(name = "change_amount")
-    private BigDecimal changeAmount;
 
     @Column(name = "note")
     private String note;

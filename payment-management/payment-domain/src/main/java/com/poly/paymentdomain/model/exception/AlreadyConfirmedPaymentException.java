@@ -5,8 +5,4 @@ public class AlreadyConfirmedPaymentException extends DomainException {
         super("Giao dịch đã được thực hiện.");
     }
 
-    @Override
-    public String getErrorCode() {
-        return "";
-    }
 }

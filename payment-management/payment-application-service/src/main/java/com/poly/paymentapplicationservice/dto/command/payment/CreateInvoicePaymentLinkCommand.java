@@ -8,11 +8,11 @@ import lombok.Getter;
 
 import java.util.List;
 
-@Getter
-@Builder
-public class CreateInvoicePaymentLinkCommand {
-    private InvoiceId invoiceId;
-    private Money amount;
-    private List<Item>
-    private PaymentMethod method;
-}
+//@Getter
+//@Builder
+//public class CreateInvoicePaymentLinkCommand {
+//    private InvoiceId invoiceId;
+//    private Money amount;
+//    private List<Item>
+//    private PaymentMethod method;
+//}

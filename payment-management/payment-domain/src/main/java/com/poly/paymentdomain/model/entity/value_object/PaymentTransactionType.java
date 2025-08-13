@@ -4,5 +4,6 @@ public enum PaymentTransactionType {
         DEPOSIT,
         INVOICE,
         REFUND,
+        SERVICE,
         OTHER
 }

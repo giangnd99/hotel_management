@@ -8,6 +8,6 @@ import java.util.UUID;
 
 public interface PaymentRepository extends RepositoryGeneric<Payment, UUID> {
     Optional<Payment> findActiveDepositByBookingId(UUID id);
-    Optional<Payment> findByReferenceCode(String referenceCode);
+    Optional<Payment> findByReferenceCode(long referenceCode);
     List<Payment> findExpiredPendingPayments();
 }

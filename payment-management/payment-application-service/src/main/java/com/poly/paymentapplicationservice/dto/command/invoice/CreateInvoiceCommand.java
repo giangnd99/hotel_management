@@ -7,14 +7,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
 @Builder
 public class CreateInvoiceCommand {
+    private UUID bookingId;
     private CustomerId customerId;
     private StaffId createdBy;
-    private List<InvoiceItemCommand> items;
+    private UUID voucherId;
+    private BigDecimal voucherAmount;
+    private BigDecimal tax;
     private Description note;
 }

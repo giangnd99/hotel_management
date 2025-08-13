@@ -16,6 +16,10 @@ public class ServiceId {
         return new ServiceId(value);
     }
 
+    public static ServiceId generate() {
+        return new ServiceId(UUID.randomUUID());
+    }
+
     public UUID getValue() {
         return value;
     }

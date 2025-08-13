@@ -5,7 +5,6 @@ public class ExistingDepositException extends DomainException {
         super("Đặt cọc đã có tại booking này rồi.");
     }
 
-    @Override
     public String getErrorCode() {
         return "";
     }

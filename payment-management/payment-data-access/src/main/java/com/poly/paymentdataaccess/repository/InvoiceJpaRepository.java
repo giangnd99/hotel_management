@@ -10,5 +10,5 @@ import java.util.UUID;
 public interface InvoiceJpaRepository extends JpaRepository<InvoiceEntity, UUID> {
     List<InvoiceEntity> findAllByCustomerId(UUID customerId);
 
-    Optional<InvoiceEntity> findByBookingId(UUID bookingId);
+//    Optional<InvoiceEntity> findByBookingId(UUID bookingId);
 }

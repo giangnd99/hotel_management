@@ -7,8 +7,4 @@ public class InvalidValueException extends DomainException {
     public InvalidValueException(Object value, String field, String context) {
         super("Giá trị '%s' không hợp lệ cho trường '%s' trong '%s'.".formatted(value, field, context));
     }
-    @Override
-    public String getErrorCode() {
-        return "INVALID_VALUE_ID";
-    }
 }

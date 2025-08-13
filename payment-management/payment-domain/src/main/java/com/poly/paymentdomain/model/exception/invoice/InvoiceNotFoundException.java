@@ -7,8 +7,4 @@ public class InvoiceNotFoundException extends DomainException {
         super("Hóa đơn không tồn tại.");
     }
 
-    @Override
-    public String getErrorCode() {
-        return "INVOICE_NOT_FOUND";
-    }
 }

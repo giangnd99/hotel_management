@@ -12,7 +12,7 @@ import java.util.UUID;
 @Getter
 public class CreatePaymentLinkCommand {
     private long referenceCode;
-    private BigDecimal amount;
+    private Integer amount;
     private List<ItemData> items;
     private String description;
 }

@@ -8,7 +8,6 @@ public class Description {
     private final String value;
 
     public Description(String value) {
-        if (value == null) throw new InvalidValueException("Description");
         this.value = value;
     }
 

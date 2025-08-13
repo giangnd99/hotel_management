@@ -7,6 +7,7 @@ import com.poly.paymentdomain.model.entity.value_object.*;
 import com.poly.paymentdomain.model.exception.DomainException;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -19,11 +20,12 @@ public class Payment extends AggregateRoot<PaymentId> {
     private LocalDateTime paidAt;
     private LocalDateTime createdAt;
     private PaymentReference referenceCode;
+    @Setter
+    private String paymentLink;
     private PaymentTransactionType paymentTransactionType;
 
-
     @Builder
-    public Payment(PaymentId paymentId, BookingId bookingId, PaymentStatus paymentStatus, Money amount, PaymentMethod method, LocalDateTime paidAt, LocalDateTime createdAt, PaymentReference referenceCode,  PaymentTransactionType paymentTransactionType) {
+    public Payment(PaymentId paymentId, BookingId bookingId, PaymentStatus paymentStatus, Money amount, PaymentMethod method, String paymentLink, LocalDateTime paidAt, LocalDateTime createdAt, PaymentReference referenceCode,  PaymentTransactionType paymentTransactionType) {
         this.setId(paymentId);
         this.bookingId = bookingId;
         this.paymentStatus = paymentStatus;
@@ -31,6 +33,7 @@ public class Payment extends AggregateRoot<PaymentId> {
         this.method = method;
         this.paidAt = paidAt;
         this.createdAt = createdAt;
+        this.paymentLink = paymentLink;
         this.referenceCode = referenceCode;
         this.paymentTransactionType = paymentTransactionType;
     }

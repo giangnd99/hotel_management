@@ -8,4 +8,12 @@ public class InvoiceVoucherId extends BaseId<UUID> {
     protected InvoiceVoucherId(UUID value) {
         super(value);
     }
+
+    public static InvoiceVoucherId from(UUID value) {
+        return new InvoiceVoucherId(value);
+    }
+
+    public static InvoiceVoucherId generate() {
+        return new InvoiceVoucherId(UUID.randomUUID());
+    }
 }

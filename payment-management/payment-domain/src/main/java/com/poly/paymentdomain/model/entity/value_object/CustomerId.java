@@ -23,4 +23,8 @@ public class CustomerId {
     public UUID getValue() {
         return value;
     }
+
+    public static CustomerId generate() {
+        return new CustomerId(UUID.randomUUID());
+    }
 }

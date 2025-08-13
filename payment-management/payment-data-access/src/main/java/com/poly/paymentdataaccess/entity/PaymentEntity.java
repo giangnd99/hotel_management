@@ -20,14 +20,11 @@ import java.util.UUID;
 public class PaymentEntity {
 
     @Id
-    @Column(name = "payment_id", columnDefinition = "BINARY(16)")
+    @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
     @Column(name = "booking_id")
     private UUID bookingId;
-
-    @Column(name = "invoice_id")
-    private UUID invoiceId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")
@@ -46,10 +43,14 @@ public class PaymentEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "reference_code")
+    private long referenceCode;
+
+    @Column(name = "payment_link")
+    private String paymentLink;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_transaction_type")
     private PaymentTransactionTypeEntity paymentTransactionTypeEntity; // Loại dịch vụ chi trả
 
-    @Column(name = "reference_code")
-    private String referenceCode;
 }

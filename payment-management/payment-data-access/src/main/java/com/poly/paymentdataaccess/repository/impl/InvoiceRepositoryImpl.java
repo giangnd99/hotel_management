@@ -1,13 +1,9 @@
 package com.poly.paymentdataaccess.repository.impl;
 
 import com.poly.paymentdataaccess.entity.InvoiceEntity;
-import com.poly.paymentdataaccess.entity.InvoiceItemEntity;
-import com.poly.paymentdataaccess.mapper.InvoiceItemMapper;
 import com.poly.paymentdataaccess.mapper.InvoiceMapper;
-import com.poly.paymentdataaccess.repository.InvoiceItemJpaRepository;
 import com.poly.paymentdataaccess.repository.InvoiceJpaRepository;
 import com.poly.paymentdomain.model.entity.Invoice;
-import com.poly.paymentdomain.model.entity.InvoiceBooking;
 import com.poly.paymentdomain.output.InvoiceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -23,82 +19,49 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
 
     private final InvoiceJpaRepository invoiceJpaRepository;
 
-    private final InvoiceItemJpaRepository invoiceItemJpaRepository;
-
     @Override
-    public Invoice createInvoice(Invoice invoice) {
-        var invoiceEntity = InvoiceMapper.toEntity(invoice);
-        var savedInvoiceEntity = invoiceJpaRepository.save(invoiceEntity);
-
-        var itemEntities = invoice.getItems().stream()
-                .map(item -> InvoiceItemMapper.toEntity(item, savedInvoiceEntity.getId()))
-                .collect(Collectors.toList());
-
-        invoiceItemJpaRepository.saveAll(itemEntities);
-
-        return InvoiceMapper.toDomain(savedInvoiceEntity, itemEntities);
-    }
-
-
-    @Override
-    public Invoice updateInvoice(Invoice invoice, List<InvoiceBooking> items) {
-        var invoiceEntity = InvoiceMapper.toEntity(invoice);
-        var savedInvoiceEntity = invoiceJpaRepository.save(invoiceEntity);
-
-        var itemEntities = items.stream()
-                .map(item -> InvoiceItemMapper.toEntity(item, savedInvoiceEntity.getId()))
-                .collect(Collectors.toList());
-
-        invoiceItemJpaRepository.saveAll(itemEntities);
-
-        return InvoiceMapper.toDomain(savedInvoiceEntity, itemEntities);
+    public Invoice save(Invoice object) {
+        InvoiceEntity entity = InvoiceMapper.toEntity(object);
+        invoiceJpaRepository.save(entity);
+        return InvoiceMapper.toDomain(entity);
     }
 
     @Override
-    public void deleteInvoice(Invoice invoice) {
-        invoiceJpaRepository.delete(InvoiceMapper.toEntity(invoice));
+    public Invoice update(Invoice object) {
+        InvoiceEntity entity = InvoiceMapper.toEntity(object);
+        invoiceJpaRepository.save(entity);
+        return InvoiceMapper.toDomain(entity);
     }
 
     @Override
-    public Optional<Invoice> findInvoiceById(UUID invoiceId) {
-        Optional<InvoiceEntity> invoiceEntity = invoiceJpaRepository.findById(invoiceId);
-        List<InvoiceItemEntity> itemEntities = invoiceItemJpaRepository.findByInvoiceId(invoiceId);
-        return Optional.of(InvoiceMapper.toDomain(invoiceEntity.get(), itemEntities));
+    public void delete(UUID uuid) {
+        invoiceJpaRepository.deleteById(uuid);
     }
 
     @Override
-    public Optional<Invoice> findByBookingId(UUID bookingId) {
-        Optional<InvoiceEntity> invoiceEntityOpt = invoiceJpaRepository.findByBookingId(bookingId);
-        if (invoiceEntityOpt.isEmpty()) {
-            return Optional.empty();
-        }
-
-        InvoiceEntity invoiceEntity = invoiceEntityOpt.get();
-        List<InvoiceItemEntity> itemEntities = invoiceItemJpaRepository.findByInvoiceId(invoiceEntity.getId());
-        return Optional.of(InvoiceMapper.toDomain(invoiceEntity, itemEntities));
+    public Optional<Invoice> findById(UUID uuid) {
+        InvoiceEntity entity = invoiceJpaRepository.findById(uuid).orElse(null);
+        return Optional.ofNullable(InvoiceMapper.toDomain(entity));
     }
-
-//    @Override
-//    public List<Invoice> findAll(UUID customerId) {
-//        List<InvoiceEntity> invoiceEntityList = invoiceJpaRepository.findAllByCustomerId(customerId);;
-//        return invoiceEntityList.stream()
-//                .map(invoiceEntity -> InvoiceMapper.toDomain(invoiceEntity, invoiceItemJpaRepository.findByInvoiceId(invoiceEntity.getId())))
-//                .collect(Collectors.toList());
-//    }
 
     @Override
-    public List<Invoice> findAll(UUID customerId) {
-        List<InvoiceEntity> invoiceEntityList = invoiceJpaRepository.findAllByCustomerId(customerId);
-
-        return invoiceEntityList.stream()
-                .map(invoiceEntity -> {
-                    // Lấy tất cả InvoiceItemEntity liên quan đến hóa đơn này
-                    List<InvoiceItemEntity> itemEntities = invoiceItemJpaRepository.findByInvoiceId(invoiceEntity.getId());
-
-                    // Map entity sang domain
-                    return InvoiceMapper.toDomain(invoiceEntity, itemEntities);
-                })
-                .collect(Collectors.toList());
+    public List<Invoice> findAll() {
+        List<InvoiceEntity> entities = invoiceJpaRepository.findAll();
+        List<Invoice> invoices = entities.stream().map(InvoiceMapper::toDomain).collect(Collectors.toList());
+        return invoices;
     }
 
+    @Override
+    public List<Invoice> findAllById(UUID customerId) {
+        List<InvoiceEntity> entities = invoiceJpaRepository.findAllByCustomerId(customerId);
+        List<Invoice> invoices = entities.stream().map(InvoiceMapper::toDomain).collect(Collectors.toList());
+        return invoices;
+    }
+
+    @Override
+    public Invoice remove(Invoice id) {
+        InvoiceEntity entity = InvoiceMapper.toEntity(id);
+        entity = invoiceJpaRepository.save(entity);
+        return null;
+    }
 }

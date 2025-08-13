@@ -27,7 +27,7 @@ public class PaymentId {
         return paymentId.value;
     }
 
-    public String getValue() {
-        return value.toString();
+    public UUID getValue() {
+        return value;
     }
 }

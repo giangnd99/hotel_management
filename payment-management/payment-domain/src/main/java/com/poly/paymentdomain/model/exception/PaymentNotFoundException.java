@@ -5,7 +5,6 @@ public class PaymentNotFoundException extends DomainException {
         super("Thanh toán không tồn tại.");
     }
 
-    @Override
     public String getErrorCode() {
         return "PAYMENT_NOT_FOUND";
     }
