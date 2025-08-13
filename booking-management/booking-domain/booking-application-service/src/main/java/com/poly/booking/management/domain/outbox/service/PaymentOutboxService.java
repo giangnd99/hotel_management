@@ -2,7 +2,7 @@ package com.poly.booking.management.domain.outbox.service;
 
 import com.poly.booking.management.domain.outbox.model.PaymentOutboxMessage;
 import com.poly.booking.management.domain.outbox.payload.PaymentEventPayload;
-import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;
 
@@ -21,13 +21,9 @@ public interface PaymentOutboxService {
     Optional<List<PaymentOutboxMessage>> getListByBookingIdAndStatus(OutboxStatus outboxStatus,
                                                                      SagaStatus... sagaStatus);
 
-    PaymentOutboxMessage getUpdated(PaymentOutboxMessage paymentOutboxMessage,
-                                    EBookingStatus status,
-                                    SagaStatus sagaStatus);
-
     void saveWithPayloadAndBookingStatusAndSagaStatusAndOutboxStatusAndSagaId
             (PaymentEventPayload payload,
-             EBookingStatus status,
+             BookingStatus status,
              SagaStatus sagaStatus,
              OutboxStatus outboxStatus,
              UUID uuid);

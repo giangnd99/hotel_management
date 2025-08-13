@@ -92,7 +92,7 @@ public class RoomRequestKafkaPublisher implements RoomRequestReserveMessagePubli
         Assert.notNull(outboxCallback, "OutboxCallback không được null");
         Assert.notNull(roomOutboxMessage.getPayload(), "BookingRoomOutboxMessage payload không được null");
         Assert.notNull(roomOutboxMessage.getSagaId(), "BookingRoomOutboxMessage sagaId không được null");
-        Assert.hasText(roomOutboxMessage.getBookingId(), "BookingRoomOutboxMessage bookingId không được empty");
+        Assert.hasText(roomOutboxMessage.getBookingId().toString(), "BookingRoomOutboxMessage bookingId không được empty");
     }
 
     /**

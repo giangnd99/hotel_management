@@ -36,7 +36,7 @@ public class BookingDataMapper {
         return BookingCreatedResponse.builder()
                 .bookingId(bookingCreatedEvent.getBooking().getId().getValue())
                 .customerId(bookingCreatedEvent.getBooking().getCustomerId().getValue())
-                .rooms(bookingCreatedEvent.getBooking().getRooms())
+                .rooms(bookingCreatedEvent.getBooking().getBookingRooms())
                 .checkInDate(bookingCreatedEvent.getBooking().getCheckInDate().getValue())
                 .checkOutDate(bookingCreatedEvent.getBooking().getCheckOutDate().getValue())
                 .numberOfGuests(createBookingCommand.getNumberOfGuests())

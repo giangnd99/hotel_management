@@ -1,7 +1,7 @@
 package com.poly.booking.management.domain.dto.message;
 
 import com.poly.booking.management.domain.entity.Room;
-import com.poly.domain.valueobject.ReservationStatus;
+import com.poly.domain.valueobject.RoomResponseStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,5 +20,5 @@ public class RoomMessageResponse {
     private List<Room> rooms;
     private BigDecimal totalPrice;
     private String reason;
-    private ReservationStatus reservationStatus;
+    private RoomResponseStatus roomResponseStatus;
 }

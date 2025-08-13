@@ -9,13 +9,12 @@ import com.poly.booking.management.domain.mapper.RoomDataMapper;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.service.BookingDomainService;
 import com.poly.domain.valueobject.BookingId;
-import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.saga.SagaStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,7 +41,7 @@ public class BookingSagaHelper {
     /**
      * Map trạng thái booking sang trạng thái Saga
      */
-    public SagaStatus bookingStatusToSagaStatus(EBookingStatus status) {
+    public SagaStatus bookingStatusToSagaStatus(BookingStatus status) {
         return switch (status) {
             case CONFIRMED, CHECKED_OUT, CHECKED_IN -> SagaStatus.PROCESSING;
             case PAID -> SagaStatus.FINISHED;

@@ -1,10 +1,7 @@
 package com.poly.booking.management.domain.dto;
 
-import com.poly.domain.valueobject.EBookingStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.poly.domain.valueobject.BookingStatus;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,6 +20,6 @@ public class BookingDto {
     private int numberOfGuests;
     private BigDecimal totalAmount;
     private LocalDateTime bookingDate;
-    private EBookingStatus status;
+    private BookingStatus status;
     private String specialRequests;
 }

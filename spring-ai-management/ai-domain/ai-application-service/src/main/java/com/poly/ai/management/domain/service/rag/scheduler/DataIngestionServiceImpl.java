@@ -25,6 +25,7 @@ public class DataIngestionServiceImpl implements DataIngestionService {
 
     @Override
     public void ingestHotelData() {
+        try{
         List<RoomResponse> rooms = roomFeign.getAllRooms().getBody();
         if (rooms.isEmpty()) return;
         log.info("Đã tìm thấy phòng từ khách sạn");
@@ -53,7 +54,9 @@ public class DataIngestionServiceImpl implements DataIngestionService {
         // Spring AI sẽ tự động sử dụng EmbeddingModel đã cấu hình để nhúng các chunks
         vectorStore.add(chunks);
         log.info("Đã thêm {} chunks vào Vector Store.", chunks.size());
-
+        }catch (Exception e){
+            log.error(e.getMessage(), e.getCause());
+        }
     }
 
     @Scheduled(fixedRate = 360000) // Cập nhật mỗi giờ

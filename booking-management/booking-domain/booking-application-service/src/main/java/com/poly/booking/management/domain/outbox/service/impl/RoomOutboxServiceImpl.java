@@ -7,7 +7,7 @@ import com.poly.booking.management.domain.outbox.payload.ReservedEventPayload;
 import com.poly.booking.management.domain.outbox.model.RoomOutboxMessage;
 import com.poly.booking.management.domain.outbox.service.RoomOutboxService;
 import com.poly.booking.management.domain.port.out.repository.RoomReserveOutBoxRepository;
-import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +56,7 @@ public class RoomOutboxServiceImpl implements RoomOutboxService {
 
     @Override
     public RoomOutboxMessage getUpdatedRoomOutBoxMessage(RoomOutboxMessage roomOutboxMessage,
-                                                         EBookingStatus status,
+                                                         BookingStatus status,
                                                          SagaStatus sagaStatus) {
         roomOutboxMessage.setBookingStatus(status);
         roomOutboxMessage.setSagaStatus(sagaStatus);
@@ -86,7 +86,7 @@ public class RoomOutboxServiceImpl implements RoomOutboxService {
 
     @Override
     @Transactional
-    public void saveRoomOutboxMessage(ReservedEventPayload reservedEventPayload, EBookingStatus status, SagaStatus sagaStatus, OutboxStatus outboxStatus, UUID uuid) {
+    public void saveRoomOutboxMessage(ReservedEventPayload reservedEventPayload, BookingStatus status, SagaStatus sagaStatus, OutboxStatus outboxStatus, UUID uuid) {
 
         save(RoomOutboxMessage.builder()
                 .id(UUID.randomUUID())

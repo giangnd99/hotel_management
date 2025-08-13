@@ -1,6 +1,6 @@
 package com.poly.booking.management.domain.outbox.model;
 
-import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;
 import lombok.AllArgsConstructor;
@@ -21,9 +21,9 @@ public class PaymentOutboxMessage {
     private LocalDateTime processedAt;
     private String type;
     private String payload;
-    private String bookingId;
+    private UUID bookingId;
     private SagaStatus sagaStatus;
-    private EBookingStatus bookingStatus;
+    private BookingStatus bookingStatus;
     private OutboxStatus outboxStatus;
     private int version;
 
@@ -36,7 +36,7 @@ public class PaymentOutboxMessage {
         this.sagaStatus = sagaStatus;
     }
 
-    public void setBookingStatus(EBookingStatus bookingStatus) {
+    public void setBookingStatus(BookingStatus bookingStatus) {
         this.bookingStatus = bookingStatus;
     }
 

@@ -1,8 +1,7 @@
 package com.poly.booking.management.dao.booking.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.poly.booking.management.dao.room.entity.RoomEntity;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -19,7 +18,11 @@ public class BookingRoomEntity {
 
     @Id
     private UUID id;
-    private UUID bookingId;
-    private UUID roomId;
+    @ManyToOne
+    @JoinColumn(name = "booking_id")
+    private BookingEntity booking;
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private RoomEntity roomId;
     private BigDecimal price;
 }

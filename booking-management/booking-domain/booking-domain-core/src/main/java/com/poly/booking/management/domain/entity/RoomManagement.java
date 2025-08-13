@@ -18,7 +18,7 @@ public class RoomManagement {
 
         Set<RoomId> availableRooms = new HashSet<>();
 
-        booking.getRooms().forEach(
+        booking.getBookingRooms().forEach(
                 bookingRoom -> {
                     RoomId roomId = bookingRoom.getId();
                     Room roomInHotel = roomMapById.get(bookingRoom.getId());
@@ -44,7 +44,7 @@ public class RoomManagement {
 
     public Money getTotalCost(Booking booking) {
         Money totalCost = Money.ZERO;
-        for (Room room : booking.getRooms()) {
+        for (Room room : booking.getBookingRooms()) {
             totalCost = totalCost.add(room.getBasePrice());
         }
         return totalCost;

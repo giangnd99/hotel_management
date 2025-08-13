@@ -2,8 +2,7 @@ package com.poly.booking.management.domain.dto.response;
 
 
 import com.poly.booking.management.domain.entity.Room;
-import com.poly.domain.dto.response.room.RoomResponse;
-import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.BookingStatus;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -27,5 +26,5 @@ public class BookingCreatedResponse {
     private int numberOfGuests;
     private BigDecimal totalAmount;
     private LocalDateTime bookingDate;
-    private EBookingStatus status;
+    private BookingStatus status;
 }

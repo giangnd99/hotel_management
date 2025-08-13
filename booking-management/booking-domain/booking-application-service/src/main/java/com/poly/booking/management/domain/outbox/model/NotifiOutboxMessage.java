@@ -1,6 +1,6 @@
 package com.poly.booking.management.domain.outbox.model;
 
-import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;
 import lombok.AllArgsConstructor;
@@ -42,11 +42,11 @@ public class NotifiOutboxMessage {
     private UUID id;
     private UUID sagaId;
     private String type;
-    private String bookingId;
+    private UUID bookingId;
     private SagaStatus sagaStatus;
     private OutboxStatus outboxStatus;
     private String payload;
-    private EBookingStatus bookingStatus;
+    private BookingStatus bookingStatus;
     private LocalDateTime createdAt;
     private LocalDateTime processedAt;
     private int version;

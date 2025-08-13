@@ -11,7 +11,7 @@ import com.poly.booking.management.domain.outbox.service.impl.RoomOutboxServiceI
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.saga.BookingSagaHelper;
 import com.poly.booking.management.domain.service.BookingDomainService;
-import com.poly.domain.valueobject.ReservationStatus;
+import com.poly.domain.valueobject.RoomResponseStatus;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;
 import lombok.RequiredArgsConstructor;
@@ -70,7 +70,7 @@ public class RoomSagaHelper {
         log.info("Executing room reservation for booking: {}", outboxMessage.getBookingId());
 
         // Tìm booking entity
-        Booking booking = bookingSagaHelper.findBooking(outboxMessage.getBookingId());
+        Booking booking = bookingSagaHelper.findBooking(outboxMessage.getBookingId().toString());
 
         // Thực hiện business logic confirm deposit
         BookingConfirmedEvent domainEvent = bookingDomainService.confirmBooking(booking);
@@ -130,7 +130,7 @@ public class RoomSagaHelper {
      * @return BookingRoomOutboxMessage nếu tìm thấy, null nếu đã rollback
      */
     public RoomOutboxMessage findOutboxMessageForRollback(RoomMessageResponse data) {
-        SagaStatus[] validStatuses = getValidSagaStatusesForRollback(data.getReservationStatus());
+        SagaStatus[] validStatuses = getValidSagaStatusesForRollback(data.getRoomResponseStatus());
 
         Optional<RoomOutboxMessage> outboxMessageOpt =
                 roomOutboxServiceImpl.getRoomOutboxMessageBySagaIdAndSagaStatus(
@@ -152,7 +152,7 @@ public class RoomSagaHelper {
      */
     public void executeRollback(RoomOutboxMessage outboxMessage) {
         // Tìm booking entity
-        Booking booking = bookingSagaHelper.findBooking(outboxMessage.getBookingId());
+        Booking booking = bookingSagaHelper.findBooking(outboxMessage.getBookingId().toString());
 
         // Thực hiện cancel booking
         bookingDomainService.cancelBooking(booking);
@@ -168,11 +168,11 @@ public class RoomSagaHelper {
      * - SUCCESS: Chỉ rollback khi đang PROCESSING
      * - FAILED/CANCELLED: Rollback từ STARTED hoặc PROCESSING
      *
-     * @param reservationStatus Trạng thái reservation từ external service
+     * @param roomResponseStatus Trạng thái reservation từ external service
      * @return Array các SagaStatus hợp lệ cho rollback
      */
-    public SagaStatus[] getValidSagaStatusesForRollback(ReservationStatus reservationStatus) {
-        return switch (reservationStatus) {
+    public SagaStatus[] getValidSagaStatusesForRollback(RoomResponseStatus roomResponseStatus) {
+        return switch (roomResponseStatus) {
             case SUCCESS -> new SagaStatus[]{SagaStatus.PROCESSING};
             case PENDING, FAILED, CANCELLED -> new SagaStatus[]{SagaStatus.STARTED, SagaStatus.PROCESSING};
         };

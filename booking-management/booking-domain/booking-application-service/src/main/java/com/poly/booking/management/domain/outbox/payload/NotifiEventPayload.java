@@ -1,7 +1,7 @@
 package com.poly.booking.management.domain.outbox.payload;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.BookingStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,7 +42,7 @@ public class NotifiEventPayload {
     @JsonProperty
     private String notificationStatus;
     @JsonProperty
-    private EBookingStatus bookingStatus;
+    private BookingStatus bookingStatus;
     @JsonProperty
     private LocalDateTime createdAt;
 } 
