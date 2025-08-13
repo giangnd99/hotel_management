@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "PaymentRequestMessageAvro",
+  "namespace": "com.poly.restaurant.management.message",
+  "fields": [
+    { "name": "id", "type": ["null", "string"], "default": null },
+    { "name": "orderId", "type": ["null", "string"], "default": null },
+    { "name": "amount", "type": ["null", "string"], "default": null },
+    { "name": "orderPaymentStatus", "type": ["null", "string"], "default": null },
+    { "name": "paymentMethod", "type": ["null", "string"], "default": null }
+  ]
+}

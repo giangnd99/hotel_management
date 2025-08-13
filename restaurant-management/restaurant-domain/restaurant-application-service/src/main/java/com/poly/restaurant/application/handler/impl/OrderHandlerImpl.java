@@ -42,7 +42,8 @@ public class OrderHandlerImpl extends AbstractGenericHandlerImpl<Order, String> 
     @Override
     public Order createOrder(Order order) {
         log.info("Creating new order: {}", order.getId());
-        // Validation logic
+        // Validation orderItems
+        //
         return repository.save(order);
     }
 
