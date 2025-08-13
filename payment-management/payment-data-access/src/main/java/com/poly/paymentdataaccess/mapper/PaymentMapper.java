@@ -2,6 +2,7 @@ package com.poly.paymentdataaccess.mapper;
 
 import com.poly.domain.valueobject.PaymentMethod;
 import com.poly.domain.valueobject.PaymentStatus;
+import com.poly.domain.valueobject.ReferenceId;
 import com.poly.paymentdataaccess.entity.PaymentEntity;
 import com.poly.paymentdataaccess.share.PaymentMethodEntity;
 import com.poly.paymentdataaccess.share.PaymentStatusEntity;
@@ -13,30 +14,32 @@ public class PaymentMapper {
     public static Payment toDomain(PaymentEntity entity) {
         return Payment.builder()
                 .paymentId(PaymentId.from(entity.getId()))
-                .bookingId(BookingId.from(entity.getBookingId()))
-                .paymentStatus(PaymentStatus.valueOf(entity.getPaymentStatusEntity().name()))
+                .referenceId(ReferenceId.from(entity.getReferenceId()))
+                .status(PaymentStatus.valueOf(entity.getStatus().name()))
                 .amount(Money.from(entity.getAmount()))
-                .method(PaymentMethod.valueOf(entity.getPaymentMethodEntity().name()))
+                .method(PaymentMethod.valueOf(entity.getMethod().name()))
                 .paidAt(entity.getPaidAt())
                 .createdAt(entity.getCreatedAt())
-                .referenceCode(PaymentReference.from(entity.getReferenceCode()))
+                .updatedAt(entity.getUpdatedAt())
+                .orderCode(OrderCode.from(entity.getOrderCode()))
                 .paymentLink(entity.getPaymentLink())
-                .paymentTransactionType(PaymentTransactionType.valueOf(entity.getPaymentTransactionTypeEntity().name()))
+                .description(Description.from(entity.getDescription()))
                 .build();
     }
 
     public static PaymentEntity toEntity(Payment payment) {
         return PaymentEntity.builder()
                 .id(payment.getId().getValue())
-                .bookingId(payment.getBookingId() != null ? payment.getBookingId().getValue() : null)
-                .paymentStatusEntity(PaymentStatusEntity.valueOf(payment.getPaymentStatus().name()))
+                .referenceId(payment.getReferenceId() != null ? payment.getReferenceId().getValue() : null)
+                .status(PaymentStatusEntity.valueOf(payment.getStatus().name()))
                 .amount(payment.getAmount().getValue())
-                .paymentMethodEntity(PaymentMethodEntity.valueOf(payment.getMethod().name()))
+                .method(PaymentMethodEntity.valueOf(payment.getMethod().name()))
                 .paidAt(payment.getPaidAt())
                 .createdAt(payment.getCreatedAt())
-                .referenceCode(payment.getReferenceCode().getValue())
+                .updatedAt(payment.getUpdatedAt())
+                .orderCode(payment.getOrderCode().getValue())
                 .paymentLink(payment.getPaymentLink())
-                .paymentTransactionTypeEntity(PaymentTransactionTypeEntity.valueOf(payment.getPaymentTransactionType().name()))
+                .description(payment.getDescription().getValue())
                 .build();
     }
 }

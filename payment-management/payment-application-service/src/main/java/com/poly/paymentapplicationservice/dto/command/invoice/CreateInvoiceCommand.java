@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -17,9 +16,9 @@ import java.util.UUID;
 public class CreateInvoiceCommand {
     private UUID bookingId;
     private CustomerId customerId;
-    private StaffId createdBy;
-    private UUID voucherId;
-    private BigDecimal voucherAmount;
+    private StaffId staffId;
     private BigDecimal tax;
+    private BigDecimal subTotal;
+    private BigDecimal totalAmount;
     private Description note;
 }

@@ -23,19 +23,19 @@ public class PaymentEntity {
     @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name = "booking_id")
-    private UUID bookingId;
+    @Column(name = "reference_id", columnDefinition = "BINARY(16)")
+    private UUID referenceId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "payment_status")
-    private PaymentStatusEntity paymentStatusEntity; // Trạng thái thanh toán
+    @Column(name = "status")
+    private PaymentStatusEntity status; // Trạng thái thanh toán
 
     @Column(name = "amount")
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "payment_method")
-    private PaymentMethodEntity paymentMethodEntity; // CASH, PAYOS
+    @Column(name = "method")
+    private PaymentMethodEntity method; // CASH, PAYOS
 
     @Column(name = "paid_at")
     private LocalDateTime paidAt;
@@ -43,14 +43,16 @@ public class PaymentEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "reference_code")
-    private long referenceCode;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-    @Column(name = "payment_link")
+    @Column(name = "order_code")
+    private long orderCode;
+
+    @Column(name = "link")
     private String paymentLink;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "payment_transaction_type")
-    private PaymentTransactionTypeEntity paymentTransactionTypeEntity; // Loại dịch vụ chi trả
+    @Column(name = "description")
+    private String description; // Loại dịch vụ chi trả
 
 }

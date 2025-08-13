@@ -11,7 +11,7 @@ import java.util.UUID;
 public class ItemRequest {
     private UUID id;
     private String name;
-    private BigDecimal amount;
+    private BigDecimal unitPrice;
     private Integer quantity;
 
     public static List<ItemCommand> mapToItemData(List<ItemRequest> items) {
@@ -20,7 +20,7 @@ public class ItemRequest {
                         .id(item.getId())
                         .name(item.getName())
                         .quantity(item.getQuantity())
-                        .amount(item.getAmount())
+                        .amount(item.getUnitPrice())
                         .build())
                 .toList();
     }

@@ -11,15 +11,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface PaymentJpaRepository extends JpaRepository<PaymentEntity, UUID> {
-
-    Optional<PaymentEntity> findByBookingIdAndPaymentTransactionTypeEntity(UUID bookingId, PaymentTransactionTypeEntity paymentTransactionTypeEntity);
-
-    @Query(value = "select * from payment p where p.payment_status = 'PENDING' ", nativeQuery = true)
-    List<PaymentEntity> findExpiredDepositPayments();
-
-    Optional<PaymentEntity> findByBookingId (UUID bookingId);
-
-    PaymentEntity findByReferenceCode (long referenceCode);
-
-    List<PaymentMethodEntity> findAllById(UUID id);
+    Optional<PaymentEntity> findByReferenceId(UUID referenceId);
+    Optional<PaymentEntity> findByOrderCode(String orderCode);
 }

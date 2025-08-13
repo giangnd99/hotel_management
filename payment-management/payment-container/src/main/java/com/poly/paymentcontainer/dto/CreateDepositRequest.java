@@ -3,13 +3,13 @@ package com.poly.paymentcontainer.dto;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
 public class CreateDepositRequest {
-    private UUID bookingId;
-    private String name;
-    private Integer quantity;
+    private UUID referenceId;
     private BigDecimal amount;
-    private String method;
+    private List<ItemRequest> items;
+    private String description;
 }

@@ -6,5 +6,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface InvoicePaymentRepository extends RepositoryGeneric<InvoicePayment, UUID> {
-    Optional<InvoicePayment> findByInvoiceId(UUID invoiceId);
+    Optional<InvoicePayment> findByPaymentId(UUID paymentId);
 }

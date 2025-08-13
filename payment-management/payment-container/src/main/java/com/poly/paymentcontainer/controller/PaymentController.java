@@ -1,11 +1,14 @@
     package com.poly.paymentcontainer.controller;
 
     import com.poly.domain.valueobject.PaymentMethod;
+    import com.poly.paymentapplicationservice.dto.command.CreatePaymentDepositCommand;
     import com.poly.paymentapplicationservice.dto.command.ok.CreateDepositCommand;
     import com.poly.paymentapplicationservice.dto.command.ok.CreatePaymentImmediateCommand;
     import com.poly.paymentapplicationservice.port.input.ok.DepositPaymentLinkUseCase;
     import com.poly.paymentapplicationservice.port.input.ok.InvoicePaymentLinkUseCase;
     import com.poly.paymentapplicationservice.port.input.ok.ProcessDirectPaymentUseCase;
+    import com.poly.paymentapplicationservice.port.input.ok2.CreateDepositPaymentLinkUsecase;
+    import com.poly.paymentapplicationservice.share.ItemData;
     import com.poly.paymentcontainer.dto.CreateDepositRequest;
     import com.poly.paymentcontainer.dto.CreateProcessDirectRequest;
     import com.poly.paymentcontainer.dto.ItemRequest;
@@ -14,53 +17,55 @@
     import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.*;
 
+    import java.util.stream.Collectors;
+
     @Slf4j
     @RestController
     @RequestMapping("/api/payment")
     @RequiredArgsConstructor
     public class PaymentController {
 
-        private final DepositPaymentLinkUseCase depositPaymentLinkUseCase;
-
-        private final ProcessDirectPaymentUseCase processDirectPaymentUseCase;
-
-        private final InvoicePaymentLinkUseCase invoicePaymentLinkUseCase;
+        private final CreateDepositPaymentLinkUsecase createDepositPaymentLinkUsecase;
 
         @PostMapping("/deposit")
         public ResponseEntity createDepositLink(@RequestBody CreateDepositRequest request) throws Exception {
-            CreateDepositCommand command = CreateDepositCommand.builder()
-                    .bookingId(request.getBookingId())
-                    .name(request.getName())
+            CreatePaymentDepositCommand command = CreatePaymentDepositCommand.builder()
+                    .referenceId(request.getReferenceId())
                     .amount(request.getAmount())
-                    .quantity(request.getQuantity())
-                    .method(PaymentMethod.valueOf(request.getMethod()))
+                    .items(request.getItems().stream().map(item -> ItemData.builder()
+                            .quantity(item.getQuantity())
+                            .price(item.getUnitPrice())
+                            .name(item.getName())
+                            .build()).collect(Collectors.toList()))
+                    .description(request.getDescription())
+                    .method("PAYOS")
                     .build();
-            return ResponseEntity.ok().body(depositPaymentLinkUseCase.createDepositLink(command));
+            return ResponseEntity.ok().body(createDepositPaymentLinkUsecase.createPaymentLinkUseCase(command));
         }
 
-        @PostMapping("/service/restaurant/online")
-        public ResponseEntity createProcessDirectPaymentLinkWithRestaurant (@RequestBody CreateProcessDirectRequest request) throws Exception {
-            CreatePaymentImmediateCommand command = CreatePaymentImmediateCommand.builder()
-                    .items(ItemRequest.mapToItemData(request.getItems()))
-                    .staff(request.getStaff())
-                    .taxRate(request.getTaxRate())
-                    .method(PaymentMethod.PAYOS)
-                    .typeSerivce("restaurant")
-                    .build();
-            return ResponseEntity.ok().body(processDirectPaymentUseCase.CreatePaymentLinkUseCase(command));
-        }
-
-        @PostMapping("/service/service/online")
-        public ResponseEntity createProcessDirectPaymentLinkWithService (@RequestBody CreateProcessDirectRequest request) throws Exception {
-            CreatePaymentImmediateCommand command = CreatePaymentImmediateCommand.builder()
-                    .items(ItemRequest.mapToItemData(request.getItems()))
-                    .staff(request.getStaff())
-                    .taxRate(request.getTaxRate())
-                    .method(PaymentMethod.PAYOS)
-                    .typeSerivce("service")
-                    .build();
-            return ResponseEntity.ok().body(processDirectPaymentUseCase.CreatePaymentLinkUseCase(command));
-        }
+//        @PostMapping("/service/restaurant/online")
+//        public ResponseEntity createProcessDirectPaymentLinkWithRestaurant (@RequestBody CreateProcessDirectRequest request) throws Exception {
+//            CreatePaymentImmediateCommand command = CreatePaymentImmediateCommand.builder()
+//                    .items(ItemRequest.mapToItemData(request.getItems()))
+//                    .staff(request.getStaff())
+//                    .taxRate(request.getTaxRate())
+//                    .method(PaymentMethod.PAYOS)
+//                    .typeSerivce("restaurant")
+//                    .build();
+//            return ResponseEntity.ok().body(processDirectPaymentUseCase.CreatePaymentLinkUseCase(command));
+//        }
+//
+//        @PostMapping("/service/service/online")
+//        public ResponseEntity createProcessDirectPaymentLinkWithService (@RequestBody CreateProcessDirectRequest request) throws Exception {
+//            CreatePaymentImmediateCommand command = CreatePaymentImmediateCommand.builder()
+//                    .items(ItemRequest.mapToItemData(request.getItems()))
+//                    .staff(request.getStaff())
+//                    .taxRate(request.getTaxRate())
+//                    .method(PaymentMethod.PAYOS)
+//                    .typeSerivce("service")
+//                    .build();
+//            return ResponseEntity.ok().body(processDirectPaymentUseCase.CreatePaymentLinkUseCase(command));
+//        }
 
 //        @PostMapping("/invoice/online")
 //        public ResponseEntity createPaymentLinkWithInvoice () {

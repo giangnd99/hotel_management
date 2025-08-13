@@ -13,5 +13,4 @@ public interface RepositoryGeneric <OBJECT, ID>{
 
     List<OBJECT> findAllById(ID id);
     OBJECT remove(OBJECT id);
-
 }

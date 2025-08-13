@@ -24,21 +24,21 @@ public class InvoiceEntity {
     @Column(name = "customer_id", columnDefinition = "BINARY(16)")
     private UUID customerId;
 
-    @Column(name = "created_by", columnDefinition = "BINARY(16)")
-    private UUID createdByStaffId;
-
-    @Column(name = "sub_total")
-    private BigDecimal subTotal;
+    @Column(name = "staff_id", columnDefinition = "BINARY(16)")
+    private UUID staffId;
 
     @Column(name = "tax_rate")
     private BigDecimal taxRate;
+
+    @Column(name = "sub_total")
+    private BigDecimal subTotal;
 
     @Column(name = "total_amount")
     private BigDecimal totalAmount;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "invoice_status", nullable = false)
-    private InvoiceStatusEntity invoiceStatusEntity;
+    @Column(name = "status", nullable = false)
+    private InvoiceStatusEntity status;
 
     @Column(name = "create_at")
     private LocalDateTime createdDate;

@@ -36,7 +36,7 @@ public class PayOsPaymentGateway implements PaymentGateway {
 
         PaymentData paymentData = PaymentData
                 .builder()
-                .orderCode(command.getReferenceCode())
+                .orderCode(command.getOrderCode())
                 .amount(Integer.valueOf(command.getAmount().toString()))
                 .description(command.getDescription())
                 .returnUrl(RETURN_URL)

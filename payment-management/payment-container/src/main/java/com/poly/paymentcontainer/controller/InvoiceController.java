@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class InvoiceController {
 
-    private final CreateFinalInvoiceUseCase invoiceUseCase;
-
-    public ResponseEntity createInvoice(@RequestBody CreateInvoiceRequest createInvoiceRequest) {
-        CreateInvoiceCommand command = CreateInvoiceCommand.builder()
-
-                .build();
-        return ResponseEntity.ok().body(invoiceUseCase.createInvoice(command));
-    }
+//    private final CreateFinalInvoiceUseCase invoiceUseCase;
+//
+//    public ResponseEntity createInvoice(@RequestBody CreateInvoiceRequest createInvoiceRequest) {
+//        CreateInvoiceCommand command = CreateInvoiceCommand.builder()
+//
+//                .build();
+//        return ResponseEntity.ok().body(invoiceUseCase.createInvoice(command));
+//    }
 
 //    @PostMapping("/create")
 //    public ResponseEntity createInvoice(@RequestBody CreateInvoiceRequest request) throws Exception {

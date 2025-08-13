@@ -8,7 +8,7 @@ import com.poly.domain.valueobject.*;
 import java.util.List;
 import java.util.UUID;
 
-public class Booking extends AggregateRoot<BookingId> {
+public class Booking extends AggregateRoot<ReferenceId> {
 
     private CustomerId customerId;
     private DateCustom checkInDate;
@@ -42,7 +42,7 @@ public class Booking extends AggregateRoot<BookingId> {
 
     //Khi khoi tao booking se o trang thai pending
     public void initiateBooking() {
-        setId(new BookingId(UUID.randomUUID()));
+        setId(new ReferenceId(UUID.randomUUID()));
         trackingId = new TrackingId(UUID.randomUUID());
         validateDateRange();
         status = EBookingStatus.PENDING;
@@ -120,7 +120,7 @@ public class Booking extends AggregateRoot<BookingId> {
     }
 
     public static final class Builder {
-        private BookingId id;
+        private ReferenceId id;
         private CustomerId customerId;
         private DateCustom checkInDate;
         private DateCustom checkOutDate;
@@ -137,7 +137,7 @@ public class Booking extends AggregateRoot<BookingId> {
             return new Builder();
         }
 
-        public Builder id(BookingId val) {
+        public Builder id(ReferenceId val) {
             id = val;
             return this;
         }

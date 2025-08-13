@@ -18,12 +18,6 @@ public class InvoicePaymentRepositoryImpl implements InvoicePaymentRepository {
     private final InvoicePaymentJpaRepository  invoicePaymentJpaRepository;
 
     @Override
-    public Optional<InvoicePayment> findByInvoiceId(UUID invoiceId) {
-        InvoicePaymentEntity entity = invoicePaymentJpaRepository.findByInvoiceId(invoiceId).orElse(null);
-        return Optional.ofNullable(InvoicePaymentMapper.toDomain(entity));
-    }
-
-    @Override
     public InvoicePayment save(InvoicePayment object) {
         InvoicePaymentEntity entity = InvoicePaymentMapper.toEntity(object);
         entity = invoicePaymentJpaRepository.save(entity);

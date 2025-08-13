@@ -1,6 +1,5 @@
 package com.poly.paymentdomain.model.entity.value_object;
 
-import com.poly.paymentdomain.model.exception.InvalidValueException;
 import lombok.Getter;
 
 import java.util.UUID;
@@ -11,7 +10,6 @@ public class PaymentId {
     private final UUID value;
 
     public PaymentId(UUID value) {
-        if (value == null) throw new InvalidValueException("PaymentId");
         this.value = value;
     }
 

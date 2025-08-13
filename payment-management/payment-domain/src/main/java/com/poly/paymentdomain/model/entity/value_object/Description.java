@@ -1,6 +1,5 @@
 package com.poly.paymentdomain.model.entity.value_object;
 
-import com.poly.paymentdomain.model.exception.InvalidValueException;
 import lombok.Getter;
 
 @Getter

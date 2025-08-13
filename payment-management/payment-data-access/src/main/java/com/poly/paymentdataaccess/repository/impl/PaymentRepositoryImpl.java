@@ -18,64 +18,73 @@ public class PaymentRepositoryImpl implements PaymentRepository {
 
     private final PaymentJpaRepository paymentJpaRepository;
 
+
     @Override
-    public Optional<Payment> findActiveDepositByBookingId(UUID id) {
-        Optional<PaymentEntity> entity = paymentJpaRepository.findByBookingId(id);
-        if(entity.isPresent()){
-            return Optional.ofNullable(PaymentMapper.toDomain(entity.get()));
-        } else {
-            return Optional.empty();
+    public Optional<Payment> findByReferenceId(UUID referenceId) {
+        Optional<PaymentEntity> paymentEntity = paymentJpaRepository.findByReferenceId(referenceId);
+        if (paymentEntity.isPresent()) {
+            PaymentEntity paymentEntity1 = paymentEntity.get();
+            Payment payment = PaymentMapper.toDomain(paymentEntity1);
+            return Optional.of(payment);
         }
+        return Optional.empty();
     }
 
     @Override
-    public Optional<Payment> findByReferenceCode(long referenceCode) {
-        PaymentEntity entity = paymentJpaRepository.findByReferenceCode(referenceCode);
-        return Optional.ofNullable(PaymentMapper.toDomain(entity));
-    }
-
-    @Override
-    public List<Payment> findExpiredPendingPayments() {
-        return List.of();
+    public Optional<Payment> findByOrderCode(String orderCode) {
+        Optional<PaymentEntity> paymentEntity = paymentJpaRepository.findByOrderCode(orderCode);
+        if (paymentEntity.isPresent()) {
+            PaymentEntity paymentEntity1 = paymentEntity.get();
+            Payment payment = PaymentMapper.toDomain(paymentEntity1);
+            return Optional.of(payment);
+        }
+        return Optional.empty();
     }
 
     @Override
     public Payment save(Payment object) {
         PaymentEntity entity = PaymentMapper.toEntity(object);
         entity = paymentJpaRepository.save(entity);
-        return PaymentMapper.toDomain(entity);
+        Payment payment = PaymentMapper.toDomain(entity);
+        return payment;
     }
 
     @Override
     public Payment update(Payment object) {
         PaymentEntity entity = PaymentMapper.toEntity(object);
         entity = paymentJpaRepository.save(entity);
-        return PaymentMapper.toDomain(entity);
+        Payment payment = PaymentMapper.toDomain(entity);
+        return payment;
     }
 
     @Override
     public void delete(UUID uuid) {
-        Optional<PaymentEntity> entity = paymentJpaRepository.findById(uuid);
-        paymentJpaRepository.delete(entity.get());
+        PaymentEntity entity = paymentJpaRepository.findById(uuid).orElse(null);
+        paymentJpaRepository.delete(entity);
     }
 
     @Override
     public Optional<Payment> findById(UUID uuid) {
-        PaymentEntity entity = paymentJpaRepository.findById(uuid).orElse(null);
-        return Optional.ofNullable(PaymentMapper.toDomain(entity));
+        Optional<PaymentEntity> paymentEntity = paymentJpaRepository.findById(uuid);
+        if (paymentEntity.isPresent()) {
+            PaymentEntity paymentEntity1 = paymentEntity.get();
+            Payment payment = PaymentMapper.toDomain(paymentEntity1);
+            return Optional.of(payment);
+        }
+        return Optional.empty();
     }
 
     @Override
     public List<Payment> findAll() {
-        List<PaymentEntity> entities = paymentJpaRepository.findAll();
-        List<Payment> payments = entities.stream().map(PaymentMapper::toDomain).collect(Collectors.toList());
+        List<PaymentEntity> paymentEntity = paymentJpaRepository.findAll();
+        List<Payment> payments = paymentEntity.stream().map(PaymentMapper::toDomain).collect(Collectors.toList());
         return payments;
     }
 
     @Override
     public List<Payment> findAllById(UUID uuid) {
-        List<PaymentEntity> entities = paymentJpaRepository.findAllById(Collections.singleton(uuid));
-        List<Payment> payments = entities.stream().map(PaymentMapper::toDomain).collect(Collectors.toList());
+        List<PaymentEntity> paymentEntities = paymentJpaRepository.findAllById(Collections.singleton(uuid));
+        List<Payment> payments = paymentEntities.stream().map(PaymentMapper::toDomain).collect(Collectors.toList());
         return payments;
     }
 

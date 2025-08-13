@@ -1,6 +1,5 @@
 package com.poly.paymentdomain.model.entity.value_object;
 
-import com.poly.paymentdomain.model.exception.InvalidValueException;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -10,7 +9,6 @@ public class Money {
     private final BigDecimal value;
 
     public Money(BigDecimal value) {
-        if (value == null) throw new InvalidValueException("Money");
         this.value = value;
     }
 

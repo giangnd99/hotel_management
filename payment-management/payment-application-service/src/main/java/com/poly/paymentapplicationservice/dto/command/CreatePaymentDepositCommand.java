@@ -8,10 +8,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-@Builder
 @Getter
-public class CreatePaymentLinkCommand {
-    private long orderCode;
+@Builder
+public class CreatePaymentDepositCommand {
+    private UUID referenceId;
     private BigDecimal amount;
     private List<ItemData> items;
     private String description;

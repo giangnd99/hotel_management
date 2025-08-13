@@ -19,7 +19,7 @@ public class InvoicePaymentMapper {
         return InvoicePaymentEntity.builder()
                 .id(invoice.getPaymentId().getValue())
                 .paymentId(invoice.getPaymentId().getValue())
-                .invoiceId(invoice.getInvoiceId().getValue())
+                .invoiceId(invoice.getInvoiceId() != null ?  invoice.getInvoiceId().getValue() : null)
                 .build();
     }
 }
