@@ -1,5 +1,5 @@
 package com.poly.domain.valueobject;
 
 public enum RoomStatus {
-    VACANT, BOOKED, OCCUPIED, MAINTENANCE, CLEANING;
+    VACANT, BOOKED, CHECKED_IN, MAINTENANCE, CLEANING;
 }

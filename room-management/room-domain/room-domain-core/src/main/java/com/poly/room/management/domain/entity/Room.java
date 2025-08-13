@@ -30,7 +30,7 @@ public class Room extends BaseEntity<RoomId> {
     }
 
     public void setVacantRoomStatus() {
-        if (roomStatus == RoomStatus.OCCUPIED) {
+        if (roomStatus == RoomStatus.CHECKED_IN) {
             throw new RoomDomainException("Room is occupied");
         } else if (roomStatus == RoomStatus.BOOKED) {
             throw new RoomDomainException("Room is already booked");
@@ -41,7 +41,7 @@ public class Room extends BaseEntity<RoomId> {
     public void setBookedRoomStatus() {
         if (roomStatus == RoomStatus.MAINTENANCE) {
             throw new RoomDomainException("Room is maintenance");
-        } else if (roomStatus == RoomStatus.OCCUPIED) {
+        } else if (roomStatus == RoomStatus.CHECKED_IN) {
             throw new RoomDomainException("Room is already checkin");
         } else if (roomStatus != RoomStatus.VACANT) {
             throw new RoomDomainException("Room must vacant before booking");
@@ -50,14 +50,14 @@ public class Room extends BaseEntity<RoomId> {
     }
 
     public void setMaintenanceRoomStatus() {
-        if (roomStatus == RoomStatus.OCCUPIED) {
+        if (roomStatus == RoomStatus.CHECKED_IN) {
             throw new RoomDomainException("Room is already checkin");
         }
         this.roomStatus = RoomStatus.MAINTENANCE;
     }
 
     public void setCleanRoomStatus() {
-        if (roomStatus == RoomStatus.OCCUPIED) {
+        if (roomStatus == RoomStatus.CHECKED_IN) {
             throw new RoomDomainException("Room is already checkin");
         }
         this.roomStatus = RoomStatus.CLEANING;
@@ -73,7 +73,7 @@ public class Room extends BaseEntity<RoomId> {
         if (!(this.roomStatus == RoomStatus.BOOKED || this.roomStatus == RoomStatus.VACANT)) {
             throw new RoomDomainException("Room can only be occupied from BOOKED or VACANT status.");
         }
-        this.roomStatus = RoomStatus.OCCUPIED;
+        this.roomStatus = RoomStatus.CHECKED_IN;
     }
 
     public String getRoomNumber() {

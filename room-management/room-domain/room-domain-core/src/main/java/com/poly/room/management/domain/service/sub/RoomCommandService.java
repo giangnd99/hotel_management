@@ -54,7 +54,7 @@ public interface RoomCommandService {
     Room setRoomBooked(Room room) throws RoomDomainException;
 
     /**
-     * Changes the room status to OCCUPIED. The Application Service loads the Room entity.
+     * Changes the room status to CHECKED_IN. The Application Service loads the Room entity.
      * @param room The Room entity to update.
      * @return The updated Room entity.
      * @throws RoomDomainException If the room status cannot be changed based on domain rules.

@@ -14,7 +14,7 @@ import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.saga.BookingSagaHelper;
 import com.poly.booking.management.domain.service.BookingDomainService;
 import com.poly.domain.valueobject.DateCustom;
-import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.domain.valueobject.PaymentStatus;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;
@@ -230,7 +230,7 @@ public class DepositSagaHelper {
      */
     public PaymentOutboxMessage createUpdatedPaymentOutboxMessage(
             PaymentOutboxMessage outboxMessage,
-            EBookingStatus bookingStatus,
+            BookingStatus bookingStatus,
             SagaStatus sagaStatus) {
 
         outboxMessage.setProcessedAt(DateCustom.now().getValue());
@@ -269,7 +269,7 @@ public class DepositSagaHelper {
      * @param sagaStatus        Trạng thái saga mới
      */
     public void updateRoomOutboxMessageForRollback(RoomOutboxMessage roomOutboxMessage,
-                                                   EBookingStatus bookingStatus,
+                                                   BookingStatus bookingStatus,
                                                    SagaStatus sagaStatus) {
         roomOutboxMessage.setBookingStatus(bookingStatus);
         roomOutboxMessage.setSagaStatus(sagaStatus);

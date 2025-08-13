@@ -2,7 +2,7 @@ package com.poly.booking.management.domain.outbox.service;
 
 import com.poly.booking.management.domain.outbox.model.RoomOutboxMessage;
 import com.poly.booking.management.domain.outbox.payload.ReservedEventPayload;
-import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;
 
@@ -22,11 +22,11 @@ public interface RoomOutboxService {
                                                                                SagaStatus... sagaStatus);
 
     RoomOutboxMessage getUpdatedRoomOutBoxMessage(RoomOutboxMessage roomOutboxMessage,
-                                                  EBookingStatus status,
+                                                  BookingStatus status,
                                                   SagaStatus sagaStatus);
 
     void saveRoomOutboxMessage(ReservedEventPayload reservedEventPayload,
-                               EBookingStatus status,
+                               BookingStatus status,
                                SagaStatus sagaStatus,
                                OutboxStatus outboxStatus,
                                UUID uuid);

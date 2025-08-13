@@ -6,7 +6,7 @@ import com.poly.booking.management.domain.outbox.payload.NotifiEventPayload;
 import com.poly.booking.management.domain.outbox.model.NotifiOutboxMessage;
 import com.poly.booking.management.domain.outbox.service.NotificationOutboxService;
 import com.poly.booking.management.domain.port.out.repository.NotificationOutboxRepository;
-import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -57,8 +58,12 @@ public class NotificationOutboxServiceImpl implements NotificationOutboxService 
     @Override
     @Transactional(readOnly = true)
     public Optional<NotifiOutboxMessage> getBySagaIdAndSagaStatus(UUID sagaId, SagaStatus... statuses) {
-        // TODO: Implement repository method to find by saga ID and statuses
         return notificationOutboxRepository.findByTypeAndSagaIdAndSagaStatus(BOOKING_SAGA_NAME, sagaId, statuses);
+    }
+
+    @Override
+    public Optional<List<NotifiOutboxMessage>> getListByBookingIdAndStatus(OutboxStatus outboxStatus, SagaStatus... sagaStatus) {
+        return notificationOutboxRepository.findByTypeAndOutboxStatusAndSagaStatus(BOOKING_SAGA_NAME, outboxStatus, sagaStatus);
     }
 
     /**
@@ -87,7 +92,7 @@ public class NotificationOutboxServiceImpl implements NotificationOutboxService 
      */
     public void saveWithPayloadAndBookingStatusAndSagaStatusAndOutboxStatusAndSagaId
     (NotifiEventPayload notificationEventPayload,
-     EBookingStatus bookingStatus,
+     BookingStatus bookingStatus,
      SagaStatus sagaStatus,
      OutboxStatus outboxStatus,
      UUID sagaId) {
@@ -104,6 +109,12 @@ public class NotificationOutboxServiceImpl implements NotificationOutboxService 
         log.info("Notification outbox message has been created successfully!");
     }
 
+    @Override
+    public void deleteByOutboxStatusAndSagaStatus(OutboxStatus outboxStatus, SagaStatus... sagaStatus) {
+        notificationOutboxRepository.deleteByTypeAndOutboxStatusAndSagaStatus(outboxStatus, sagaStatus);
+        log.info("Deleted notification outbox message with outbox status: {} and saga status: {}", outboxStatus, sagaStatus);
+    }
+
     /**
      * Cập nhật trạng thái notification outbox message
      *
@@ -113,13 +124,13 @@ public class NotificationOutboxServiceImpl implements NotificationOutboxService 
      * @return Message đã được cập nhật
      */
     public NotifiOutboxMessage getUpdated(NotifiOutboxMessage notificationOutboxMessage,
-                                          EBookingStatus bookingStatus,
+                                          BookingStatus bookingStatus,
                                           SagaStatus sagaStatus) {
         notificationOutboxMessage.setBookingStatus(bookingStatus);
         notificationOutboxMessage.setSagaStatus(sagaStatus);
         notificationOutboxMessage.setProcessedAt(LocalDateTime.now());
 
-        notificationOutboxMessage = notificationOutboxRepository.save(createPayload(notificationOutboxMessage));
+        notificationOutboxMessage = notificationOutboxRepository.save(notificationOutboxMessage);
         log.info("Updated notification outbox message with id: {}", notificationOutboxMessage.getId());
         return notificationOutboxMessage;
     }
@@ -133,21 +144,6 @@ public class NotificationOutboxServiceImpl implements NotificationOutboxService 
     private String createPayload(NotifiEventPayload payload) {
         try {
             return objectMapper.writeValueAsString(payload);
-        } catch (Exception e) {
-            log.error("Could not create notification outbox message payload!", e);
-            throw new BookingDomainException("Could not create notification outbox message payload!", e);
-        }
-    }
-
-    /**
-     * Tạo JSON payload từ notification outbox message
-     *
-     * @param message Notification outbox message
-     * @return JSON string representation
-     */
-    private String createPayload(NotifiOutboxMessage message) {
-        try {
-            return objectMapper.writeValueAsString(message);
         } catch (Exception e) {
             log.error("Could not create notification outbox message payload!", e);
             throw new BookingDomainException("Could not create notification outbox message payload!", e);

@@ -1,6 +1,6 @@
 package com.poly.booking.management.domain.dto.message;
 
-import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.domain.valueobject.NotificationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +38,6 @@ public class NotificationMessageResponse {
     private String qrCode;
     private Instant checkInTime;
     private NotificationStatus notificationStatus;
-    private EBookingStatus bookingStatus;
+    private BookingStatus bookingStatus;
     private List<String> failureMessages;
 }

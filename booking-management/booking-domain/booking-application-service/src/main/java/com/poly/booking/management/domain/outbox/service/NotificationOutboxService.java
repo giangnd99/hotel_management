@@ -1,10 +1,8 @@
 package com.poly.booking.management.domain.outbox.service;
 
 import com.poly.booking.management.domain.outbox.model.NotifiOutboxMessage;
-import com.poly.booking.management.domain.outbox.model.PaymentOutboxMessage;
 import com.poly.booking.management.domain.outbox.payload.NotifiEventPayload;
-import com.poly.booking.management.domain.outbox.payload.PaymentEventPayload;
-import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;
 
@@ -23,12 +21,12 @@ public interface NotificationOutboxService {
                                                                     SagaStatus... sagaStatus);
 
     NotifiOutboxMessage getUpdated(NotifiOutboxMessage notifiOutboxMessage,
-                                   EBookingStatus status,
+                                   BookingStatus status,
                                    SagaStatus sagaStatus);
 
     void saveWithPayloadAndBookingStatusAndSagaStatusAndOutboxStatusAndSagaId
             (NotifiEventPayload payload,
-             EBookingStatus status,
+             BookingStatus status,
              SagaStatus sagaStatus,
              OutboxStatus outboxStatus,
              UUID uuid);

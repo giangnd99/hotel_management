@@ -3,7 +3,6 @@ package com.poly.booking.management.domain.saga.notification;
 import com.poly.booking.management.domain.dto.message.NotificationMessageResponse;
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.event.CheckInEvent;
-import com.poly.booking.management.domain.event.CheckOutEvent;
 import com.poly.booking.management.domain.mapper.PaymentDataMapper;
 import com.poly.booking.management.domain.mapper.RoomDataMapper;
 import com.poly.booking.management.domain.outbox.model.NotifiOutboxMessage;
@@ -15,7 +14,7 @@ import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.saga.BookingSagaHelper;
 import com.poly.booking.management.domain.service.BookingDomainService;
 import com.poly.domain.valueobject.BookingId;
-import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.domain.valueobject.NotificationStatus;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;
@@ -79,7 +78,7 @@ public class NotificationSagaHelper {
                 .orElseThrow(() -> new RuntimeException("Booking not found: " + bookingId));
 
         // Validate booking status - chỉ cho phép check-in từ CONFIRMED status
-        if (!EBookingStatus.CONFIRMED.equals(booking.getStatus())) {
+        if (!BookingStatus.CONFIRMED.equals(booking.getStatus())) {
             throw new RuntimeException("Booking is not in CONFIRMED status for check-in: " + bookingId);
         }
 
@@ -198,7 +197,7 @@ public class NotificationSagaHelper {
                 .orElseThrow(() -> new RuntimeException("Booking not found for rollback: " + data.getBookingId()));
 
         // Revert booking status từ CHECKED_IN về CONFIRMED
-        if (EBookingStatus.CHECKED_IN.equals(booking.getStatus())) {
+        if (BookingStatus.CHECKED_IN.equals(booking.getStatus())) {
             // Note: In real implementation, use proper method to revert status
             // booking.setStatus(EBookingStatus.CONFIRMED);
             bookingRepository.save(booking);
@@ -220,7 +219,7 @@ public class NotificationSagaHelper {
         NotifiOutboxMessage updatedMessage = notificationOutboxServiceImpl
                 .getUpdated(
                         outboxMessage,
-                        EBookingStatus.CONFIRMED, // Revert về CONFIRMED status
+                        BookingStatus.CONFIRMED, // Revert về CONFIRMED status
                         SagaStatus.COMPENSATED
                 );
 

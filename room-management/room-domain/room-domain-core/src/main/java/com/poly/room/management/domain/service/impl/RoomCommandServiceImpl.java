@@ -32,7 +32,7 @@ public class RoomCommandServiceImpl implements RoomCommandService {
 
     @Override
     public void deleteRoom(Room room) {
-        if (room.getRoomStatus() == RoomStatus.OCCUPIED ||
+        if (room.getRoomStatus() == RoomStatus.CHECKED_IN ||
                 room.getRoomStatus() == RoomStatus.BOOKED) {
             throw new RoomDomainException("Cannot delete room with status " + room.getRoomStatus());
         }

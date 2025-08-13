@@ -6,7 +6,7 @@ import com.poly.booking.management.domain.outbox.payload.PaymentEventPayload;
 import com.poly.booking.management.domain.outbox.model.PaymentOutboxMessage;
 import com.poly.booking.management.domain.outbox.service.PaymentOutboxService;
 import com.poly.booking.management.domain.port.out.repository.PaymentOutBoxRepository;
-import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;
 import lombok.RequiredArgsConstructor;
@@ -38,11 +38,6 @@ public class PaymentOutboxImpl implements PaymentOutboxService {
     }
 
     @Override
-    public PaymentOutboxMessage getUpdated(PaymentOutboxMessage paymentOutboxMessage, EBookingStatus status, SagaStatus sagaStatus) {
-        return ;
-    }
-
-    @Override
     public void save(PaymentOutboxMessage updatePaymentOutboxMessage) {
         PaymentOutboxMessage response = paymentOutBoxRepository.save(updatePaymentOutboxMessage);
         if (response == null) {
@@ -54,7 +49,7 @@ public class PaymentOutboxImpl implements PaymentOutboxService {
 
     @Override
     public void saveWithPayloadAndBookingStatusAndSagaStatusAndOutboxStatusAndSagaId(PaymentEventPayload paymentEventPayload,
-                                                                                     EBookingStatus orderStatus,
+                                                                                     BookingStatus orderStatus,
                                                                                      SagaStatus sagaStatus,
                                                                                      OutboxStatus outboxStatus,
                                                                                      UUID sagaId) {
@@ -83,5 +78,6 @@ public class PaymentOutboxImpl implements PaymentOutboxService {
     @Override
     public void deleteByOutboxStatusAndSagaStatus(OutboxStatus outboxStatus, SagaStatus... sagaStatus) {
         paymentOutBoxRepository.deleteByTypeAndOutboxStatusAndSagaStatus(BOOKING_SAGA_NAME, outboxStatus, sagaStatus);
+        log.info("Deleted booking approval outbox message with outbox status: {} and saga status: {}", outboxStatus, sagaStatus);
     }
 }

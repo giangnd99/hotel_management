@@ -4,11 +4,11 @@ server:
 booking-service:
   payment-request-topic-name: payment-request
   payment-response-topic-name: payment-response
-  room-reserve-request-topic-name: restaurant-approval-request
-  room-reserve-response-topic-name: restaurant-approval-response
+  room-reserve-request-topic-name: room-approval-request
+  room-reserve-response-topic-name: room-approval-response
   customer-topic-name: customer
-  booking-confirmed-request-topic-name:
-  booking-confirmed-response-topic-name:
+  booking-confirmed-request-topic-name: room-confirm-request
+  booking-confirmed-response-topic-name: room-confirm-response
   outbox-scheduler-fixed-rate: 10000
   outbox-scheduler-initial-delay: 10000
 spring:
@@ -21,12 +21,12 @@ spring:
   jpa:
     open-in-view: false
     show-sql: true
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQL9Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=order&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
+    url: jdbc:postgresql://localhost:5433/postgres?currentSchema=booking&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
     username: postgres
     password: admin
     driver-class-name: org.postgresql.Driver
@@ -58,7 +58,8 @@ kafka-consumer-config:
   key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
   value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
   payment-consumer-group-id: payment-topic-consumer
-  room-consumer-group-id: restaurant-approval-topic-consumer
+  deposit-consumer-group-id: deposit-topic-consumer
+  room-consumer-group-id: booking-room-topic-consumer
   customer-group-id: customer-topic-consumer
   auto-offset-reset: earliest
   specific-avro-reader-key: specific.avro.reader

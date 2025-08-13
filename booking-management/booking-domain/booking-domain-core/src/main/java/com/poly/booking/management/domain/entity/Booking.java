@@ -18,13 +18,13 @@ public class Booking extends AggregateRoot<BookingId> {
     private CustomerId customerId;
     private DateCustom checkInDate;
     private DateCustom checkOutDate;
-    private EBookingStatus status;
+    private BookingStatus status;
     private TrackingId trackingId;
     private DateCustom actualCheckInDate;
     private DateCustom actualCheckOutDate;
     private Money totalPrice;
     private String upgradeSuggestion;
-    private List<Room> rooms;
+    private List<BookingRoom> bookingRooms;
     private List<String> failureMessages;
     public static final String FAILURE_MESSAGE_DELIMITER = ",";
 
@@ -39,7 +39,7 @@ public class Booking extends AggregateRoot<BookingId> {
         setActualCheckOutDate(builder.actualCheckOutDate);
         setTotalPrice(builder.totalPrice);
         upgradeSuggestion = builder.upgradeSuggestion;
-        rooms = builder.rooms;
+        bookingRooms = builder.bookingRooms;
         failureMessages = builder.failureMessages;
     }
 
@@ -50,7 +50,7 @@ public class Booking extends AggregateRoot<BookingId> {
         setId(new BookingId(UUID.randomUUID()));
         trackingId = new TrackingId(UUID.randomUUID());
         validateDateRange();
-        status = EBookingStatus.PENDING;
+        status = BookingStatus.PENDING;
     }
 
     /**
@@ -58,7 +58,7 @@ public class Booking extends AggregateRoot<BookingId> {
      */
     public void depositBooking() {
         validateStatusForDeposit();
-        status = EBookingStatus.DEPOSITED;
+        status = BookingStatus.DEPOSITED;
     }
 
     /**
@@ -66,7 +66,7 @@ public class Booking extends AggregateRoot<BookingId> {
      */
     public void confirmBooking() {
         validateStatusForConfirmDeposit();
-        status = EBookingStatus.CONFIRMED;
+        status = BookingStatus.CONFIRMED;
     }
 
     /**
@@ -74,7 +74,7 @@ public class Booking extends AggregateRoot<BookingId> {
      */
     public void checkIn() {
         validateStatusForCheckIn();
-        status = EBookingStatus.CHECKED_IN;
+        status = BookingStatus.CHECKED_IN;
     }
 
     /**
@@ -82,7 +82,7 @@ public class Booking extends AggregateRoot<BookingId> {
      */
     public void paidBooking() {
         validateStatusForPaid();
-        status = EBookingStatus.PAID;
+        status = BookingStatus.PAID;
     }
 
     /**
@@ -90,7 +90,7 @@ public class Booking extends AggregateRoot<BookingId> {
      */
     public void cancelBooking() {
         validateStatusForCancel();
-        status = EBookingStatus.CANCELLED;
+        status = BookingStatus.CANCELLED;
     }
 
     /**
@@ -98,7 +98,7 @@ public class Booking extends AggregateRoot<BookingId> {
      */
     public void cancelConfirmedBooking() {
         validateStatusForCancelConfirmed();
-        status = EBookingStatus.CANCELLED;
+        status = BookingStatus.CANCELLED;
     }
 
     /**
@@ -106,7 +106,7 @@ public class Booking extends AggregateRoot<BookingId> {
      */
     public void checkOut() {
         validateStatusForCheckOut();
-        status = EBookingStatus.CHECKED_OUT;
+        status = BookingStatus.CHECKED_OUT;
     }
 
     // ================= PRIVATE VALIDATION METHODS =================
@@ -116,9 +116,10 @@ public class Booking extends AggregateRoot<BookingId> {
         String customerName = customerId.toString();
         String checkInDateStr = getCheckInDate().toString();
         String checkOutDateStr = getCheckOutDate().toISOString();
-        String roomsListString = rooms.stream()
-                .map(Room::getRoomNumber)
-                .collect(Collectors.joining(", "));
+        String roomsListString = bookingRooms.stream()
+                .map(bookingRoom ->
+                        bookingRoom.getRoom().getRoomNumber()
+                ).collect(Collectors.joining(", "));
         String totalPriceStr = getTotalPrice().toString();
 
         return String.format(
@@ -139,37 +140,37 @@ public class Booking extends AggregateRoot<BookingId> {
     }
 
     private void validateStatusForDeposit() {
-        if (!EBookingStatus.PENDING.equals(status)) {
+        if (!BookingStatus.PENDING.equals(status)) {
             throw new BookingDomainException("Booking is not pending for deposit");
         }
     }
 
     private void validateStatusForConfirmDeposit() {
-        if (!EBookingStatus.PENDING.equals(status)) {
+        if (!BookingStatus.PENDING.equals(status)) {
             throw new BookingDomainException("Booking is not pending for confirmation");
         }
     }
 
     private void validateStatusForCheckIn() {
-        if (!EBookingStatus.CONFIRMED.equals(status)) {
+        if (!BookingStatus.CONFIRMED.equals(status)) {
             throw new BookingDomainException("Booking is not confirmed for check-in");
         }
     }
 
     private void validateStatusForPaid() {
-        if (!EBookingStatus.CHECKED_IN.equals(status)) {
+        if (!BookingStatus.CHECKED_IN.equals(status)) {
             throw new BookingDomainException("Booking is not checked-in for payment");
         }
     }
 
     private void validateStatusForCancel() {
-        if (!(EBookingStatus.PENDING.equals(status) || EBookingStatus.CHECKED_OUT.equals(status))) {
+        if (!(BookingStatus.PENDING.equals(status) || BookingStatus.CHECKED_OUT.equals(status))) {
             throw new BookingDomainException("Booking is not in a cancellable state");
         }
     }
 
     private void validateStatusForCancelConfirmed() {
-        if (!EBookingStatus.CONFIRMED.equals(status)) {
+        if (!BookingStatus.CONFIRMED.equals(status)) {
             throw new BookingDomainException("Booking is not confirmed for cancellation");
         }
         if (isRegularBooking()) {
@@ -178,7 +179,7 @@ public class Booking extends AggregateRoot<BookingId> {
     }
 
     private void validateStatusForCheckOut() {
-        if (!EBookingStatus.CHECKED_IN.equals(status)) {
+        if (!BookingStatus.CHECKED_IN.equals(status)) {
             throw new BookingDomainException("Booking is not checked-in for check-out");
         }
     }
@@ -188,7 +189,7 @@ public class Booking extends AggregateRoot<BookingId> {
     }
 
     // ================= GETTER/SETTER =================
-    public EBookingStatus getStatus() {
+    public BookingStatus getStatus() {
         return status;
     }
 
@@ -198,11 +199,16 @@ public class Booking extends AggregateRoot<BookingId> {
     }
 
     public void updateAndValidateTotalPrice() {
-        Money currentTotalRoomPrice = rooms != null ? rooms.stream()
-                .map(Room::getBasePrice)
+        Money currentTotalRoomPrice = bookingRooms != null ? bookingRooms.stream()
+                .map(bookingRoom -> bookingRoom.getRoom().getBasePrice())
                 .reduce(Money.ZERO, Money::add) : Money.ZERO;
         this.totalPrice = currentTotalRoomPrice;
         validateTotalPrice();
+    }
+
+    public void setBookingRooms(List<BookingRoom> bookingRooms) {
+        this.bookingRooms = bookingRooms;
+        updateAndValidateTotalPrice();
     }
 
     public Money getTotalPrice() {
@@ -213,8 +219,8 @@ public class Booking extends AggregateRoot<BookingId> {
         return customerId;
     }
 
-    public List<Room> getRooms() {
-        return rooms;
+    public List<BookingRoom> getBookingRooms() {
+        return bookingRooms;
     }
 
     public DateCustom getCheckInDate() {
@@ -251,7 +257,7 @@ public class Booking extends AggregateRoot<BookingId> {
         private CustomerId customerId;
         private DateCustom checkInDate;
         private DateCustom checkOutDate;
-        private EBookingStatus status;
+        private BookingStatus status;
         private TrackingId trackingId;
         private DateCustom actualCheckInDate;
         private DateCustom actualCheckOutDate;
@@ -259,7 +265,7 @@ public class Booking extends AggregateRoot<BookingId> {
         private ServiceId serviceId;
         private Money totalPrice;
         private String upgradeSuggestion;
-        private List<Room> rooms;
+        private List<BookingRoom> bookingRooms;
         private List<String> failureMessages;
 
         private Builder() {
@@ -289,7 +295,7 @@ public class Booking extends AggregateRoot<BookingId> {
             return this;
         }
 
-        public Builder status(EBookingStatus val) {
+        public Builder status(BookingStatus val) {
             status = val;
             return this;
         }
@@ -319,8 +325,8 @@ public class Booking extends AggregateRoot<BookingId> {
             return this;
         }
 
-        public Builder rooms(List<Room> val) {
-            rooms = val;
+        public Builder bookingRooms(List<BookingRoom> val) {
+            bookingRooms = val;
             return this;
         }
 

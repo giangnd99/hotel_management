@@ -48,7 +48,7 @@ public class BookingMessageDataMapper {
                 .id(bookingRoomResponseAvro.getId())
                 .bookingId(bookingRoomResponseAvro.getBookingId())
                 .reason(bookingRoomResponseAvro.getReason())
-                .reservationStatus(ReservationStatus.valueOf(bookingRoomResponseAvro.getReservationStatus()))
+                .roomResponseStatus(RoomResponseStatus.valueOf(bookingRoomResponseAvro.getReservationStatus()))
                 .sagaId(bookingRoomResponseAvro.getSagaId())
                 .totalPrice(bookingRoomResponseAvro.getTotalPrice())
                 .rooms(roomsAvroToRooms(bookingRoomResponseAvro.getRooms()))
