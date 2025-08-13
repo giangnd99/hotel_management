@@ -7,6 +7,7 @@ import com.poly.promotion.domain.core.entity.VoucherPack;
 import com.poly.promotion.domain.core.exception.PromotionDomainException;
 import com.poly.promotion.domain.core.valueobject.DateRange;
 import com.poly.promotion.domain.core.valueobject.DiscountPercentage;
+import com.poly.promotion.domain.core.valueobject.VoucherId;
 import com.poly.promotion.domain.core.valueobject.VoucherPackId;
 import com.poly.promotion.domain.core.valueobject.VoucherStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -222,7 +223,7 @@ class VoucherServiceImplTest {
     }
 
     private Voucher createTestVoucher(String customerId) {
-        return Voucher.builder()
+        Voucher tesVoucher = Voucher.builder()
                 .customerId(new com.poly.domain.valueobject.CustomerId(UUID.fromString(customerId)))
                 .voucherPackId(new VoucherPackId(1L))
                 .voucherCode("TEST-" + UUID.randomUUID().toString().substring(0, 8))
@@ -231,6 +232,10 @@ class VoucherServiceImplTest {
                 .validTo(LocalDateTime.now().plusDays(30))
                 .voucherStatus(VoucherStatus.PENDING)
                 .build();
+
+        tesVoucher.setId(new VoucherId(UUID.randomUUID()));
+
+        return tesVoucher;
     }
 
     private VoucherPack createMockVoucherPack(Long packId) {

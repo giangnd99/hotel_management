@@ -94,4 +94,69 @@ public class VoucherPackServiceImpl implements VoucherPackService {
             voucherPackRepository.closeVoucherPack(voucherPackId);
         }
     }
+
+    @Override
+    public int markExpiredVoucherPacks() {
+        // Get all voucher packs eligible for expiration
+        List<VoucherPack> eligiblePacks = voucherPackRepository.getVoucherPacksEligibleForExpiration();
+        
+        int expiredCount = 0;
+        for (VoucherPack pack : eligiblePacks) {
+            try {
+                // Update status to EXPIRED
+                voucherPackRepository.updateVoucherPackStatus(pack.getId().getValue(), VoucherPackStatus.EXPIRED);
+                expiredCount++;
+            } catch (Exception e) {
+                // Log the error but continue with other packs
+                // In a production environment, you might want to use a proper logging framework
+                System.err.println("Failed to expire voucher pack " + pack.getId().getValue() + ": " + e.getMessage());
+            }
+        }
+        
+        return expiredCount;
+    }
+
+    @Override
+    public List<VoucherPack> getVoucherPacksEligibleForExpiration() {
+        return voucherPackRepository.getVoucherPacksEligibleForExpiration();
+    }
+
+    @Override
+    public void updateVoucherPackStatus(Long voucherPackId, VoucherPackStatus newStatus) {
+        // Validate that the voucher pack exists
+        if (!voucherPackRepository.existsById(voucherPackId)) {
+            throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
+        }
+        
+        // Validate status transition (basic validation)
+        VoucherPack pack = voucherPackRepository.getVoucherPackById(voucherPackId);
+        if (!isValidStatusTransition(pack.getStatus(), newStatus)) {
+            throw new PromotionDomainException("Invalid status transition from " + pack.getStatus() + " to " + newStatus);
+        }
+        
+        voucherPackRepository.updateVoucherPackStatus(voucherPackId, newStatus);
+    }
+
+    /**
+     * Validates if a status transition is allowed.
+     * This is a basic validation - you might want to add more sophisticated rules.
+     */
+    private boolean isValidStatusTransition(VoucherPackStatus currentStatus, VoucherPackStatus newStatus) {
+        // Allow transition to EXPIRED from any status (for system operations)
+        if (newStatus == VoucherPackStatus.EXPIRED) {
+            return true;
+        }
+        
+        // Allow transition to CLOSED from PENDING or PUBLISHED
+        if (newStatus == VoucherPackStatus.CLOSED) {
+            return currentStatus == VoucherPackStatus.PENDING || currentStatus == VoucherPackStatus.PUBLISHED;
+        }
+        
+        // Allow transition to PUBLISHED from PENDING
+        if (newStatus == VoucherPackStatus.PUBLISHED) {
+            return currentStatus == VoucherPackStatus.PENDING;
+        }
+        
+        return false;
+    }
 }

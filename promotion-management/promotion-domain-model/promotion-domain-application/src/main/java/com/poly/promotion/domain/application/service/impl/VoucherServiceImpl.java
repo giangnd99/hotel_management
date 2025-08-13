@@ -170,4 +170,93 @@ public class VoucherServiceImpl implements VoucherService {
     private String generateUniqueVoucherCode() {
         return "VOUCHER-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
+
+    @Override
+    public int expireExpiredVouchers() {
+        // Get all vouchers eligible for expiration
+        List<Voucher> eligibleVouchers = voucherRepository.getVouchersEligibleForExpiration();
+        
+        int expiredCount = 0;
+        for (Voucher voucher : eligibleVouchers) {
+            try {
+                // Update status to EXPIRED
+                voucherRepository.updateVoucherStatus(voucher.getId().getValue().toString(), VoucherStatus.EXPIRED);
+                expiredCount++;
+            } catch (Exception e) {
+                // Log the error but continue with other vouchers
+                // In a production environment, you might want to use a proper logging framework
+                System.err.println("Failed to expire voucher " + voucher.getId().getValue() + ": " + e.getMessage());
+            }
+        }
+        
+        return expiredCount;
+    }
+
+    @Override
+    public List<Voucher> getVouchersEligibleForExpiration() {
+        return voucherRepository.getVouchersEligibleForExpiration();
+    }
+
+    @Override
+    public void updateVoucherStatus(String voucherId, VoucherStatus newStatus) {
+        // Validate voucher ID format
+        try {
+            UUID.fromString(voucherId);
+        } catch (IllegalArgumentException e) {
+            throw new PromotionDomainException("Invalid voucher ID format: " + voucherId);
+        }
+        
+        // Validate that the voucher exists
+        Voucher voucher = voucherRepository.getVoucherById(voucherId);
+        if (voucher == null) {
+            throw new PromotionDomainException("Voucher with ID " + voucherId + " not found");
+        }
+        
+        // Validate status transition (basic validation)
+        if (!isValidStatusTransition(voucher.getVoucherStatus(), newStatus)) {
+            throw new PromotionDomainException("Invalid status transition from " + voucher.getVoucherStatus() + " to " + newStatus);
+        }
+        
+        voucherRepository.updateVoucherStatus(voucherId, newStatus);
+    }
+
+    /**
+     * Checks if a voucher is eligible for expiration.
+     * A voucher is eligible if it's in REDEEMED status
+     * and has passed its validTo date.
+     */
+    private boolean isVoucherEligibleForExpiration(Voucher voucher) {
+        if (voucher.getVoucherStatus() != VoucherStatus.REDEEMED) {
+            return false;
+        }
+        
+        if (voucher.getValidTo() == null) {
+            return false;
+        }
+        
+        return voucher.getValidTo().isBefore(java.time.LocalDateTime.now());
+    }
+
+    /**
+     * Validates if a status transition is allowed.
+     * This is a basic validation - you might want to add more sophisticated rules.
+     */
+    private boolean isValidStatusTransition(VoucherStatus currentStatus, VoucherStatus newStatus) {
+        // Allow transition to EXPIRED from any status (for system operations)
+        if (newStatus == VoucherStatus.EXPIRED) {
+            return true;
+        }
+        
+        // Allow transition to USED from REDEEMED
+        if (newStatus == VoucherStatus.USED) {
+            return currentStatus == VoucherStatus.REDEEMED;
+        }
+        
+        // Allow transition to REDEEMED from PENDING
+        if (newStatus == VoucherStatus.REDEEMED) {
+            return currentStatus == VoucherStatus.PENDING;
+        }
+        
+        return false;
+    }
 }
