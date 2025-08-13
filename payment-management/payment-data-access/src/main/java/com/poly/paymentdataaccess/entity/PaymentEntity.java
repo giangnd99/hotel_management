@@ -3,9 +3,6 @@ package com.poly.paymentdataaccess.entity;
 import com.poly.paymentdataaccess.share.PaymentMethodEntity;
 import com.poly.paymentdataaccess.share.PaymentStatusEntity;
 import com.poly.paymentdataaccess.share.PaymentTransactionTypeEntity;
-import com.poly.paymentdomain.model.entity.valueobject.PaymentMethod;
-import com.poly.paymentdomain.model.entity.valueobject.PaymentStatus;
-import com.poly.paymentdomain.model.entity.valueobject.PaymentTransactionType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,25 +20,22 @@ import java.util.UUID;
 public class PaymentEntity {
 
     @Id
-    @Column(name = "payment_id", columnDefinition = "BINARY(16)")
+    @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name = "booking_id")
-    private UUID bookingId;
-
-    @Column(name = "invoice_id")
-    private UUID invoiceId;
+    @Column(name = "reference_id", columnDefinition = "BINARY(16)")
+    private UUID referenceId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "payment_status")
-    private PaymentStatusEntity paymentStatusEntity; // Trạng thái thanh toán
+    @Column(name = "status")
+    private PaymentStatusEntity status; // Trạng thái thanh toán
 
     @Column(name = "amount")
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "payment_method")
-    private PaymentMethodEntity paymentMethodEntity; // CASH, PAYOS
+    @Column(name = "method")
+    private PaymentMethodEntity method; // CASH, PAYOS
 
     @Column(name = "paid_at")
     private LocalDateTime paidAt;
@@ -49,10 +43,16 @@ public class PaymentEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "payment_transaction_type")
-    private PaymentTransactionTypeEntity paymentTransactionTypeEntity; // Loại dịch vụ chi trả
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-    @Column(name = "reference_code")
-    private String referenceCode;
+    @Column(name = "order_code")
+    private long orderCode;
+
+    @Column(name = "link")
+    private String paymentLink;
+
+    @Column(name = "description")
+    private String description; // Loại dịch vụ chi trả
+
 }
