@@ -74,33 +74,6 @@ public class DiscountPercentage implements Discount {
     }
 
     /**
-     * Calculates the discount amount based on the original transaction price.
-     * 
-     * <p>This method applies the percentage discount to the original price and returns
-     * the amount that should be discounted. The calculation uses proper rounding
-     * to ensure accurate financial calculations.</p>
-     * 
-     * <p><strong>Formula:</strong> discount = originalPrice × percentage ÷ 100</p>
-     * 
-     * <p><strong>Rounding:</strong> Uses HALF_UP rounding mode for consistent results.</p>
-     * 
-     * @param originalPrice the original transaction amount before discount
-     * @return the discount amount to be applied
-     * @throws IllegalArgumentException if originalPrice is null
-     */
-    @Override
-    public Money calculateDiscountAmount(Money originalPrice) {
-        if (originalPrice == null) {
-            throw new IllegalArgumentException("Original price cannot be null");
-        }
-        
-        BigDecimal discountAmount = originalPrice.getAmount()
-                .multiply(percentage)
-                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
-        return new Money(discountAmount);
-    }
-
-    /**
      * Gets a human-readable representation of this percentage discount.
      * 
      * <p>This method returns a formatted string that customers can easily understand,
