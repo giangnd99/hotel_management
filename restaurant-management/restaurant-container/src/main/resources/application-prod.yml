@@ -1,0 +1,166 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: restaurant-service
+  eureka:
+    client:
+      service-url:
+        defaultZone: http://eureka-server:8761/eureka/
+      register-with-eureka: true
+      fetch-registry: true
+    instance:
+      prefer-ip-address: true
+      hostname: ${HOSTNAME:restaurant-service}
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:postgres}:${DB_PORT:5432}/${DB_NAME:postgres}?currentSchema=restaurant&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:admin}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  jpa:
+    open-in-view: false
+    show-sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+        batch_versioned_data: true
+  sql:
+    init:
+      platform: postgres
+      mode: NEVER
+
+# Kafka Configuration for Production
+kafka-config:
+  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:19092,localhost:29092,localhost:39092}
+  schema-registry-url-key: schema.registry.url
+  schema-registry-url: ${SCHEMA_REGISTRY_URL:http://localhost:8081}
+  num-of-partitions: 3
+  replication-factor: 3
+
+# Kafka Producer Configuration for Production
+kafka-producer-config:
+  key-serializer-class: org.apache.kafka.common.serialization.StringSerializer
+  value-serializer-class: io.confluent.kafka.serializers.KafkaAvroSerializer
+  compression-type: snappy
+  acks: all
+  batch-size: 32768
+  batch-size-boost-factor: 100
+  linger-ms: 10
+  request-timeout-ms: 60000
+  retry-count: 5
+  buffer-memory: 67108864
+
+# Kafka Consumer Configuration for Production
+kafka-consumer-config:
+  key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+  payment-consumer-group-id: restaurant-payment-topic-consumer-prod
+  room-order-consumer-group-id: restaurant-room-order-topic-consumer-prod
+  auto-offset-reset: earliest
+  specific-avro-reader-key: specific.avro.reader
+  specific-avro-reader: true
+  batch-listener: true
+  auto-startup: true
+  concurrency-level: 6
+  session-timeout-ms: 30000
+  heartbeat-interval-ms: 10000
+  max-poll-interval-ms: 300000
+  max-poll-records: 500
+  max-partition-fetch-bytes-default: 1048576
+  max-partition-fetch-bytes-boost-factor: 1
+  poll-timeout-ms: 300
+
+# Kafka Topics Configuration for Production
+kafka:
+  topic:
+    payment-request: restaurant-payment-request-prod
+    payment-response: restaurant-payment-response-prod
+    room-order-request: restaurant-room-order-request-prod
+    room-order-response: restaurant-room-order-response-prod
+  group-id: restaurant-service-group-prod
+
+# Service URLs for Production
+payment:
+  service:
+    url: ${PAYMENT_SERVICE_URL:http://payment-service:8092}
+
+customer:
+  service:
+    url: ${CUSTOMER_SERVICE_URL:http://customer-service:8093}
+
+notification:
+  service:
+    url: ${NOTIFICATION_SERVICE_URL:http://notification-service:8091}
+
+room:
+  service:
+    url: ${ROOM_SERVICE_URL:http://room-service:8087}
+
+# Feign client configuration for Production
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 30000
+        loggerLevel: basic
+  circuitbreaker:
+    enabled: true
+
+# OpenAPI Configuration for Production
+openapi:
+  service:
+    api-docs: restaurant-service-docs
+    title: Restaurant Service API
+    version: 1.0.0
+    server: ${SERVER_URL:http://restaurant-service:8082}
+
+# Logging configuration for Production
+logging:
+  level:
+    com.poly.restaurant: INFO
+    org.springframework.kafka: WARN
+    org.apache.kafka: WARN
+    org.hibernate.SQL: WARN
+    feign: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/restaurant-service.log
+    max-size: 100MB
+    max-history: 30
+
+# Management endpoints for monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# Security configuration for Production
+security:
+  basic:
+    enabled: true
+  user:
+    name: ${ADMIN_USERNAME:admin}
+    password: ${ADMIN_PASSWORD:admin123}

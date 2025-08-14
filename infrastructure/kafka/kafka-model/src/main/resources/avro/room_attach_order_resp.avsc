@@ -1,0 +1,14 @@
+{
+  "type": "record",
+  "name": "RoomOrderResponseMessageAvro",
+  "namespace": "com.poly.restaurant.management.message",
+  "fields": [
+    { "name": "id", "type": ["null", "string"], "default": null },
+    { "name": "orderId", "type": ["null", "string"], "default": null },
+    { "name": "roomId", "type": ["null", "string"], "default": null },
+    { "name": "customerId", "type": ["null", "string"], "default": null },
+    { "name": "responseStatus", "type": ["null", "string"], "default": null },
+    { "name": "message", "type": ["null", "string"], "default": null },
+    { "name": "requestType", "type": ["null", "string"], "default": null }
+  ]
+}

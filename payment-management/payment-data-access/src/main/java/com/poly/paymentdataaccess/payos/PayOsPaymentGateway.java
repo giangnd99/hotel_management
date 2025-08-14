@@ -1,7 +1,6 @@
 package com.poly.paymentdataaccess.payos;
 
-import com.poly.paymentapplicationservice.command.CreateDepositPaymentLinkCommand;
-import com.poly.paymentapplicationservice.command.CreatePaymentLinkConmand;
+import com.poly.paymentapplicationservice.dto.command.CreatePaymentLinkCommand;
 import com.poly.paymentapplicationservice.port.output.PaymentGateway;
 import com.poly.paymentapplicationservice.share.CheckoutResponseData;
 import com.poly.paymentdataaccess.mapper.PayOSMapper;
@@ -26,31 +25,7 @@ public class PayOsPaymentGateway implements PaymentGateway {
     }
 
     @Override
-    public CheckoutResponseData createDepositPaymentLink(CreateDepositPaymentLinkCommand command) throws Exception {
-        List<vn.payos.type.ItemData> itemData = command.getItems()
-                .stream()
-                .map(item -> vn.payos.type.ItemData.builder()
-                        .name(item.getName())
-                        .quantity(item.getQuantity())
-                        .price(item.getPrice().intValue())
-                        .build())
-                .toList();
-
-        PaymentData paymentData = PaymentData
-                .builder()
-                .orderCode(command.getReferenceCode())
-                .amount(command.getAmount().intValue())
-                .description(command.getDescription())
-                .returnUrl(RETURN_URL)
-                .cancelUrl(CANCEL_URL)
-                .items(itemData)
-                .build();
-
-        return PayOSMapper.toCheckoutResponseData(payOS.createPaymentLink(paymentData));
-    }
-
-    @Override
-    public CheckoutResponseData createPaymentLink(CreatePaymentLinkConmand command) throws Exception {
+    public CheckoutResponseData createPaymentLink(CreatePaymentLinkCommand command) throws Exception {
         List<ItemData> items = command.getItems().stream()
                 .map(item -> ItemData.builder()
                         .name(item.getName())
@@ -61,7 +36,7 @@ public class PayOsPaymentGateway implements PaymentGateway {
 
         PaymentData paymentData = PaymentData
                 .builder()
-                .orderCode(command.getPaymentId().node())
+                .orderCode(command.getOrderCode())
                 .amount(Integer.valueOf(command.getAmount().toString()))
                 .description(command.getDescription())
                 .returnUrl(RETURN_URL)

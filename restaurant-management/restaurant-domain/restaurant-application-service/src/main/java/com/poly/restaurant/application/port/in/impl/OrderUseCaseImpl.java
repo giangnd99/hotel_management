@@ -4,6 +4,8 @@ import com.poly.restaurant.application.port.in.OrderUseCase;
 import com.poly.restaurant.application.annotation.DomainHandler;
 import com.poly.restaurant.application.dto.OrderDTO;
 import com.poly.restaurant.application.handler.OrderHandler;
+import com.poly.restaurant.application.handler.conmand.CreateOrderDirectlyCommand;
+import com.poly.restaurant.application.handler.conmand.CreateOrderWithRoomDetailCommand;
 import com.poly.restaurant.application.mapper.OrderMapper;
 import com.poly.restaurant.domain.entity.Order;
 import com.poly.restaurant.domain.entity.OrderStatus;
@@ -18,6 +20,8 @@ import java.util.List;
 public class OrderUseCaseImpl implements OrderUseCase {
 
     private final OrderHandler orderHandler;
+    private final CreateOrderDirectlyCommand createOrderDirectlyCommand;
+    private final CreateOrderWithRoomDetailCommand createOrderWithRoomDetailCommand;
 
     // ========== BASIC CRUD OPERATIONS ==========
 
@@ -138,5 +142,31 @@ public class OrderUseCaseImpl implements OrderUseCase {
         return orderHandler.getOrdersByStatus(orderStatus).stream()
                 .map(OrderMapper::toDto)
                 .toList();
+    }
+
+    // ========== NEW ORDER TYPES ==========
+
+    @Override
+    public OrderDTO createDirectOrder(OrderDTO orderDTO) {
+        log.info("Creating direct order: {}", orderDTO.id());
+        return createOrderDirectlyCommand.createOrder(orderDTO);
+    }
+
+    @Override
+    public OrderDTO createRoomAttachedOrder(OrderDTO orderDTO) {
+        log.info("Creating room attached order: {}", orderDTO.id());
+        return createOrderWithRoomDetailCommand.createOrderWithRoomDetail(orderDTO);
+    }
+
+    @Override
+    public void triggerDirectPaymentRequest(OrderDTO orderDTO) {
+        log.info("Triggering direct payment request for order: {}", orderDTO.id());
+        createOrderDirectlyCommand.triggerPaymentRequest(orderDTO);
+    }
+
+    @Override
+    public void triggerRoomOrderPaymentRequest(OrderDTO orderDTO) {
+        log.info("Triggering room order payment request for order: {}", orderDTO.id());
+        createOrderWithRoomDetailCommand.triggerPaymentRequest(orderDTO);
     }
 }
