@@ -2,12 +2,12 @@ server:
   port: 8082
 
 restaurant-service:
-  payment-request-topic-name: restaurant-payment-request
-  payment-response-topic-name: restaurant-payment-response
-  room-order-request-topic-name: restaurant-room-order-request
-  room-order-response-topic-name: restaurant-room-order-response
-  outbox-scheduler-fixed-rate: 10000
-  outbox-scheduler-initial-delay: 10000
+  booked-room-request-topic-name: restaurant-room-order-topic
+  booked-room-response-topic-name: restaurant-room-order-response-topic
+  restaurant-payment-request-topic-name: restaurant-payment-topic
+  restaurant-payment-response-topic-name: restaurant-payment-response-topic
+  restaurant-room-order-request-topic-name: restaurant-room-order-request-topic
+  restaurant-room-order-response-topic-name: restaurant-room-order-response-topic
 
 spring:
   application:
@@ -80,14 +80,7 @@ kafka-consumer-config:
   max-partition-fetch-bytes-boost-factor: 1
   poll-timeout-ms: 150
 
-# Kafka Topics Configuration
-kafka:
-  topic:
-    payment-request: restaurant-payment-request
-    payment-response: restaurant-payment-response
-    room-order-request: restaurant-room-order-request
-    room-order-response: restaurant-room-order-response
-  group-id: restaurant-service-group
+
 
 # Service URLs for Feign clients
 payment:
