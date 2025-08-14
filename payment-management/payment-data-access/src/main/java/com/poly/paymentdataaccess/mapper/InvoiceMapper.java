@@ -34,7 +34,7 @@ public class InvoiceMapper {
                 .status(InvoiceStatusEntity.valueOf(invoice.getStatus().name()))
                 .createdDate(invoice.getCreatedAt())
                 .updatedDate(invoice.getUpdatedAt())
-                .note(invoice.getNote() != null ? invoice.getNote().getValue() : null)
+                .note(invoice.getNote() != null ? invoice.getNote().getValue() : "empty")
                 .build();
     }
 }

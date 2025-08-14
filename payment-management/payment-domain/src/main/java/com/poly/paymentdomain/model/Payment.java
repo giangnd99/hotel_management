@@ -19,6 +19,7 @@ public class Payment extends AggregateRoot<PaymentId> {
     private ReferenceId referenceId;
     @Setter
     private PaymentStatus status;
+    @Setter
     private Money amount;
     private PaymentMethod method;
     @Setter

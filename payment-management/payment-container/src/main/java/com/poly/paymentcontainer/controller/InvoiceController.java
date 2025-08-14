@@ -2,14 +2,13 @@ package com.poly.paymentcontainer.controller;
 
 import com.poly.paymentapplicationservice.dto.command.CreateInvoiceCommand;
 import com.poly.paymentapplicationservice.port.input.CreateInvoiceUsecase;
+import com.poly.paymentapplicationservice.port.input.RetrieveInvoiceUsecase;
 import com.poly.paymentcontainer.dto.CreateInvoiceRequest;
+import com.poly.paymentcontainer.dto.InvoiceDetailRequest;
 import com.poly.paymentdomain.model.value_object.Description;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/invoice")
@@ -18,18 +17,26 @@ public class InvoiceController {
 
     private final CreateInvoiceUsecase createInvoiceUsecase;
 
+    private final RetrieveInvoiceUsecase retrieveInvoiceUsecase;
+
     @PostMapping("/create")
-    public ResponseEntity createInvoice(@RequestBody CreateInvoiceRequest createInvoiceRequest) {
+    public ResponseEntity createInvoice(@RequestBody CreateInvoiceRequest request) {
         CreateInvoiceCommand command = CreateInvoiceCommand.builder()
-                .referenceId(createInvoiceRequest.getReferenceId())
-                .customerId(createInvoiceRequest.getCustomerId())
-                .staffId(createInvoiceRequest.getStaffId())
-                .tax(createInvoiceRequest.getTax())
-                .subTotal(createInvoiceRequest.getSubTotal())
-                .totalAmount(createInvoiceRequest.getTotalAmount())
-                .note(Description.from(createInvoiceRequest.getNote()))
+                .referenceId(request.getReferenceId())
+                .customerId(request.getCustomerId())
+                .staffId(request.getStaffId())
+                .voucherAmount(request.getVoucherAmount())
+                .tax(request.getTax())
+                .subTotal(request.getSubTotal())
+                .totalAmount(request.getTotalAmount())
+                .note(Description.from(request.getNote()))
                 .build();
         return ResponseEntity.ok().body(createInvoiceUsecase.createInvoice(command));
+    }
+
+    @PostMapping("/detail")
+    public ResponseEntity retrieveInvoice(@RequestBody InvoiceDetailRequest request) {
+        return ResponseEntity.ok().body(retrieveInvoiceUsecase.retrieveInvoice(request.getInvoiceId()));
     }
 
 //    @PostMapping("/create")

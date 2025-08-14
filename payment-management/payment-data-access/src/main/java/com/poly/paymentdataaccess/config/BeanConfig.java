@@ -31,11 +31,8 @@ public class BeanConfig {
     @Bean
     public CreateInvoicePaymentLinkUsecase createInvoicePaymentLinkUsecase(
             PaymentRepository paymentRepository,
-
             InvoicePaymentRepository invoicePaymentRepository,
-
             InvoiceRepository invoiceRepository,
-
             PaymentGateway payOSClient
     ) {
         return new CreateInvoicePaymentLinkUsecaseImpl(
@@ -75,4 +72,20 @@ public class BeanConfig {
     ) {
         return new AutoExpirePaymentUsecaseImpl(paymentRepository, payOSClient);
     }
+
+    @Bean
+    public RetrieveInvoiceUsecase retrieveInvoiceUsecase(InvoiceRepository invoiceRepository) {
+        return new RetriveInvoiceUsecaseImpl(invoiceRepository);
+    }
+
+    @Bean
+    public  CreateDirectPaymentLinkUsecase createDirectPaymentLinkUsecase(
+            InvoiceRepository invoiceRepository,
+            PaymentRepository paymentRepository,
+            InvoicePaymentRepository invoicePaymentRepository,
+            PaymentGateway payOSClient
+    ) {
+        return new CreateDirectPaymentLinkUsecaseImpl(invoiceRepository, paymentRepository, invoicePaymentRepository, payOSClient);
+    }
+
 }
