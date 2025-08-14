@@ -1,6 +1,5 @@
 package com.poly.booking.management.domain.saga.notification;
 
-import com.poly.booking.management.domain.dto.message.NotificationMessageResponse;
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.event.CheckInEvent;
 import com.poly.booking.management.domain.mapper.PaymentDataMapper;
@@ -13,6 +12,7 @@ import com.poly.booking.management.domain.outbox.service.impl.PaymentOutboxImpl;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.saga.BookingSagaHelper;
 import com.poly.booking.management.domain.service.BookingDomainService;
+import com.poly.booking.management.messaging.message.NotificationMessageResponse;
 import com.poly.domain.valueobject.BookingId;
 import com.poly.domain.valueobject.BookingStatus;
 import com.poly.domain.valueobject.NotificationStatus;

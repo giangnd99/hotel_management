@@ -7,8 +7,8 @@ booking-service:
   room-reserve-request-topic-name: room-approval-request
   room-reserve-response-topic-name: room-approval-response
   customer-topic-name: customer
-  booking-confirmed-request-topic-name: room-confirm-request
-  booking-confirmed-response-topic-name: room-confirm-response
+  booking-notification-request-topic-name: notification-send-mail-request
+  booking-notification-response-topic-name: notification-send-mail-response
   outbox-scheduler-fixed-rate: 10000
   outbox-scheduler-initial-delay: 10000
 spring:

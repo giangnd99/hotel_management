@@ -1,9 +1,9 @@
-package com.poly.booking.management.domain.saga.listener;
+package com.poly.booking.management.messaging.adapter.listener;
 
+import com.poly.booking.management.domain.port.in.message.listener.RoomReservedListener;
+import com.poly.booking.management.messaging.message.RoomMessageResponse;
 import org.springframework.stereotype.Service;
 
-import com.poly.booking.management.domain.dto.message.RoomMessageResponse;
-import com.poly.booking.management.domain.port.in.message.listener.room.RoomReservedListener;
 import com.poly.booking.management.domain.saga.room.ReserveRoomStep;
 
 import lombok.RequiredArgsConstructor;

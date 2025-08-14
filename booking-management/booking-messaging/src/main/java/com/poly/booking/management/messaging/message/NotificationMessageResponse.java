@@ -1,4 +1,4 @@
-package com.poly.booking.management.domain.dto.message;
+package com.poly.booking.management.messaging.message;
 
 import com.poly.domain.valueobject.BookingStatus;
 import com.poly.domain.valueobject.NotificationStatus;

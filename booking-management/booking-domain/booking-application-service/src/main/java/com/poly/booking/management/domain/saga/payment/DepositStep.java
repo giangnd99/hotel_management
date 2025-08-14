@@ -1,9 +1,10 @@
 package com.poly.booking.management.domain.saga.payment;
 
-import com.poly.booking.management.domain.dto.message.PaymentMessageResponse;
+
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.event.BookingDepositedEvent;
 import com.poly.booking.management.domain.outbox.model.PaymentOutboxMessage;
+import com.poly.booking.management.messaging.message.PaymentMessageResponse;
 import com.poly.domain.valueobject.PaymentStatus;
 import com.poly.saga.SagaStep;
 import lombok.RequiredArgsConstructor;
@@ -11,37 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * BookingPaymentSaga - Saga Step Implementation for Payment Processing
- * <p>
- * CHỨC NĂNG CHÍNH:
- * - Xử lý thanh toán trong quy trình Saga của hệ thống booking
- * - Quản lý trạng thái thanh toán và cập nhật outbox messages
- * - Thực hiện rollback khi thanh toán thất bại
- * <p>
- * MỤC ĐÍCH:
- * - Đảm bảo tính nhất quán dữ liệu trong quy trình thanh toán
- * - Xử lý bất đồng bộ thông qua Outbox Pattern
- * - Cung cấp khả năng rollback khi có lỗi thanh toán
- * <p>
- * ÁP DỤNG PATTERNS:
- * - Saga Pattern: Quản lý distributed transaction cho payment flow
- * - Outbox Pattern: Đảm bảo message delivery reliability
- * - Domain Events: Tách biệt business logic payment
- * <p>
- * FLOW XỬ LÝ:
- * 1. Nhận payment response từ external payment service
- * 2. Validate outbox message để tránh duplicate processing
- * 3. Thực hiện business logic thanh toán
- * 4. Cập nhật saga status và lưu outbox messages
- * 5. Trigger next step (room reservation) nếu thanh toán thành công
- * <p>
- * ROLLBACK FLOW:
- * 1. Nhận payment failure/cancellation từ external service
- * 2. Tìm outbox message với trạng thái phù hợp
- * 3. Thực hiện cancel booking
- * 4. Cập nhật trạng thái đã rollback
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor

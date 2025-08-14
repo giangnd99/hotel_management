@@ -3,8 +3,9 @@ package com.poly.booking.management.messaging.listener.kafka;
 import com.poly.booking.management.domain.exception.BookingDomainException;
 import com.poly.booking.management.domain.kafka.model.BookingPaymentResponseAvro;
 import com.poly.booking.management.domain.kafka.model.PaymentStatus;
-import com.poly.booking.management.domain.port.in.message.listener.payment.PaymentDepositListener;
+import com.poly.booking.management.domain.port.in.message.listener.PaymentListener;
 import com.poly.booking.management.messaging.mapper.BookingMessageDataMapper;
+import com.poly.booking.management.messaging.message.PaymentMessageResponse;
 import com.poly.kafka.consumer.KafkaConsumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,7 @@ import java.util.List;
 public class PaymentResponseKafkaListener implements KafkaConsumer<BookingPaymentResponseAvro> {
 
     private final BookingMessageDataMapper bookingDataMapper;
-    private final PaymentDepositListener paymentResponseListener;
+    private final PaymentListener paymentResponseListener;
 
     /**
      * Lắng nghe và xử lý payment response messages từ Kafka topic
@@ -177,8 +178,8 @@ public class PaymentResponseKafkaListener implements KafkaConsumer<BookingPaymen
     private void processCompletedPayment(BookingPaymentResponseAvro bookingPaymentResponseAvro) {
         log.info("Total payment completed cho booking id: {}", bookingPaymentResponseAvro.getBookingId());
 
-        var paymentMessageResponse = bookingDataMapper.paymentResponseAvroToPayment(bookingPaymentResponseAvro);
-        paymentResponseListener.paymentDepositCompleted(paymentMessageResponse);
+        PaymentMessageResponse paymentMessageResponse = bookingDataMapper.paymentResponseAvroToPayment(bookingPaymentResponseAvro);
+        paymentResponseListener.paymentCompleted(paymentMessageResponse);
     }
 
     /**
@@ -187,8 +188,8 @@ public class PaymentResponseKafkaListener implements KafkaConsumer<BookingPaymen
     private void processFailedPayment(BookingPaymentResponseAvro bookingPaymentResponseAvro) {
         log.info("Total payment failed cho booking id: {}", bookingPaymentResponseAvro.getBookingId());
 
-        var paymentMessageResponse = bookingDataMapper.paymentResponseAvroToPayment(bookingPaymentResponseAvro);
-        paymentResponseListener.paymentDepositCancelled(paymentMessageResponse);
+        PaymentMessageResponse paymentMessageResponse = bookingDataMapper.paymentResponseAvroToPayment(bookingPaymentResponseAvro);
+        paymentResponseListener.paymentCancelled(paymentMessageResponse);
     }
 
     /**

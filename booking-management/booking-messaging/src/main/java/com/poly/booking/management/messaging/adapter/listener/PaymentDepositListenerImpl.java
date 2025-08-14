@@ -1,9 +1,9 @@
-package com.poly.booking.management.domain.saga.listener;
+package com.poly.booking.management.messaging.adapter.listener;
 
+import com.poly.booking.management.domain.port.in.message.listener.PaymentDepositListener;
+import com.poly.booking.management.messaging.message.PaymentMessageResponse;
 import org.springframework.stereotype.Service;
 
-import com.poly.booking.management.domain.dto.message.PaymentMessageResponse;
-import com.poly.booking.management.domain.port.in.message.listener.payment.PaymentDepositListener;
 import com.poly.booking.management.domain.saga.payment.DepositStep;
 
 import lombok.RequiredArgsConstructor;

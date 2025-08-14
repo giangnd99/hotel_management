@@ -1,6 +1,7 @@
-package com.poly.booking.management.domain.port.in.message.listener.payment;
+package com.poly.booking.management.domain.port.in.message.listener;
 
-import com.poly.booking.management.domain.dto.message.PaymentMessageResponse;
+
+import com.poly.booking.management.messaging.message.PaymentMessageResponse;
 
 public interface PaymentDepositListener {
 

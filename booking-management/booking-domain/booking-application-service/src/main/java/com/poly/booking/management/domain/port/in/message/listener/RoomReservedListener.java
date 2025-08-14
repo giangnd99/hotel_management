@@ -1,6 +1,7 @@
-package com.poly.booking.management.domain.port.in.message.listener.room;
+package com.poly.booking.management.domain.port.in.message.listener;
 
-import com.poly.booking.management.domain.dto.message.RoomMessageResponse;
+
+import com.poly.booking.management.messaging.message.RoomMessageResponse;
 
 public interface RoomReservedListener {
 

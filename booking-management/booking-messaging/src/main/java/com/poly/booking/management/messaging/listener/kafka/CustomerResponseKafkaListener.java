@@ -1,7 +1,7 @@
 package com.poly.booking.management.messaging.listener.kafka;
 
 import com.poly.booking.management.domain.kafka.model.CustomerModelAvro;
-import com.poly.booking.management.domain.port.in.message.listener.customer.CustomerMessageListener;
+import com.poly.booking.management.domain.port.in.message.listener.CustomerMessageListener;
 import com.poly.booking.management.messaging.mapper.BookingMessageDataMapper;
 import com.poly.kafka.consumer.KafkaConsumer;
 import lombok.RequiredArgsConstructor;

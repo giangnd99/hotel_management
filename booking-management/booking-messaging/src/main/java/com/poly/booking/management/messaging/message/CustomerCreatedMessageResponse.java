@@ -1,4 +1,4 @@
-package com.poly.booking.management.domain.dto.message;
+package com.poly.booking.management.messaging.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
