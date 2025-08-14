@@ -6,9 +6,11 @@ import com.poly.domain.valueobject.ReferenceId;
 import com.poly.paymentdataaccess.entity.PaymentEntity;
 import com.poly.paymentdataaccess.share.PaymentMethodEntity;
 import com.poly.paymentdataaccess.share.PaymentStatusEntity;
-import com.poly.paymentdataaccess.share.PaymentTransactionTypeEntity;
-import com.poly.paymentdomain.model.entity.Payment;
-import com.poly.paymentdomain.model.entity.value_object.*;
+import com.poly.paymentdomain.model.Payment;
+import com.poly.paymentdomain.model.value_object.Description;
+import com.poly.paymentdomain.model.value_object.Money;
+import com.poly.paymentdomain.model.value_object.OrderCode;
+import com.poly.paymentdomain.model.value_object.PaymentId;
 
 public class PaymentMapper {
     public static Payment toDomain(PaymentEntity entity) {

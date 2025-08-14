@@ -1,4 +1,4 @@
-package com.poly.paymentdomain.model.entity.value_object;
+package com.poly.paymentdomain.model.value_object;
 
 
 public class Quantity {

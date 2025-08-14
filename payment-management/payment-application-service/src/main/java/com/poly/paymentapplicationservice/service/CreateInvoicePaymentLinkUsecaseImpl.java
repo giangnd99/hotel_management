@@ -2,7 +2,6 @@ package com.poly.paymentapplicationservice.service;
 
 import com.poly.domain.valueobject.PaymentMethod;
 import com.poly.domain.valueobject.PaymentStatus;
-import com.poly.domain.valueobject.ReferenceId;
 import com.poly.paymentapplicationservice.dto.command.CreateInvoicePaymentCommand;
 import com.poly.paymentapplicationservice.dto.command.CreatePaymentLinkCommand;
 import com.poly.paymentapplicationservice.dto.result.PaymentLinkResult;
@@ -10,10 +9,12 @@ import com.poly.paymentapplicationservice.port.input.CreateInvoicePaymentLinkUse
 import com.poly.paymentapplicationservice.port.output.PaymentGateway;
 import com.poly.paymentapplicationservice.share.CheckoutResponseData;
 import com.poly.paymentapplicationservice.share.ItemData;
-import com.poly.paymentdomain.model.entity.Invoice;
-import com.poly.paymentdomain.model.entity.InvoicePayment;
-import com.poly.paymentdomain.model.entity.Payment;
-import com.poly.paymentdomain.model.entity.value_object.*;
+import com.poly.paymentdomain.model.Invoice;
+import com.poly.paymentdomain.model.InvoicePayment;
+import com.poly.paymentdomain.model.Payment;
+import com.poly.paymentdomain.model.value_object.Description;
+import com.poly.paymentdomain.model.value_object.OrderCode;
+import com.poly.paymentdomain.model.value_object.PaymentId;
 import com.poly.paymentdomain.output.InvoicePaymentRepository;
 import com.poly.paymentdomain.output.InvoiceRepository;
 import com.poly.paymentdomain.output.PaymentRepository;

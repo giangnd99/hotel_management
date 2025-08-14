@@ -1,13 +1,16 @@
 package com.poly.paymentdataaccess.repository.impl;
 
+import com.poly.domain.valueobject.PaymentStatus;
 import com.poly.paymentdataaccess.entity.PaymentEntity;
 import com.poly.paymentdataaccess.mapper.PaymentMapper;
 import com.poly.paymentdataaccess.repository.PaymentJpaRepository;
-import com.poly.paymentdomain.model.entity.Payment;
+import com.poly.paymentdataaccess.share.PaymentStatusEntity;
+import com.poly.paymentdomain.model.Payment;
 import com.poly.paymentdomain.output.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,6 +42,13 @@ public class PaymentRepositoryImpl implements PaymentRepository {
             return Optional.of(payment);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<Payment> findAllByStatusAndCreatedAtBefore(PaymentStatus status, LocalDateTime beforeTime) {
+        List<PaymentEntity> paymentEntities = paymentJpaRepository.findAllByStatusAndCreatedAtBefore(PaymentStatusEntity.valueOf(status.name()), beforeTime);
+        List<Payment> payments = paymentEntities.stream().map(PaymentMapper::toDomain).collect(Collectors.toList());
+        return payments;
     }
 
     @Override

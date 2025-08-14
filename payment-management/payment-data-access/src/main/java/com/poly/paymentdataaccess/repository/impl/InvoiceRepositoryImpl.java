@@ -3,7 +3,7 @@ package com.poly.paymentdataaccess.repository.impl;
 import com.poly.paymentdataaccess.entity.InvoiceEntity;
 import com.poly.paymentdataaccess.mapper.InvoiceMapper;
 import com.poly.paymentdataaccess.repository.InvoiceJpaRepository;
-import com.poly.paymentdomain.model.entity.Invoice;
+import com.poly.paymentdomain.model.Invoice;
 import com.poly.paymentdomain.output.InvoiceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
