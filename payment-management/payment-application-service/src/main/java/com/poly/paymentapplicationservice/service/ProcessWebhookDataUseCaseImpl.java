@@ -3,10 +3,10 @@ package com.poly.paymentapplicationservice.service;
 import com.poly.domain.valueobject.PaymentStatus;
 import com.poly.paymentapplicationservice.dto.command.ConfirmPaymentCommand;
 import com.poly.paymentapplicationservice.port.input.ProcessWebhookDataUseCase;
-import com.poly.paymentdomain.model.entity.Invoice;
-import com.poly.paymentdomain.model.entity.InvoicePayment;
-import com.poly.paymentdomain.model.entity.Payment;
-import com.poly.paymentdomain.model.entity.value_object.InvoiceStatus;
+import com.poly.paymentdomain.model.Invoice;
+import com.poly.paymentdomain.model.InvoicePayment;
+import com.poly.paymentdomain.model.Payment;
+import com.poly.paymentdomain.model.value_object.InvoiceStatus;
 import com.poly.paymentdomain.output.InvoicePaymentRepository;
 import com.poly.paymentdomain.output.InvoiceRepository;
 import com.poly.paymentdomain.output.PaymentRepository;
@@ -37,15 +37,13 @@ public class ProcessWebhookDataUseCaseImpl implements ProcessWebhookDataUseCase 
         if (paymentOpt.get().getStatus().equals(PaymentStatus.PAID)) return ;
 
         Payment payment = paymentOpt.get();
-        // Cập nhật trạng thái payment
-        if (command.isStatus()) {
-            payment.setStatus(PaymentStatus.PAID);
-        } else {
-            payment.setStatus(PaymentStatus.FAILED);
-        }
-        payment.setPaidAt(command.getTransactionDateTime());
 
-        // Cập nhật InvoicePayment
+        if (command.isStatus()) {
+            payment.markAsPaid(command.getTransactionDateTime());
+        } else {
+            payment.markAsFailed(command.getTransactionDateTime());
+        }
+
         Optional<InvoicePayment> invoicePaymentOpt = invoicePaymentRepository.findByPaymentId(payment.getId().getValue());
 
         if (invoicePaymentOpt.isPresent()) {
@@ -58,9 +56,9 @@ public class ProcessWebhookDataUseCaseImpl implements ProcessWebhookDataUseCase 
                     Invoice invoice = invoiceOpt.get();
                     // Cập nhật trạng thái invoice
                     if (command.isStatus()) {
-                        invoice.setStatus(InvoiceStatus.PAID);
+                        invoice.markAsPaid(command.getTransactionDateTime());
                     } else {
-                        invoice.setStatus(InvoiceStatus.FAILED);
+                        invoice.markAsFailed(command.getTransactionDateTime());
                     }
                     invoiceRepository.save(invoice);
                 }

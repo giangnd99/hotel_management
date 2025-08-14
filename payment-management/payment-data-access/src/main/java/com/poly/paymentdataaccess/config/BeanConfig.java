@@ -1,15 +1,9 @@
 package com.poly.paymentdataaccess.config;
 
 
-import com.poly.paymentapplicationservice.port.input.CreateDepositPaymentLinkUsecase;
-import com.poly.paymentapplicationservice.port.input.CreateInvoicePaymentLinkUsecase;
-import com.poly.paymentapplicationservice.port.input.CreateInvoiceUsecase;
-import com.poly.paymentapplicationservice.port.input.ProcessWebhookDataUseCase;
+import com.poly.paymentapplicationservice.port.input.*;
 import com.poly.paymentapplicationservice.port.output.PaymentGateway;
-import com.poly.paymentapplicationservice.service.CreateDepositPaymentLinkUsecaseImpl;
-import com.poly.paymentapplicationservice.service.CreateInvoicePaymentLinkUsecaseImpl;
-import com.poly.paymentapplicationservice.service.CreateInvoiceUsecaseImpl;
-import com.poly.paymentapplicationservice.service.ProcessWebhookDataUseCaseImpl;
+import com.poly.paymentapplicationservice.service.*;
 import com.poly.paymentdomain.output.InvoicePaymentRepository;
 import com.poly.paymentdomain.output.InvoiceRepository;
 import com.poly.paymentdomain.output.PaymentRepository;
@@ -72,5 +66,13 @@ public class BeanConfig {
                 invoiceRepository,
                 invoicePaymentRepository
         );
+    }
+
+    @Bean
+    public AutoExpirePaymentsUsecase autoExpirePaymentUsecase(
+            PaymentRepository paymentRepository,
+            PaymentGateway payOSClient
+    ) {
+        return new AutoExpirePaymentUsecaseImpl(paymentRepository, payOSClient);
     }
 }

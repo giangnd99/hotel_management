@@ -1,6 +1,6 @@
 package com.poly.paymentdomain.output;
 
-import com.poly.paymentdomain.model.entity.Invoice;
+import com.poly.paymentdomain.model.Invoice;
 
 import java.util.UUID;
 

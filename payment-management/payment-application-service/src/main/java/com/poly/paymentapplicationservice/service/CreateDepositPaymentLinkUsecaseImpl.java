@@ -11,9 +11,9 @@ import com.poly.paymentapplicationservice.port.input.CreateDepositPaymentLinkUse
 import com.poly.paymentapplicationservice.port.output.PaymentGateway;
 import com.poly.paymentapplicationservice.share.CheckoutResponseData;
 import com.poly.paymentapplicationservice.share.ItemData;
-import com.poly.paymentdomain.model.entity.InvoicePayment;
-import com.poly.paymentdomain.model.entity.Payment;
-import com.poly.paymentdomain.model.entity.value_object.*;
+import com.poly.paymentdomain.model.InvoicePayment;
+import com.poly.paymentdomain.model.Payment;
+import com.poly.paymentdomain.model.value_object.*;
 import com.poly.paymentdomain.output.InvoicePaymentRepository;
 import com.poly.paymentdomain.output.PaymentRepository;
 
@@ -53,9 +53,6 @@ public class CreateDepositPaymentLinkUsecaseImpl implements CreateDepositPayment
             }
             if(existedPayment.get().getStatus().equals(PaymentStatus.CANCELED)) {
                 throw new ApplicationServiceException("Payment Deposit canceled");
-            }
-            if (existedPayment.get().getStatus().equals(PaymentStatus.EXPIRED)) {
-                throw new ApplicationServiceException("Payment Deposit expired");
             }
         }
 

@@ -3,8 +3,8 @@ package com.poly.paymentdataaccess.mapper;
 import com.poly.domain.valueobject.InvoiceId;
 import com.poly.paymentdataaccess.entity.InvoiceEntity;
 import com.poly.paymentdataaccess.share.InvoiceStatusEntity;
-import com.poly.paymentdomain.model.entity.Invoice;
-import com.poly.paymentdomain.model.entity.value_object.*;
+import com.poly.paymentdomain.model.Invoice;
+import com.poly.paymentdomain.model.value_object.*;
 
 public class InvoiceMapper {
 

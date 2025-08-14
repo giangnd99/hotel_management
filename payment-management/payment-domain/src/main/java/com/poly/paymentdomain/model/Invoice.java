@@ -1,8 +1,8 @@
-package com.poly.paymentdomain.model.entity;
+package com.poly.paymentdomain.model;
 
 import com.poly.domain.entity.AggregateRoot;
 import com.poly.domain.valueobject.InvoiceId;
-import com.poly.paymentdomain.model.entity.value_object.*;
+import com.poly.paymentdomain.model.value_object.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,5 +34,19 @@ public class Invoice extends AggregateRoot<InvoiceId> {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.note = note;
+    }
+
+    public void markAsPaid(LocalDateTime paidAt) {
+        if (this.status == InvoiceStatus.PAID) {
+            return;
+        }
+        this.updatedAt = paidAt;
+    }
+
+    public void markAsFailed(LocalDateTime failedAt) {
+        if (this.status == InvoiceStatus.PAID) {
+            return;
+        }
+        this.updatedAt = failedAt;
     }
 }

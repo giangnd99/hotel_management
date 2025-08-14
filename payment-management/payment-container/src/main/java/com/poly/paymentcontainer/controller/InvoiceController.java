@@ -3,7 +3,7 @@ package com.poly.paymentcontainer.controller;
 import com.poly.paymentapplicationservice.dto.command.CreateInvoiceCommand;
 import com.poly.paymentapplicationservice.port.input.CreateInvoiceUsecase;
 import com.poly.paymentcontainer.dto.CreateInvoiceRequest;
-import com.poly.paymentdomain.model.entity.value_object.Description;
+import com.poly.paymentdomain.model.value_object.Description;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

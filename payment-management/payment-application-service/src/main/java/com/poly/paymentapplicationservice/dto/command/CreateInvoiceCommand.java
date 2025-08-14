@@ -1,6 +1,6 @@
 package com.poly.paymentapplicationservice.dto.command;
 
-import com.poly.paymentdomain.model.entity.value_object.Description;
+import com.poly.paymentdomain.model.value_object.Description;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

@@ -2,9 +2,9 @@ package com.poly.paymentdataaccess.mapper;
 
 import com.poly.domain.valueobject.InvoiceId;
 import com.poly.paymentdataaccess.entity.InvoicePaymentEntity;
-import com.poly.paymentdomain.model.entity.InvoicePayment;
-import com.poly.paymentdomain.model.entity.value_object.InvoicePaymentId;
-import com.poly.paymentdomain.model.entity.value_object.PaymentId;
+import com.poly.paymentdomain.model.InvoicePayment;
+import com.poly.paymentdomain.model.value_object.InvoicePaymentId;
+import com.poly.paymentdomain.model.value_object.PaymentId;
 
 public class InvoicePaymentMapper {
     public static InvoicePayment toDomain(InvoicePaymentEntity entity) {
