@@ -1,14 +1,13 @@
 package edu.poly.servicemanagement;
 
-import edu.poly.servicemanagement.model.Services;
-import edu.poly.servicemanagement.repository.ServiceRepository;
-import edu.poly.servicemanagement.service.ServiceService;
+import edu.poly.servicemanagement.entity.Service_;
+import edu.poly.servicemanagement.repository.Service_Repository;
+import edu.poly.servicemanagement.service.impl.Service_ServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -23,19 +22,19 @@ import static org.mockito.Mockito.*;
 public class ServiceServiceTest {
 
     @Mock // Tạo một mock object cho ServiceRepository
-    private ServiceRepository serviceRepository;
+    private Service_Repository serviceRepository;
 
     @InjectMocks // Tiêm các mock object vào ServiceService
-    private ServiceService serviceService;
+    private Service_ServiceImpl serviceService;
 
-    private Services service1;
-    private Services service2;
+    private Service_ service1;
+    private Service_ service2;
 
     @BeforeEach
     void setUp() {
         // Khởi tạo dữ liệu mock trước mỗi bài kiểm thử
-        service1 = new Services(1, "Phòng đơn", "Phòng đơn tiện nghi", new BigDecimal("100.00"), "Available");
-        service2 = new Services(2, "Phòng đôi", "Phòng đôi rộng rãi", new BigDecimal("150.00"), "Available");
+        service1 = new Service_(1, "Phòng đơn", "Phòng đơn tiện nghi", new BigDecimal("100.00"), "Available");
+        service2 = new Service_(2, "Phòng đôi", "Phòng đôi rộng rãi", new BigDecimal("150.00"), "Available");
     }
 
     @Test
@@ -43,7 +42,7 @@ public class ServiceServiceTest {
         // Định nghĩa hành vi của mock: khi findAll() được gọi, trả về danh sách service1 và service2
         when(serviceRepository.findAll()).thenReturn(Arrays.asList(service1, service2));
 
-        List<Services> services = serviceService.getAllServices();
+        List<Service_> services = serviceService.getAll();
 
         // Xác nhận kết quả
         assertNotNull(services);
@@ -60,7 +59,7 @@ public class ServiceServiceTest {
         // Định nghĩa hành vi của mock: khi findById(1) được gọi, trả về Optional chứa service1
         when(serviceRepository.findById(1)).thenReturn(Optional.of(service1));
 
-        Optional<Services> foundService = serviceService.getServiceById(1);
+        Optional<Service_> foundService = serviceService.getById(1);
 
         // Xác nhận kết quả
         assertTrue(foundService.isPresent());
@@ -75,7 +74,7 @@ public class ServiceServiceTest {
         // Định nghĩa hành vi của mock: khi findById(99) được gọi, trả về Optional rỗng
         when(serviceRepository.findById(99)).thenReturn(Optional.empty());
 
-        Optional<Services> foundService = serviceService.getServiceById(99);
+        Optional<Service_> foundService = serviceService.getById(99);
 
         // Xác nhận kết quả
         assertFalse(foundService.isPresent());
@@ -86,11 +85,11 @@ public class ServiceServiceTest {
 
     @Test
     void createService_shouldReturnCreatedService() {
-        Services newService = new Services(null, "Phòng VIP", "Phòng cao cấp", new BigDecimal("300.00"), "Available");
+        Service_ newService = new Service_(null, "Phòng VIP", "Phòng cao cấp", new BigDecimal("300.00"), "Available");
         // Định nghĩa hành vi của mock: khi save() được gọi với bất kỳ đối tượng Services nào, trả về đối tượng đó
-        when(serviceRepository.save(any(Services.class))).thenReturn(service1); // Giả sử save trả về service1 sau khi gán ID
+        when(serviceRepository.save(any(Service_.class))).thenReturn(service1); // Giả sử save trả về service1 sau khi gán ID
 
-        Services createdService = serviceService.createService(newService);
+        Service_ createdService = serviceService.create(newService);
 
         // Xác nhận kết quả
         assertNotNull(createdService);
@@ -102,13 +101,13 @@ public class ServiceServiceTest {
 
     @Test
     void updateService_shouldReturnUpdatedServiceWhenFound() {
-        Services updatedDetails = new Services(1, "Phòng đơn VIP", "Phòng đơn đã nâng cấp", new BigDecimal("120.00"), "Unavailable");
+        Service_ updatedDetails = new Service_(1, "Phòng đơn VIP", "Phòng đơn đã nâng cấp", new BigDecimal("120.00"), "Unavailable");
 
         // Định nghĩa hành vi của mock
         when(serviceRepository.findById(1)).thenReturn(Optional.of(service1));
-        when(serviceRepository.save(any(Services.class))).thenReturn(updatedDetails); // Giả sử save trả về updatedDetails
+        when(serviceRepository.save(any(Service_.class))).thenReturn(updatedDetails); // Giả sử save trả về updatedDetails
 
-        Services result = serviceService.updateService(1, updatedDetails);
+        Service_ result = serviceService.update(1, updatedDetails);
 
         // Xác nhận kết quả
         assertNotNull(result);
@@ -124,19 +123,19 @@ public class ServiceServiceTest {
 
     @Test
     void updateService_shouldReturnNullWhenNotFound() {
-        Services updatedDetails = new Services(99, "Phòng không tồn tại", "Mô tả", new BigDecimal("100.00"), "Available");
+        Service_ updatedDetails = new Service_(99, "Phòng không tồn tại", "Mô tả", new BigDecimal("100.00"), "Available");
 
         // Định nghĩa hành vi của mock: khi findById(99) được gọi, trả về Optional rỗng
         when(serviceRepository.findById(99)).thenReturn(Optional.empty());
 
-        Services result = serviceService.updateService(99, updatedDetails);
+        Service_ result = serviceService.update(99, updatedDetails);
 
         // Xác nhận kết quả
         assertNull(result);
 
         // Xác minh rằng phương thức findById() đã được gọi, nhưng save() thì không
         verify(serviceRepository, times(1)).findById(99);
-        verify(serviceRepository, never()).save(any(Services.class));
+        verify(serviceRepository, never()).save(any(Service_.class));
     }
 
     @Test
@@ -145,7 +144,7 @@ public class ServiceServiceTest {
         when(serviceRepository.existsById(1)).thenReturn(true);
         // Không cần định nghĩa hành vi cho deleteById vì nó là void
 
-        boolean deleted = serviceService.deleteService(1);
+        boolean deleted = serviceService.delete(1);
 
         // Xác nhận kết quả
         assertTrue(deleted);
@@ -160,7 +159,7 @@ public class ServiceServiceTest {
         // Định nghĩa hành vi của mock: khi existsById(99) được gọi, trả về false
         when(serviceRepository.existsById(99)).thenReturn(false);
 
-        boolean deleted = serviceService.deleteService(99);
+        boolean deleted = serviceService.delete(99);
 
         // Xác nhận kết quả
         assertFalse(deleted);
