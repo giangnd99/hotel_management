@@ -1,7 +1,10 @@
 package com.poly.restaurant.application.port.in.message.listener;
 
+import com.poly.message.model.room.RoomResponseMessage;
+
 public interface RoomResponseListener {
-    void onRoomMergeSuccess(String roomId);
-    void onRoomMergeFailure();
+    void onRoomMergeSuccess(RoomResponseMessage roomResponseMessage);
+
+    void onRoomMergeFailure(RoomResponseMessage roomResponseMessage);
 
 }

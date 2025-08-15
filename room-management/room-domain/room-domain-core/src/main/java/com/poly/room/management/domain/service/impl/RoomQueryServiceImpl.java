@@ -30,7 +30,7 @@ public class RoomQueryServiceImpl implements RoomQueryService {
     public List<Room> findAvailableRooms(List<Room> allRooms, Optional<RoomTypeId> roomTypeId,
                                          Optional<Integer> minFloor, Optional<Integer> maxFloor, LocalDateTime checkInDate, LocalDateTime checkOutDate) {
         return allRooms.stream()
-                .filter(room -> room.getRoomStatus().getRoomStatus().equals(RoomStatus.VACANT.name()))
+                .filter(room -> room.getRoomStatus() == (RoomStatus.VACANT))
                 .filter(room -> roomTypeId.map(id -> room.getRoomType().getId().equals(id)).orElse(true))
                 .filter(room -> minFloor.map(floor -> room.getFloor() >= floor).orElse(true))
                 .filter(room -> maxFloor.map(floor -> room.getFloor() <= floor).orElse(true))
@@ -41,7 +41,7 @@ public class RoomQueryServiceImpl implements RoomQueryService {
     public List<Room> getRoomsByStatus(List<Room> allRooms, String statusName) {
         try {
             return allRooms.stream()
-                    .filter(room -> room.getRoomStatus().getRoomStatus().equalsIgnoreCase(statusName))
+                    .filter(room -> room.getRoomStatus().name().equalsIgnoreCase(statusName))
                     .collect(Collectors.toList());
         } catch (IllegalArgumentException e) {
             throw new RoomDomainException("Invalid room status: " + statusName);

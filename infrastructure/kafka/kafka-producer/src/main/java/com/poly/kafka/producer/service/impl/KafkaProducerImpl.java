@@ -1,6 +1,7 @@
 package com.poly.kafka.producer.service.impl;
 
 import com.poly.kafka.producer.service.KafkaProducer;
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
@@ -33,6 +34,7 @@ public class KafkaProducerImpl<K extends Serializable, V extends SpecificRecordB
         }
     }
 
+    @PreDestroy
     public void close() {
         if (kafkaTemplate != null) {
             log.info("Closing Kafka producer");

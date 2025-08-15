@@ -3,7 +3,7 @@ package com.poly.booking.management.messaging.listener.kafka;
 import com.poly.booking.management.domain.exception.BookingDomainException;
 import com.poly.booking.management.domain.kafka.model.BookingPaymentResponseAvro;
 import com.poly.booking.management.domain.kafka.model.PaymentStatus;
-import com.poly.booking.management.domain.port.in.message.listener.payment.PaymentDepositListener;
+import com.poly.booking.management.domain.port.in.message.listener.PaymentDepositListener;
 import com.poly.booking.management.messaging.mapper.BookingMessageDataMapper;
 import com.poly.kafka.consumer.KafkaConsumer;
 import lombok.RequiredArgsConstructor;

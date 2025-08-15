@@ -1,9 +1,12 @@
 package com.poly.room.management.domain.entity;
 
 import com.poly.domain.entity.BaseEntity;
+import com.poly.domain.valueobject.Money;
 import com.poly.domain.valueobject.RoomStatus;
 import com.poly.domain.valueobject.RoomId;
 import com.poly.room.management.domain.exception.RoomDomainException;
+
+import java.util.List;
 
 public class Room extends BaseEntity<RoomId> {
 
@@ -14,6 +17,12 @@ public class Room extends BaseEntity<RoomId> {
     private RoomType roomType;
 
     private RoomStatus roomStatus;
+
+    private Money roomPrice;
+
+    private String area;
+
+    private List<Furniture> furnitures;
 
     private Room(Builder builder) {
         super.setId(builder.id);
@@ -74,6 +83,14 @@ public class Room extends BaseEntity<RoomId> {
             throw new RoomDomainException("Room can only be occupied from BOOKED or VACANT status.");
         }
         this.roomStatus = RoomStatus.CHECKED_IN;
+    }
+
+    public Money getRoomPrice() {
+        return getRoomType().getBasePrice();
+    }
+
+    public List<Furniture> getFurnitures() {
+        return roomType.getFurnituresRequirements().stream().map(FurnitureRequirement::getFurniture).toList();
     }
 
     public String getRoomNumber() {
