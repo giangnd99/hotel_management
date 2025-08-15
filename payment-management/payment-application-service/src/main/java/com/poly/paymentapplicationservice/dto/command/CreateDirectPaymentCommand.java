@@ -1,23 +1,23 @@
 package com.poly.paymentapplicationservice.dto.command;
 
-import com.poly.paymentdomain.model.value_object.Description;
+import com.poly.paymentapplicationservice.share.ItemData;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NonNull;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
-@Setter
 @Builder
-public class CreateInvoiceCommand {
+public class CreateDirectPaymentCommand {
+    private @NonNull List<ItemData> items;
     private UUID referenceId;
-    private UUID customerId;
     private UUID staffId;
-    private BigDecimal tax;
+    private UUID customerId;
     private BigDecimal voucherAmount;
     private BigDecimal subTotal;
-    private BigDecimal totalAmount;
-    private Description note;
+    private BigDecimal taxRate;
+    private String notes;
 }

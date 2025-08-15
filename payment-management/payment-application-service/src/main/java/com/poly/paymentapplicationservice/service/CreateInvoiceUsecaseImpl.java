@@ -17,6 +17,7 @@ import com.poly.paymentdomain.output.InvoiceRepository;
 import com.poly.paymentdomain.output.PaymentRepository;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -52,7 +53,7 @@ public class CreateInvoiceUsecaseImpl implements CreateInvoiceUsecase {
                 .customerId(CustomerId.fromValue(command.getCustomerId()))
                 .staffId(StaffId.from(command.getStaffId()))
                 .subTotal(Money.from(command.getSubTotal()))
-                .totalAmount(calculateTotalAmount(command.getSubTotal(), command.getTax() != null ?  command.getTax() : BigDecimal.ZERO))
+                .totalAmount(calculateTotalAfterVoucherAndTax(command.getSubTotal(), command.getTax(),  command.getVoucherAmount()))
                 .taxRate(Money.from(command.getTax()))
                 .invoiceStatus(InvoiceStatus.PENDING)
                 .createdAt(LocalDateTime.now())
@@ -82,9 +83,43 @@ public class CreateInvoiceUsecaseImpl implements CreateInvoiceUsecase {
         return result;
     }
 
-    private Money calculateTotalAmount(BigDecimal subTotal, BigDecimal taxRate){
-        BigDecimal taxAmount = taxRate.divide(BigDecimal.valueOf(100));
-        BigDecimal totalAmount = subTotal.add(taxAmount);
-        return Money.from(totalAmount);
+    private Money calculateTotalAfterVoucherAndTax(BigDecimal subTotal, BigDecimal taxRate, BigDecimal voucherAmount) {
+        if (subTotal == null) {
+            throw new ApplicationServiceException("SubTotal not found");
+        }
+
+        // 1. Tính số tiền giảm giá
+        BigDecimal discount = BigDecimal.ZERO;
+        if (voucherAmount != null && voucherAmount.compareTo(BigDecimal.ZERO) > 0) {
+            if (voucherAmount.compareTo(BigDecimal.ONE) >= 0 &&
+                    voucherAmount.compareTo(new BigDecimal("99")) <= 0) {
+                // voucherAmount từ 1 → 100 => % giảm
+                discount = subTotal.multiply(voucherAmount)
+                        .divide(new BigDecimal("99"), 2, RoundingMode.HALF_UP);
+            } else {
+                // Giảm thẳng số tiền
+                discount = voucherAmount;
+            }
+        }
+
+        // 2. Trừ voucher vào subtotal
+        BigDecimal discountedTotal = subTotal.subtract(discount);
+
+        // Không để âm (phòng trường hợp voucher > subtotal)
+        if (discountedTotal.compareTo(BigDecimal.ZERO) < 0) {
+            discountedTotal = BigDecimal.ZERO;
+        }
+
+        // 3. Tính thuế
+        BigDecimal taxAmount = BigDecimal.ZERO;
+        if (taxRate != null && taxRate.compareTo(BigDecimal.ZERO) > 0) {
+            taxAmount = discountedTotal.multiply(taxRate)
+                    .divide(new BigDecimal("99"), 2, RoundingMode.HALF_UP);
+        }
+
+        // 4. Tổng cuối cùng
+        BigDecimal finalTotal = discountedTotal.add(taxAmount);
+
+        return Money.from(finalTotal);
     }
 }

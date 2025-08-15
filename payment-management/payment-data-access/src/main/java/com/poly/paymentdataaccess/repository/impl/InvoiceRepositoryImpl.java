@@ -5,6 +5,7 @@ import com.poly.paymentdataaccess.mapper.InvoiceMapper;
 import com.poly.paymentdataaccess.repository.InvoiceJpaRepository;
 import com.poly.paymentdomain.model.Invoice;
 import com.poly.paymentdomain.output.InvoiceRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -40,7 +41,8 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
 
     @Override
     public Optional<Invoice> findById(UUID uuid) {
-        InvoiceEntity entity = invoiceJpaRepository.findById(uuid).orElse(null);
+        InvoiceEntity entity = invoiceJpaRepository.findById(uuid)
+                .orElseThrow(() -> new EntityNotFoundException("Invoice not found: " + uuid));
         return Optional.ofNullable(InvoiceMapper.toDomain(entity));
     }
 

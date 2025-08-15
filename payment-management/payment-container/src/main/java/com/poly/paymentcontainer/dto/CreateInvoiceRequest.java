@@ -11,6 +11,7 @@ public class CreateInvoiceRequest {
     private UUID customerId;
     private UUID staffId;
     private BigDecimal tax;
+    private BigDecimal voucherAmount;
     private BigDecimal subTotal;
     private BigDecimal totalAmount;
     private String note;
