@@ -1,14 +1,6 @@
 server:
   port: 8082
 
-restaurant-service:
-  payment-request-topic-name: restaurant-payment-request
-  payment-response-topic-name: restaurant-payment-response
-  room-order-request-topic-name: restaurant-room-order-request
-  room-order-response-topic-name: restaurant-room-order-response
-  outbox-scheduler-fixed-rate: 10000
-  outbox-scheduler-initial-delay: 10000
-
 spring:
   application:
     name: restaurant-service
@@ -64,8 +56,6 @@ kafka-producer-config:
 kafka-consumer-config:
   key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
   value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-  payment-consumer-group-id: restaurant-payment-topic-consumer
-  room-order-consumer-group-id: restaurant-room-order-topic-consumer
   auto-offset-reset: earliest
   specific-avro-reader-key: specific.avro.reader
   specific-avro-reader: true
@@ -80,14 +70,6 @@ kafka-consumer-config:
   max-partition-fetch-bytes-boost-factor: 1
   poll-timeout-ms: 150
 
-# Kafka Topics Configuration
-kafka:
-  topic:
-    payment-request: restaurant-payment-request
-    payment-response: restaurant-payment-response
-    room-order-request: restaurant-room-order-request
-    room-order-response: restaurant-room-order-response
-  group-id: restaurant-service-group
 
 # Service URLs for Feign clients
 payment:

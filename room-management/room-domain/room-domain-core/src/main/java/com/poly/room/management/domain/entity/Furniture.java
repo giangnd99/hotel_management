@@ -2,47 +2,41 @@ package com.poly.room.management.domain.entity;
 
 import com.poly.domain.entity.BaseEntity;
 import com.poly.domain.valueobject.InventoryItemId;
+import com.poly.domain.valueobject.Money;
 import com.poly.room.management.domain.exception.RoomDomainException;
 import com.poly.room.management.domain.valueobject.FurnitureId;
 
 public class Furniture extends BaseEntity<FurnitureId> {
 
-    private InventoryItemId inventoryItemId;
+    private String name;
+    private Money price;
 
-    public Furniture() {
+    public String getName() {
+        return name;
     }
 
-    public Furniture(InventoryItemId inventoryItemId) {
-        this.inventoryItemId = inventoryItemId;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Money getPrice() {
+        return price;
+    }
+
+    public void setPrice(Money price) {
+        this.price = price;
     }
 
     private Furniture(Builder builder) {
         super.setId(builder.id);
-        setInventoryItemId(builder.inventoryItemId);
+        name = builder.name;
+        price = builder.price;
     }
-
-    public void validate() {
-        if (inventoryItemId == null
-                || inventoryItemId.getValue() == null
-                || inventoryItemId.getValue().isEmpty()
-                || inventoryItemId.getValue().isBlank()) {
-            throw new RoomDomainException("InventoryItemId is null");
-        }
-    }
-
-    public InventoryItemId getInventoryItemId() {
-        return inventoryItemId;
-    }
-
-    public void setInventoryItemId(InventoryItemId inventoryItemId) {
-        this.inventoryItemId = inventoryItemId;
-        validate();
-    }
-
 
     public static final class Builder {
         private FurnitureId id;
-        private InventoryItemId inventoryItemId;
+        private String name;
+        private Money price;
 
         private Builder() {
         }
@@ -56,8 +50,13 @@ public class Furniture extends BaseEntity<FurnitureId> {
             return this;
         }
 
-        public Builder inventoryItemId(InventoryItemId val) {
-            inventoryItemId = val;
+        public Builder name(String val) {
+            name = val;
+            return this;
+        }
+
+        public Builder price(Money val) {
+            price = val;
             return this;
         }
 

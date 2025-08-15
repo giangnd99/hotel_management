@@ -1,6 +1,6 @@
 package com.poly.restaurant.application.port.out.message.publisher;
 
-import com.poly.restaurant.management.message.PaymentRequestMessage;
+import com.poly.message.model.payment.PaymentRequestMessage;
 
 public interface PaymentRequestPublisher {
 

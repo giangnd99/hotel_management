@@ -1,6 +1,7 @@
 package com.poly.restaurant.application.port.in.message.listener;
 
-import com.poly.restaurant.management.message.PaymentResponseMessage;
+import com.poly.message.model.payment.PaymentResponseMessage;
+
 
 public interface PaymentResponseListener {
 

@@ -14,6 +14,7 @@ import com.poly.room.management.domain.valueobject.RoomTypeId;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class RoomTypeManagementServiceImpl implements RoomTypeCommandService {
 
@@ -81,8 +82,7 @@ public class RoomTypeManagementServiceImpl implements RoomTypeCommandService {
             throw new RoomDomainException("Furniture quantity must be positive");
         }
 
-        FurnitureRequirementId requirementId = new FurnitureRequirementId(
-                new CompositeKey<>(furniture.getId(), roomType.getId()));
+        FurnitureRequirementId requirementId = new FurnitureRequirementId(UUID.randomUUID().variant());
 
         FurnitureRequirement requirement = FurnitureRequirement.Builder.builder()
                 .id(requirementId)
