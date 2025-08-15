@@ -1,55 +1,63 @@
-package edu.poly.servicemanagement.service;
+package edu.poly.servicemanagement.service.impl;
 
-import edu.poly.servicemanagement.model.Services;
-import edu.poly.servicemanagement.repository.ServiceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import edu.poly.servicemanagement.entity.Service_;
+import edu.poly.servicemanagement.repository.Service_Repository;
+import edu.poly.servicemanagement.service.Service_Service;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ServiceService {
+public class Service_ServiceImpl implements Service_Service {
 
-    @Autowired
-    private ServiceRepository serviceRepository;
+    private final Service_Repository serviceRepository;
+
+    public Service_ServiceImpl(Service_Repository serviceRepository) {
+        this.serviceRepository = serviceRepository;
+    }
 
     /**
      * Lấy tất cả các dịch vụ.
+     *
      * @return Danh sách tất cả các dịch vụ.
      */
-    public List<Services> getAllServices() {
+    public List<Service_> getAll() {
         return serviceRepository.findAll();
     }
 
     /**
      * Lấy một dịch vụ theo ID.
+     *
      * @param id ID của dịch vụ.
      * @return Optional chứa dịch vụ nếu tìm thấy, hoặc rỗng nếu không tìm thấy.
      */
-    public Optional<Services> getServiceById(Integer id) {
+    public Optional<Service_> getById(Integer id) {
         return serviceRepository.findById(id);
     }
 
     /**
      * Tạo một dịch vụ mới.
+     *
      * @param service Đối tượng dịch vụ cần tạo.
      * @return Dịch vụ đã được lưu vào cơ sở dữ liệu.
      */
-    public Services createService(Services service) {
+    public Service_ create(Service_ service) {
         return serviceRepository.save(service);
     }
 
     /**
      * Cập nhật một dịch vụ hiện có.
-     * @param id ID của dịch vụ cần cập nhật.
+     *
+     * @param id             ID của dịch vụ cần cập nhật.
      * @param serviceDetails Đối tượng dịch vụ với thông tin cập nhật.
      * @return Dịch vụ đã cập nhật, hoặc null nếu không tìm thấy dịch vụ.
      */
-    public Services updateService(Integer id, Services serviceDetails) {
-        Optional<Services> existingService = serviceRepository.findById(id);
+    public Service_ update(Integer id, Service_ serviceDetails) {
+        Optional<Service_> existingService = serviceRepository.findById(id);
         if (existingService.isPresent()) {
-            Services serviceToUpdate = existingService.get();
+            Service_ serviceToUpdate = existingService.get();
             serviceToUpdate.setServiceName(serviceDetails.getServiceName());
             serviceToUpdate.setDescription(serviceDetails.getDescription());
             serviceToUpdate.setPrice(serviceDetails.getPrice());
@@ -61,10 +69,11 @@ public class ServiceService {
 
     /**
      * Xóa một dịch vụ theo ID.
+     *
      * @param id ID của dịch vụ cần xóa.
      * @return true nếu xóa thành công, false nếu không tìm thấy dịch vụ.
      */
-    public boolean deleteService(Integer id) {
+    public boolean delete(Integer id) {
         if (serviceRepository.existsById(id)) {
             serviceRepository.deleteById(id);
             return true;
