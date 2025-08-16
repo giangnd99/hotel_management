@@ -1,6 +1,6 @@
 package com.poly.booking.management.domain.saga.payment;
 
-import com.poly.booking.management.domain.dto.message.PaymentMessageResponse;
+
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.event.BookingPaidEvent;
 import com.poly.booking.management.domain.exception.BookingDomainException;
@@ -13,6 +13,7 @@ import com.poly.booking.management.domain.outbox.service.RoomOutboxService;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.saga.BookingSagaHelper;
 import com.poly.booking.management.domain.service.BookingDomainService;
+import com.poly.booking.management.messaging.message.PaymentMessageResponse;
 import com.poly.domain.valueobject.DateCustom;
 import com.poly.domain.valueobject.BookingStatus;
 import com.poly.domain.valueobject.PaymentStatus;

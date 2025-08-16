@@ -9,16 +9,16 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CheckoutResponseData {
-    private @NonNull String bin;
-    private @NonNull String accountNumber;
-    private @NonNull String accountName;
-    private @NonNull Integer amount;
-    private @NonNull String description;
-    private @NonNull Long orderCode;
-    private @NonNull String currency;
-    private @NonNull String paymentLinkId;
-    private @NonNull String status;
+    private String bin;
+    private String accountNumber;
+    private  String accountName;
+    private  Integer amount;
+    private  String description;
+    private  Long orderCode;
+    private  String currency;
+    private  String paymentLinkId;
+    private  String status;
     private Long expiredAt;
-    private @NonNull String checkoutUrl;
-    private @NonNull String qrCode;
+    private  String checkoutUrl;
+    private  String qrCode;
 }

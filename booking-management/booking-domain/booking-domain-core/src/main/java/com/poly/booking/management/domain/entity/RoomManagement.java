@@ -4,6 +4,7 @@ import com.poly.domain.valueobject.Money;
 import com.poly.domain.valueobject.RoomId;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class RoomManagement {
 
@@ -20,14 +21,14 @@ public class RoomManagement {
 
         booking.getBookingRooms().forEach(
                 bookingRoom -> {
-                    RoomId roomId = bookingRoom.getId();
+                    RoomId roomId = bookingRoom.getRoom().getId();
                     Room roomInHotel = roomMapById.get(bookingRoom.getId());
                     if (roomInHotel != null
                             && !availableRooms.contains(bookingRoom.getId())
                             && roomInHotel.checkAvailableRoom()) {
 
                         availableRooms.add(roomId);
-                        bookingRoom.updateBookedRoom(
+                        bookingRoom.getRoom().updateBookedRoom(
                                 roomInHotel.getRoomNumber(),
                                 roomInHotel.getBasePrice());
                     }
@@ -44,7 +45,10 @@ public class RoomManagement {
 
     public Money getTotalCost(Booking booking) {
         Money totalCost = Money.ZERO;
-        for (Room room : booking.getBookingRooms()) {
+        List<Room> rooms = booking.getBookingRooms()
+                .stream()
+                .map(BookingRoom::getRoom).toList();
+        for (Room room : rooms) {
             totalCost = totalCost.add(room.getBasePrice());
         }
         return totalCost;

@@ -167,7 +167,7 @@ public class ConfirmedRequestKafkaPublisher implements NotificationRequestMessag
                                   BiConsumer<NotifiOutboxMessage, OutboxStatus> outboxCallback,
                                   NotifiEventPayload notificationEventPayload) {
         
-        String topicName = bookingServiceConfigData.getBookingConfirmedRequestTopicName();
+        String topicName = bookingServiceConfigData.getBookingNotificationRequestTopicName();
         
         kafkaProducer.send(
                 topicName,

@@ -1,8 +1,12 @@
 package com.poly.restaurant.domain.entity;
 
+import com.poly.domain.valueobject.Money;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class Order {
     private final String id;
@@ -11,6 +15,7 @@ public class Order {
     private final List<OrderItem> items;
     private final LocalDateTime createdAt;
     private OrderStatus status;
+    private Money totalPrice;
     private String customerNote;
 
     public Order(String id, String customerId, String tableId, List<OrderItem> items, LocalDateTime createdAt) {
@@ -58,6 +63,13 @@ public class Order {
         return customerNote;
     }
 
+
+    public Money getTotalPrice() {
+        Optional<BigDecimal> total = items.stream().map(OrderItem::getPrice)
+                .reduce(BigDecimal::add);
+        total.ifPresent(bigDecimal -> totalPrice = new Money(bigDecimal));
+        return totalPrice;
+    }
 
     // Business methods with validation
     public void setStatus(OrderStatus newStatus) {

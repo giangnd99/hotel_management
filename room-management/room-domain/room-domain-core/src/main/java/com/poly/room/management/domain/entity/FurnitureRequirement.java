@@ -11,25 +11,20 @@ import com.poly.room.management.domain.valueobject.RoomTypeId;
 public class FurnitureRequirement extends BaseEntity<FurnitureRequirementId> {
 
     private Furniture furniture;
-    private FurnitureId furnitureId;
     private RoomType roomType;
     private int requiredQuantity;
-    private RoomTypeId roomTypeId;
     public static final int DEFAULT_QUANTITY = 1;
 
     public FurnitureRequirement(Furniture furniture, int requirementQuantity, RoomTypeId roomTypeId) {
         this.furniture = furniture;
         this.requiredQuantity = requirementQuantity;
-        this.roomTypeId = roomTypeId;
     }
 
     private FurnitureRequirement(Builder builder) {
         super.setId(builder.id);
         setFurniture(builder.furniture);
-        furnitureId = builder.furnitureId;
         roomType = builder.roomType;
         setRequiredQuantity(builder.requiredQuantity);
-        setRoomTypeId(builder.roomTypeId);
     }
 
     public void validate() {
@@ -39,27 +34,11 @@ public class FurnitureRequirement extends BaseEntity<FurnitureRequirementId> {
         if (requiredQuantity <= 0) {
             throw new RoomDomainException("Required quantity for furniture must be positive.");
         }
-        if (roomTypeId == null) {
-            throw new RoomDomainException("RoomType cannot be null for a FurnitureRequirement.");
-        }
-        if (furniture.getInventoryItemId() == null) {
-            throw new RoomDomainException("InventoryItemId for furniture cannot be null.");
-        }
-        if (furniture.getInventoryItemId().getValue() == null) {
-            throw new RoomDomainException("InventoryItemId for furniture cannot be null.");
-        }
-        if (furniture.getInventoryItemId().getValue().isEmpty() || furniture.getInventoryItemId().getValue().isBlank()) {
-            throw new RoomDomainException("InventoryItemId for furniture cannot be empty or blank.");
-        }
+
     }
 
     public void setFurniture(Furniture furniture) {
         this.furniture = furniture;
-    }
-
-    public void setRoomTypeId(RoomTypeId roomTypeId) {
-        this.roomTypeId = roomTypeId;
-        validate();
     }
 
     public void setRequiredQuantity(int requiredQuantity) {

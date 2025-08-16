@@ -1,0 +1,14 @@
+{
+  "type": "record",
+  "name": "ServiceModelAvro",
+  "namespace": "service.management.message",
+  "fields": [
+    { "name": "serviceId", "type": ["null", "int"], "default": null },
+    { "name": "serviceName", "type": ["null", "string"], "default": null },
+    { "name": "description", "type": ["null", "string"], "default": null },
+    { "name": "price", "type": ["null", "string"], "default": null },
+    { "name": "availability", "type": ["null", "string"], "default": null },
+    { "name": "createdAt", "type": ["null", "string"], "default": null },
+    { "name": "updatedAt", "type": ["null", "string"], "default": null }
+  ]
+}

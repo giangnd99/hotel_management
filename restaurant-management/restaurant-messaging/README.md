@@ -1,195 +1,96 @@
-# Restaurant Management - Messaging Module
+# Restaurant Messaging Module
 
-Module messaging cho Restaurant Management Service, chịu trách nhiệm xử lý các message events với Payment Service và các service khác.
+## Tổng quan
 
-## Cấu trúc thư mục
+Restaurant Messaging Module được refactor để sử dụng **kafka-json-messaging** infrastructure theo chuẩn chung của hệ thống.
 
-```
-restaurant-messaging/
-├── src/main/java/com/poly/restaurant/management/
-│   ├── adapter/           # Adapters cho message listeners
-│   ├── config/           # Configuration classes
-│   ├── helper/           # Helper utility classes
-│   ├── listener/         # Kafka listeners
-│   ├── mapper/           # Message mappers
-│   ├── message/          # Domain message models
-│   └── publisher/        # Kafka publishers
-```
+## Kiến trúc mới
 
-## Components
+### 1. Message Models
+- **RestaurantPaymentRequestMessage**: Extends `BaseMessage` từ kafka-json-messaging
+- **RestaurantPaymentResponseMessage**: Extends `BaseResponse` từ kafka-json-messaging  
+- **RestaurantRoomOrderRequestMessage**: Extends `BaseMessage` từ kafka-json-messaging
+- **RestaurantRoomOrderResponseMessage**: Extends `BaseResponse` từ kafka-json-messaging
 
-### 1. Publishers
+### 2. Publishers
+- **PaymentRequestPublisher**: Interface cho payment request
+- **PaymentRequestKafka**: Implementation sử dụng `KafkaJsonProducer`
+- **RoomOrderRequestPublisher**: Interface cho room order request
+- **RoomOrderRequestKafka**: Implementation sử dụng `KafkaJsonProducer`
 
-#### PaymentRequestKafka
-- **Chức năng**: Gửi payment request messages đến Payment Service
-- **Topic**: `restaurant-payment-request`
-- **Message Type**: `PaymentRequestMessageAvro`
-- **Features**:
-  - Validation input parameters
-  - Message serialization (Domain → Avro)
-  - Error handling với callback
-  - Comprehensive logging
+### 3. Consumers
+- **PaymentResponseConsumer**: Xử lý payment response messages
+- **RoomOrderResponseConsumer**: Xử lý room order response messages
+- Sử dụng `@KafkaListener` với topic configuration
 
-### 2. Listeners
+### 4. Configuration
+- **RestaurantKafkaConfig**: Quản lý topic names từ KafkaTopicsConfig
+- Sử dụng **chính xác** topics chung, không tạo topic mới
 
-#### PaymentResponseKafka
-- **Chức năng**: Lắng nghe payment response messages từ Payment Service
-- **Topic**: `payment-response`
-- **Message Type**: `PaymentResponseMessageAvro`
-- **Features**:
-  - Batch message processing
-  - Message deserialization (Avro → Domain)
-  - Payment status routing
-  - Error handling và retry logic
+## Topics được sử dụng
 
-### 3. Adapters
+### Payment Topics (Chung với các service khác)
+- **payment-request**: Gửi payment request đến Payment Service
+- **payment-response**: Nhận payment response từ Payment Service
 
-#### PaymentResponseListenerImpl
-- **Chức năng**: Xử lý business logic cho payment responses
-- **Features**:
-  - Payment success/failure handling
-  - Order status updates
-  - Comprehensive logging
-  - Error handling với compensation logic
+### Room Order Topics (Chung với Room Service)
+- **room-approval-request**: Gửi room order request đến Room Service
+- **room-approval-response**: Nhận room order response từ Room Service
 
-### 4. Mappers
+### Restaurant Topics (Chung với các service khác)
+- **restaurant-request**: Gửi restaurant request
+- **restaurant-response**: Nhận restaurant response
 
-#### PaymentMessageMapper
-- **Chức năng**: Chuyển đổi giữa domain messages và Avro messages
-- **Mappings**:
-  - `PaymentRequestMessage` ↔ `PaymentRequestMessageAvro`
-  - `PaymentResponseMessage` ↔ `PaymentResponseMessageAvro`
+## Cách triển khai
 
-### 5. Helpers
-
-#### PaymentMessageHelper
-- **Chức năng**: Utility methods cho payment message processing
-- **Features**:
-  - Message validation
-  - Payment status checking
-  - Message creation
-  - Error logging
-
-#### OrderStatusHelper
-- **Chức năng**: Utility methods cho order status management
-- **Features**:
-  - Payment status to order status mapping
-  - Status transition validation
-  - Order status descriptions
-  - Status change logging
-
-## Message Flow
-
-### Payment Request Flow
-```
-Order Creation → PaymentRequestKafka → Payment Service
+### Bước 1: Build kafka-json-messaging
+```bash
+cd infrastructure/kafka/kafka-json-message
+mvn clean install -DskipTests
 ```
 
-1. Restaurant service tạo order
-2. `PaymentRequestKafka` gửi payment request message
-3. Payment service xử lý payment
-4. Payment service gửi response message
-
-### Payment Response Flow
-```
-Payment Service → PaymentResponseKafka → PaymentResponseListenerImpl → Order Update
+### Bước 2: Build restaurant-messaging
+```bash
+cd restaurant-management/restaurant-messaging
+mvn clean compile
 ```
 
-1. Payment service gửi payment response
-2. `PaymentResponseKafka` nhận và xử lý message
-3. `PaymentResponseListenerImpl` cập nhật order status
-4. Order được cập nhật trong database
-
-## Configuration
-
-### Kafka Topics
-```yaml
-restaurant-service:
-  restaurant-payment-request-topic-name: restaurant-payment-request
-  restaurant-payment-response-topic-name: payment-response
-```
-
-### Consumer Groups
+### Bước 3: Cập nhật application.yml
 ```yaml
 kafka:
-  group-id: restaurant-payment-consumer-group
+  group-id: restaurant-service-group
 ```
 
-## Usage Examples
+## Chuẩn chung
 
-### Tạo Payment Request
-```java
-@Autowired
-private PaymentRequestPublisher paymentRequestPublisher;
+### Message Structure
+- Tất cả messages extend `BaseMessage` hoặc `BaseResponse`
+- Sử dụng `messageId`, `correlationId`, `sourceService`, `targetService`
+- Timestamp và retry count được quản lý tự động
 
-public void createOrderWithPayment(OrderDTO orderDTO) {
-    PaymentRequestMessage paymentRequest = PaymentMessageHelper.createPaymentRequestMessage(
-        orderDTO.id(),
-        orderDTO.totalAmount().toString(),
-        "CREDIT_CARD"
-    );
-    
-    paymentRequestPublisher.publish(paymentRequest);
-}
-```
+### Topic Naming
+- **KHÔNG tạo topic mới** để tránh ảnh hưởng đến các service khác
+- Sử dụng chính xác topics từ `KafkaTopicsConfig`
+- Payment topics: `payment-request`, `payment-response`
+- Room topics: `room-approval-request`, `room-approval-response`
+- Restaurant topics: `restaurant-request`, `restaurant-response`
 
-### Xử lý Payment Response
-```java
-@Component
-public class PaymentResponseListenerImpl implements PaymentResponseListener {
-    
-    @Override
-    public void onPaymentSuccess(PaymentResponseMessage message) {
-        // Update order status to COMPLETED
-        orderHandler.updateOrderStatus(message.getOrderId(), OrderStatus.COMPLETED);
-    }
-    
-    @Override
-    public void onPaymentFailure(PaymentResponseMessage message) {
-        // Update order status to CANCELLED
-        orderHandler.updateOrderStatus(message.getOrderId(), OrderStatus.CANCELLED);
-    }
-}
-```
+### Error Handling
+- Sử dụng `ResponseStatus` enum cho status
+- Error codes và messages được chuẩn hóa
+- Dead Letter Queue (DLQ) được cấu hình tự động
 
-## Error Handling
+## Lợi ích
 
-### Publisher Errors
-- Validation errors: Throw `IllegalArgumentException`
-- Kafka errors: Log error và throw `RuntimeException`
-- Network errors: Retry với exponential backoff
+1. **Tính nhất quán**: Sử dụng cùng message format cho tất cả services
+2. **Dễ maintain**: Infrastructure chung, logic riêng biệt
+3. **Scalability**: Có thể áp dụng cho nhiều microservices khác
+4. **Reliability**: Dedup, retry, DLQ được xử lý tự động
+5. **Không xung đột**: Sử dụng topics chung, không ảnh hưởng service khác
 
-### Listener Errors
-- Message validation: Skip invalid messages
-- Business logic errors: Log error và có thể retry
-- Database errors: Compensation logic
+## Future Enhancements
 
-## Monitoring & Logging
-
-### Log Levels
-- **INFO**: Normal operations, status changes
-- **WARN**: Invalid messages, status transitions
-- **ERROR**: Processing failures, system errors
-- **DEBUG**: Detailed message processing
-
-### Key Metrics
-- Message processing rate
-- Error rate
-- Processing latency
-- Order status update success rate
-
-## Best Practices
-
-1. **Message Validation**: Luôn validate messages trước khi xử lý
-2. **Error Handling**: Implement proper error handling và compensation logic
-3. **Logging**: Log đầy đủ thông tin cho debugging và monitoring
-4. **Idempotency**: Đảm bảo operations có thể retry safely
-5. **Monitoring**: Monitor message processing metrics
-
-## Dependencies
-
-- Spring Kafka
-- Apache Avro
-- Lombok
-- Spring Boot
-- Common Kafka Infrastructure
+1. **AbstractConsumer**: Extend để sử dụng dedup và caching
+2. **Saga Pattern**: Implement distributed transaction management
+3. **Outbox Pattern**: Ensure message delivery reliability
+4. **Circuit Breaker**: Handle external service failures
