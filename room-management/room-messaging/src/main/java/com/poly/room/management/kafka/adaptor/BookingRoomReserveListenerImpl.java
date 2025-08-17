@@ -2,7 +2,7 @@ package com.poly.room.management.kafka.adaptor;
 
 import com.poly.room.management.domain.command.RoomBookingCommand;
 import com.poly.room.management.domain.port.in.listener.request.BookingRoomReserveListener;
-import com.poly.room.management.kafka.message.BookingRoomRequestMessage;
+import com.poly.room.management.domain.message.BookingRoomRequestMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

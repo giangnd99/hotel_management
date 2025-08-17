@@ -1,9 +1,15 @@
 package com.poly.message.model.room;
 
 import com.poly.message.BaseMessage;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
-@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@SuperBuilder
 public class RoomRequestMessage extends BaseMessage {
 
     private String roomId;

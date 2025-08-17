@@ -4,11 +4,12 @@ import com.poly.domain.valueobject.BookingStatus;
 import com.poly.domain.valueobject.RoomResponseStatus;
 import com.poly.room.management.domain.entity.Room;
 import com.poly.room.management.domain.event.RoomBookedEvent;
+import com.poly.room.management.domain.port.out.publisher.reponse.BookingRoomReservePublisher;
 import com.poly.room.management.domain.port.out.repository.RoomRepository;
 import com.poly.room.management.domain.service.RoomEventService;
-import com.poly.room.management.kafka.message.BookingRoomRequestMessage;
-import com.poly.room.management.kafka.message.BookingRoomResponseMessage;
-import com.poly.room.management.kafka.publisher.RoomBookedResponseKafkaPublisher;
+import com.poly.room.management.domain.message.BookingRoomRequestMessage;
+import com.poly.room.management.domain.message.BookingRoomResponseMessage;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,7 @@ public class RoomBookingCommand {
 
     private final RoomRepository roomRepository;
     private final RoomEventService roomEventService;
-    private final RoomBookedResponseKafkaPublisher roomBookedResponseKafkaPublisher;
+    private final BookingRoomReservePublisher roomBookedResponseKafkaPublisher;
 
     public void process(BookingRoomRequestMessage bookingRoomRequestMessage) {
 

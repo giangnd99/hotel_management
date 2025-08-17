@@ -5,7 +5,7 @@ import com.poly.kafka.producer.AbstractKafkaPublisher;
 import com.poly.kafka.producer.service.KafkaProducer;
 import com.poly.room.management.domain.port.out.publisher.reponse.BookingRoomReservePublisher;
 import com.poly.room.management.kafka.mapper.RoomKafkaDataMapper;
-import com.poly.room.management.kafka.message.BookingRoomResponseMessage;
+import com.poly.room.management.domain.message.BookingRoomResponseMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

@@ -40,11 +40,11 @@ public class RoomDtoMapper {
 
     public RoomResponse toResponse(Room room) {
         return RoomResponse.builder()
-                .id(room.getId().getValue())
+                .id(room.getId().getValue().toString())
                 .roomNumber(room.getRoomNumber())
                 .floor(room.getFloor())
                 .roomType(roomTypeMapper.toResponse(room.getRoomType()))
-                .roomStatus(room.getRoomStatus())
+                .roomStatus(room.getRoomStatus().name())
                 .build();
     }
 }

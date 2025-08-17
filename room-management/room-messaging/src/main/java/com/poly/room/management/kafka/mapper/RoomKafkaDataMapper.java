@@ -6,8 +6,8 @@ import com.poly.domain.valueobject.Money;
 import com.poly.domain.valueobject.RoomId;
 import com.poly.domain.valueobject.RoomStatus;
 import com.poly.room.management.domain.entity.Room;
-import com.poly.room.management.kafka.message.BookingRoomRequestMessage;
-import com.poly.room.management.kafka.message.BookingRoomResponseMessage;
+import com.poly.room.management.domain.message.BookingRoomRequestMessage;
+import com.poly.room.management.domain.message.BookingRoomResponseMessage;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

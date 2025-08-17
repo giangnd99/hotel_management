@@ -1,4 +1,4 @@
-package com.poly.room.management.kafka.message;
+package com.poly.room.management.domain.message;
 
 import com.poly.room.management.domain.entity.Room;
 import lombok.AllArgsConstructor;

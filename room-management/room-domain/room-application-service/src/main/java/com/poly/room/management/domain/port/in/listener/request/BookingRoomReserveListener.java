@@ -1,6 +1,6 @@
 package com.poly.room.management.domain.port.in.listener.request;
 
-import com.poly.room.management.kafka.message.BookingRoomRequestMessage;
+import com.poly.room.management.domain.message.BookingRoomRequestMessage;
 
 public interface BookingRoomReserveListener {
     // giữ phòng sau khi cọc -> đến ngày check-in
