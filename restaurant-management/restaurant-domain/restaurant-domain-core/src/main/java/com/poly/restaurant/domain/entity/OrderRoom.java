@@ -16,7 +16,7 @@ public class OrderRoom {
     private Order order;
     private Money price;
 
-    public void calculatePrice(){
-        price = order.
+    public void calculatePrice() {
+        price = order.getTotalPrice();
     }
 }

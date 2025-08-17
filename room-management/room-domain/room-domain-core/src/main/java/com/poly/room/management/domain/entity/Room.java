@@ -5,7 +5,6 @@ import com.poly.domain.valueobject.Money;
 import com.poly.domain.valueobject.RoomStatus;
 import com.poly.domain.valueobject.RoomId;
 import com.poly.room.management.domain.exception.RoomDomainException;
-import com.poly.room.management.domain.valueobject.FurnitureId;
 
 import java.util.List;
 
@@ -101,7 +100,7 @@ public class Room extends BaseEntity<RoomId> {
         return getRoomType().getBasePrice();
     }
 
-    public List<FurnitureId> getFurnituresIds() {
+    public List<Furniture> getFurnitures() {
         return roomType.getFurnituresRequirements()
                 .stream()
                 .map(RoomTypeFurniture::getFurniture)

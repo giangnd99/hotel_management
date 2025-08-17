@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CreateMaintenanceRequest {
     @NotNull(message = "Room ID is required")
-    private Integer roomId;
+    private String roomId;
 
     private String staffId; // StaffId có thể null
 
