@@ -1,7 +1,244 @@
+# Promotion Management System Configuration
+# This file contains all configuration properties for the promotion management system
+
+# Server Configuration
 server:
   port: ${PROMOTION_MANAGEMENT_PORT}
   servlet:
     context-path: /promotion-management
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+    min-response-size: 1024
+
+# Spring Application Configuration
+spring:
+  application:
+    name: promotion-management
+    description: Hotel Promotion Management System
+  
+  # Database Configuration
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/hotel_management}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO:validate}
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: ${HIBERNATE_FORMAT_SQL:false}
+        show_sql: ${HIBERNATE_SHOW_SQL:false}
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+        batch_versioned_data: true
+    open-in-view: false
+  
+  # Jackson Configuration
+  jackson:
+    default-property-inclusion: NON_NULL
+    serialization:
+      write-dates-as-timestamps: false
+      fail-on-empty-beans: false
+    deserialization:
+      fail-on-unknown-properties: false
+    time-zone: UTC
+  
+  # Validation Configuration
+  validation:
+    enabled: true
+  
+  # Actuator Configuration
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,info,metrics,prometheus
+        base-path: /actuator
+    endpoint:
+      health:
+        show-details: when-authorized
+        show-components: when-authorized
+    metrics:
+      export:
+        prometheus:
+          enabled: true
+  
+  # Cache Configuration
+  cache:
+    type: ${CACHE_TYPE:simple}
+    cache-names:
+      - voucher-packs
+      - vouchers
+      - customer-vouchers
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
+      timeout: ${REDIS_TIMEOUT:2000ms}
+  
+  # Async Configuration
+  task:
+    execution:
+      pool:
+        core-size: ${ASYNC_CORE_SIZE:5}
+        max-size: ${ASYNC_MAX_SIZE:20}
+        queue-capacity: ${ASYNC_QUEUE_CAPACITY:100}
+        keep-alive: ${ASYNC_KEEP_ALIVE:60s}
+      thread-name-prefix: promotion-async-
+
+# Swagger/OpenAPI Configuration
 springdoc:
   api-docs:
     path: /api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    tags-sorter: alpha
+    operations-sorter: alpha
+    doc-expansion: none
+    disable-swagger-default-url: true
+  packages-to-scan: com.poly.promotion.application.controller
+
+# Logging Configuration
+logging:
+  level:
+    com.poly.promotion: ${LOG_LEVEL:INFO}
+    org.springframework.web: ${SPRING_WEB_LOG_LEVEL:INFO}
+    org.hibernate.SQL: ${HIBERNATE_SQL_LOG:WARN}
+    org.hibernate.type.descriptor.sql.BasicBinder: ${HIBERNATE_BINDER_LOG:WARN}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: ${LOG_FILE_PATH:logs/promotion-management.log}
+    max-size: 100MB
+    max-history: 30
+
+# Business Logic Configuration
+promotion:
+  # Voucher Pack Configuration
+  voucher-pack:
+    max-quantity: ${MAX_VOUCHER_PACK_QUANTITY:10000}
+    min-required-points: ${MIN_REQUIRED_POINTS:100}
+    max-required-points: ${MAX_REQUIRED_POINTS:100000}
+    default-validity-days: ${DEFAULT_VALIDITY_DAYS:365}
+  
+  # Voucher Configuration
+  voucher:
+    code-length: ${VOUCHER_CODE_LENGTH:12}
+    max-redemption-per-customer: ${MAX_REDEMPTION_PER_CUSTOMER:10}
+    expiration-check-interval: ${EXPIRATION_CHECK_INTERVAL:3600000} # 1 hour in milliseconds
+  
+  # Expiration Management Configuration
+  expiration:
+    enabled: ${EXPIRATION_MANAGEMENT_ENABLED:true}
+    batch-size: ${EXPIRATION_BATCH_SIZE:100}
+    check-interval: ${EXPIRATION_CHECK_INTERVAL:3600000} # 1 hour in milliseconds
+    cleanup-enabled: ${CLEANUP_ENABLED:true}
+    retention-days: ${RETENTION_DAYS:90}
+
+# Security Configuration
+security:
+  # Rate Limiting
+  rate-limit:
+    enabled: ${RATE_LIMIT_ENABLED:true}
+    max-requests-per-minute: ${MAX_REQUESTS_PER_MINUTE:100}
+    max-requests-per-hour: ${MAX_REQUESTS_PER_HOUR:1000}
+  
+  # CORS Configuration
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:8080}
+    allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
+    allowed-headers: ${CORS_ALLOWED_HEADERS:Authorization,Content-Type}
+    allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
+    max-age: ${CORS_MAX_AGE:3600}
+
+# Monitoring and Metrics Configuration
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+      environment: ${ENVIRONMENT:development}
+    export:
+      prometheus:
+        enabled: true
+        descriptions: true
+        step: 60s
+
+# Environment-specific overrides
+---
+# Development Environment
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+---
+# Development Profile
+spring:
+  config:
+    activate:
+      on-profile: dev
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+logging:
+  level:
+    com.poly.promotion: DEBUG
+    org.springframework.web: DEBUG
+
+---
+# Production Profile
+spring:
+  config:
+    activate:
+      on-profile: prod
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+logging:
+  level:
+    com.poly.promotion: WARN
+    org.springframework.web: WARN
+  file:
+    name: /var/log/promotion-management/promotion-management.log
+
+---
+# Testing Profile
+spring:
+  config:
+    activate:
+      on-profile: test
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+logging:
+  level:
+    com.poly.promotion: DEBUG

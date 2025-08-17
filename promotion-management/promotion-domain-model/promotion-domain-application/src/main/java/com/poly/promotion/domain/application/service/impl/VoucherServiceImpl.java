@@ -221,23 +221,6 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     /**
-     * Checks if a voucher is eligible for expiration.
-     * A voucher is eligible if it's in REDEEMED status
-     * and has passed its validTo date.
-     */
-    private boolean isVoucherEligibleForExpiration(Voucher voucher) {
-        if (voucher.getVoucherStatus() != VoucherStatus.REDEEMED) {
-            return false;
-        }
-        
-        if (voucher.getValidTo() == null) {
-            return false;
-        }
-        
-        return voucher.getValidTo().isBefore(java.time.LocalDateTime.now());
-    }
-
-    /**
      * Validates if a status transition is allowed.
      * This is a basic validation - you might want to add more sophisticated rules.
      */

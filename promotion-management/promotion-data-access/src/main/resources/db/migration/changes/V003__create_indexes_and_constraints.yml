@@ -1,0 +1,153 @@
+databaseChangeLog:
+  - changeSet:
+      id: V003__create_indexes_and_constraints
+      author: Nguyen Dam Hoang Linh
+      comment: Create indexes and additional constraints for performance and data integrity
+      
+      # Voucher Packs Indexes
+      - createIndex:
+          tableName: voucher_packs
+          indexName: idx_voucher_packs_status
+          columns:
+            - column:
+                name: status
+      - createIndex:
+          tableName: voucher_packs
+          indexName: idx_voucher_packs_valid_from
+          columns:
+            - column:
+                name: valid_from
+      - createIndex:
+          tableName: voucher_packs
+          indexName: idx_voucher_packs_valid_to
+          columns:
+            - column:
+                name: valid_to
+      - createIndex:
+          tableName: voucher_packs
+          indexName: idx_voucher_packs_created_at
+          columns:
+            - column:
+                name: created_at
+      
+      # Vouchers Indexes
+      - createIndex:
+          tableName: vouchers
+          indexName: idx_vouchers_code
+          columns:
+            - column:
+                name: voucher_code
+      - createIndex:
+          tableName: vouchers
+          indexName: idx_vouchers_status
+          columns:
+            - column:
+                name: status
+      - createIndex:
+          tableName: vouchers
+          indexName: idx_vouchers_customer_id
+          columns:
+            - column:
+                name: customer_id
+      - createIndex:
+          tableName: vouchers
+          indexName: idx_vouchers_pack_id
+          columns:
+            - column:
+                name: voucher_pack_id
+      - createIndex:
+          tableName: vouchers
+          indexName: idx_vouchers_redeemed_at
+          columns:
+            - column:
+                name: redeemed_at
+      - createIndex:
+          tableName: vouchers
+          indexName: idx_vouchers_valid_to
+          columns:
+            - column:
+                name: valid_to
+      
+      # Composite Indexes for Common Query Patterns
+      - createIndex:
+          tableName: voucher_packs
+          indexName: idx_voucher_packs_status_quantity
+          columns:
+            - column:
+                name: status
+            - column:
+                name: quantity
+      - createIndex:
+          tableName: voucher_packs
+          indexName: idx_voucher_packs_status_valid_dates
+          columns:
+            - column:
+                name: status
+            - column:
+                name: valid_from
+            - column:
+                name: valid_to
+      
+      - createIndex:
+          tableName: vouchers
+          indexName: idx_vouchers_status_valid_to
+          columns:
+            - column:
+                name: status
+            - column:
+                name: valid_to
+      - createIndex:
+          tableName: vouchers
+          indexName: idx_vouchers_customer_status
+          columns:
+            - column:
+                name: customer_id
+            - column:
+                name: status
+      
+      # Additional Constraints
+      - addCheckConstraint:
+          tableName: voucher_packs
+          constraintName: chk_voucher_packs_discount_amount_positive
+          checkCondition: "discount_amount > 0"
+      
+      - addCheckConstraint:
+          tableName: voucher_packs
+          constraintName: chk_voucher_packs_required_points_positive
+          checkCondition: "required_points > 0"
+      
+      - addCheckConstraint:
+          tableName: voucher_packs
+          constraintName: chk_voucher_packs_valid_date_range
+          checkCondition: "(valid_from IS NULL OR valid_to IS NULL OR valid_from <= valid_to)"
+      
+      - addCheckConstraint:
+          tableName: vouchers
+          constraintName: chk_vouchers_discount_amount_positive
+          checkCondition: "discount_amount > 0"
+      
+      - addCheckConstraint:
+          tableName: vouchers
+          constraintName: chk_vouchers_valid_to_future
+          checkCondition: "valid_to > redeemed_at"
+      
+      # Unique Constraints
+      - addUniqueConstraint:
+          tableName: voucher_packs
+          columnNames: description, discount_amount, valid_range
+          constraintName: uk_voucher_packs_unique_combination
+      
+      # Comments for Indexes
+      - sql:
+          comment: Add index comments
+          sql: |
+            COMMENT ON INDEX idx_voucher_packs_status IS 'Index for filtering voucher packs by status';
+            COMMENT ON INDEX idx_voucher_packs_valid_from IS 'Index for filtering voucher packs by start date';
+            COMMENT ON INDEX idx_voucher_packs_valid_to IS 'Index for filtering voucher packs by end date';
+            COMMENT ON INDEX idx_voucher_packs_created_at IS 'Index for sorting voucher packs by creation date';
+            COMMENT ON INDEX idx_vouchers_code IS 'Unique index for voucher code lookups';
+            COMMENT ON INDEX idx_vouchers_status IS 'Index for filtering vouchers by status';
+            COMMENT ON INDEX idx_vouchers_customer_id IS 'Index for finding vouchers by customer';
+            COMMENT ON INDEX idx_vouchers_pack_id IS 'Index for finding vouchers by pack';
+            COMMENT ON INDEX idx_vouchers_redeemed_at IS 'Index for filtering vouchers by redemption date';
+            COMMENT ON INDEX idx_vouchers_valid_to IS 'Index for finding expired vouchers';
