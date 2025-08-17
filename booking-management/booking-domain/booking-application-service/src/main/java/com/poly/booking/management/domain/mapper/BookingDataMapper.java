@@ -2,8 +2,12 @@ package com.poly.booking.management.domain.mapper;
 
 import com.poly.booking.management.domain.dto.request.CreateBookingCommand;
 import com.poly.booking.management.domain.dto.response.BookingCreatedResponse;
+import com.poly.booking.management.domain.entity.BookingRoom;
+import com.poly.booking.management.domain.entity.Room;
 import com.poly.booking.management.domain.event.*;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * BookingDataMapper - Mapper class để chuyển đổi dữ liệu giữa các layer
@@ -36,7 +40,7 @@ public class BookingDataMapper {
         return BookingCreatedResponse.builder()
                 .bookingId(bookingCreatedEvent.getBooking().getId().getValue())
                 .customerId(bookingCreatedEvent.getBooking().getCustomerId().getValue())
-                .rooms(bookingCreatedEvent.getBooking().getRooms())
+                .rooms(this.mapBookingRoomToRooms(bookingCreatedEvent.getBooking().getBookingRooms()))
                 .checkInDate(bookingCreatedEvent.getBooking().getCheckInDate().getValue())
                 .checkOutDate(bookingCreatedEvent.getBooking().getCheckOutDate().getValue())
                 .numberOfGuests(createBookingCommand.getNumberOfGuests())
@@ -46,5 +50,8 @@ public class BookingDataMapper {
                 .build();
     }
 
+    private List<Room> mapBookingRoomToRooms(List<BookingRoom> bookingRooms) {
+        return bookingRooms.stream().map(BookingRoom::getRoom).toList();
+    }
 
 }

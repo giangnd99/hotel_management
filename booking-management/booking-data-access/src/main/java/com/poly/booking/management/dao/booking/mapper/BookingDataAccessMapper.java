@@ -18,7 +18,7 @@ public class BookingDataAccessMapper {
                 .checkInDate(DateCustom.of(bookingEntity.getCheckIn()))
                 .checkOutDate(DateCustom.of(bookingEntity.getCheckOut()))
                 .totalPrice(new Money(bookingEntity.getTotalPrice()))
-                .status(EBookingStatus.valueOf(bookingEntity.getStatus()))
+                .status(BookingStatus.valueOf(bookingEntity.getStatus()))
                 .actualCheckInDate(DateCustom.of(bookingEntity.getActualCheckIn()))
                 .actualCheckOutDate(DateCustom.of(bookingEntity.getActualCheckOut()))
                 .trackingId(new TrackingId(bookingEntity.getTrackingId()))

@@ -10,9 +10,7 @@ import java.util.UUID;
 @Builder
 @Getter
 public class ItemData {
-    private UUID serviceId;
-    private @NonNull String name;
-    private @NonNull Integer quantity;
-    private @NonNull BigDecimal price;
-    private String serviceType;
+    private String name;
+    private Integer quantity;
+    private BigDecimal price;
 }

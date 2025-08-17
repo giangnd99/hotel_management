@@ -1,9 +1,13 @@
 package com.poly.room.management.domain.entity;
 
 import com.poly.domain.entity.BaseEntity;
+import com.poly.domain.valueobject.Money;
 import com.poly.domain.valueobject.RoomStatus;
 import com.poly.domain.valueobject.RoomId;
 import com.poly.room.management.domain.exception.RoomDomainException;
+import com.poly.room.management.domain.valueobject.FurnitureId;
+
+import java.util.List;
 
 public class Room extends BaseEntity<RoomId> {
 
@@ -15,13 +19,20 @@ public class Room extends BaseEntity<RoomId> {
 
     private RoomStatus roomStatus;
 
+    private Money roomPrice;
+
+    private String area;
+
+    private List<Furniture> furnitures;
+
+    private List<RoomMaintenance> roomMaintenances;
+
     private Room(Builder builder) {
         super.setId(builder.id);
         roomNumber = builder.roomNumber;
         floor = builder.floor;
         roomType = builder.roomType;
         roomStatus = builder.roomStatus;
-        validate();
     }
 
     public void validate() {
@@ -30,7 +41,7 @@ public class Room extends BaseEntity<RoomId> {
     }
 
     public void setVacantRoomStatus() {
-        if (roomStatus == RoomStatus.OCCUPIED) {
+        if (roomStatus == RoomStatus.CHECKED_IN) {
             throw new RoomDomainException("Room is occupied");
         } else if (roomStatus == RoomStatus.BOOKED) {
             throw new RoomDomainException("Room is already booked");
@@ -41,7 +52,7 @@ public class Room extends BaseEntity<RoomId> {
     public void setBookedRoomStatus() {
         if (roomStatus == RoomStatus.MAINTENANCE) {
             throw new RoomDomainException("Room is maintenance");
-        } else if (roomStatus == RoomStatus.OCCUPIED) {
+        } else if (roomStatus == RoomStatus.CHECKED_IN) {
             throw new RoomDomainException("Room is already checkin");
         } else if (roomStatus != RoomStatus.VACANT) {
             throw new RoomDomainException("Room must vacant before booking");
@@ -50,14 +61,14 @@ public class Room extends BaseEntity<RoomId> {
     }
 
     public void setMaintenanceRoomStatus() {
-        if (roomStatus == RoomStatus.OCCUPIED) {
+        if (roomStatus == RoomStatus.CHECKED_IN) {
             throw new RoomDomainException("Room is already checkin");
         }
         this.roomStatus = RoomStatus.MAINTENANCE;
     }
 
     public void setCleanRoomStatus() {
-        if (roomStatus == RoomStatus.OCCUPIED) {
+        if (roomStatus == RoomStatus.CHECKED_IN) {
             throw new RoomDomainException("Room is already checkin");
         }
         this.roomStatus = RoomStatus.CLEANING;
@@ -73,7 +84,28 @@ public class Room extends BaseEntity<RoomId> {
         if (!(this.roomStatus == RoomStatus.BOOKED || this.roomStatus == RoomStatus.VACANT)) {
             throw new RoomDomainException("Room can only be occupied from BOOKED or VACANT status.");
         }
-        this.roomStatus = RoomStatus.OCCUPIED;
+        this.roomStatus = RoomStatus.CHECKED_IN;
+    }
+
+    public void setCheckOutRoomStatus() {
+        if (this.roomStatus == RoomStatus.CLEANING) {
+            throw new RoomDomainException("Room cannot be checked out when it is being cleaned.");
+        }
+        if (!(this.roomStatus == RoomStatus.CHECKED_IN || this.roomStatus == RoomStatus.BOOKED)) {
+            throw new RoomDomainException("Room can only be checked out from CHECKED_IN or BOOKED status.");
+        }
+        this.roomStatus = RoomStatus.CHECKED_OUT;
+    }
+
+    public Money getRoomPrice() {
+        return getRoomType().getBasePrice();
+    }
+
+    public List<FurnitureId> getFurnituresIds() {
+        return roomType.getFurnituresRequirements()
+                .stream()
+                .map(RoomTypeFurniture::getFurniture)
+                .toList();
     }
 
     public String getRoomNumber() {
@@ -128,6 +160,9 @@ public class Room extends BaseEntity<RoomId> {
         private int floor;
         private RoomType roomType;
         private RoomStatus roomStatus;
+        private Money roomPrice;
+        private String area;
+        private List<Furniture> furnitures;
 
         private Builder() {
         }
@@ -138,6 +173,21 @@ public class Room extends BaseEntity<RoomId> {
 
         public Builder id(RoomId val) {
             id = val;
+            return this;
+        }
+
+        public Builder roomPrice(Money val) {
+            roomPrice = val;
+            return this;
+        }
+
+        public Builder area(String val) {
+            area = val;
+            return this;
+        }
+
+        public Builder furnitures(List<Furniture> val) {
+            furnitures = val;
             return this;
         }
 

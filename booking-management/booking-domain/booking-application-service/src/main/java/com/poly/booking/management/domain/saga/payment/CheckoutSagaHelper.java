@@ -1,6 +1,6 @@
 package com.poly.booking.management.domain.saga.payment;
 
-import com.poly.booking.management.domain.dto.message.PaymentMessageResponse;
+
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.event.BookingPaidEvent;
 import com.poly.booking.management.domain.exception.BookingDomainException;
@@ -13,8 +13,9 @@ import com.poly.booking.management.domain.outbox.service.RoomOutboxService;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.saga.BookingSagaHelper;
 import com.poly.booking.management.domain.service.BookingDomainService;
+import com.poly.booking.management.messaging.message.PaymentMessageResponse;
 import com.poly.domain.valueobject.DateCustom;
-import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.domain.valueobject.PaymentStatus;
 import com.poly.saga.SagaStatus;
 import lombok.RequiredArgsConstructor;
@@ -93,7 +94,7 @@ public class CheckoutSagaHelper {
     }
 
     public RoomOutboxMessage getUpdatedRoomOutboxMessage(String sagaId,
-                                                         EBookingStatus bookingStatus,
+                                                         BookingStatus bookingStatus,
                                                          SagaStatus sagaStatus) {
         Optional<RoomOutboxMessage> roomOutboxMessageResponse = roomOutboxService
                 .getRoomOutboxMessageBySagaIdAndSagaStatus(UUID.fromString(sagaId), SagaStatus.PROCESSING);
@@ -118,7 +119,7 @@ public class CheckoutSagaHelper {
      */
     public PaymentOutboxMessage createUpdatedPaymentOutboxMessage(
             PaymentOutboxMessage outboxMessage,
-            EBookingStatus bookingStatus,
+            BookingStatus bookingStatus,
             SagaStatus sagaStatus) {
 
         outboxMessage.setProcessedAt(DateCustom.now().getValue());
@@ -253,7 +254,7 @@ public class CheckoutSagaHelper {
      * @param sagaStatus           Trạng thái saga mới
      */
     public void updatePaymentOutboxMessageForRollback(PaymentOutboxMessage paymentOutboxMessage,
-                                                      EBookingStatus bookingStatus,
+                                                      BookingStatus bookingStatus,
                                                       SagaStatus sagaStatus) {
         paymentOutboxMessage.setBookingStatus(bookingStatus);
         paymentOutboxMessage.setSagaStatus(sagaStatus);

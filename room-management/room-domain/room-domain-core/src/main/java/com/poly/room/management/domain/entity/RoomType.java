@@ -7,7 +7,6 @@ import com.poly.room.management.domain.valueobject.FurnitureId;
 import com.poly.room.management.domain.valueobject.RoomTypeId;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +17,7 @@ public class RoomType extends BaseEntity<RoomTypeId> {
     private String description;
     private Money basePrice;
     private int maxOccupancy;
-    private List<FurnitureRequirement> furnitures;
+    private List<RoomTypeFurniture> furnituresRequirements;
 
     private RoomType(Builder builder) {
         super.setId(builder.id);
@@ -26,8 +25,7 @@ public class RoomType extends BaseEntity<RoomTypeId> {
         setDescription(builder.description);
         setBasePrice(builder.basePrice);
         setMaxOccupancy(builder.maxOccupancy);
-        furnitures = builder.furnitures;
-        validateRoomType();
+        furnituresRequirements = builder.furnitures;
     }
 
     /**
@@ -45,19 +43,19 @@ public class RoomType extends BaseEntity<RoomTypeId> {
     /**
      * Thêm một yêu cầu nội thất vào loại phòng.
      *
-     * @param furnitureRequirement Yêu cầu nội thất cần thêm.
+     * @param roomTypeFurniture Yêu cầu nội thất cần thêm.
      * @throws RoomDomainException Nếu yêu cầu nội thất đã tồn tại hoặc không hợp lệ.
      */
-    public void addFurnitureRequirement(FurnitureRequirement furnitureRequirement) {
-        if (furnitureRequirement == null || furnitureRequirement.getFurniture() == null || furnitureRequirement.getFurniture().getId() == null) {
+    public void addFurnitureRequirement(RoomTypeFurniture roomTypeFurniture) {
+        if (roomTypeFurniture == null || roomTypeFurniture.getFurniture() == null) {
             throw new RoomDomainException("Furniture requirement cannot be null or have null furniture ID.");
         }
-        boolean exists = furnitures.stream()
-                .anyMatch(f -> f.getFurniture().getId().equals(furnitureRequirement.getFurniture().getId()));
+        boolean exists = furnituresRequirements.stream()
+                .anyMatch(f -> f.getFurniture().equals(roomTypeFurniture.getFurniture()));
         if (exists) {
-            throw new RoomDomainException("Furniture with ID " + furnitureRequirement.getFurniture().getId().getValue() + " already exists in this RoomType.");
+            throw new RoomDomainException("Furniture with ID " + roomTypeFurniture.getFurniture().getId().getValue().toString() + " already exists in this RoomType.");
         }
-        this.furnitures.add(furnitureRequirement);
+        this.furnituresRequirements.add(roomTypeFurniture);
         checkFurnitureRequirements();
     }
 
@@ -72,8 +70,8 @@ public class RoomType extends BaseEntity<RoomTypeId> {
         if (newQuantity <= 0) {
             throw new RoomDomainException("New quantity must be greater than zero.");
         }
-        Optional<FurnitureRequirement> existing = furnitures.stream()
-                .filter(f -> f.getFurniture().getId().equals(furnitureId))
+        Optional<RoomTypeFurniture> existing = furnituresRequirements.stream()
+                .filter(f -> f.getFurniture().equals(furnitureId))
                 .findFirst();
         if (existing.isPresent()) {
             existing.get().setRequiredQuantity(newQuantity);
@@ -89,12 +87,12 @@ public class RoomType extends BaseEntity<RoomTypeId> {
      * @throws RoomDomainException Nếu nội thất không tồn tại trong loại phòng này.
      */
     public void removeFurnitureRequirement(FurnitureId furnitureId) {
-        boolean removed = this.furnitures.removeIf(f -> f.getFurniture().getId().equals(furnitureId));
+        boolean removed = this.furnituresRequirements.removeIf(f -> f.getFurniture().equals(furnitureId));
         if (!removed) {
             throw new RoomDomainException("Furniture with ID " + furnitureId.getValue() + " not found in this RoomType to remove.");
         }
         // Có thể thêm logic: nếu sau khi xóa danh sách trống và nghiệp vụ yêu cầu không được rỗng
-        // if (furnitures.isEmpty()) { ... }
+        // if (furnituresRequirements.isEmpty()) { ... }
     }
 
     /**
@@ -103,12 +101,12 @@ public class RoomType extends BaseEntity<RoomTypeId> {
      * @throws RoomDomainException Nếu danh sách null hoặc rỗng, hoặc có yêu cầu không hợp lệ.
      */
     private void checkFurnitureRequirements() {
-        if (furnitures == null || furnitures.isEmpty()) {
+        if (furnituresRequirements == null || furnituresRequirements.isEmpty()) {
             throw new RoomDomainException("Furniture requirements list for RoomType cannot be null or empty");
         }
-        for (FurnitureRequirement req : furnitures) {
+        for (RoomTypeFurniture req : furnituresRequirements) {
             // Validate từng FurnitureRequirement (FurnitureRequirement tự validate khi tạo)
-            if (req.getFurniture() == null || req.getFurniture().getId() == null) {
+            if (req.getFurniture() == null) {
                 throw new RoomDomainException("Furniture in requirement cannot be null or have null ID.");
             }
             if (req.getRequiredQuantity() <= 0) { // Mặc dù FurnitureRequirement đã validate, double check ở đây.
@@ -165,8 +163,8 @@ public class RoomType extends BaseEntity<RoomTypeId> {
         return description;
     }
 
-    public List<FurnitureRequirement> getFurnitures() {
-        return Collections.unmodifiableList(furnitures); // Trả về danh sách không thể sửa đổi bên ngoài
+    public List<RoomTypeFurniture> getFurnituresRequirements() {
+        return Collections.unmodifiableList(furnituresRequirements); // Trả về danh sách không thể sửa đổi bên ngoài
     }
 
     public Money getBasePrice() {
@@ -199,7 +197,7 @@ public class RoomType extends BaseEntity<RoomTypeId> {
         private String description;
         private Money basePrice;
         private int maxOccupancy;
-        private List<FurnitureRequirement> furnitures;
+        private List<RoomTypeFurniture> furnitures;
 
         private Builder() {
         }
@@ -233,7 +231,7 @@ public class RoomType extends BaseEntity<RoomTypeId> {
             return this;
         }
 
-        public Builder furnitures(List<FurnitureRequirement> val) {
+        public Builder furnitures(List<RoomTypeFurniture> val) {
             furnitures = val;
             return this;
         }

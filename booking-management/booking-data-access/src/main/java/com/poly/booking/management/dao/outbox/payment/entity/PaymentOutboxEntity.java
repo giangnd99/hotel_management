@@ -1,6 +1,6 @@
 package com.poly.booking.management.dao.outbox.payment.entity;
 
-import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;
 import jakarta.persistence.*;
@@ -24,11 +24,11 @@ public class PaymentOutboxEntity {
     private LocalDateTime processedAt;
     private String type;
     private String payload;
-    private String bookingId;
+    private UUID bookingId;
     @Enumerated(EnumType.STRING)
     private SagaStatus sagaStatus;
     @Enumerated(EnumType.STRING)
-    private EBookingStatus bookingStatus;
+    private BookingStatus bookingStatus;
     @Enumerated(EnumType.STRING)
     private OutboxStatus outboxStatus;
     @Version

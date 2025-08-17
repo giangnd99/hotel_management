@@ -87,6 +87,11 @@
             </dependency>
             <dependency>
                 <groupId>com.poly</groupId>
+                <artifactId>kafka-json-message</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
                 <artifactId>kafka-config-data</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -198,6 +203,11 @@
             <dependency>
                 <groupId>com.poly</groupId>
                 <artifactId>room-container</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>room-messaging</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

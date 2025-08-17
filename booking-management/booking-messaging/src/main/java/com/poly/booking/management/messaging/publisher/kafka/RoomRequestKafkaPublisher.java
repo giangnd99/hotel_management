@@ -2,6 +2,7 @@ package com.poly.booking.management.messaging.publisher.kafka;
 
 import com.poly.booking.management.domain.config.BookingServiceConfigData;
 import com.poly.booking.management.domain.kafka.model.BookingRoomRequestAvro;
+import com.poly.booking.management.domain.outbox.payload.ReservedEventPayload;
 import com.poly.booking.management.domain.outbox.payload.RoomEventPayload;
 import com.poly.booking.management.domain.outbox.model.RoomOutboxMessage;
 import com.poly.booking.management.domain.port.out.message.publisher.room.RoomRequestReserveMessagePublisher;
@@ -59,7 +60,7 @@ public class RoomRequestKafkaPublisher implements RoomRequestReserveMessagePubli
         validateInputParameters(roomOutboxMessage, outboxCallback);
 
         // Extract và parse thông tin từ outbox message
-        RoomEventPayload roomEventPayload = extractRoomEventPayload(roomOutboxMessage);
+        ReservedEventPayload roomEventPayload = extractRoomEventPayload(roomOutboxMessage);
         String sagaId = extractSagaId(roomOutboxMessage);
 
         // Log thông tin bắt đầu xử lý
@@ -92,7 +93,7 @@ public class RoomRequestKafkaPublisher implements RoomRequestReserveMessagePubli
         Assert.notNull(outboxCallback, "OutboxCallback không được null");
         Assert.notNull(roomOutboxMessage.getPayload(), "BookingRoomOutboxMessage payload không được null");
         Assert.notNull(roomOutboxMessage.getSagaId(), "BookingRoomOutboxMessage sagaId không được null");
-        Assert.hasText(roomOutboxMessage.getBookingId(), "BookingRoomOutboxMessage bookingId không được empty");
+        Assert.hasText(roomOutboxMessage.getBookingId().toString(), "BookingRoomOutboxMessage bookingId không được empty");
     }
 
     /**
@@ -105,10 +106,10 @@ public class RoomRequestKafkaPublisher implements RoomRequestReserveMessagePubli
      * - basePrice: Giá cơ bản
      * - capacity: Sức chứa
      */
-    private RoomEventPayload extractRoomEventPayload(RoomOutboxMessage roomOutboxMessage) {
+    private ReservedEventPayload extractRoomEventPayload(RoomOutboxMessage roomOutboxMessage) {
         return kafkaMessageHelper.getEventPayload(
                 roomOutboxMessage.getPayload(),
-                RoomEventPayload.class
+                ReservedEventPayload.class
         );
     }
 
@@ -127,9 +128,9 @@ public class RoomRequestKafkaPublisher implements RoomRequestReserveMessagePubli
      * <p>
      * Ghi log chi tiết về việc bắt đầu xử lý đặt phòng
      */
-    private void logProcessingStart(RoomEventPayload roomEventPayload, String sagaId) {
-        log.info("Bắt đầu xử lý RoomReservationRequest cho room: {} , saga id: {}",
-                roomEventPayload.getRoomNumber(),
+    private void logProcessingStart(ReservedEventPayload roomEventPayload, String sagaId) {
+        log.info("Bắt đầu xử lý RoomReservationRequest cho booking: {} , saga id: {}",
+                roomEventPayload.getBookingId(),
                 sagaId);
     }
 
@@ -139,7 +140,7 @@ public class RoomRequestKafkaPublisher implements RoomRequestReserveMessagePubli
      * Chuyển đổi domain event thành Avro model để gửi qua Kafka
      */
     private BookingRoomRequestAvro createRoomRequestAvro(String sagaId,
-                                                         RoomEventPayload roomEventPayload) {
+                                                         ReservedEventPayload roomEventPayload) {
         return bookingDataMapper.bookingRoomEventToRoomRequestAvroModel(sagaId, roomEventPayload);
     }
 
@@ -153,7 +154,7 @@ public class RoomRequestKafkaPublisher implements RoomRequestReserveMessagePubli
                                     String sagaId,
                                     RoomOutboxMessage roomOutboxMessage,
                                     BiConsumer<RoomOutboxMessage, OutboxStatus> outboxCallback,
-                                    RoomEventPayload roomEventPayload) {
+                                    ReservedEventPayload roomEventPayload) {
 
         String topicName = bookingServiceConfigData.getRoomReserveRequestTopicName();
 
@@ -166,7 +167,7 @@ public class RoomRequestKafkaPublisher implements RoomRequestReserveMessagePubli
                         roomRequestAvro,
                         roomOutboxMessage,
                         outboxCallback,
-                        roomEventPayload.getRoomId(),
+                        roomEventPayload.getBookingId(),
                         "RoomReservationRequestAvroModel"
                 )
         );
@@ -177,9 +178,9 @@ public class RoomRequestKafkaPublisher implements RoomRequestReserveMessagePubli
      * <p>
      * Ghi log khi việc gửi yêu cầu đặt phòng thành công
      */
-    private void logProcessingSuccess(RoomEventPayload roomEventPayload, String sagaId) {
-        log.info("RoomReservationRequest đã được gửi thành công đến Kafka cho room: {} , saga id: {}",
-                roomEventPayload.getRoomNumber(),
+    private void logProcessingSuccess(ReservedEventPayload roomEventPayload, String sagaId) {
+        log.info("RoomReservationRequest đã được gửi thành công đến Kafka cho room với booking id: {} , saga id: {}",
+                roomEventPayload.getBookingId(),
                 sagaId);
     }
 
@@ -189,17 +190,13 @@ public class RoomRequestKafkaPublisher implements RoomRequestReserveMessagePubli
      * Ghi log chi tiết lỗi và có thể thêm logic retry hoặc dead letter queue
      * để đảm bảo tính reliability của hệ thống đặt phòng
      */
-    private void handleProcessingError(RoomEventPayload roomEventPayload,
+    private void handleProcessingError(ReservedEventPayload roomEventPayload,
                                        String sagaId,
                                        Exception exception) {
-        log.error("Lỗi khi gửi RoomReservationRequest đến Kafka với room: {} , saga id: {}. Lỗi: {}",
-                roomEventPayload.getRoomNumber(),
+        log.error("Lỗi khi gửi RoomReservationRequest đến Kafka với booking id: {} , saga id: {}. Lỗi: {}",
+                roomEventPayload.getBookingId(),
                 sagaId,
                 exception.getMessage(),
                 exception);
-
-        // TODO: Có thể thêm logic retry hoặc dead letter queue ở đây
-        // TODO: Có thể gửi notification đến admin về lỗi đặt phòng
-        // throw new RoomReservationPublishingException("Không thể gửi room reservation request", exception);
     }
 }

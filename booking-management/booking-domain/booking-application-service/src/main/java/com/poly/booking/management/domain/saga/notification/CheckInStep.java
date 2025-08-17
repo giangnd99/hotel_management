@@ -1,31 +1,14 @@
 package com.poly.booking.management.domain.saga.notification;
 
-import com.poly.booking.management.domain.dto.message.NotificationMessageResponse;
 import com.poly.booking.management.domain.entity.Booking;
-import com.poly.booking.management.domain.event.CheckInEvent;
-import com.poly.booking.management.domain.event.CheckOutEvent;
-import com.poly.booking.management.domain.mapper.PaymentDataMapper;
-import com.poly.booking.management.domain.outbox.payload.NotifiEventPayload;
 import com.poly.booking.management.domain.outbox.model.NotifiOutboxMessage;
-import com.poly.booking.management.domain.outbox.service.impl.NotificationOutboxServiceImpl;
-import com.poly.booking.management.domain.outbox.service.impl.PaymentOutboxImpl;
-import com.poly.booking.management.domain.port.out.repository.BookingRepository;
-import com.poly.booking.management.domain.saga.BookingSagaHelper;
-import com.poly.booking.management.domain.service.BookingDomainService;
-import com.poly.domain.valueobject.BookingId;
-import com.poly.domain.valueobject.EBookingStatus;
-import com.poly.domain.valueobject.NotificationStatus;
-import com.poly.outbox.OutboxStatus;
-import com.poly.saga.SagaStatus;
+import com.poly.booking.management.messaging.message.NotificationMessageResponse;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.saga.SagaStep;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
 
 /**
  * BookingNotifiSaga - Saga Step Implementation for QR Check-in Notification Processing
@@ -113,7 +96,7 @@ public class CheckInStep implements SagaStep<NotificationMessageResponse> {
 //        notificationSagaHelper.updateSagaStatusAndOutboxMessages(booking, notificationMessageResponse, SagaStatus.PROCESSING);
 
         // Step 5: Trigger next step (payment processing) nếu check-in thành công
-        if (EBookingStatus.CHECKED_IN.equals(notificationMessageResponse.getBookingStatus())) {
+        if (BookingStatus.CHECKED_IN.equals(notificationMessageResponse.getBookingStatus())) {
             notificationSagaHelper.triggerNextSagaStep(booking, notificationMessageResponse);
         }
 

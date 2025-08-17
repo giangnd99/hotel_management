@@ -1,7 +1,5 @@
 package com.poly.authentication.service.domain.config;
 
-import com.poly.authentication.service.domain.service.AuthDomainService;
-import com.poly.authentication.service.domain.service.impl.AuthDomainServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -97,7 +95,7 @@ public class SecurityConfig {
         corsConfig.addAllowedOrigin("*"); // PRODUCTION: Thay đổi thành domain thực tế của Frontend
         corsConfig.addAllowedMethod("*"); // Cho phép tất cả các phương thức HTTP (GET, POST, PUT, DELETE, etc.)
         corsConfig.addAllowedHeader("*"); // Cho phép tất cả các header, bao gồm Authorization
-        corsConfig.setAllowCredentials(true); // Cho phép gửi cookie, header xác thực
+        corsConfig.setAllowCredentials(false);
         corsConfig.setMaxAge(3600L); // Thời gian pre-flight request được cache (giây)
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

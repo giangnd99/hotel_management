@@ -1,26 +1,12 @@
 package com.poly.booking.management.domain.saga.room;
 
-import com.poly.booking.management.domain.dto.message.RoomMessageResponse;
-import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.event.BookingConfirmedEvent;
-import com.poly.booking.management.domain.mapper.NotificationDataMapper;
 import com.poly.booking.management.domain.outbox.model.RoomOutboxMessage;
-import com.poly.booking.management.domain.outbox.service.impl.NotificationOutboxServiceImpl;
-import com.poly.booking.management.domain.outbox.service.impl.PaymentOutboxImpl;
-import com.poly.booking.management.domain.outbox.service.impl.RoomOutboxServiceImpl;
-import com.poly.booking.management.domain.port.out.repository.BookingRepository;
-import com.poly.booking.management.domain.saga.BookingSagaHelper;
-import com.poly.booking.management.domain.service.BookingDomainService;
-import com.poly.domain.valueobject.ReservationStatus;
-import com.poly.outbox.OutboxStatus;
-import com.poly.saga.SagaStatus;
+import com.poly.booking.management.messaging.message.RoomMessageResponse;
 import com.poly.saga.SagaStep;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
-import java.util.UUID;
 
 /**
  * BookingRoomSaga - Saga Step Implementation for Room Reservation Processing

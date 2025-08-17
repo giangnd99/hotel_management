@@ -1,6 +1,6 @@
 package com.poly.booking.management.dao.outbox.room.entity;
 
-import com.poly.domain.valueobject.EBookingStatus;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;
 import jakarta.persistence.*;
@@ -20,7 +20,7 @@ public class RoomOutboxEntity {
     @Id
     private UUID id;
     private UUID sagaId;
-    private String bookingId;
+    private UUID bookingId;
     private LocalDateTime createdAt;
     private LocalDateTime processedAt;
     private String type;
@@ -28,7 +28,7 @@ public class RoomOutboxEntity {
     @Enumerated(EnumType.STRING)
     private SagaStatus sagaStatus;
     @Enumerated(EnumType.STRING)
-    private EBookingStatus bookingStatus;
+    private BookingStatus bookingStatus;
     @Enumerated(EnumType.STRING)
     private OutboxStatus outboxStatus;
     @Version

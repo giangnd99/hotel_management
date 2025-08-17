@@ -16,7 +16,6 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Configuration
 @RequiredArgsConstructor
@@ -26,7 +25,7 @@ public class KafkaConsumerConfig<K extends Serializable, V extends SpecificRecor
     private final KafkaConsumerConfigData kafkaConsumerConfigData;
 
     @Bean
-    Map<String, Object> kafkaConsumerConfig() {
+    Map<String, Object> consumerConfigs() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfigData.getBootstrapServers());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, kafkaConsumerConfigData.getKeyDeserializer());
@@ -46,7 +45,7 @@ public class KafkaConsumerConfig<K extends Serializable, V extends SpecificRecor
 
     @Bean
     public ConsumerFactory<K, V> consumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(kafkaConsumerConfig());
+        return new DefaultKafkaConsumerFactory<>(consumerConfigs());
     }
 
     @Bean

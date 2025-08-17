@@ -3,6 +3,7 @@ package com.poly.booking.management.domain.saga.command;
 import com.poly.booking.management.domain.dto.request.CreateBookingCommand;
 import com.poly.booking.management.domain.dto.response.BookingCreatedResponse;
 import com.poly.booking.management.domain.entity.Booking;
+import com.poly.booking.management.domain.entity.BookingRoom;
 import com.poly.booking.management.domain.entity.Room;
 import com.poly.booking.management.domain.event.BookingCreatedEvent;
 import com.poly.booking.management.domain.exception.BookingDomainException;
@@ -31,80 +32,21 @@ import java.util.UUID;
 @Slf4j
 public class BookingCreateCommendHandler {
 
-    private final BookingRepository bookingRepository;
-    private final RoomClient roomClient;
-    private final RoomDataMapper roomDataMapper;
-    private final CustomerDataMapper customerDataMapper;
-    private final PaymentDataMapper paymentDataMapper;
-    private final BookingDataMapper bookingDataMapper;
-    private final BookingSagaHelper bookingSagaHelper;
-    private final PaymentOutboxImpl paymentOutboxHelper;
-    private final BookingDomainService bookingDomainService;
+    private final BookingCreateHelper bookingCreateHelper;
 
     @Transactional
     public BookingCreatedResponse createBooking(CreateBookingCommand createBookingCommand) {
 
-        checkCustomer(createBookingCommand.getCustomerId());
-
-        List<Room> allRooms = getRooms();
-
-        List<Room> bookedRooms = roomDataMapper.roomsDtoToRooms(createBookingCommand.getRooms());
-
-        Booking booking = Booking.Builder.builder()
-                .customerId(new CustomerId(UUID.fromString(createBookingCommand.getCustomerId())))
-                .rooms(bookedRooms)
-                .checkInDate(DateCustom.of(createBookingCommand.getCheckInDate()))
-                .checkOutDate(DateCustom.of(createBookingCommand.getCheckOutDate()))
-                .build();
+        bookingCreateHelper.checkCustomer(createBookingCommand.getCustomerId());
 
         BookingCreatedEvent bookingCreatedEvent =
-                bookingDomainService.validateAndInitiateBooking(booking, allRooms);
+                bookingCreateHelper.initAndValidateBookingCreatedEvent(createBookingCommand);
 
-        saveBooking(bookingCreatedEvent.getBooking());
+        bookingCreateHelper.triggerDepositStep(bookingCreatedEvent);
 
-        paymentOutboxHelper.saveWithPayloadAndBookingStatusAndSagaStatusAndOutboxStatusAndSagaId(
-                paymentDataMapper.bookingCreatedEventToRoomBookingEventPayload(bookingCreatedEvent),
-                bookingCreatedEvent.getBooking().getStatus(),
-                bookingSagaHelper.bookingStatusToSagaStatus(bookingCreatedEvent.getBooking().getStatus()),
-                OutboxStatus.STARTED,
-                UUID.randomUUID());
-
-        return bookingDataMapper.bookingCreatedEventToBookingCreatedResponse(bookingCreatedEvent,
+        return bookingCreateHelper.responseDto(bookingCreatedEvent,
                 createBookingCommand);
     }
 
-    private List<Room> getRooms() {
-        List<RoomResponse> allRooms = roomClient.getAllRooms().getBody();
-        if (allRooms == null) {
-            log.error("Could not get all rooms!");
-            throw new BookingDomainException("Could not get all rooms! Please check the server status and try again later!");
-        }
-        return allRooms.stream().map(roomResponse ->
-                new Room(new RoomId(UUID.fromString(roomResponse.getId())), roomResponse.getRoomNumber(),
-                        Money.from(roomResponse.getRoomType().getBasePrice()),
-                        RoomStatus.valueOf(roomResponse.getRoomStatus()))).toList();
-    }
 
-    private void checkCustomer(String customerId) {
-        if (customerId == null) {
-            log.error("Customer id is null!");
-            throw new BookingDomainException("Customer id is null! Please check the server status and try again later!");
-        }
-        if (customerId.isBlank()) {
-            log.error("Customer id is blank!");
-            throw new BookingDomainException("Customer id is blank! Please check the server status and try again later!");
-        }
-        if (!UUID.fromString(customerId).toString().equals(customerId)) {
-            log.error("Customer id is not a valid UUID!");
-        }
-    }
-
-    void saveBooking(Booking booking) {
-        Booking savedBooking = bookingRepository.save(booking);
-        if (savedBooking == null) {
-            log.error("Could not save booking with id: {}! Please check the server status and try again later!", booking.getId().getValue());
-            throw new BookingDomainException("Could not save booking! Please check the server status and try again later!");
-        }
-        log.info("Booking with id: {} has been created successfully!", savedBooking.getId().getValue());
-    }
 }

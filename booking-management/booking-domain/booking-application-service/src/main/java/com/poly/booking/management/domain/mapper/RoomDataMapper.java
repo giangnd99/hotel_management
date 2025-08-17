@@ -1,22 +1,21 @@
 package com.poly.booking.management.domain.mapper;
 
 import com.poly.booking.management.domain.dto.RoomDto;
+import com.poly.booking.management.domain.entity.Booking;
+import com.poly.booking.management.domain.entity.BookingRoom;
 import com.poly.booking.management.domain.entity.Room;
 import com.poly.booking.management.domain.event.BookingDepositedEvent;
 import com.poly.booking.management.domain.event.CheckInEvent;
-import com.poly.booking.management.domain.event.CheckOutEvent;
-import com.poly.booking.management.domain.outbox.payload.PaymentEventPayload;
 import com.poly.booking.management.domain.outbox.payload.ReservedEventPayload;
 import com.poly.booking.management.domain.outbox.payload.RoomEventPayload;
 import com.poly.domain.valueobject.Money;
-import com.poly.domain.valueobject.ReservationStatus;
+import com.poly.domain.valueobject.RoomResponseStatus;
 import com.poly.domain.valueobject.RoomId;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 public class RoomDataMapper {
@@ -40,6 +39,7 @@ public class RoomDataMapper {
                                 roomDto.getStatus())
         ).toList();
     }
+
     /**
      * Chuyển đổi BookingPaidEvent thành BookingReservedEventPayload (alias method)
      * <p>
@@ -55,10 +55,11 @@ public class RoomDataMapper {
                 .customerId(domainEvent.getBooking().getCustomerId().getValue().toString())
                 .price(domainEvent.getBooking().getTotalPrice().getAmount())
                 .createdAt(domainEvent.getCreatedAt().getValue())
-                .roomBookingStatus(ReservationStatus.PENDING.toString())
-                .rooms(domainEvent.getBooking().getRooms().stream()
-                        .map(this::roomToBookingRoomEventPayload)
-                        .collect(Collectors.toList()))
+                .roomBookingStatus(RoomResponseStatus.PENDING.toString())
+                .rooms(domainEvent.getBooking().getBookingRooms().stream()
+                        .map(bookingRoom ->
+                                roomToBookingRoomEventPayload(bookingRoom.getRoom()))
+                        .toList())
                 .build();
     }
 
@@ -83,13 +84,25 @@ public class RoomDataMapper {
     public ReservedEventPayload bookingCheckInEventToRoomBookedEventPayload(CheckInEvent domainEvent) {
         return ReservedEventPayload.builder()
                 .bookingId(domainEvent.getBooking().getId().getValue().toString())
-                .roomBookingStatus(ReservationStatus.SUCCESS.name())
-                .rooms(domainEvent.getBooking().getRooms().stream()
-                        .map(this::roomToBookingRoomEventPayload)
-                        .collect(Collectors.toList()))
+                .roomBookingStatus(RoomResponseStatus.SUCCESS.name())
+                .rooms(domainEvent.getBooking()
+                        .getBookingRooms()
+                        .stream()
+                        .map(bookingRoom ->
+                                roomToBookingRoomEventPayload(bookingRoom.getRoom())
+                        ).toList())
                 .price(domainEvent.getBooking().getTotalPrice().getAmount())
                 .customerId(domainEvent.getBooking().getCustomerId().getValue().toString())
                 .createdAt(domainEvent.getCreatedAt().getValue())
                 .build();
+    }
+
+    public List<BookingRoom> mapRoomWithBooking(Booking booking, List<Room> roomsRequest) {
+        return roomsRequest.stream().map(room -> {
+            return BookingRoom.builder()
+                    .booking(booking)
+                    .room(room)
+                    .build();
+        }).toList();
     }
 }

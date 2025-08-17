@@ -4,7 +4,7 @@ import com.poly.room.management.domain.entity.Furniture;
 import com.poly.room.management.domain.entity.RoomType;
 import com.poly.room.management.domain.exception.RoomDomainException;
 import com.poly.room.management.domain.valueobject.FurnitureId;
-import com.poly.room.management.domain.entity.FurnitureRequirement;
+import com.poly.room.management.domain.entity.RoomTypeFurniture;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public interface RoomTypeCommandService {
      * @return The created and validated RoomType entity.
      * @throws RoomDomainException If the data is invalid.
      */
-    RoomType createRoomType(String typeName, String description, String basePrice, int maxOccupancy, List<FurnitureRequirement> furnitureItems) throws RoomDomainException;
+    RoomType createRoomType(String typeName, String description, String basePrice, int maxOccupancy, List<RoomTypeFurniture> furnitureItems) throws RoomDomainException;
 
     /**
      * Updates the details of a room type. The Application Service loads the RoomType entity.
