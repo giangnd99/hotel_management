@@ -73,37 +73,6 @@ public class DiscountAmount implements Discount {
     }
 
     /**
-     * Calculates the discount amount to be applied to the transaction.
-     * 
-     * <p>For fixed-amount discounts, this method returns the discount amount directly,
-     * but ensures it doesn't exceed the original transaction amount. This prevents
-     * negative final amounts.</p>
-     * 
-     * <p><strong>Safety Logic:</strong></p>
-     * <ul>
-     *   <li>If discount amount ≤ original price: returns the full discount amount</li>
-     *   <li>If discount amount > original price: returns the original price (capped)</li>
-     * </ul>
-     * 
-     * @param originalPrice the original transaction amount before discount
-     * @return the discount amount to be applied, never exceeding the original price
-     * @throws IllegalArgumentException if originalPrice is null
-     */
-    @Override
-    public Money calculateDiscountAmount(Money originalPrice) {
-        if (originalPrice == null) {
-            throw new IllegalArgumentException("Original price cannot be null");
-        }
-        
-        // For fixed amount discount, return the discount amount directly
-        // but ensure it doesn't exceed the original price
-        if (value.isGreaterThan(originalPrice)) {
-            return originalPrice;
-        }
-        return value;
-    }
-
-    /**
      * Gets a human-readable representation of this fixed-amount discount.
      * 
      * <p>This method returns a formatted string that customers can easily understand,

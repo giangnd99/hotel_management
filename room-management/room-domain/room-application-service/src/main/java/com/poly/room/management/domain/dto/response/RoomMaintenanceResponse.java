@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class RoomMaintenanceResponse {
     private Integer id;
-    private Integer roomId;
+    private String roomId;
     private String staffId;
     private Timestamp scheduledDate;
     private Timestamp startDate;

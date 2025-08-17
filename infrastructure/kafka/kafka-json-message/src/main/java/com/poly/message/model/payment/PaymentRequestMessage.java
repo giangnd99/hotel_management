@@ -2,15 +2,15 @@ package com.poly.message.model.payment;
 
 import com.poly.message.BaseMessage;
 import com.poly.message.MessageType;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
+@AllArgsConstructor
 public class PaymentRequestMessage extends BaseMessage {
 
     private String paymentId;       // unique for payment attempt

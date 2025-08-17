@@ -2,10 +2,13 @@ package com.poly.room.management.dao.room.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -18,4 +21,7 @@ public class MaintenanceTypeEntity {
     private Integer maintenanceTypeId;
 
     private String name;
+
+    @OneToMany(mappedBy = "maintenanceType", cascade = jakarta.persistence.CascadeType.ALL)
+    private List<RoomMaintenanceEntity> roomMaintenances;
 }

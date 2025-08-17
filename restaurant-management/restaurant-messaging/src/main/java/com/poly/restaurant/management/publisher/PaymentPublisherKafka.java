@@ -31,7 +31,7 @@ public class PaymentPublisherKafka implements PaymentRequestPublisher {
         // Gửi message
         kafkaJsonProducer.send(
                 KafkaTopicsConfig.PAYMENT_REQUEST_TOPIC,
-                message.getCorrelationId(), // Sử dụng orderId làm key
+                message.getCorrelationId(),
                 message,
                 callback
         );

@@ -48,24 +48,6 @@ public interface Discount {
     BigDecimal getValue();
     
     /**
-     * Calculates the actual discount amount to be applied to a transaction.
-     * 
-     * <p>This method takes the original transaction amount and calculates how much
-     * should be discounted based on the discount type and value.</p>
-     * 
-     * <p><strong>Examples:</strong></p>
-     * <ul>
-     *   <li>Percentage discount: 20% off $100 = $20 discount</li>
-     *   <li>Fixed amount: $50 off $100 = $50 discount</li>
-     *   <li>Fixed amount: $150 off $100 = $100 discount (capped at transaction amount)</li>
-     * </ul>
-     * 
-     * @param originalPrice the original transaction amount before discount
-     * @return the discount amount to be applied, never exceeding the original price
-     */
-    Money calculateDiscountAmount(Money originalPrice);
-    
-    /**
      * Gets a human-readable representation of this discount.
      * 
      * <p>This method returns a formatted string that customers can understand,

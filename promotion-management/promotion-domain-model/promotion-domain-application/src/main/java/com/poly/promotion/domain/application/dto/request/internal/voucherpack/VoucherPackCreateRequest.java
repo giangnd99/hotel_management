@@ -1,7 +1,6 @@
 package com.poly.promotion.domain.application.dto.request.internal.voucherpack;
 
 import com.poly.promotion.domain.core.entity.VoucherPack;
-import com.poly.promotion.domain.core.exception.PromotionDomainException;
 import com.poly.promotion.domain.core.valueobject.DateRange;
 import com.poly.promotion.domain.core.valueobject.Discount;
 import com.poly.promotion.domain.core.valueobject.DiscountAmount;

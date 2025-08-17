@@ -51,19 +51,19 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable) // Vô hiệu hóa CSRF cho API (phổ biến trong REST API)
-                .cors(Customizer.withDefaults()) // Kích hoạt CORS với cấu hình CorsWebFilter
+                .cors(Customizer.withDefaults())
                 .exceptionHandling(exceptionHandlingSpec ->
-                        exceptionHandlingSpec.authenticationEntryPoint(jwtAuthenticationEntryPoint)) // Xử lý lỗi xác thực
+                        exceptionHandlingSpec.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeExchange(authorizeExchangeSpec ->
                         authorizeExchangeSpec
-                                .pathMatchers(PUBLIC_URLS).permitAll() // Cho phép truy cập công khai các URL này
-                                .anyExchange().authenticated() // Tất cả các request khác đều yêu cầu xác thực
+                                .pathMatchers(PUBLIC_URLS).permitAll()
+                                .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2ResourceServerSpec ->
                         oauth2ResourceServerSpec
-                                .jwt(jwtSpec -> jwtSpec.jwtDecoder(jwtDecoder) // Sử dụng CustomJwtDecoder của bạn
-                                        .jwtAuthenticationConverter(jwtAuthenticationConverter())) // Chuyển đổi JWT thành Authentication
-                                .authenticationEntryPoint(jwtAuthenticationEntryPoint) // Xử lý lỗi xác thực liên quan đến JWT
+                                .jwt(jwtSpec -> jwtSpec.jwtDecoder(jwtDecoder)
+                                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 )
         ;
 
@@ -72,13 +72,11 @@ public class SecurityConfig {
 
     @Bean
     public ReactiveJwtAuthenticationConverter jwtAuthenticationConverter() { // Thay đổi kiểu trả về
-        // ReactiveJwtAuthenticationConverter là một Converter<Jwt, Mono<AbstractAuthenticationToken>>
-        // mà Spring Security WebFlux mong đợi.
-        // Nó có thể được khởi tạo với một JwtGrantedAuthoritiesConverter (như CustomJwtConverter của bạn).
+
         ReactiveJwtGrantedAuthoritiesConverterAdapter grantedAuthoritiesConverter = new ReactiveJwtGrantedAuthoritiesConverterAdapter(jwtConverter);
 
         ReactiveJwtAuthenticationConverter converter = new ReactiveJwtAuthenticationConverter();
-        // Gán CustomJwtConverter của bạn vào ReactiveJwtAuthenticationConverter
+
         converter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
 
         return converter;
@@ -92,14 +90,14 @@ public class SecurityConfig {
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.addAllowedOrigin("*"); // PRODUCTION: Thay đổi thành domain thực tế của Frontend
-        corsConfig.addAllowedMethod("*"); // Cho phép tất cả các phương thức HTTP (GET, POST, PUT, DELETE, etc.)
-        corsConfig.addAllowedHeader("*"); // Cho phép tất cả các header, bao gồm Authorization
-        corsConfig.setAllowCredentials(true); // Cho phép gửi cookie, header xác thực
-        corsConfig.setMaxAge(3600L); // Thời gian pre-flight request được cache (giây)
+        corsConfig.addAllowedOrigin("*");
+        corsConfig.addAllowedMethod("*");
+        corsConfig.addAllowedHeader("*");
+        corsConfig.setAllowCredentials(false);
+        corsConfig.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfig); // Áp dụng cấu hình CORS cho tất cả các đường dẫn
+        source.registerCorsConfiguration("/**", corsConfig);
         return new CorsWebFilter(source);
     }
 
