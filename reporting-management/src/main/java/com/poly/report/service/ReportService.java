@@ -10,4 +10,12 @@ public interface ReportService {
 
     // Filter by date range
     List<Object> filterByDate(LocalDate fromDate, LocalDate toDate, String reportType);
+
+    Long getAvailableRoomCount();
+    Long getTodayCheckInCount();
+    Long getTodayCheckOutCount();
+    Double getRevenueToday();
+    List<Object> getRoomByFloor(Integer floorNumber);
+    Object getRoomInfoById(Long roomId);
+    Object updateRoomStatus(Long roomId, String status);
 }

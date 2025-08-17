@@ -80,4 +80,64 @@ public class Service_ServiceImpl implements Service_Service {
         }
         return false;
     }
+
+    @Override
+    public Double getServiceRevenue() {
+        return 0.0;
+    }
+
+    @Override
+    public List<Service_> searchServices(String name, String description, String category, Double minPrice, Double maxPrice) {
+        return List.of();
+    }
+
+    @Override
+    public List<Service_> filterByDepartment(String department) {
+        return List.of();
+    }
+
+    @Override
+    public List<Service_> filterByState(String state) {
+        return List.of();
+    }
+
+    @Override
+    public List<String> getAllCategories() {
+        return List.of();
+    }
+
+    @Override
+    public List<Service_> getServicesByCategory(String category) {
+        return List.of();
+    }
+
+    @Override
+    public Object getPriceRange() {
+        return null;
+    }
+
+    @Override
+    public Service_ updatePrice(Integer id, Double newPrice) {
+        return null;
+    }
+
+    @Override
+    public List<Service_> getAvailableServices() {
+        return List.of();
+    }
+
+    @Override
+    public Service_ updateAvailability(Integer id, Boolean available) {
+        return null;
+    }
+
+    @Override
+    public Object getUsageStatistics() {
+        return null;
+    }
+
+    @Override
+    public Object getRevenueStatistics() {
+        return null;
+    }
 }
