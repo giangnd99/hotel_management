@@ -15,9 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "com.poly.customerdataaccess.repository")
-@EntityScan(basePackages = "com.poly.customerdataaccess.entity")
-@ComponentScan(basePackages = {"com.poly.customerdataaccess"})
 public class UsecaseBeanConfig {
 
     @Bean

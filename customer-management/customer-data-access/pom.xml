@@ -12,9 +12,6 @@
     </parent>
 
     <artifactId>customer-data-access</artifactId>
-    <properties>
-        <spring-cloud.version>2024.0.2</spring-cloud.version>
-    </properties>
     <dependencyManagement>
         <dependencies>
             <dependency>
