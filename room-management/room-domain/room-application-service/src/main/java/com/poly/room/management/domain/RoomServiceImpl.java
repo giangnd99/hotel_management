@@ -1,11 +1,11 @@
 package com.poly.room.management.domain;
 
-import com.poly.domain.handler.AppException;
+import com.poly.room.management.domain.dto.RoomStatisticsDto;
+import com.poly.room.management.domain.dto.RoomStatusDto;
+import com.poly.room.management.domain.dto.RoomTypeDto;
 import com.poly.room.management.domain.dto.request.CreateRoomRequest;
 import com.poly.room.management.domain.dto.request.UpdateRoomRequest;
 import com.poly.room.management.domain.dto.response.RoomResponse;
-import com.poly.room.management.domain.dto.response.RoomTypeResponse;
-import com.poly.room.management.domain.entity.RoomType;
 import com.poly.room.management.domain.handler.room.FindAllRoomsHandler;
 import com.poly.room.management.domain.port.in.service.RoomService;
 import com.poly.room.management.domain.service.RoomDomainService;
@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,259 +23,199 @@ public class RoomServiceImpl implements RoomService {
     private final RoomDomainService roomDomainService;
     private final FindAllRoomsHandler findAllRoomsHandler;
 
-//    @Override
-//    @Transactional
-//    public RoomResponse createRoom(CreateRoomRequest request) throws ApplicationServiceException {
-//        Assert.notNull(request, "CreateRoomRequest cannot be null");
-//        try {
-//            log.debug("Creating room with request: {}", request);
-//            RoomType roomTypeId = roomDomainService.getRoomTypeCommandService()
-//                    .findById(request.getRoomTypeId())
-//                    .orElseThrow(() -> new ApplicationServiceException("Room type not found"));
-//
-//            Room room = roomDomainService.getRoomCommandService()
-//                    .createRoom(request.getRoomNumber(), request.getFloor(), roomTypeId);
-//
-//            return mapToRoomResponse(room);
-//        } catch (Exception e) {
-//            log.error("Error creating room", e);
-//            throw new ApplicationServiceException("Failed to create room", e);
-//        }
-//    }
-//
-//    @Override
-//    @Transactional
-//    public RoomResponse updateRoom(UpdateRoomRequest request) throws ApplicationServiceException {
-//        Assert.notNull(request, "UpdateRoomRequest cannot be null");
-//        Assert.notNull(request.getRoomId(), "Room ID cannot be null");
-//
-//        try {
-//            log.debug("Updating room with request: {}", request);
-//            Room existingRoom = findRoomEntityById(request.getRoomId());
-//            RoomType newRoomType = roomDomainService.getRoomTypeCommandService()
-//                    .findById(request.getRoomTypeId())
-//                    .orElseThrow(() -> new ApplicationServiceException("Room type not found"));
-//
-//            Room updatedRoom = roomDomainService.getRoomCommandService()
-//                    .updateRoomDetails(existingRoom, request.getRoomNumber(), request.getFloor(), newRoomType);
-//
-//            return mapToRoomResponse(updatedRoom);
-//        } catch (Exception e) {
-//            log.error("Error updating room", e);
-//            throw new ApplicationServiceException("Failed to update room", e);
-//        }
-//    }
-//
-//    @Override
-//    @Transactional
-//    public void deleteRoom(Integer roomId) throws ApplicationServiceException {
-//        Assert.notNull(roomId, "Room ID cannot be null");
-//
-//        try {
-//            log.debug("Deleting room with ID: {}", roomId);
-//            Room room = findRoomEntityById(roomId);
-//            roomDomainService.getRoomCommandService().deleteRoom(room);
-//        } catch (Exception e) {
-//            log.error("Error deleting room", e);
-//            throw new ApplicationServiceException("Failed to delete room", e);
-//        }
-//    }
-//
-//    @Override
-//    @Transactional(readOnly = true)
-//    public RoomResponse getRoomById(Integer roomId) throws ApplicationServiceException {
-//        Assert.notNull(roomId, "Room ID cannot be null");
-//
-//        try {
-//            log.debug("Fetching room with ID: {}", roomId);
-//            Room room = findRoomEntityById(roomId);
-//            return mapToRoomResponse(room);
-//        } catch (Exception e) {
-//            log.error("Error fetching room", e);
-//            throw new ApplicationServiceException("Failed to fetch room", e);
-//        }
-//    }
-//
-//    @Override
-//    @Transactional(readOnly = true)
-//    public List<RoomResponse> getAllRooms() {
-//
-//        try {
-
-    /// /            log.debug("Fetching all rooms with pagination: {}", pageable);
-//            return roomDomainService.getRoomQueryService()
-//                    .getAllRooms(pageable)
-//                    .map(this::mapToRoomResponse);
-//        } catch (Exception e) {
-//            log.error("Error fetching all rooms", e);
-//            throw new ApplicationServiceException("Failed to fetch rooms", e);
-//        }
-//    }
-//
-//    @Override
-//    @Transactional
-//    public RoomResponse updateRoomStatus(Integer roomId, String newStatus) throws ApplicationServiceException {
-//        Assert.notNull(roomId, "Room ID cannot be null");
-//        Assert.hasText(newStatus, "Status cannot be null or empty");
-//
-//        try {
-//            log.debug("Updating room status. Room ID: {}, New status: {}", roomId, newStatus);
-//            Room room = findRoomEntityById(roomId);
-//            RoomStatus status = RoomStatus.valueOf(newStatus.toUpperCase());
-//
-//            Room updatedRoom = roomDomainService.getRoomCommandService()
-//                    .updateRoomStatus(room, status);
-//
-//            return mapToRoomResponse(updatedRoom);
-//        } catch (IllegalArgumentException e) {
-//            throw new ApplicationServiceException("Invalid room status: " + newStatus);
-//        } catch (Exception e) {
-//            log.error("Error updating room status", e);
-//            throw new ApplicationServiceException("Failed to update room status", e);
-//        }
-//    }
-//
-//    @Override
-//    @Transactional(readOnly = true)
-//    public List<RoomResponse> findAvailableRooms(
-//            Optional<Integer> roomTypeId,
-//            Optional<Integer> minFloor,
-//            Optional<Integer> maxFloor,
-//            LocalDateTime checkInDate,
-//            LocalDateTime checkOutDate) {
-//
-//        Assert.notNull(checkInDate, "Check-in date cannot be null");
-//        Assert.notNull(checkOutDate, "Check-out date cannot be null");
-//        Assert.isTrue(checkInDate.isBefore(checkOutDate), "Check-in date must be before check-out date");
-//
-//        try {
-//            log.debug("Finding available rooms with parameters: roomTypeId={}, minFloor={}, maxFloor={}, checkIn={}, checkOut={}",
-//                    roomTypeId, minFloor, maxFloor, checkInDate, checkOutDate);
-//
-//            return roomDomainService.getRoomQueryService()
-//                    .findAvailableRooms(roomTypeId, minFloor, maxFloor, checkInDate, checkOutDate)
-//                    .stream()
-//                    .map(this::mapToRoomResponse)
-//                    .toList();
-//        } catch (Exception e) {
-//            log.error("Error finding available rooms", e);
-//            throw new ApplicationServiceException("Failed to find available rooms", e);
-//        }
-//    }
-//
-//    @Override
-//    @Transactional(readOnly = true)
-//    public List<RoomResponse> getRoomsByStatus(String statusName) {
-//        Assert.hasText(statusName, "Status name cannot be null or empty");
-//
-//        try {
-//            ERoomStatus status = ERoomStatus.valueOf(statusName.toUpperCase());
-//            log.debug("Fetching rooms by status: {}", status);
-//
-//            return roomDomainService.getRoomQueryService()
-//                    .getRoomsByStatus(status.name())
-//                    .stream()
-//                    .map(this::mapToRoomResponse)
-//                    .toList();
-//        } catch (IllegalArgumentException e) {
-//            throw new ApplicationServiceException("Invalid room status: " + statusName);
-//        } catch (Exception e) {
-//            log.error("Error fetching rooms by status", e);
-//            throw new ApplicationServiceException("Failed to fetch rooms by status", e);
-//        }
-//    }
-//
-//    @Override
-//    @Transactional
-//    public void requestInventoryItemForRoom(Integer roomId, String inventoryItemId, int quantity, String requestedByStaffId)
-//            throws ApplicationServiceException {
-//        Assert.notNull(roomId, "Room ID cannot be null");
-//        Assert.notNull(inventoryItemId, "Inventory item ID cannot be null");
-//        Assert.isTrue(quantity > 0, "Quantity must be positive");
-//        Assert.notNull(requestedByStaffId, "Staff ID cannot be null");
-//
-//        try {
-//            log.debug("Requesting inventory item. Room ID: {}, Item ID: {}, Quantity: {}, Staff ID: {}",
-//                    roomId, inventoryItemId, quantity, requestedByStaffId);
-//
-//            Room room = findRoomEntityById(roomId);
-//            roomDomainService.getRoomCommandService().requestInventoryItemForRoom(
-//                    room,
-//                    new InventoryItemId(inventoryItemId),
-//                    quantity,
-//                    new StaffId(requestedByStaffId)
-//            );
-//        } catch (Exception e) {
-//            log.error("Error requesting inventory item for room", e);
-//            throw new ApplicationServiceException("Failed to request inventory item", e);
-//        }
-//    }
-//
-//    private Room findRoomEntityById(Integer roomId) throws ApplicationServiceException {
-//        return roomDomainService.getRoomQueryService()
-//                .findById(roomId)
-//                .orElseThrow(() -> new ApplicationServiceException("Room not found with ID: " + roomId));
-//    }
-//
-//    private RoomResponse mapToRoomResponse(Room room) {
-//        return RoomResponse.builder()
-//                .id(room.getId().getValue())
-//                .roomNumber(room.getRoomNumber())
-//                .floor(room.getFloor())
-//                .roomTypeId(mapToRoomTypeResponse(room.getRoomType()))
-//                .roomStatus(room.getRoomStatus().getRoomStatus())
-//                .build();
-//    }
-    private RoomTypeResponse mapToRoomTypeResponse(RoomType roomTypeId) {
-        return RoomTypeResponse.builder()
-                .id(roomTypeId.getId().getValue())
-                .typeName(roomTypeId.getTypeName())
-                .description(roomTypeId.getDescription())
-                .build();
-    }
 
     @Override
-    public RoomResponse createRoom(CreateRoomRequest request) throws AppException {
+    public RoomStatisticsDto getRoomStatistics() {
         return null;
     }
 
     @Override
-    public RoomResponse updateRoom(UpdateRoomRequest request) throws AppException {
-        return null;
+    public Long getRoomCount() {
+        return 0L;
     }
 
     @Override
-    public void deleteRoom(Integer roomId) throws AppException {
-
+    public Long getAvailableRoomCount() {
+        return 0L;
     }
 
     @Override
-    public RoomResponse getRoomById(Integer roomId) throws AppException {
-        return null;
+    public Long getOccupiedRoomCount() {
+        return 0L;
     }
 
     @Override
-    public List<RoomResponse> getAllRooms() {
-        return findAllRoomsHandler.getAllRooms();
+    public Long getMaintenanceRoomCount() {
+        return 0L;
     }
 
     @Override
-    public RoomResponse updateRoomStatus(Integer roomId, String newStatus) throws AppException {
-        return null;
+    public Double getOccupancyRatio() {
+        return 0.0;
     }
 
     @Override
-    public List<RoomResponse> findAvailableRooms(Optional<Integer> roomTypeId, Optional<Integer> minFloor, Optional<Integer> maxFloor, Timestamp checkInDate, Timestamp checkOutDate) {
+    public List<RoomResponse> getAllRooms(int page, int size) {
         return List.of();
     }
 
     @Override
-    public List<RoomResponse> getRoomsByStatus(String statusName) {
+    public Optional<RoomResponse> getRoomById(Long roomId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<RoomResponse> getRoomByNumber(String roomNumber) {
+        return Optional.empty();
+    }
+
+    @Override
+    public RoomResponse createRoom(CreateRoomRequest request) {
+        return null;
+    }
+
+    @Override
+    public RoomResponse updateRoom(Long roomId, UpdateRoomRequest request) {
+        return null;
+    }
+
+    @Override
+    public void deleteRoom(Long roomId) {
+
+    }
+
+    @Override
+    public List<RoomResponse> searchRooms(String roomNumber, String roomType, String status, Integer floor, Integer minPrice, Integer maxPrice, int page, int size) {
         return List.of();
     }
 
     @Override
-    public void requestInventoryItemForRoom(Integer roomId, String inventoryItemId, int quantity, String requestedByStaffId) throws AppException {
+    public List<RoomResponse> filterRoomsByStatus(String status, int page, int size) {
+        return List.of();
+    }
 
+    @Override
+    public List<RoomResponse> filterRoomsByType(String roomType, int page, int size) {
+        return List.of();
+    }
+
+    @Override
+    public List<RoomResponse> filterRoomsByFloor(Integer floor, int page, int size) {
+        return List.of();
+    }
+
+    @Override
+    public List<RoomResponse> filterRoomsByPriceRange(Double minPrice, Double maxPrice, int page, int size) {
+        return List.of();
+    }
+
+    @Override
+    public RoomResponse updateRoomStatus(Long roomId, String status) {
+        return null;
+    }
+
+    @Override
+    public RoomResponse setRoomAvailable(Long roomId) {
+        return null;
+    }
+
+    @Override
+    public RoomResponse setRoomOccupied(Long roomId) {
+        return null;
+    }
+
+    @Override
+    public RoomResponse setRoomMaintenance(Long roomId) {
+        return null;
+    }
+
+    @Override
+    public RoomResponse setRoomCleaning(Long roomId) {
+        return null;
+    }
+
+    @Override
+    public List<RoomTypeDto> getAllRoomTypes() {
+        return List.of();
+    }
+
+    @Override
+    public Optional<RoomTypeDto> getRoomTypeById(Long typeId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public RoomTypeDto createRoomType(RoomTypeDto request) {
+        return null;
+    }
+
+    @Override
+    public RoomTypeDto updateRoomType(Long typeId, RoomTypeDto request) {
+        return null;
+    }
+
+    @Override
+    public void deleteRoomType(Long typeId) {
+
+    }
+
+    @Override
+    public List<RoomStatusDto> getAllRoomStatuses() {
+        return List.of();
+    }
+
+    @Override
+    public List<RoomResponse> getAvailableRooms(String roomType, Integer floor, Double minPrice, Double maxPrice, int page, int size) {
+        return List.of();
+    }
+
+    @Override
+    public Boolean checkRoomAvailability(Long roomId) {
+        return null;
+    }
+
+    @Override
+    public List<RoomResponse> getMaintenanceRooms(int page, int size) {
+        return List.of();
+    }
+
+    @Override
+    public void scheduleRoomMaintenance(Long roomId, String maintenanceType, String description, String scheduledDate) {
+
+    }
+
+    @Override
+    public RoomResponse completeRoomMaintenance(Long roomId) {
+        return null;
+    }
+
+    @Override
+    public List<RoomResponse> getCleaningRooms(int page, int size) {
+        return List.of();
+    }
+
+    @Override
+    public RoomResponse completeRoomCleaning(Long roomId) {
+        return null;
+    }
+
+    @Override
+    public List<Integer> getAllFloors() {
+        return List.of();
+    }
+
+    @Override
+    public List<RoomResponse> getRoomsByFloor(Integer floor) {
+        return List.of();
+    }
+
+    @Override
+    public RoomResponse updateRoomPrice(Long roomId, Double newPrice) {
+        return null;
+    }
+
+    @Override
+    public Object getRoomPriceRange() {
+        return null;
     }
 }
