@@ -60,9 +60,5 @@
             <artifactId>javase</artifactId>
             <version>3.3.3</version>
         </dependency>
-        <dependency>
-            <groupId>com.poly</groupId>
-            <artifactId>booking-messaging</artifactId>
-        </dependency>
     </dependencies>
 </project>

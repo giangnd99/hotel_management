@@ -1,7 +1,6 @@
 package com.poly.restaurant.management.publisher;
 
 import com.poly.config.KafkaTopicsConfig;
-import com.poly.message.BaseMessage;
 import com.poly.message.model.payment.PaymentRequestMessage;
 import com.poly.producer.KafkaJsonProducer;
 import com.poly.producer.callback.KafkaProducerCallback;
@@ -9,9 +8,6 @@ import com.poly.restaurant.application.port.out.message.publisher.PaymentRequest
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.io.Serializable;
-import java.util.function.BiConsumer;
 
 @Component
 @RequiredArgsConstructor

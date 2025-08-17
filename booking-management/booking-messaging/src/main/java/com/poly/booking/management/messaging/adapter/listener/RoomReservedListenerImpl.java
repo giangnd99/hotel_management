@@ -1,7 +1,7 @@
 package com.poly.booking.management.messaging.adapter.listener;
 
 import com.poly.booking.management.domain.port.in.message.listener.RoomReservedListener;
-import com.poly.booking.management.messaging.message.RoomMessageResponse;
+import com.poly.booking.management.domain.message.RoomMessageResponse;
 import org.springframework.stereotype.Service;
 
 import com.poly.booking.management.domain.saga.room.ReserveRoomStep;

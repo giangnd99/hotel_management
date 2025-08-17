@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -42,7 +43,7 @@ public class RoomMaintenanceRepositoryImpl implements RoomMaintenanceRepository 
     }
 
     @Override
-    public List<RoomMaintenance> findByRoomId(Integer roomId) {
+    public List<RoomMaintenance> findByRoomId(UUID roomId) {
         return jpaRepository.findAllByRoom_RoomId(roomId).stream()
                 .map(this::mapToDomainEntity)
                 .toList();

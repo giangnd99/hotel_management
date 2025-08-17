@@ -1,4 +1,4 @@
-package com.poly.booking.management.domain.outbox.scheduler.notification;
+package com.poly.booking.management.domain.outbox.scheduler;
 
 import com.poly.booking.management.domain.outbox.model.NotifiOutboxMessage;
 import com.poly.booking.management.domain.outbox.service.NotificationOutboxService;

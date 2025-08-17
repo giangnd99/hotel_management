@@ -4,7 +4,7 @@ package com.poly.booking.management.domain.saga.payment;
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.event.BookingDepositedEvent;
 import com.poly.booking.management.domain.outbox.model.PaymentOutboxMessage;
-import com.poly.booking.management.messaging.message.PaymentMessageResponse;
+import com.poly.booking.management.domain.message.PaymentMessageResponse;
 import com.poly.domain.valueobject.PaymentStatus;
 import com.poly.saga.SagaStep;
 import lombok.RequiredArgsConstructor;
@@ -99,7 +99,7 @@ public class DepositStep implements SagaStep<PaymentMessageResponse> {
         depositSagaHelper.updatePaymentOutboxMessageForRollback(outboxMessage, booking);
 
         // Step 4: Rollback room reservation if payment was cancelled
-        if (paymentResponse.getPaymentStatus() == PaymentStatus.CANCELLED) {
+        if (paymentResponse.getPaymentStatus() == PaymentStatus.CANCELED) {
             depositSagaHelper.rollbackRoomReservation(paymentResponse.getSagaId(), booking);
         }
 
