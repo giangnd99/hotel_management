@@ -59,6 +59,34 @@
         "precision": 10,
         "scale": 2
       }
+    },
+    {
+      "name": "rooms",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "Room",
+          "fields": [
+            {
+              "name": "id",
+              "type": "string"
+            },
+            {
+              "name": "roomNumber",
+              "type": "string"
+            },
+            {
+              "name": "basePrice",
+              "type": "string"
+            },
+            {
+              "name": "status",
+              "type": "string"
+            }
+          ]
+        }
+      }
     }
   ]
 }

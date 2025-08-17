@@ -1,4 +1,4 @@
-package com.poly.restaurant.application.handler.conmand.impl.helper;
+package com.poly.restaurant.application.handler.helper;
 
 import com.poly.message.model.payment.PaymentRequestMessage;
 import com.poly.message.model.room.RoomRequestMessage;

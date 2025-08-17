@@ -1,15 +1,13 @@
 package com.poly.room.management.domain.service.impl;
 
-import com.poly.domain.valueobject.CompositeKey;
 import com.poly.domain.valueobject.Money;
 import com.poly.room.management.domain.entity.Furniture;
-import com.poly.room.management.domain.entity.FurnitureRequirement;
+import com.poly.room.management.domain.entity.RoomTypeFurniture;
 import com.poly.room.management.domain.entity.RoomType;
 import com.poly.room.management.domain.exception.RoomDomainException;
 import com.poly.room.management.domain.service.sub.RoomTypeCommandService;
 import com.poly.room.management.domain.valueobject.FurnitureId;
 import com.poly.room.management.domain.valueobject.FurnitureRequirementId;
-import com.poly.room.management.domain.valueobject.RoomTypeId;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -20,7 +18,7 @@ public class RoomTypeManagementServiceImpl implements RoomTypeCommandService {
 
     @Override
     public RoomType createRoomType(String typeName, String description, String basePriceStr,
-                                   int maxOccupancy, List<FurnitureRequirement> furnitureItems) {
+                                   int maxOccupancy, List<RoomTypeFurniture> furnitureItems) {
 
         Money basePriceAmount;
         try {
@@ -84,10 +82,10 @@ public class RoomTypeManagementServiceImpl implements RoomTypeCommandService {
 
         FurnitureRequirementId requirementId = new FurnitureRequirementId(UUID.randomUUID().variant());
 
-        FurnitureRequirement requirement = FurnitureRequirement.Builder.builder()
+        RoomTypeFurniture requirement = RoomTypeFurniture.Builder.builder()
                 .id(requirementId)
                 .furniture(furniture)
-                .roomTypeId(roomType.getId())
+                .roomType(roomType)
                 .requiredQuantity(quantity)
                 .build();
 
@@ -116,12 +114,12 @@ public class RoomTypeManagementServiceImpl implements RoomTypeCommandService {
         return roomType;
     }
 
-    private void validateFurnitureRequirements(List<FurnitureRequirement> requirements) {
+    private void validateFurnitureRequirements(List<RoomTypeFurniture> requirements) {
         if (requirements == null) {
             return;
         }
 
-        for (FurnitureRequirement requirement : requirements) {
+        for (RoomTypeFurniture requirement : requirements) {
             validateFurniture(requirement.getFurniture());
             if (requirement.getRequiredQuantity() <= 0) {
                 throw new RoomDomainException("Required quantity must be positive");

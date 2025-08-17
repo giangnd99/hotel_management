@@ -207,6 +207,11 @@
             </dependency>
             <dependency>
                 <groupId>com.poly</groupId>
+                <artifactId>room-messaging</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
                 <artifactId>booking-application</artifactId>
                 <version>${project.version}</version>
             </dependency>

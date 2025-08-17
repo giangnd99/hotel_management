@@ -37,5 +37,13 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
             <version>${openfeign.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>room-messaging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>kafka-json-message</artifactId>
+        </dependency>
     </dependencies>
 </project>
