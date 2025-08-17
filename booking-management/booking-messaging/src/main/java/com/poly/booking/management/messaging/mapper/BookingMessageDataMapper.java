@@ -1,9 +1,9 @@
 package com.poly.booking.management.messaging.mapper;
 
 import com.poly.booking.management.domain.outbox.payload.ReservedEventPayload;
-import com.poly.booking.management.messaging.message.CustomerCreatedMessageResponse;
-import com.poly.booking.management.messaging.message.PaymentMessageResponse;
-import com.poly.booking.management.messaging.message.RoomMessageResponse;
+import com.poly.booking.management.domain.message.CustomerCreatedMessageResponse;
+import com.poly.booking.management.domain.message.PaymentMessageResponse;
+import com.poly.booking.management.domain.message.RoomMessageResponse;
 import com.poly.booking.management.domain.entity.Room;
 import com.poly.booking.management.domain.kafka.model.*;
 import com.poly.booking.management.domain.outbox.payload.PaymentEventPayload;

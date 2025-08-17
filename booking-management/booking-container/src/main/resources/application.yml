@@ -35,7 +35,12 @@ spring:
     init:
       mode: ALWAYS
       schema-locations: classpath:init-schema.sql
-
+  data:
+    redis:
+      port: ${REDIS_PORT:6379} # Cổng Redis (mặc định 6379)
+      host: ${REDIS_HOST:localhost} # Host Redis (mặc định localhost)
+      repositories:
+        enabled: true # Kích hoạt Spring Data Redis Repositories (nếu bạn dùng)
 kafka-config:
   bootstrap-servers: localhost:19092, localhost:29092, localhost:39092
   schema-registry-url-key: schema.registry.url

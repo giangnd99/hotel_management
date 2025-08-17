@@ -12,7 +12,7 @@ import com.poly.booking.management.domain.outbox.service.impl.RoomOutboxServiceI
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.saga.BookingSagaHelper;
 import com.poly.booking.management.domain.service.BookingDomainService;
-import com.poly.booking.management.messaging.message.PaymentMessageResponse;
+import com.poly.booking.management.domain.message.PaymentMessageResponse;
 import com.poly.domain.valueobject.DateCustom;
 import com.poly.domain.valueobject.BookingStatus;
 import com.poly.domain.valueobject.PaymentStatus;
@@ -214,9 +214,9 @@ public class DepositSagaHelper {
      */
     public SagaStatus[] getValidSagaStatusesForPaymentRollback(PaymentStatus paymentStatus) {
         return switch (paymentStatus) {
-            case COMPLETED -> new SagaStatus[]{SagaStatus.STARTED};
-            case CANCELLED -> new SagaStatus[]{SagaStatus.PROCESSING};
-            case FAILED -> new SagaStatus[]{SagaStatus.STARTED, SagaStatus.PROCESSING};
+            case PAID -> new SagaStatus[]{SagaStatus.STARTED};
+            case CANCELED -> new SagaStatus[]{SagaStatus.PROCESSING};
+            case FAILED, PENDING, EXPIRED -> new SagaStatus[]{SagaStatus.STARTED, SagaStatus.PROCESSING};
         };
     }
 

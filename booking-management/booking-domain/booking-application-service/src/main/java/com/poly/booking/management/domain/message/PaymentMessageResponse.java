@@ -1,4 +1,4 @@
-package com.poly.booking.management.messaging.message;
+package com.poly.booking.management.domain.message;
 
 import com.poly.domain.valueobject.PaymentStatus;
 import lombok.AllArgsConstructor;

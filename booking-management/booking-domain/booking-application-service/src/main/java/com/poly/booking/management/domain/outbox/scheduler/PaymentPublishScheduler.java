@@ -1,4 +1,4 @@
-package com.poly.booking.management.domain.outbox.scheduler.payment;
+package com.poly.booking.management.domain.outbox.scheduler;
 
 import com.poly.booking.management.domain.outbox.model.PaymentOutboxMessage;
 import com.poly.booking.management.domain.outbox.service.PaymentOutboxService;

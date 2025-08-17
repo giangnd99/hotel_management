@@ -5,7 +5,7 @@ import com.poly.booking.management.domain.exception.BookingDomainException;
 import com.poly.booking.management.domain.mapper.CustomerDataMapper;
 import com.poly.booking.management.domain.port.in.message.listener.CustomerMessageListener;
 import com.poly.booking.management.domain.port.out.repository.CustomerRepository;
-import com.poly.booking.management.messaging.message.CustomerCreatedMessageResponse;
+import com.poly.booking.management.domain.message.CustomerCreatedMessageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -2,7 +2,7 @@ package com.poly.booking.management.messaging.adapter.listener;
 
 import com.poly.booking.management.domain.port.in.message.listener.PaymentListener;
 import com.poly.booking.management.domain.saga.payment.CheckOutStep;
-import com.poly.booking.management.messaging.message.PaymentMessageResponse;
+import com.poly.booking.management.domain.message.PaymentMessageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
