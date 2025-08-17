@@ -5,7 +5,7 @@ import com.poly.booking.management.domain.kafka.model.BookingPaymentResponseAvro
 import com.poly.booking.management.domain.kafka.model.PaymentStatus;
 import com.poly.booking.management.domain.port.in.message.listener.PaymentListener;
 import com.poly.booking.management.messaging.mapper.BookingMessageDataMapper;
-import com.poly.booking.management.messaging.message.PaymentMessageResponse;
+import com.poly.booking.management.domain.message.PaymentMessageResponse;
 import com.poly.kafka.consumer.KafkaConsumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

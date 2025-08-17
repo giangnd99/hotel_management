@@ -2,7 +2,7 @@ package com.poly.booking.management.domain.saga.notification;
 
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.outbox.model.NotifiOutboxMessage;
-import com.poly.booking.management.messaging.message.NotificationMessageResponse;
+import com.poly.booking.management.domain.message.NotificationMessageResponse;
 import com.poly.domain.valueobject.BookingStatus;
 import com.poly.saga.SagaStep;
 import lombok.RequiredArgsConstructor;

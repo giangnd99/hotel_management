@@ -1,4 +1,4 @@
-package com.poly.booking.management.domain.outbox.scheduler.room;
+package com.poly.booking.management.domain.outbox.scheduler;
 
 import com.poly.booking.management.domain.outbox.model.RoomOutboxMessage;
 import com.poly.booking.management.domain.outbox.service.RoomOutboxService;

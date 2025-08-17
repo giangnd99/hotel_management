@@ -4,6 +4,7 @@ import com.poly.room.management.domain.entity.RoomMaintenance;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface RoomMaintenanceRepository {
 
@@ -15,7 +16,7 @@ public interface RoomMaintenanceRepository {
 
     void deleteById(Integer id);
 
-    List<RoomMaintenance> findByRoomId(Integer roomId);
+    List<RoomMaintenance> findByRoomId(UUID roomId);
 
     RoomMaintenance update(RoomMaintenance roomMaintenance);
 }

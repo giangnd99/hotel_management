@@ -5,12 +5,13 @@ import com.poly.customerdataaccess.repository.LoyaltyPointJpaRepository;
 import com.poly.customerdataaccess.mapper.LoyaltyPointDataMapper;
 import com.poly.customerdomain.model.entity.LoyaltyPoint;
 import com.poly.customerdomain.output.LoyaltyPointRepository;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
 
-@Repository
+@Component
 public class LoyaltyPointRepositoryImpl implements LoyaltyPointRepository {
 
     private final LoyaltyPointJpaRepository loyaltyPointJpaRepository;
