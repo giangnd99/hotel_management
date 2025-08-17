@@ -1,26 +1,25 @@
 package com.poly.room.management.domain.entity;
 
 import com.poly.domain.entity.BaseEntity;
-import com.poly.domain.valueobject.Money;
-import com.poly.domain.valueobject.RoomId;
 import com.poly.room.management.domain.exception.RoomDomainException;
 import com.poly.room.management.domain.valueobject.FurnitureId;
 import com.poly.room.management.domain.valueobject.FurnitureRequirementId;
 import com.poly.room.management.domain.valueobject.RoomTypeId;
 
-public class FurnitureRequirement extends BaseEntity<FurnitureRequirementId> {
+
+public class RoomTypeFurniture extends BaseEntity<FurnitureRequirementId> {
 
     private Furniture furniture;
     private RoomType roomType;
     private int requiredQuantity;
     public static final int DEFAULT_QUANTITY = 1;
 
-    public FurnitureRequirement(Furniture furniture, int requirementQuantity, RoomTypeId roomTypeId) {
-        this.furniture = furniture;
+    public RoomTypeFurniture(Furniture furnitureId, int requirementQuantity, RoomTypeId roomTypeId) {
+        this.furniture = furnitureId;
         this.requiredQuantity = requirementQuantity;
     }
 
-    private FurnitureRequirement(Builder builder) {
+    private RoomTypeFurniture(Builder builder) {
         super.setId(builder.id);
         setFurniture(builder.furniture);
         roomType = builder.roomType;
@@ -28,7 +27,7 @@ public class FurnitureRequirement extends BaseEntity<FurnitureRequirementId> {
     }
 
     public void validate() {
-        if (furniture == null || furniture.getId() == null) {
+        if (furniture == null) {
             throw new RoomDomainException("Furniture for requirement cannot be null or have null ID.");
         }
         if (requiredQuantity <= 0) {
@@ -48,6 +47,10 @@ public class FurnitureRequirement extends BaseEntity<FurnitureRequirementId> {
         this.requiredQuantity = requiredQuantity;
     }
 
+    public RoomType getRoomType() {
+        return roomType;
+    }
+
     public Furniture getFurniture() {
         return furniture;
     }
@@ -57,11 +60,9 @@ public class FurnitureRequirement extends BaseEntity<FurnitureRequirementId> {
     }
 
     public static final class Builder {
-        private Furniture furniture;
-        private FurnitureId furnitureId;
         private RoomType roomType;
         private int requiredQuantity;
-        private RoomTypeId roomTypeId;
+        private Furniture furniture;
         private FurnitureRequirementId id;
 
         private Builder() {
@@ -76,11 +77,6 @@ public class FurnitureRequirement extends BaseEntity<FurnitureRequirementId> {
             return this;
         }
 
-        public Builder furnitureId(FurnitureId val) {
-            furnitureId = val;
-            return this;
-        }
-
         public Builder roomType(RoomType val) {
             roomType = val;
             return this;
@@ -91,18 +87,14 @@ public class FurnitureRequirement extends BaseEntity<FurnitureRequirementId> {
             return this;
         }
 
-        public Builder roomTypeId(RoomTypeId val) {
-            roomTypeId = val;
-            return this;
-        }
 
         public Builder id(FurnitureRequirementId val) {
             id = val;
             return this;
         }
 
-        public FurnitureRequirement build() {
-            return new FurnitureRequirement(this);
+        public RoomTypeFurniture build() {
+            return new RoomTypeFurniture(this);
         }
     }
 }

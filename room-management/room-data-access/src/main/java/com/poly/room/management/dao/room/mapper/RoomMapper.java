@@ -18,18 +18,15 @@ import java.util.List;
 public class RoomMapper {
 
     private final RoomTypeMapper roomTypeMapper;
-    private final RoomStatusMapper roomStatusMapper;
-    private final RoomTypeFurnitureMapper roomTypeFurnitureMapper;
     private final RoomTypeFurnitureJpaRepository repository;
 
     public Room toDomain(RoomEntity entity) {
-        List<RoomTypeFurnitureEntity> furnitureEntities = repository.findAllByRoomType_RoomTypeId(
-                entity.getRoomType().getRoomTypeId());
+
         RoomType roomType = roomTypeMapper.toDomainEntity(entity.getRoomType());
         return Room.Builder.builder()
                 .id(new RoomId(entity.getRoomId()))
                 .roomType(roomType)
-                .roomStatus(new RoomStatus(RoomStatus.valueOf(entity.getStatus().getStatusName())))
+                .roomStatus(entity.getRoomStatus())
                 .roomNumber(entity.getRoomNumber())
                 .floor(entity.getFloor())
                 .build();
@@ -39,7 +36,7 @@ public class RoomMapper {
         return RoomEntity.builder()
                 .roomId(domain.getId().getValue())
                 .roomType(roomTypeMapper.toEntity(domain.getRoomType()))
-                .status(roomStatusMapper.toEntity(domain.getRoomStatus()))
+                .roomStatus(domain.getRoomStatus())
                 .roomNumber(domain.getRoomNumber())
                 .floor(domain.getFloor())
                 .build();

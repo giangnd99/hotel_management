@@ -129,7 +129,7 @@
 //
 //            return roomTypeCommandService.addFurnitureToRoomType(
 //                roomTypeId,
-//                requirement.getFurnitureId(),
+//                requirement.getFurniture(),
 //                requirement.getQuantity()
 //            );
 //        } catch (Exception e) {

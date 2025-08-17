@@ -1,6 +1,7 @@
 package com.poly.room.management.dao.room.adapter;
 
 import com.poly.domain.exception.DomainException;
+import com.poly.domain.valueobject.RoomStatus;
 import com.poly.room.management.dao.room.repository.RoomJpaRepository;
 import com.poly.room.management.domain.entity.*;
 import com.poly.room.management.domain.exception.RoomDomainException;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Repository
@@ -24,20 +26,20 @@ public class RoomRepositoryImpl implements RoomRepository {
 
     @Override
     public Room save(Room room) {
-        Integer roomId = room.getId().getValue();
+        UUID roomId = room.getId().getValue();
         checkRoomNotExists(roomId);
         return saveAndMapRoom(room);
     }
 
     @Override
     public Room update(Room room) {
-        Integer roomId = room.getId().getValue();
+        UUID roomId = room.getId().getValue();
         checkRoomExists(roomId);
         return saveAndMapRoom(room);
     }
 
     @Override
-    public Optional<Room> findById(Integer id) {
+    public Optional<Room> findById(UUID id) {
         return jpaRepository.findById(id)
                 .map(roomMapper::toDomain);
     }
@@ -60,13 +62,13 @@ public class RoomRepositoryImpl implements RoomRepository {
         );
     }
 
-    private void checkRoomExists(Integer id) {
+    private void checkRoomExists(UUID id) {
         if (!jpaRepository.existsById(id)) {
             throw new RoomDomainException(String.format(ROOM_ID_NOT_FOUND, id));
         }
     }
 
-    private void checkRoomNotExists(Integer id) {
+    private void checkRoomNotExists(UUID id) {
         if (jpaRepository.existsById(id)) {
             throw new RoomDomainException(String.format(ROOM_ID_EXISTS, id));
         }

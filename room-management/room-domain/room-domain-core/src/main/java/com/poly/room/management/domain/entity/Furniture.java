@@ -6,10 +6,13 @@ import com.poly.domain.valueobject.Money;
 import com.poly.room.management.domain.exception.RoomDomainException;
 import com.poly.room.management.domain.valueobject.FurnitureId;
 
+import java.util.List;
+
 public class Furniture extends BaseEntity<FurnitureId> {
 
     private String name;
     private Money price;
+    private List<RoomTypeFurniture> roomTypeFurnitures;
 
     public String getName() {
         return name;
@@ -31,18 +34,25 @@ public class Furniture extends BaseEntity<FurnitureId> {
         super.setId(builder.id);
         name = builder.name;
         price = builder.price;
+        roomTypeFurnitures = builder.roomTypeFurnitures;
     }
 
     public static final class Builder {
         private FurnitureId id;
         private String name;
         private Money price;
+        private List<RoomTypeFurniture> roomTypeFurnitures;
 
         private Builder() {
         }
 
         public static Builder builder() {
             return new Builder();
+        }
+
+        public Builder roomTypeFurnitures(List<RoomTypeFurniture> val) {
+            roomTypeFurnitures = val;
+            return this;
         }
 
         public Builder id(FurnitureId val) {

@@ -29,7 +29,6 @@ public class RoomMaintenance extends BaseEntity<MaintenanceId> {
         this.completionDate = builder.completionDate;
         this.description = builder.description;
         this.status = builder.status != null ? builder.status : MaintenanceStatus.PENDING;
-        validateMaintenanceRequest();
     }
 
     private void validateMaintenanceRequest() {
