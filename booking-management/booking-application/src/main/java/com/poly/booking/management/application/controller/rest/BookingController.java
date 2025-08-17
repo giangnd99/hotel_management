@@ -1,141 +1,271 @@
 package com.poly.booking.management.application.controller.rest;
 
+import com.poly.booking.management.domain.dto.*;
+import com.poly.booking.management.domain.dto.request.CreateBookingRequest;
+import com.poly.booking.management.domain.dto.request.UpdateBookingRequest;
+import com.poly.booking.management.domain.service.BookingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import jakarta.validation.Valid;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/bookings")
+@RequiredArgsConstructor
+@Tag(name = "Booking Controller", description = "Quản lý đặt phòng")
+@Slf4j(topic = "BOOKING-CONTROLLER")
 public class BookingController {
 
-//    private final BookingManagementService bookingManagementService;
-//
-//    public BookingController(BookingManagementService bookingManagementService) {
-//        this.bookingManagementService = bookingManagementService;
-//    }
-//
-//    /**
-//     * API to search for available rooms.
-//     * GET /api/v1/bookings/rooms/search
-//     * Example: /api/v1/bookings/rooms/search?checkInDate=2025-07-01&checkOutDate=2025-07-05&numberOfGuests=2
-//     * /api/v1/bookings/rooms/search?checkInDate=2025-07-01&checkOutDate=2025-07-05&numberOfGuests=2&roomTypeId=1
-//     */
-//    @GetMapping("/rooms/search")
-//    public ResponseEntity<List<RoomDto>> searchAvailableRooms(
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
-//            @RequestParam Integer numberOfGuests,
-//            @RequestParam(required = false) Long roomTypeId) {
-//        try {
-//            RoomSearchQuery query = new RoomSearchQuery(checkInDate, checkOutDate, numberOfGuests, roomTypeId);
-//            List<RoomDto> availableRooms = bookingManagementService.searchAvailableRooms(query);
-//            return ResponseEntity.ok(availableRooms);
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.badRequest().build(); // Or return a more specific error DTO
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
-//
-//    /**
-//     * API to create a new booking.
-//     * POST /api/v1/bookings
-//     */
-//    @PostMapping
-//    public ResponseEntity<BookingDto> createBooking(@RequestBody CreateBookingCommand command) {
-//        try {
-//            BookingDto newBooking = bookingManagementService.createBooking(command);
-//            return new ResponseEntity<>(newBooking, HttpStatus.CREATED);
-//        } catch (IllegalArgumentException | IllegalStateException e) {
-//            return ResponseEntity.badRequest().body(null); // Return error message
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//        }
-//    }
-//
-//    /**
-//     * API to get booking details by ID.
-//     * GET /api/v1/bookings/{bookingId}
-//     */
-//    @GetMapping("/{bookingId}")
-//    public ResponseEntity<Object> getBookingById(@PathVariable UUID bookingId) {
-//        return bookingManagementService.getBookingById(bookingId)
-//                .map(ResponseEntity::ok)
-//                .orElse(ResponseEntity.notFound().build());
-//    }
-//
-//    /**
-//     * API to get all bookings (for Admin/Staff).
-//     * GET /api/v1/bookings
-//     */
-//    @GetMapping
-//    public ResponseEntity<List<BookingDto>> getAllBookings() {
-//        List<BookingDto> bookings = bookingManagementService.getAllBookings();
-//        return ResponseEntity.ok(bookings);
-//    }
-//
-//    /**
-//     * API to get bookings by customer ID.
-//     * GET /api/v1/bookings/customer/{customerId}
-//     */
-//    @GetMapping("/customer/{customerId}")
-//    public ResponseEntity<List<BookingDto>> getBookingsByCustomerId(@PathVariable Long customerId) {
-//        try {
-//            List<BookingDto> bookings = bookingManagementService.getBookingsByCustomerId(customerId);
-//            return ResponseEntity.ok(bookings);
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
-//
-//    /**
-//     * API to cancel a booking.
-//     * PUT /api/v1/bookings/{bookingId}/cancel
-//     */
-//    @PutMapping("/{bookingId}/cancel")
-//    public ResponseEntity<BookingDto> cancelBooking(@PathVariable UUID bookingId) {
-//        try {
-//            BookingDto cancelledBooking = bookingManagementService.cancelBooking(bookingId);
-//            return ResponseEntity.ok(cancelledBooking);
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.notFound().build();
-//        } catch (IllegalStateException e) {
-//            return ResponseEntity.badRequest().body(null);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//        }
-//    }
-//
-//    /**
-//     * API to update booking status and details (for staff).
-//     * PUT /api/v1/bookings/{bookingId}/status
-//     * Example: { "status": "CHECKED_IN", "specialRequests": "Extra towels" }
-//     */
-//    @PutMapping("/{bookingId}/update")
-//    public ResponseEntity<BookingDto> updateBooking(
-//            @PathVariable UUID bookingId,
-//            @RequestParam(required = false) EBookingStatus newStatus,
-//            @RequestParam(required = false) String specialRequests,
-//            @RequestParam(required = false) Integer numberOfGuests) {
-//        try {
-//            BookingDto updatedBooking = bookingManagementService.updateBookingDetails(bookingId, newStatus, specialRequests, numberOfGuests);
-//            return ResponseEntity.ok(updatedBooking);
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.notFound().build();
-//        } catch (IllegalStateException e) {
-//            return ResponseEntity.badRequest().body(null);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//        }
-//    }
-//
-//    // Additional CRUD operations for admin/staff can be added, e.g.,
-//    // DELETE /api/v1/bookings/{bookingId}
-//    // @DeleteMapping("/{bookingId}")
-//    // public ResponseEntity<Void> deleteBooking(@PathVariable UUID bookingId) {
-//    //     try {
-//    //         bookingManagementService.deleteBooking(bookingId); // Need to implement this in service
-//    //         return ResponseEntity.noContent().build();
-//    //     } catch (IllegalArgumentException e) {
-//    //         return ResponseEntity.notFound().build();
-//    //     }
-//    // }
+    private final BookingService bookingService;
+
+    // ========== DASHBOARD & STATISTICS APIs ==========
+
+    @GetMapping("/statistics/today")
+    @Operation(summary = "Lấy thống kê booking hôm nay")
+    public ResponseEntity<BookingStatisticsDto> getTodayBookingStatistics() {
+        log.info("Getting today booking statistics");
+        BookingStatisticsDto statistics = bookingService.getTodayBookingStatistics();
+        return ResponseEntity.ok(statistics);
+    }
+
+    @GetMapping("/count/today")
+    @Operation(summary = "Lấy tổng số booking hôm nay")
+    public ResponseEntity<Long> getTodayBookingCount() {
+        log.info("Getting today booking count");
+        Long count = bookingService.getTodayBookingCount();
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/count/today/success")
+    @Operation(summary = "Lấy số booking thành công hôm nay (gửi mail thành công)")
+    public ResponseEntity<Long> getTodayBookingSuccessCount() {
+        log.info("Getting today successful booking count");
+        Long count = bookingService.getTodayBookingSuccessCount();
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/count/today/pending")
+    @Operation(summary = "Lấy số booking đang chờ hôm nay (đang gửi mail/thanh toán)")
+    public ResponseEntity<Long> getTodayBookingPendingCount() {
+        log.info("Getting today pending booking count");
+        Long count = bookingService.getTodayBookingPendingCount();
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/count/today/cancelled")
+    @Operation(summary = "Lấy số booking đã hủy hôm nay")
+    public ResponseEntity<Long> getTodayBookingCancelCount() {
+        log.info("Getting today cancelled booking count");
+        Long count = bookingService.getTodayBookingCancelCount();
+        return ResponseEntity.ok(count);
+    }
+
+    // ========== CRUD APIs ==========
+
+    @GetMapping
+    @Operation(summary = "Lấy danh sách tất cả booking")
+    public ResponseEntity<List<BookingDto>> getAllBookings(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        log.info("Getting all bookings with page: {}, size: {}", page, size);
+        List<BookingDto> bookings = bookingService.getAllBookings(page, size);
+        return ResponseEntity.ok(bookings);
+    }
+
+    @GetMapping("/{bookingId}")
+    @Operation(summary = "Lấy booking theo ID")
+    public ResponseEntity<BookingDto> getBookingById(@PathVariable UUID bookingId) {
+        log.info("Getting booking by id: {}", bookingId);
+        return bookingService.getBookingById(bookingId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    @Operation(summary = "Tạo booking mới")
+    public ResponseEntity<BookingDto> createBooking(@Valid @RequestBody CreateBookingRequest request) {
+        log.info("Creating new booking for customer: {}", request.getCustomerId());
+        BookingDto newBooking = bookingService.createBooking(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newBooking);
+    }
+
+    @PutMapping("/{bookingId}")
+    @Operation(summary = "Cập nhật booking")
+    public ResponseEntity<BookingDto> updateBooking(
+            @PathVariable UUID bookingId,
+            @Valid @RequestBody UpdateBookingRequest request) {
+        log.info("Updating booking: {}", bookingId);
+        BookingDto updatedBooking = bookingService.updateBooking(bookingId, request);
+        return ResponseEntity.ok(updatedBooking);
+    }
+
+    @DeleteMapping("/{bookingId}")
+    @Operation(summary = "Xóa booking")
+    public ResponseEntity<Void> deleteBooking(@PathVariable UUID bookingId) {
+        log.info("Deleting booking: {}", bookingId);
+        bookingService.deleteBooking(bookingId);
+        return ResponseEntity.noContent().build();
+    }
+
+    // ========== SEARCH & FILTER APIs ==========
+
+    @GetMapping("/search")
+    @Operation(summary = "Tìm kiếm booking")
+    public ResponseEntity<List<BookingDto>> searchBookings(
+            @RequestParam(required = false) String customerName,
+            @RequestParam(required = false) String customerEmail,
+            @RequestParam(required = false) String roomNumber,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        log.info("Searching bookings with filters");
+        List<BookingDto> bookings = bookingService.searchBookings(
+                customerName, customerEmail, roomNumber, checkInDate, checkOutDate, page, size);
+        return ResponseEntity.ok(bookings);
+    }
+
+    @GetMapping("/filter/status/{status}")
+    @Operation(summary = "Lọc booking theo trạng thái")
+    public ResponseEntity<List<BookingDto>> filterBookingsByStatus(
+            @PathVariable String status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        log.info("Filtering bookings by status: {}", status);
+        List<BookingDto> bookings = bookingService.filterBookingsByStatus(status, page, size);
+        return ResponseEntity.ok(bookings);
+    }
+
+    @GetMapping("/filter/date-range")
+    @Operation(summary = "Lọc booking theo khoảng thời gian")
+    public ResponseEntity<List<BookingDto>> filterBookingsByDateRange(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        log.info("Filtering bookings by date range: {} to {}", fromDate, toDate);
+        List<BookingDto> bookings = bookingService.filterBookingsByDateRange(fromDate, toDate, page, size);
+        return ResponseEntity.ok(bookings);
+    }
+
+    // ========== CUSTOMER SPECIFIC APIs ==========
+
+    @GetMapping("/customer/{customerId}")
+    @Operation(summary = "Lấy booking theo customer ID")
+    public ResponseEntity<List<BookingDto>> getBookingsByCustomerId(
+            @PathVariable UUID customerId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        log.info("Getting bookings for customer: {}", customerId);
+        List<BookingDto> bookings = bookingService.getBookingsByCustomerId(customerId, page, size);
+        return ResponseEntity.ok(bookings);
+    }
+
+    @GetMapping("/customer/{customerId}/history")
+    @Operation(summary = "Lấy lịch sử booking của customer")
+    public ResponseEntity<List<BookingDto>> getCustomerBookingHistory(
+            @PathVariable UUID customerId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        log.info("Getting booking history for customer: {}", customerId);
+        List<BookingDto> bookings = bookingService.getCustomerBookingHistory(customerId, page, size);
+        return ResponseEntity.ok(bookings);
+    }
+
+    // ========== ROOM SEARCH APIs ==========
+
+    @GetMapping("/rooms/search")
+    @Operation(summary = "Tìm kiếm phòng khả dụng")
+    public ResponseEntity<List<BookingDto>> searchAvailableRooms(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
+            @RequestParam Integer numberOfGuests,
+            @RequestParam(required = false) Long roomTypeId,
+            @RequestParam(required = false) Integer minPrice,
+            @RequestParam(required = false) Integer maxPrice) {
+        log.info("Searching available rooms for dates: {} to {}, guests: {}", 
+                checkInDate, checkOutDate, numberOfGuests);
+        List<BookingDto> availableRooms = bookingService.searchAvailableRooms(
+                checkInDate, checkOutDate, numberOfGuests, roomTypeId, minPrice, maxPrice);
+        return ResponseEntity.ok(availableRooms);
+    }
+
+    // ========== BOOKING STATUS MANAGEMENT ==========
+
+    @PutMapping("/{bookingId}/cancel")
+    @Operation(summary = "Hủy booking")
+    public ResponseEntity<BookingDto> cancelBooking(@PathVariable UUID bookingId) {
+        log.info("Cancelling booking: {}", bookingId);
+        BookingDto cancelledBooking = bookingService.cancelBooking(bookingId);
+        return ResponseEntity.ok(cancelledBooking);
+    }
+
+    @PutMapping("/{bookingId}/confirm")
+    @Operation(summary = "Xác nhận booking")
+    public ResponseEntity<BookingDto> confirmBooking(@PathVariable UUID bookingId) {
+        log.info("Confirming booking: {}", bookingId);
+        BookingDto confirmedBooking = bookingService.confirmBooking(bookingId);
+        return ResponseEntity.ok(confirmedBooking);
+    }
+
+    @PutMapping("/{bookingId}/check-in")
+    @Operation(summary = "Check-in booking")
+    public ResponseEntity<BookingDto> checkInBooking(@PathVariable UUID bookingId) {
+        log.info("Checking in booking: {}", bookingId);
+        BookingDto checkedInBooking = bookingService.checkInBooking(bookingId);
+        return ResponseEntity.ok(checkedInBooking);
+    }
+
+    @PutMapping("/{bookingId}/check-out")
+    @Operation(summary = "Check-out booking")
+    public ResponseEntity<BookingDto> checkOutBooking(@PathVariable UUID bookingId) {
+        log.info("Checking out booking: {}", bookingId);
+        BookingDto checkedOutBooking = bookingService.checkOutBooking(bookingId);
+        return ResponseEntity.ok(checkedOutBooking);
+    }
+
+    // ========== PAYMENT RELATED APIs ==========
+
+    @GetMapping("/{bookingId}/payment-status")
+    @Operation(summary = "Lấy trạng thái thanh toán của booking")
+    public ResponseEntity<String> getBookingPaymentStatus(@PathVariable UUID bookingId) {
+        log.info("Getting payment status for booking: {}", bookingId);
+        String paymentStatus = bookingService.getBookingPaymentStatus(bookingId);
+        return ResponseEntity.ok(paymentStatus);
+    }
+
+    @PutMapping("/{bookingId}/payment/confirm")
+    @Operation(summary = "Xác nhận thanh toán booking")
+    public ResponseEntity<BookingDto> confirmBookingPayment(@PathVariable UUID bookingId) {
+        log.info("Confirming payment for booking: {}", bookingId);
+        BookingDto updatedBooking = bookingService.confirmBookingPayment(bookingId);
+        return ResponseEntity.ok(updatedBooking);
+    }
+
+    // ========== NOTIFICATION APIs ==========
+
+    @PostMapping("/{bookingId}/send-confirmation")
+    @Operation(summary = "Gửi email xác nhận booking")
+    public ResponseEntity<Void> sendBookingConfirmation(@PathVariable UUID bookingId) {
+        log.info("Sending confirmation email for booking: {}", bookingId);
+        bookingService.sendBookingConfirmation(bookingId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{bookingId}/send-reminder")
+    @Operation(summary = "Gửi email nhắc nhở booking")
+    public ResponseEntity<Void> sendBookingReminder(@PathVariable UUID bookingId) {
+        log.info("Sending reminder email for booking: {}", bookingId);
+        bookingService.sendBookingReminder(bookingId);
+        return ResponseEntity.ok().build();
+    }
 }

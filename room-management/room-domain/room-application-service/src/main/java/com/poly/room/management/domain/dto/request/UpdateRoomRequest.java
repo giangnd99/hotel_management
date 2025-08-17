@@ -1,13 +1,12 @@
 package com.poly.room.management.domain.dto.request;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
@@ -15,15 +14,16 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateRoomRequest {
-    @NotNull(message = "Room ID is required for update")
-    private UUID roomId;
+    private Long roomTypeId;
 
-    @NotBlank(message = "New room number is required")
-    private String roomNumber;
+    @Min(value = 1, message = "Floor must be at least 1")
+    @Max(value = 50, message = "Floor cannot exceed 50")
+    private Integer floor;
 
-    @Min(value = 0, message = "New floor must be a non-negative number")
-    private int floor;
+    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
+    private BigDecimal basePrice;
 
-    @NotNull(message = "New room type ID is required")
-    private Integer roomTypeId;
+    private String description;
+    private String amenities;
+    private String status;
 }

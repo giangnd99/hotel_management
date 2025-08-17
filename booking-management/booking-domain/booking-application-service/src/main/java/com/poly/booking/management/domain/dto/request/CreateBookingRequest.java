@@ -1,0 +1,43 @@
+package com.poly.booking.management.domain.dto.request;
+
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.util.UUID;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class CreateBookingRequest {
+    @NotNull(message = "Customer ID is required")
+    private UUID customerId;
+
+    @NotNull(message = "Room ID is required")
+    private UUID roomId;
+
+    @NotNull(message = "Check-in date is required")
+    @Future(message = "Check-in date must be in the future")
+    private LocalDate checkInDate;
+
+    @NotNull(message = "Check-out date is required")
+    @Future(message = "Check-out date must be in the future")
+    private LocalDate checkOutDate;
+
+    @NotNull(message = "Number of guests is required")
+    @Min(value = 1, message = "Number of guests must be at least 1")
+    @Max(value = 10, message = "Number of guests cannot exceed 10")
+    private Integer numberOfGuests;
+
+    private String specialRequests;
+
+    @Email(message = "Invalid email format")
+    private String customerEmail;
+
+    @Pattern(regexp = "^[0-9]{10,11}$", message = "Invalid phone number format")
+    private String customerPhone;
+}
