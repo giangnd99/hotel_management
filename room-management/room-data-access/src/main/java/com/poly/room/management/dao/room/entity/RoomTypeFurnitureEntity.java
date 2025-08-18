@@ -11,15 +11,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-@IdClass(RoomTypeFurnitureEntityId.class)
 public class RoomTypeFurnitureEntity {
 
     @Id
+    private Integer roomTypeFurnitureId;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "room_type_id")
     private RoomTypeEntity roomType;
 
-    @Id
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "furniture_id")
     private FurnitureEntity furniture;

@@ -26,7 +26,6 @@ public class UserMapper {
     public UserResponse toUserResponse(User user) {
         return UserResponse.builder()
                 .email(user.getGmail())
-                .token(user.getToken().getId().getValue())
                 .phone(user.getPhone())
                 .build();
     }

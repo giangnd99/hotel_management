@@ -1,0 +1,110 @@
+databaseChangeLog:
+  - changeSet:
+      id: V001__create_voucher_packs_table
+      author: Nguyen Dam Hoang Linh
+      comment: Create voucher_packs table for storing voucher pack information
+      
+      - createTable:
+          tableName: voucher_packs
+          columns:
+            - column:
+                name: id
+                type: BIGSERIAL
+                autoIncrement: true
+                constraints:
+                  primaryKey: true
+                  nullable: false
+                  unique: true
+            - column:
+                name: description
+                type: VARCHAR(500)
+                constraints:
+                  nullable: false
+            - column:
+                name: discount_amount
+                type: DECIMAL(10,2)
+                constraints:
+                  nullable: false
+            - column:
+                name: valid_range
+                type: VARCHAR(50)
+                constraints:
+                  nullable: false
+            - column:
+                name: required_points
+                type: BIGINT
+                constraints:
+                  nullable: false
+            - column:
+                name: quantity
+                type: INTEGER
+                constraints:
+                  nullable: false
+                  checkConstraint: "quantity >= 0"
+            - column:
+                name: valid_from
+                type: DATE
+                constraints:
+                  nullable: true
+            - column:
+                name: valid_to
+                type: DATE
+                constraints:
+                  nullable: true
+            - column:
+                name: status
+                type: VARCHAR(20)
+                constraints:
+                  nullable: false
+                  checkConstraint: "status IN ('PENDING', 'PUBLISHED', 'CLOSED', 'EXPIRED')"
+            - column:
+                name: created_at
+                type: TIMESTAMP
+                defaultValueComputed: CURRENT_TIMESTAMP
+                constraints:
+                  nullable: false
+            - column:
+                name: created_by
+                type: VARCHAR(100)
+                constraints:
+                  nullable: false
+            - column:
+                name: updated_at
+                type: TIMESTAMP
+                defaultValueComputed: CURRENT_TIMESTAMP
+                constraints:
+                  nullable: true
+            - column:
+                name: updated_by
+                type: VARCHAR(100)
+                constraints:
+                  nullable: true
+            - column:
+                name: version
+                type: BIGINT
+                defaultValueNumeric: 0
+                constraints:
+                  nullable: false
+                  checkConstraint: "version >= 0"
+      
+      - sql:
+          comment: Add table comment
+          sql: COMMENT ON TABLE voucher_packs IS 'Stores voucher pack information including discount details, validity periods, and status'
+      
+      - sql:
+          comment: Add column comments
+          sql: |
+            COMMENT ON COLUMN voucher_packs.id IS 'Primary key identifier for the voucher pack';
+            COMMENT ON COLUMN voucher_packs.description IS 'Human-readable description of the voucher pack';
+            COMMENT ON COLUMN voucher_packs.discount_amount IS 'The discount amount (percentage <= 100 or fixed amount > 100)';
+            COMMENT ON COLUMN voucher_packs.valid_range IS 'Validity period for individual vouchers (e.g., "30 DAYS")';
+            COMMENT ON COLUMN voucher_packs.required_points IS 'Number of loyalty points required to redeem a voucher';
+            COMMENT ON COLUMN voucher_packs.quantity IS 'Available quantity of vouchers in this pack';
+            COMMENT ON COLUMN voucher_packs.valid_from IS 'Start date when this pack becomes available for redemption';
+            COMMENT ON COLUMN voucher_packs.valid_to IS 'End date when this pack expires';
+            COMMENT ON COLUMN voucher_packs.status IS 'Current lifecycle status of the voucher pack';
+            COMMENT ON COLUMN voucher_packs.created_at IS 'Timestamp when this pack was created';
+            COMMENT ON COLUMN voucher_packs.created_by IS 'Identifier of the user who created this pack';
+            COMMENT ON COLUMN voucher_packs.updated_at IS 'Timestamp when this pack was last modified';
+            COMMENT ON COLUMN voucher_packs.updated_by IS 'Identifier of the user who last modified this pack';
+            COMMENT ON COLUMN voucher_packs.version IS 'Version field for optimistic locking';

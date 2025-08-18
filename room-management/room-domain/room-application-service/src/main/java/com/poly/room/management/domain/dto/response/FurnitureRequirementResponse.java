@@ -1,5 +1,7 @@
 package com.poly.room.management.domain.dto.response;
 
+import com.poly.room.management.domain.entity.Furniture;
+import com.poly.room.management.domain.entity.RoomType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FurnitureRequirementResponse {
-    private Integer furnitureId;
-    private String furnitureInventoryItemId; // Hiển thị ID của vật phẩm tồn kho
-    private Integer roomTypeId;
+    private Furniture furniture;
+    private RoomType roomType;
     private int requiredQuantity;
 }

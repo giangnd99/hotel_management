@@ -1,0 +1,37 @@
+server:
+  port: 8099
+
+spring:
+  application:
+    name: customer-management
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: customer-service-test
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  eureka:
+    client:
+      service-url:
+        defaultZone: http://localhost/8761
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:init-schema.sql
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/customer_management
+    username: root
+    password: root

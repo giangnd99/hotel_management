@@ -10,11 +10,6 @@
     </parent>
 
     <artifactId>restaurant-application-service</artifactId>
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>com.poly</groupId>
@@ -26,6 +21,10 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
             <version>${openfeign.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>kafka-json-message</artifactId>
         </dependency>
     </dependencies>
 

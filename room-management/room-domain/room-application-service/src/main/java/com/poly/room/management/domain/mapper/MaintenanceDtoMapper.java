@@ -9,12 +9,15 @@ import com.poly.room.management.domain.dto.response.RoomMaintenanceResponse;
 import com.poly.room.management.domain.entity.MaintenanceType;
 import com.poly.room.management.domain.entity.Room;
 import com.poly.room.management.domain.entity.RoomMaintenance;
+import com.poly.room.management.domain.exception.RoomDomainException;
 import com.poly.room.management.domain.port.out.repository.RoomRepository;
 import com.poly.room.management.domain.valueobject.MaintenanceTypeId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.util.Optional;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -24,10 +27,15 @@ public class MaintenanceDtoMapper {
 
     public RoomMaintenance toEntity(CreateMaintenanceRequest request) {
 
-        Room room = roomRepository.findById(request.getRoomId()).get();
+        Optional<Room> room = Optional.ofNullable(roomRepository.findById(UUID.fromString(request.getRoomId()))
+                .orElseThrow(() -> new RoomDomainException("Room not found")));
 
+        if (room.isEmpty()) {
+            throw new RoomDomainException("Room not found");
+        }
+        Room roomEntity = room.get();
         return RoomMaintenance.Builder.builder()
-                .room(room)
+                .room(roomEntity)
                 .staffId(new StaffId(request.getStaffId()))
                 .scheduledDate(DateCustom.of(request.getMaintenanceDate()))
                 .maintenanceType(
@@ -42,7 +50,7 @@ public class MaintenanceDtoMapper {
     public RoomMaintenanceResponse toResponse(RoomMaintenance maintenance) {
         return RoomMaintenanceResponse.builder()
                 .id(maintenance.getId().getValue())
-                .roomId(maintenance.getRoom().getId().getValue())
+                .roomId(maintenance.getRoom().getId().getValue().toString())
                 .staffId(maintenance.getStaffId().getValue())
                 .scheduledDate(Timestamp.valueOf(maintenance.getScheduledDate().getValue()))
                 .startDate(Timestamp.valueOf(maintenance.getStartDate().getValue()))

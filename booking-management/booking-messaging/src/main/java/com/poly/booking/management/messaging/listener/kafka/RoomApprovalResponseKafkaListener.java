@@ -1,10 +1,11 @@
 package com.poly.booking.management.messaging.listener.kafka;
 
 import com.poly.booking.management.domain.exception.BookingDomainException;
+
 import com.poly.booking.management.domain.kafka.model.BookingRoomResponseAvro;
-import com.poly.booking.management.domain.port.in.message.listener.room.RoomReservedListener;
+import com.poly.booking.management.domain.port.in.message.listener.RoomReservedListener;
 import com.poly.booking.management.messaging.mapper.BookingMessageDataMapper;
-import com.poly.domain.valueobject.ReservationStatus;
+import com.poly.domain.valueobject.RoomResponseStatus;
 import com.poly.kafka.consumer.KafkaConsumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +64,7 @@ public class RoomApprovalResponseKafkaListener implements KafkaConsumer<BookingR
      * @param offsets Kafka message offsets
      */
     @Override
-    @KafkaListener(topics = "${kafka.topic.room.response}", groupId = "${kafka.group.id}")
+    @KafkaListener(topics = "${booking-service.room-reserve-response-topic-name}", groupId = "${kafka-consumer-config.room-consumer-group-id}")
     public void receive(@Payload List<BookingRoomResponseAvro> messages,
                         @Header(KafkaHeaders.RECEIVED_KEY) List<String> keys,
                         @Header(KafkaHeaders.RECEIVED_PARTITION) List<Integer> partitions,
@@ -158,11 +159,11 @@ public class RoomApprovalResponseKafkaListener implements KafkaConsumer<BookingR
     private void processRoomByStatus(BookingRoomResponseAvro bookingRoomResponseAvro) {
         String reservationStatus = bookingRoomResponseAvro.getReservationStatus();
         
-        if (ReservationStatus.SUCCESS.name().equals(reservationStatus)) {
+        if (RoomResponseStatus.SUCCESS.name().equals(reservationStatus)) {
             // Xử lý room reservation thành công
             processSuccessfulRoomReservation(bookingRoomResponseAvro);
-        } else if (ReservationStatus.FAILED.name().equals(reservationStatus) || 
-                   ReservationStatus.CANCELLED.name().equals(reservationStatus)) {
+        } else if (RoomResponseStatus.FAILED.name().equals(reservationStatus) ||
+                   RoomResponseStatus.CANCELLED.name().equals(reservationStatus)) {
             // Xử lý room reservation thất bại hoặc bị hủy
             processFailedRoomReservation(bookingRoomResponseAvro);
         } else {

@@ -1,7 +1,7 @@
 package com.poly.booking.management.messaging.listener.kafka;
 
 import com.poly.booking.management.domain.kafka.model.CustomerModelAvro;
-import com.poly.booking.management.domain.port.in.message.listener.customer.CustomerMessageListener;
+import com.poly.booking.management.domain.port.in.message.listener.CustomerMessageListener;
 import com.poly.booking.management.messaging.mapper.BookingMessageDataMapper;
 import com.poly.kafka.consumer.KafkaConsumer;
 import lombok.RequiredArgsConstructor;
@@ -57,7 +57,7 @@ public class CustomerResponseKafkaListener implements KafkaConsumer<CustomerMode
      * @param offsets Kafka message offsets
      */
     @Override
-    @KafkaListener(topics = "${kafka.topic.customer.response}", groupId = "${kafka.group.id}")
+    @KafkaListener(topics = "${booking-service.customer-topic-name}", id = "${kafka-consumer-config.customer-group-id}")
     public void receive(@Payload List<CustomerModelAvro> messages,
                         @Header(KafkaHeaders.RECEIVED_KEY) List<String> keys,
                         @Header(KafkaHeaders.RECEIVED_PARTITION) List<Integer> partitions,

@@ -18,9 +18,8 @@ public class FurnitureCommandServiceImpl implements FurnitureCommandService {
 
         Furniture newFurniture = Furniture.Builder.builder()
                 .id(new FurnitureId(UUID.randomUUID().variant()))
-                .inventoryItemId(inventoryItemId)
+                .name(inventoryItemId.getValue())
                 .build();
-        newFurniture.validate();
         return newFurniture;
     }
 
@@ -30,8 +29,7 @@ public class FurnitureCommandServiceImpl implements FurnitureCommandService {
             throw new RoomDomainException("New InventoryItemId cannot be null");
         }
 
-        furniture.setInventoryItemId(newInventoryItemId);
-        furniture.validate();
+
         return furniture;
     }
 

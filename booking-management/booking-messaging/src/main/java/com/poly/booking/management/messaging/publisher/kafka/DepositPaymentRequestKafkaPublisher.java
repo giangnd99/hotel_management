@@ -2,8 +2,8 @@ package com.poly.booking.management.messaging.publisher.kafka;
 
 import com.poly.booking.management.domain.config.BookingServiceConfigData;
 import com.poly.booking.management.domain.kafka.model.BookingPaymentRequestAvro;
-import com.poly.booking.management.domain.outbox.model.payment.BookingPaymentEventPayload;
-import com.poly.booking.management.domain.outbox.model.payment.BookingPaymentOutboxMessage;
+import com.poly.booking.management.domain.outbox.payload.PaymentEventPayload;
+import com.poly.booking.management.domain.outbox.model.PaymentOutboxMessage;
 import com.poly.booking.management.domain.port.out.message.publisher.payment.DepositPaymentRequestMessagePublisher;
 import com.poly.booking.management.messaging.mapper.BookingMessageDataMapper;
 import com.poly.kafka.producer.KafkaMessageHelper;
@@ -40,14 +40,14 @@ public class DepositPaymentRequestKafkaPublisher implements DepositPaymentReques
      * @param outboxCallback Callback function để cập nhật trạng thái outbox
      */
     @Override
-    public void sendDepositRequest(BookingPaymentOutboxMessage paymentOutboxMessage, 
-                                 BiConsumer<BookingPaymentOutboxMessage, OutboxStatus> outboxCallback) {
+    public void sendDepositRequest(PaymentOutboxMessage paymentOutboxMessage,
+                                   BiConsumer<PaymentOutboxMessage, OutboxStatus> outboxCallback) {
         
         // Validate input parameters
         validateInputParameters(paymentOutboxMessage, outboxCallback);
         
         // Extract và parse thông tin từ outbox message
-        BookingPaymentEventPayload paymentEventPayload = extractPaymentEventPayload(paymentOutboxMessage);
+        PaymentEventPayload paymentEventPayload = extractPaymentEventPayload(paymentOutboxMessage);
         String sagaId = extractSagaId(paymentOutboxMessage);
         
         // Log thông tin bắt đầu xử lý
@@ -72,8 +72,8 @@ public class DepositPaymentRequestKafkaPublisher implements DepositPaymentReques
     /**
      * Validate các tham số đầu vào
      */
-    private void validateInputParameters(BookingPaymentOutboxMessage paymentOutboxMessage, 
-                                       BiConsumer<BookingPaymentOutboxMessage, OutboxStatus> outboxCallback) {
+    private void validateInputParameters(PaymentOutboxMessage paymentOutboxMessage,
+                                         BiConsumer<PaymentOutboxMessage, OutboxStatus> outboxCallback) {
         Assert.notNull(paymentOutboxMessage, "PaymentOutboxMessage không được null");
         Assert.notNull(outboxCallback, "OutboxCallback không được null");
         Assert.notNull(paymentOutboxMessage.getPayload(), "PaymentOutboxMessage payload không được null");
@@ -83,24 +83,24 @@ public class DepositPaymentRequestKafkaPublisher implements DepositPaymentReques
     /**
      * Trích xuất và parse BookingPaymentEventPayload từ outbox message
      */
-    private BookingPaymentEventPayload extractPaymentEventPayload(BookingPaymentOutboxMessage paymentOutboxMessage) {
+    private PaymentEventPayload extractPaymentEventPayload(PaymentOutboxMessage paymentOutboxMessage) {
         return kafkaMessageHelper.getEventPayload(
                 paymentOutboxMessage.getPayload(),
-                BookingPaymentEventPayload.class
+                PaymentEventPayload.class
         );
     }
 
     /**
      * Trích xuất Saga ID từ outbox message
      */
-    private String extractSagaId(BookingPaymentOutboxMessage paymentOutboxMessage) {
+    private String extractSagaId(PaymentOutboxMessage paymentOutboxMessage) {
         return paymentOutboxMessage.getSagaId().toString();
     }
 
     /**
      * Log thông tin bắt đầu xử lý payment request
      */
-    private void logProcessingStart(BookingPaymentEventPayload paymentEventPayload, String sagaId) {
+    private void logProcessingStart(PaymentEventPayload paymentEventPayload, String sagaId) {
         log.info("Bắt đầu xử lý DepositPaymentRequest cho booking id: {} và saga id: {}",
                 paymentEventPayload.getBookingId(), sagaId);
     }
@@ -108,8 +108,8 @@ public class DepositPaymentRequestKafkaPublisher implements DepositPaymentReques
     /**
      * Tạo BookingPaymentRequestAvro model từ thông tin payment
      */
-    private BookingPaymentRequestAvro createPaymentRequestAvro(String sagaId, 
-                                                             BookingPaymentEventPayload paymentEventPayload) {
+    private BookingPaymentRequestAvro createPaymentRequestAvro(String sagaId,
+                                                               PaymentEventPayload paymentEventPayload) {
         return bookingDataMapper.bookingPaymentEventToPaymentRequestAvroModel(sagaId, paymentEventPayload);
     }
 
@@ -118,9 +118,9 @@ public class DepositPaymentRequestKafkaPublisher implements DepositPaymentReques
      */
     private void sendMessageToKafka(BookingPaymentRequestAvro paymentRequestAvro,
                                   String sagaId,
-                                  BookingPaymentOutboxMessage paymentOutboxMessage,
-                                  BiConsumer<BookingPaymentOutboxMessage, OutboxStatus> outboxCallback,
-                                  BookingPaymentEventPayload paymentEventPayload) {
+                                  PaymentOutboxMessage paymentOutboxMessage,
+                                  BiConsumer<PaymentOutboxMessage, OutboxStatus> outboxCallback,
+                                  PaymentEventPayload paymentEventPayload) {
         
         String topicName = bookingServiceConfigData.getPaymentRequestTopicName();
         
@@ -142,7 +142,7 @@ public class DepositPaymentRequestKafkaPublisher implements DepositPaymentReques
     /**
      * Log thông tin xử lý thành công
      */
-    private void logProcessingSuccess(BookingPaymentEventPayload paymentEventPayload, String sagaId) {
+    private void logProcessingSuccess(PaymentEventPayload paymentEventPayload, String sagaId) {
         log.info("DepositPaymentRequest đã được gửi thành công đến Kafka cho booking id: {} và saga id: {}",
                 paymentEventPayload.getBookingId(), sagaId);
     }
@@ -150,9 +150,9 @@ public class DepositPaymentRequestKafkaPublisher implements DepositPaymentReques
     /**
      * Xử lý lỗi khi gửi message
      */
-    private void handleProcessingError(BookingPaymentEventPayload paymentEventPayload, 
-                                     String sagaId, 
-                                     Exception exception) {
+    private void handleProcessingError(PaymentEventPayload paymentEventPayload,
+                                       String sagaId,
+                                       Exception exception) {
         log.error("Lỗi khi gửi DepositPaymentRequest đến Kafka với booking id: {} và saga id: {}. Lỗi: {}",
                 paymentEventPayload.getBookingId(), 
                 sagaId, 

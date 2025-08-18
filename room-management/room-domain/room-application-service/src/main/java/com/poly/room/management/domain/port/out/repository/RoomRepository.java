@@ -4,10 +4,11 @@ import com.poly.room.management.domain.entity.Room;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface RoomRepository {
 
-    Optional<Room> findById(Integer id);
+    Optional<Room> findById(UUID id);
 
     Room save(Room room);
 
@@ -16,4 +17,6 @@ public interface RoomRepository {
     void delete(Room room);
 
     List<Room> findAll();
+
+
 }

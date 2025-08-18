@@ -5,9 +5,6 @@ import com.poly.room.management.domain.dto.request.CreateRoomTypeRequest;
 import com.poly.room.management.domain.dto.request.UpdateRoomTypeRequest;
 import com.poly.room.management.domain.dto.response.RoomTypeResponse;
 import com.poly.room.management.domain.entity.RoomType;
-import com.poly.room.management.domain.entity.FurnitureRequirement;
-import com.poly.room.management.domain.port.out.repository.FurnitureRepository;
-import com.poly.room.management.domain.port.out.repository.RoomTypeRepository;
 import com.poly.room.management.domain.valueobject.RoomTypeId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -57,7 +54,7 @@ public class RoomTypeDtoMapper {
                 .description(roomType.getDescription())
                 .basePrice(roomType.getBasePrice().getAmount().toString())
                 .maxOccupancy(roomType.getMaxOccupancy())
-                .furnitureRequirements(roomType.getFurnitures()
+                .furnitureRequirements(roomType.getFurnituresRequirements()
                         .stream()
                         .map(furnitureRequirementDtoMapper::toResponse)
                         .collect(Collectors

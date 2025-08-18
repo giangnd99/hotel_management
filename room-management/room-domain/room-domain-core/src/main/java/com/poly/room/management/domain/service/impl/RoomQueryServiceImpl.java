@@ -1,6 +1,6 @@
 package com.poly.room.management.domain.service.impl;
 
-import com.poly.domain.valueobject.ERoomStatus;
+import com.poly.domain.valueobject.RoomStatus;
 import com.poly.domain.valueobject.RoomId;
 import com.poly.room.management.domain.entity.Room;
 import com.poly.room.management.domain.entity.RoomType;
@@ -30,7 +30,7 @@ public class RoomQueryServiceImpl implements RoomQueryService {
     public List<Room> findAvailableRooms(List<Room> allRooms, Optional<RoomTypeId> roomTypeId,
                                          Optional<Integer> minFloor, Optional<Integer> maxFloor, LocalDateTime checkInDate, LocalDateTime checkOutDate) {
         return allRooms.stream()
-                .filter(room -> room.getRoomStatus().getRoomStatus().equals(ERoomStatus.VACANT.name()))
+                .filter(room -> room.getRoomStatus() == (RoomStatus.VACANT))
                 .filter(room -> roomTypeId.map(id -> room.getRoomType().getId().equals(id)).orElse(true))
                 .filter(room -> minFloor.map(floor -> room.getFloor() >= floor).orElse(true))
                 .filter(room -> maxFloor.map(floor -> room.getFloor() <= floor).orElse(true))
@@ -41,7 +41,7 @@ public class RoomQueryServiceImpl implements RoomQueryService {
     public List<Room> getRoomsByStatus(List<Room> allRooms, String statusName) {
         try {
             return allRooms.stream()
-                    .filter(room -> room.getRoomStatus().getRoomStatus().equalsIgnoreCase(statusName))
+                    .filter(room -> room.getRoomStatus().name().equalsIgnoreCase(statusName))
                     .collect(Collectors.toList());
         } catch (IllegalArgumentException e) {
             throw new RoomDomainException("Invalid room status: " + statusName);

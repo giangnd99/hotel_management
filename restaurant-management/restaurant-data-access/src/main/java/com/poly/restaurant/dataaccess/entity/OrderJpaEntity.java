@@ -36,6 +36,9 @@ public class OrderJpaEntity {
     @Column(name = "customer_note")
     private String customerNote;
 
+    @OneToMany(mappedBy = "order", cascade =  CascadeType.ALL)
+    private List<RoomOrderEntity> roomOrders;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItemJpaEntity> items;
 }
