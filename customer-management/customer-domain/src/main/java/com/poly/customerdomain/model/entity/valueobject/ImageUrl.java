@@ -8,7 +8,7 @@ public class ImageUrl {
 
     public ImageUrl(String url) {
         if (url == null || url.isEmpty()) {
-            throw new InvalidCustomerImageException();
+            empty();
         }
         this.url = url;
     }
