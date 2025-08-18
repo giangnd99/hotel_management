@@ -1,6 +1,6 @@
 package com.poly.restaurant.dataaccess.adapter;
 
-import com.poly.restaurant.application.port.out.MenuItemRepositoryPort;
+import com.poly.restaurant.application.port.out.repo.MenuItemRepositoryPort;
 import com.poly.restaurant.dataaccess.entity.MenuItemJpaEntity;
 import com.poly.restaurant.dataaccess.jpa.JpaMenuItemRepository;
 import com.poly.restaurant.dataaccess.mapper.MenuItemEntityMapper;

@@ -246,6 +246,21 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>notification-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>notification-messaging</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>notification-container</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
                 <version>${junitt.version}</version>
@@ -258,6 +273,11 @@
                 <version>${spring-cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.poly</groupId>
+                <artifactId>security</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
 

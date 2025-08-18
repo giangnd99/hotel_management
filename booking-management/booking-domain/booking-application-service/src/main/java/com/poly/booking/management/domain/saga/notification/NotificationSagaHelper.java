@@ -205,7 +205,7 @@ public class NotificationSagaHelper {
         }
 
         // TODO: Gửi notification cho customer về check-in failure
-        // notificationService.sendCheckInFailureNotification(data.getCustomerId(), data.getBookingId());
+        // notificationService.sendCheckInFailureNotification(data.getCustomer(), data.getBookingId());
     }
 
     /**

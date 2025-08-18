@@ -22,7 +22,7 @@ public class PaymentDataMapper {
     public PaymentEventPayload bookingCreatedEventToRoomBookingEventPayload(BookingCreatedEvent bookingCreatedEvent) {
         return PaymentEventPayload.builder()
                 .bookingId(bookingCreatedEvent.getBooking().getId().getValue().toString())
-                .customerId(bookingCreatedEvent.getBooking().getCustomerId().getValue().toString())
+                .customerId(bookingCreatedEvent.getBooking().getCustomer().getId().getValue().toString())
                 .paymentBookingStatus(PaymentOrderStatus.PENDING.toString())
                 .price(bookingCreatedEvent.getBooking().getTotalPrice().getAmount())
                 .createdAt(bookingCreatedEvent.getCreatedAt().getValue())
@@ -32,7 +32,7 @@ public class PaymentDataMapper {
     public PaymentEventPayload bookingCheckOutEventToBookingPaymentEventPayload(CheckOutEvent bookingCheckOutEvent) {
         return PaymentEventPayload.builder()
                 .bookingId(bookingCheckOutEvent.getBooking().getId().getValue().toString())
-                .customerId(bookingCheckOutEvent.getBooking().getCustomerId().getValue().toString())
+                .customerId(bookingCheckOutEvent.getBooking().getCustomer().getId().getValue().toString())
                 .price(bookingCheckOutEvent.getBooking().getTotalPrice().getAmount())
                 .createdAt(bookingCheckOutEvent.getCreatedAt().getValue())
                 .paymentBookingStatus(PaymentOrderStatus.PENDING.toString())

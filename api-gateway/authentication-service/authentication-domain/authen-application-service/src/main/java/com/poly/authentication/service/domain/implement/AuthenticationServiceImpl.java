@@ -8,12 +8,10 @@ import com.poly.authentication.service.domain.dto.request.AuthenticationRequest;
 import com.poly.authentication.service.domain.dto.request.IntrospectRequest;
 import com.poly.authentication.service.domain.dto.request.LogoutRequest;
 import com.poly.authentication.service.domain.dto.request.RefreshRequest;
-import com.poly.authentication.service.domain.entity.User;
 import com.poly.authentication.service.domain.handler.authentication.*;
 import com.poly.authentication.service.domain.port.in.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public Mono<IntrospectResponse> introspect(IntrospectRequest token) {
+    public IntrospectResponse introspect(IntrospectRequest token) {
         return introspectTokenHandler.introspect(token);
     }
 

@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -39,33 +40,33 @@ public class BookingController {
 
     @GetMapping("/count/today")
     @Operation(summary = "Lấy tổng số booking hôm nay")
-    public ResponseEntity<Long> getTodayBookingCount() {
+    public ResponseEntity<Integer> getTodayBookingCount() {
         log.info("Getting today booking count");
-        Long count = bookingService.getTodayBookingCount();
+        Integer count = bookingService.getTodayBookingCount();
         return ResponseEntity.ok(count);
     }
 
     @GetMapping("/count/today/success")
     @Operation(summary = "Lấy số booking thành công hôm nay (gửi mail thành công)")
-    public ResponseEntity<Long> getTodayBookingSuccessCount() {
+    public ResponseEntity<Integer> getTodayBookingSuccessCount() {
         log.info("Getting today successful booking count");
-        Long count = bookingService.getTodayBookingSuccessCount();
+        Integer count = bookingService.getTodayBookingSuccessCount();
         return ResponseEntity.ok(count);
     }
 
     @GetMapping("/count/today/pending")
     @Operation(summary = "Lấy số booking đang chờ hôm nay (đang gửi mail/thanh toán)")
-    public ResponseEntity<Long> getTodayBookingPendingCount() {
+    public ResponseEntity<Integer> getTodayBookingPendingCount() {
         log.info("Getting today pending booking count");
-        Long count = bookingService.getTodayBookingPendingCount();
+        Integer count = bookingService.getTodayBookingPendingCount();
         return ResponseEntity.ok(count);
     }
 
     @GetMapping("/count/today/cancelled")
     @Operation(summary = "Lấy số booking đã hủy hôm nay")
-    public ResponseEntity<Long> getTodayBookingCancelCount() {
+    public ResponseEntity<Integer> getTodayBookingCancelCount() {
         log.info("Getting today cancelled booking count");
-        Long count = bookingService.getTodayBookingCancelCount();
+        Integer count = bookingService.getTodayBookingCancelCount();
         return ResponseEntity.ok(count);
     }
 
@@ -182,22 +183,22 @@ public class BookingController {
     }
 
     // ========== ROOM SEARCH APIs ==========
-
-    @GetMapping("/rooms/search")
-    @Operation(summary = "Tìm kiếm phòng khả dụng")
-    public ResponseEntity<List<BookingDto>> searchAvailableRooms(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
-            @RequestParam Integer numberOfGuests,
-            @RequestParam(required = false) Long roomTypeId,
-            @RequestParam(required = false) Integer minPrice,
-            @RequestParam(required = false) Integer maxPrice) {
-        log.info("Searching available rooms for dates: {} to {}, guests: {}", 
-                checkInDate, checkOutDate, numberOfGuests);
-        List<BookingDto> availableRooms = bookingService.searchAvailableRooms(
-                checkInDate, checkOutDate, numberOfGuests, roomTypeId, minPrice, maxPrice);
-        return ResponseEntity.ok(availableRooms);
-    }
+//
+//    @GetMapping("/rooms/search")
+//    @Operation(summary = "Tìm kiếm phòng khả dụng")
+//    public ResponseEntity<List<BookingDto>> searchAvailableRooms(
+//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
+//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
+//            @RequestParam Integer numberOfGuests,
+//            @RequestParam(required = false) Long roomTypeId,
+//            @RequestParam(required = false) Integer minPrice,
+//            @RequestParam(required = false) Integer maxPrice) {
+//        log.info("Searching available rooms for dates: {} to {}, guests: {}",
+//                checkInDate, checkOutDate, numberOfGuests);
+//        List<BookingDto> availableRooms = bookingService.searchAvailableRooms(
+//                checkInDate, checkOutDate, numberOfGuests, roomTypeId, minPrice, maxPrice);
+//        return ResponseEntity.ok(availableRooms);
+//    }
 
     // ========== BOOKING STATUS MANAGEMENT ==========
 
