@@ -40,7 +40,7 @@ public class SecurityConfig {
             "api/rooms", "api/rooms/**",
             "/payment/vn-pay-callback", "/payment/vn-pay-callback/**",
             "/reset-password", "/reset-password/**",
-             "/users", // Nếu bạn muốn /users là public (cẩn thận với bảo mật)
+              // Nếu bạn muốn /users là public (cẩn thận với bảo mật)
             // Nếu có các phương thức HTTP cụ thể cho public URLs, bạn có thể thêm:
             // HttpMethod.GET + "/some-public-read-only-endpoint",
             // "/some-other-public-path"
@@ -90,7 +90,7 @@ public class SecurityConfig {
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.addAllowedOrigin("*");
+        corsConfig.addAllowedOrigin("http://localhost:3000, http://localhost:3001, http://localhost:3002, http://localhost:3003");
         corsConfig.addAllowedMethod("*");
         corsConfig.addAllowedHeader("*");
         corsConfig.setAllowCredentials(false);
