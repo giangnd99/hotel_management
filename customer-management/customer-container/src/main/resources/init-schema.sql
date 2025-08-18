@@ -55,8 +55,8 @@ CREATE TABLE birthday_notification_log
 -- Insert 10 Customers
 INSERT INTO customer (customer_id, user_id, first_name, last_name, address, image_url, date_of_birth, level, behavior_data)
 VALUES
-    (UUID_TO_BIN('11111111-1111-1111-1111-111111111111'), UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'), 'Nguyen','Van A','123A, Đường Lê Lợi, Quận 1, TP. Ho Chi Minh',NULL,'2000-01-01','BRONZE','{"favoriteRoomTypes":"Deluxe","frequentlyUsedServices":"SPA"}'),
-    (UUID_TO_BIN('22222222-2222-2222-2222-222222222222'), UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'), 'Tran','Thi B','234B, Đường Hai Bà Trưng, Quận 3, TP. Ho Chi Minh',NULL,'1995-03-12','SILVER','{"favoriteRoomTypes":"Standard","frequentlyUsedServices":"Gym"}'),
+    (UUID_TO_BIN('11111111-1111-1111-1111-111111111111'), UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'), 'Nguyen','Van A','123A, Đường Lê Lợi, Quận 1, TP. Ho Chi Minh',NULL,'2000-01-01','BRONZE','{"favoriteRoomTypes":"Deluxe","frequentlyUsedServices":"SPA"}'),
+    (UUID_TO_BIN('22222222-2222-2222-2222-222222222222'), UUID_TO_BIN('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12'), 'Tran','Thi B','234B, Đường Hai Bà Trưng, Quận 3, TP. Ho Chi Minh',NULL,'1995-03-12','SILVER','{"favoriteRoomTypes":"Standard","frequentlyUsedServices":"Gym"}'),
     (UUID_TO_BIN('33333333-3333-3333-3333-333333333333'), UUID_TO_BIN('cccccccc-cccc-cccc-cccc-cccccccccccc'), 'Le','Van C','56C, Đường Pasteur, Quận 1, TP. Ho Chi Minh',NULL,'1990-07-15','GOLD','{"favoriteRoomTypes":"Suite","frequentlyUsedServices":"Bar"}'),
     (UUID_TO_BIN('44444444-4444-4444-4444-444444444444'), UUID_TO_BIN('dddddddd-dddd-dddd-dddd-dddddddddddd'), 'Pham','Thi D','89D, Đường Nguyễn Huệ, Quận 1, TP. Ho Chi Minh',NULL,'1988-11-30','PLATINUM','{"favoriteRoomTypes":"Deluxe","frequentlyUsedServices":"SPA"}'),
     (UUID_TO_BIN('55555555-5555-5555-5555-555555555555'), UUID_TO_BIN('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee'), 'Hoang','Van E','101E, Đường Điện Biên Phủ, Quận Bình Thạnh, TP. Ho Chi Minh',NULL,'1992-05-25','DIAMOND','{"favoriteRoomTypes":"Standard","frequentlyUsedServices":"Pool"}'),

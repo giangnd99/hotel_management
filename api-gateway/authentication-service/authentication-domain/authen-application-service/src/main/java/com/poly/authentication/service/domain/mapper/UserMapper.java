@@ -27,6 +27,7 @@ public class UserMapper {
         return UserResponse.builder()
                 .email(user.getGmail())
                 .phone(user.getPhone())
+                .id(user.getId().getValue().toString())
                 .build();
     }
 }
