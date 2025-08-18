@@ -1,17 +1,16 @@
 package com.poly.booking.management.messaging.mapper;
 
+import com.poly.booking.management.domain.kafka.model.*;
 import com.poly.booking.management.domain.outbox.payload.ReservedEventPayload;
 import com.poly.booking.management.domain.message.CustomerCreatedMessageResponse;
 import com.poly.booking.management.domain.message.PaymentMessageResponse;
 import com.poly.booking.management.domain.message.RoomMessageResponse;
 import com.poly.booking.management.domain.entity.Room;
-import com.poly.booking.management.domain.kafka.model.*;
 import com.poly.booking.management.domain.outbox.payload.PaymentEventPayload;
 import com.poly.booking.management.domain.outbox.payload.RoomEventPayload;
 import com.poly.booking.management.domain.outbox.payload.NotifiEventPayload;
 import com.poly.domain.valueobject.*;
 import com.poly.domain.valueobject.PaymentStatus;
-import com.poly.booking.management.domain.kafka.model.NotificationStatus;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -56,7 +55,17 @@ public class BookingMessageDataMapper {
      * @return BookingRoomRequestAvro model
      */
     public BookingRoomRequestAvro bookingRoomEventToRoomRequestAvroModel(String sagaId, ReservedEventPayload reservedEventPayload) {
-        return BookingRoomRequestAvro.newBuilder().setId(UUID.randomUUID()).setSagaId(UUID.fromString(sagaId)).setBookingId(reservedEventPayload.getBookingId()).setCreatedAt(Instant.now()).setProcessedAt(null).setType("ROOM_RESERVATION_REQUEST").setSagaStatus("STARTED").setRooms(roomsToRoomsAvro(reservedEventPayload.getRooms())).setBookingStatus(BookingStatus.DEPOSITED.toString()).setPrice(reservedEventPayload.getPrice()).build();
+        return BookingRoomRequestAvro.newBuilder()
+                .setId(UUID.randomUUID())
+                .setSagaId(UUID.fromString(sagaId))
+                .setBookingId(reservedEventPayload.getBookingId())
+                .setCreatedAt(Instant.now()).setProcessedAt(null)
+                .setType("ROOM_RESERVATION_REQUEST")
+                .setSagaStatus("STARTED")
+                .setRooms(roomsToRoomsAvro(reservedEventPayload.getRooms()))
+                .setBookingStatus(BookingStatus.DEPOSITED.toString())
+                .setPrice(reservedEventPayload.getPrice())
+                .build();
     }
 
     /**
@@ -69,8 +78,14 @@ public class BookingMessageDataMapper {
      * @param notifiEventPayload Thông tin notification cần gửi
      * @return NotificationModelAvro model
      */
-    public NotificationModelAvro bookingNotificationEventToNotificationModelAvro(String sagaId, NotifiEventPayload notifiEventPayload) {
-        return NotificationModelAvro.newBuilder().setId(notifiEventPayload.getId().toString()).setSagaId(sagaId).setBookingId(notifiEventPayload.getBookingId().toString()).setCustomerId(notifiEventPayload.getCustomerId().toString()).setCheckInTime(notifiEventPayload.getCheckInTime().atZone(java.time.ZoneOffset.UTC).toInstant()).setNotificationStatus(NotificationStatus.valueOf(notifiEventPayload.getNotificationStatus())).setBookingStatus(notifiEventPayload.getBookingStatus().toString()).setFailureMessages(new java.util.ArrayList<>()) // Empty list for success case
+    public NotificationMessageAvro bookingNotificationEventToNotificationModelAvro(String sagaId, NotifiEventPayload notifiEventPayload) {
+        return NotificationMessageAvro.newBuilder()
+                .setId(notifiEventPayload.getId().toString())
+                .setBookingId(notifiEventPayload.getBookingId().toString())
+                .setCustomerId(notifiEventPayload.getCustomerId().toString())
+                .setCustomerEmail(notifiEventPayload.getCustomerEmail())
+                .setNotificationType(NotificationType.BOOKING_CONFIRMATION)
+                .setMessageStatus(MessageStatus.PENDING)
                 .build();
     }
 }

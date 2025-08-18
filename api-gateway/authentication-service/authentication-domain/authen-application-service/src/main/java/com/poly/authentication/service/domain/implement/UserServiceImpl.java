@@ -4,7 +4,6 @@ import com.poly.authentication.service.domain.dto.reponse.UserResponse;
 import com.poly.authentication.service.domain.dto.request.UserCreationRequest;
 import com.poly.authentication.service.domain.dto.request.UserUpdatedRequest;
 import com.poly.authentication.service.domain.entity.Role;
-import com.poly.authentication.service.domain.entity.Token;
 import com.poly.authentication.service.domain.entity.User;
 import com.poly.authentication.service.domain.exception.AppException;
 import com.poly.authentication.service.domain.exception.ErrorCode;
@@ -23,7 +22,6 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
@@ -99,9 +97,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<User> getUserByEmail(String email) {
-        return Mono.just(userRepository.findByEmail(email)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
 
     @Override

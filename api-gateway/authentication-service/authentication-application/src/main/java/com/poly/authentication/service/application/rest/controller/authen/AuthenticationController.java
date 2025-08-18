@@ -46,7 +46,7 @@ public class AuthenticationController {
 
         var result = authenticationService.introspect(request);
 
-        return ApiResponse.<IntrospectResponse>builder().result(result.block()).build();
+        return ApiResponse.<IntrospectResponse>builder().result(result).build();
     }
 
     @PostMapping("/logout")

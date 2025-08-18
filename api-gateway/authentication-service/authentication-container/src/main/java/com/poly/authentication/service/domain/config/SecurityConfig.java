@@ -1,83 +1,87 @@
 package com.poly.authentication.service.domain.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtGrantedAuthoritiesConverterAdapter;
-import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.CorsWebFilter;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
-@EnableWebFluxSecurity
-@EnableReactiveMethodSecurity
+@EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomJwtDecoder jwtDecoder;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final CustomJwtConverter jwtConverter;
+    @Autowired
+    private CustomJwtDecoder jwtDecoder;
 
 
-    // Danh sách các đường dẫn công khai (không cần xác thực)
-    private final String[] PUBLIC_URLS = {
-            "/auth/token",
-            "/auth/introspect", // Endpoint validation được gọi nội bộ
+    private final String[] GET_PUBLIC_URLS = {
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/eureka/**",
             "/actuator/**",
-            // Các đường dẫn public từ các service khác
-            "api/rooms", "api/rooms/**",
-            "/payment/vn-pay-callback", "/payment/vn-pay-callback/**",
-            "/reset-password", "/reset-password/**",
-              // Nếu bạn muốn /users là public (cẩn thận với bảo mật)
-            // Nếu có các phương thức HTTP cụ thể cho public URLs, bạn có thể thêm:
-            // HttpMethod.GET + "/some-public-read-only-endpoint",
-            // "/some-other-public-path"
+            "api/rooms", "api/rooms/**"
+    };
 
+    private final String[] POST_PUBLIC_URLS = {
+            "/auth/token",
+            "/auth/introspect",
+            "/reset-password", "/reset-password/**",
+            "/users",
+            "/auth/callback"
     };
 
     @Bean
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        http
-                .csrf(ServerHttpSecurity.CsrfSpec::disable) // Vô hiệu hóa CSRF cho API (phổ biến trong REST API)
-                .cors(Customizer.withDefaults())
-                .exceptionHandling(exceptionHandlingSpec ->
-                        exceptionHandlingSpec.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-                .authorizeExchange(authorizeExchangeSpec ->
-                        authorizeExchangeSpec
-                                .pathMatchers(PUBLIC_URLS).permitAll()
-                                .anyExchange().authenticated()
-                )
-                .oauth2ResourceServer(oauth2ResourceServerSpec ->
-                        oauth2ResourceServerSpec
-                                .jwt(jwtSpec -> jwtSpec.jwtDecoder(jwtDecoder)
-                                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                )
-        ;
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
-        return http.build();
+        httpSecurity.authorizeHttpRequests(requests ->
+                requests.requestMatchers(HttpMethod.POST, POST_PUBLIC_URLS).permitAll().
+                        requestMatchers(HttpMethod.GET, GET_PUBLIC_URLS).permitAll().
+                        anyRequest().authenticated()
+        );
+//
+        httpSecurity.oauth2Login(oauth2 -> oauth2
+                .successHandler((request, response, authentication) -> {
+                    response.sendRedirect("http://localhost:5173/login-success");
+                })
+        );
+
+        httpSecurity.oauth2ResourceServer(oauth2 ->
+                oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder)
+                        .jwtAuthenticationConverter(jwtAuthenticationConverter())));
+//Để mở cors
+        httpSecurity.cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .oauth2Login(Customizer.withDefaults());
+
+        return httpSecurity.build();
     }
 
     @Bean
-    public ReactiveJwtAuthenticationConverter jwtAuthenticationConverter() { // Thay đổi kiểu trả về
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
 
-        ReactiveJwtGrantedAuthoritiesConverterAdapter grantedAuthoritiesConverter = new ReactiveJwtGrantedAuthoritiesConverterAdapter(jwtConverter);
+        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
 
-        ReactiveJwtAuthenticationConverter converter = new ReactiveJwtAuthenticationConverter();
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
 
-        converter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+
+        converter.setJwtGrantedAuthoritiesConverter(new CustomJwtConverter());
 
         return converter;
     }
@@ -88,17 +92,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsWebFilter corsWebFilter() {
-        CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.addAllowedOrigin("http://localhost:3000, http://localhost:3001, http://localhost:3002, http://localhost:3003");
-        corsConfig.addAllowedMethod("*");
-        corsConfig.addAllowedHeader("*");
-        corsConfig.setAllowCredentials(false);
-        corsConfig.setMaxAge(3600L);
+    public CorsFilter corsFilter() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.addAllowedOrigin("*"); // Cập nhật lại ở đây nếu cần
+        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addAllowedMethod("*");
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfig);
-        return new CorsWebFilter(source);
+        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+
+        return new CorsFilter(urlBasedCorsConfigurationSource);
     }
 
 }

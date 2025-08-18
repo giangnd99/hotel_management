@@ -8,7 +8,7 @@ import com.poly.authentication.service.domain.exception.AppException;
 import com.poly.authentication.service.domain.exception.AuthenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
+
 
 import java.text.ParseException;
 
@@ -18,7 +18,7 @@ public class IntrospectTokenHandler {
 
     private final VerifyTokenHandler verifyTokenHandler;
 
-    public Mono<IntrospectResponse> introspect(IntrospectRequest request) {
+    public IntrospectResponse introspect(IntrospectRequest request) {
 
         var token = request.getToken();
 
@@ -33,7 +33,7 @@ public class IntrospectTokenHandler {
         } catch (ParseException | JOSEException e) {
             throw new AuthenException("Token invalid");
         }
-        return Mono.just(IntrospectResponse.builder().valid(isValid).build());
+        return IntrospectResponse.builder().valid(isValid).build();
 
     }
 }

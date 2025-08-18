@@ -1,58 +1,58 @@
 {
   "type": "record",
-  "name": "NotificationModelAvro",
+  "name": "NotificationMessageAvro",
   "namespace": "com.poly.booking.management.domain.kafka.model",
   "fields": [
     {
       "name": "id",
-      "type": "string"
-    },
-    {
-      "name": "sagaId",
-      "type": "string"
+      "type": "string",
+      "doc": "Unique ID for the message, acting as correlationId"
     },
     {
       "name": "bookingId",
-      "type": "string"
+      "type": "string",
+      "doc": "ID of the booking this notification is for"
     },
     {
       "name": "customerId",
-      "type": "string"
+      "type": "string",
+      "doc": "ID of the customer"
+    },
+    {
+      "name": "customerEmail",
+      "type": "string",
+      "doc": "Email address for sending the notification"
     },
     {
       "name": "qrCode",
-      "type": "string"
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "QR code data, can be null for requests"
     },
     {
-      "name": "checkInTime",
-      "type": {
-        "type": "long",
-        "logicalType": "timestamp-millis"
-      }
-    },
-    {
-      "name": "notificationStatus",
+      "name": "notificationType",
       "type": {
         "type": "enum",
-        "name": "NotificationStatus",
+        "name": "NotificationType",
+        "symbols": [
+          "BOOKING_CONFIRMATION",
+          "CHECK_IN"
+        ]
+      },
+      "doc": "Type of notification message"
+    },
+    {
+      "name": "messageStatus",
+      "type": {
+        "type": "enum",
+        "name": "MessageStatus",
         "symbols": [
           "SUCCESS",
           "FAILED",
-          "PENDING",
-          "CANCELLED"
+          "PENDING"
         ]
-      }
-    },
-    {
-      "name": "bookingStatus",
-      "type": "string"
-    },
-    {
-      "name": "failureMessages",
-      "type": {
-        "type": "array",
-        "items": "string"
-      }
+      },
+      "doc": "Status of the message processing"
     }
   ]
 }

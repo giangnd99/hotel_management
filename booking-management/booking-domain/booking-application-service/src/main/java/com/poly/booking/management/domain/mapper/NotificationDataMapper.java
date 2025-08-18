@@ -20,7 +20,8 @@ public class NotificationDataMapper {
     public NotifiEventPayload bookingRoomReservedEventToBookingNotifiEventPayload(BookingConfirmedEvent domainEvent) {
         return NotifiEventPayload.builder()
                 .bookingId(domainEvent.getBooking().getId().getValue())
-                .customerId(domainEvent.getBooking().getCustomerId().getValue())
+                .customerId(domainEvent.getBooking().getCustomer().getId().getValue())
+                .customerEmail(domainEvent.getBooking().getCustomer().getEmail())
                 .createdAt(domainEvent.getCreatedAt().getValue())
                 .checkInTime(domainEvent.getBooking().getCheckInDate().getValue())
                 .bookingStatus(domainEvent.getBooking().getStatus())

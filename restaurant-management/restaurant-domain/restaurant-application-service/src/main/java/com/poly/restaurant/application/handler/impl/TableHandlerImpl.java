@@ -2,8 +2,8 @@ package com.poly.restaurant.application.handler.impl;
 
 import com.poly.restaurant.application.annotation.DomainHandler;
 import com.poly.restaurant.application.handler.TableHandler;
-import com.poly.restaurant.application.port.out.TableRepositoryPort;
-import com.poly.restaurant.application.port.out.RepositoryPort;
+import com.poly.restaurant.application.port.out.repo.TableRepositoryPort;
+import com.poly.restaurant.application.port.out.repo.RepositoryPort;
 import com.poly.restaurant.domain.entity.Table;
 import com.poly.restaurant.domain.entity.TableStatus;
 import lombok.RequiredArgsConstructor;

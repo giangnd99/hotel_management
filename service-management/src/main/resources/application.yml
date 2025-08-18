@@ -119,7 +119,7 @@ openapi:
 # Logging configuration
 logging:
   level:
-    edu.poly.servicemanagement: DEBUG
+    com.poly.servicemanagement: DEBUG
     feign: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE

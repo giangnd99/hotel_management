@@ -14,7 +14,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateRoomRequest {
-    private Long roomTypeId;
+
+    private String roomId;
+
+    private Integer roomTypeId;
 
     @Min(value = 1, message = "Floor must be at least 1")
     @Max(value = 50, message = "Floor cannot exceed 50")

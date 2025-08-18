@@ -38,6 +38,8 @@ public class NotifiEventPayload {
     @JsonProperty
     private UUID customerId;
     @JsonProperty
+    private String customerEmail;
+    @JsonProperty
     private LocalDateTime checkInTime;
     @JsonProperty
     private String notificationStatus;
