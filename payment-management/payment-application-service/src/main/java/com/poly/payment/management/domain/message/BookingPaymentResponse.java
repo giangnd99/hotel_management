@@ -7,16 +7,21 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-@Data
+import java.util.List;
+
 @AllArgsConstructor
-@Builder
+@Data
 @NoArgsConstructor
-public class BookingPaymentRequest {
+@Builder
+public class BookingPaymentResponse {
+
     private String id;
     private String sagaId;
+    private String paymentId;
     private String customerId;
     private String bookingId;
     private BigDecimal price;
     private Instant createdAt;
-    private PaymentBookingStatus paymentBookingStatus;
+    private PaymentStatus paymentStatus;
+    private List<String> failureMessages;
 }
