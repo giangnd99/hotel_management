@@ -18,7 +18,7 @@ public class CreateRoomRequest {
     private String roomNumber;
 
     @NotNull(message = "Room type ID is required")
-    private Long roomTypeId;
+    private Integer roomTypeId;
 
     @NotNull(message = "Floor is required")
     @Min(value = 1, message = "Floor must be at least 1")

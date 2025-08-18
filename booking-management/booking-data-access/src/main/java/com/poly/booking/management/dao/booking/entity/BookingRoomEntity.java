@@ -18,11 +18,11 @@ public class BookingRoomEntity {
 
     @Id
     private UUID id;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "booking_id")
     private BookingEntity booking;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "room_id")
-    private RoomEntity roomId;
+    private RoomEntity room;
     private BigDecimal price;
 }

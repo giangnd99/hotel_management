@@ -14,10 +14,10 @@ public interface BookingService {
 
     // Dashboard & Statistics
     BookingStatisticsDto getTodayBookingStatistics();
-    Long getTodayBookingCount();
-    Long getTodayBookingSuccessCount();
-    Long getTodayBookingPendingCount();
-    Long getTodayBookingCancelCount();
+    Integer getTodayBookingCount();
+    Integer getTodayBookingSuccessCount();
+    Integer getTodayBookingPendingCount();
+    Integer getTodayBookingCancelCount();
 
     // CRUD Operations
     List<BookingDto> getAllBookings(int page, int size);
@@ -36,10 +36,10 @@ public interface BookingService {
     List<BookingDto> getBookingsByCustomerId(UUID customerId, int page, int size);
     List<BookingDto> getCustomerBookingHistory(UUID customerId, int page, int size);
 
-    // Room Search
-    List<BookingDto> searchAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate,
-                                          Integer numberOfGuests, Long roomTypeId,
-                                          Integer minPrice, Integer maxPrice);
+//    // Room Search
+//    List<BookingDto> searchAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate,
+//                                          Integer numberOfGuests, Long roomTypeId,
+//                                          Integer minPrice, Integer maxPrice);
 
     // Status Management
     BookingDto cancelBooking(UUID bookingId);

@@ -1,8 +1,8 @@
 package com.poly.booking.management.messaging.listener.kafka;
 
 import com.poly.booking.management.domain.exception.BookingDomainException;
-import com.poly.booking.management.domain.kafka.model.BookingRoomResponseAvro;
 
+import com.poly.booking.management.domain.kafka.model.BookingRoomResponseAvro;
 import com.poly.booking.management.domain.port.in.message.listener.RoomReservedListener;
 import com.poly.booking.management.messaging.mapper.BookingMessageDataMapper;
 import com.poly.domain.valueobject.RoomResponseStatus;

@@ -1,0 +1,920 @@
+{
+	"info": {
+		"_postman_id": "booking-management-collection",
+		"name": "Booking Management API",
+		"description": "Collection đầy đủ các API endpoints cho hệ thống quản lý đặt phòng khách sạn",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Dashboard & Statistics",
+			"item": [
+				{
+					"name": "Get Today Booking Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/statistics/today",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"statistics",
+								"today"
+							]
+						},
+						"description": "Lấy thống kê booking hôm nay bao gồm tổng số, số thành công, đang chờ, đã hủy, check-in, check-out, tổng doanh thu và giá trị trung bình"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Today Booking Count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/count/today",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"count",
+								"today"
+							]
+						},
+						"description": "Lấy tổng số booking hôm nay"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Today Success Booking Count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/count/today/success",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"count",
+								"today",
+								"success"
+							]
+						},
+						"description": "Lấy số booking thành công hôm nay (gửi mail thành công)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Today Pending Booking Count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/count/today/pending",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"count",
+								"today",
+								"pending"
+							]
+						},
+						"description": "Lấy số booking đang chờ hôm nay (đang gửi mail/thanh toán)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Today Cancelled Booking Count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/count/today/cancelled",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"count",
+								"today",
+								"cancelled"
+							]
+						},
+						"description": "Lấy số booking đã hủy hôm nay"
+					},
+					"response": []
+				}
+			],
+			"description": "Các API để lấy thống kê và dashboard"
+		},
+		{
+			"name": "CRUD Operations",
+			"item": [
+				{
+					"name": "Get All Bookings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings?page=0&size=20",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Số trang (bắt đầu từ 0)"
+								},
+								{
+									"key": "size",
+									"value": "20",
+									"description": "Số lượng item trên mỗi trang"
+								}
+							]
+						},
+						"description": "Lấy danh sách tất cả booking với phân trang"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Booking By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/{{booking_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{booking_id}}"
+							]
+						},
+						"description": "Lấy thông tin chi tiết của một booking theo ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Booking",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"customerId\": \"{{customer_id}}\",\n  \"roomId\": \"{{room_id}}\",\n  \"checkInDate\": \"{{check_in_date}}\",\n  \"checkOutDate\": \"{{check_out_date}}\",\n  \"numberOfGuests\": 2,\n  \"specialRequests\": \"Không hút thuốc, view biển\",\n  \"customerEmail\": \"customer@example.com\",\n  \"customerPhone\": \"0123456789\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bookings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings"
+							]
+						},
+						"description": "Tạo booking mới cho khách hàng"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Booking",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"checkInDate\": \"{{updated_check_in_date}}\",\n  \"checkOutDate\": \"{{updated_check_out_date}}\",\n  \"numberOfGuests\": 3,\n  \"specialRequests\": \"Cập nhật yêu cầu đặc biệt\",\n  \"status\": \"CONFIRMED\",\n  \"paymentStatus\": \"PENDING\",\n  \"notes\": \"Khách hàng yêu cầu thay đổi ngày check-in\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bookings/{{booking_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{booking_id}}"
+							]
+						},
+						"description": "Cập nhật thông tin của một booking"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Booking",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/{{booking_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{booking_id}}"
+							]
+						},
+						"description": "Xóa một booking theo ID"
+					},
+					"response": []
+				}
+			],
+			"description": "Các API CRUD cơ bản cho booking"
+		},
+		{
+			"name": "Search & Filter",
+			"item": [
+				{
+					"name": "Search Bookings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/search?customerName=Nguyen Van A&customerEmail=customer@example.com&roomNumber=101&checkInDate=2024-12-01&checkOutDate=2024-12-03&page=0&size=20",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"search"
+							],
+							"query": [
+								{
+									"key": "customerName",
+									"value": "Nguyen Van A",
+									"description": "Tên khách hàng (tìm kiếm mờ)"
+								},
+								{
+									"key": "customerEmail",
+									"value": "customer@example.com",
+									"description": "Email khách hàng (tìm kiếm mờ)"
+								},
+								{
+									"key": "roomNumber",
+									"value": "101",
+									"description": "Số phòng (tìm kiếm mờ)"
+								},
+								{
+									"key": "checkInDate",
+									"value": "2024-12-01",
+									"description": "Ngày check-in (định dạng YYYY-MM-DD)"
+								},
+								{
+									"key": "checkOutDate",
+									"value": "2024-12-03",
+									"description": "Ngày check-out (định dạng YYYY-MM-DD)"
+								},
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Số trang"
+								},
+								{
+									"key": "size",
+									"value": "20",
+									"description": "Số lượng item trên mỗi trang"
+								}
+							]
+						},
+						"description": "Tìm kiếm booking với nhiều tiêu chí khác nhau"
+					},
+					"response": []
+				},
+				{
+					"name": "Filter Bookings By Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/filter/status/PENDING?page=0&size=20",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"filter",
+								"status",
+								"PENDING"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Số trang"
+								},
+								{
+									"key": "size",
+									"value": "20",
+									"description": "Số lượng item trên mỗi trang"
+								}
+							]
+						},
+						"description": "Lọc booking theo trạng thái (PENDING, CONFIRMED, CHECKED_IN, CHECKED_OUT, CANCELLED)"
+					},
+					"response": []
+				},
+				{
+					"name": "Filter Bookings By Date Range",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/filter/date-range?fromDate=2024-12-01&toDate=2024-12-31&page=0&size=20",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"filter",
+								"date-range"
+							],
+							"query": [
+								{
+									"key": "fromDate",
+									"value": "2024-12-01",
+									"description": "Ngày bắt đầu (định dạng YYYY-MM-DD)"
+								},
+								{
+									"key": "toDate",
+									"value": "2024-12-31",
+									"description": "Ngày kết thúc (định dạng YYYY-MM-DD)"
+								},
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Số trang"
+								},
+								{
+									"key": "size",
+									"value": "20",
+									"description": "Số lượng item trên mỗi trang"
+								}
+							]
+						},
+						"description": "Lọc booking theo khoảng thời gian"
+					},
+					"response": []
+				}
+			],
+			"description": "Các API tìm kiếm và lọc booking"
+		},
+		{
+			"name": "Customer Specific",
+			"item": [
+				{
+					"name": "Get Bookings By Customer ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/customer/{{customer_id}}?page=0&size=20",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"customer",
+								"{{customer_id}}"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Số trang"
+								},
+								{
+									"key": "size",
+									"value": "20",
+									"description": "Số lượng item trên mỗi trang"
+								}
+							]
+						},
+						"description": "Lấy tất cả booking của một khách hàng cụ thể"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Customer Booking History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/customer/{{customer_id}}/history?page=0&size=20",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"customer",
+								"{{customer_id}}",
+								"history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Số trang"
+								},
+								{
+									"key": "size",
+									"value": "20",
+									"description": "Số lượng item trên mỗi trang"
+								}
+							]
+						},
+						"description": "Lấy lịch sử booking của một khách hàng (sắp xếp theo thời gian giảm dần)"
+					},
+					"response": []
+				}
+			],
+			"description": "Các API liên quan đến khách hàng cụ thể"
+		},
+		{
+			"name": "Room Search",
+			"item": [
+				{
+					"name": "Search Available Rooms",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/rooms/search?checkInDate=2024-12-01&checkOutDate=2024-12-03&numberOfGuests=2&roomTypeId=1&minPrice=1000000&maxPrice=5000000",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"rooms",
+								"search"
+							],
+							"query": [
+								{
+									"key": "checkInDate",
+									"value": "2024-12-01",
+									"description": "Ngày check-in (bắt buộc)"
+								},
+								{
+									"key": "checkOutDate",
+									"value": "2024-12-03",
+									"description": "Ngày check-out (bắt buộc)"
+								},
+								{
+									"key": "numberOfGuests",
+									"value": "2",
+									"description": "Số lượng khách (bắt buộc)"
+								},
+								{
+									"key": "roomTypeId",
+									"value": "1",
+									"description": "ID loại phòng (không bắt buộc)"
+								},
+								{
+									"key": "minPrice",
+									"value": "1000000",
+									"description": "Giá tối thiểu (không bắt buộc)"
+								},
+								{
+									"key": "maxPrice",
+									"value": "5000000",
+									"description": "Giá tối đa (không bắt buộc)"
+								}
+							]
+						},
+						"description": "Tìm kiếm phòng khả dụng theo các tiêu chí"
+					},
+					"response": []
+				}
+			],
+			"description": "Các API tìm kiếm phòng"
+		},
+		{
+			"name": "Booking Status Management",
+			"item": [
+				{
+					"name": "Cancel Booking",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/{{booking_id}}/cancel",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{booking_id}}",
+								"cancel"
+							]
+						},
+						"description": "Hủy một booking (chuyển trạng thái sang CANCELLED)"
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Booking",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/{{booking_id}}/confirm",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{booking_id}}",
+								"confirm"
+							]
+						},
+						"description": "Xác nhận một booking (chuyển trạng thái sang CONFIRMED)"
+					},
+					"response": []
+				},
+				{
+					"name": "Check-in Booking",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/{{booking_id}}/check-in",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{booking_id}}",
+								"check-in"
+							]
+						},
+						"description": "Check-in một booking (chuyển trạng thái sang CHECKED_IN)"
+					},
+					"response": []
+				},
+				{
+					"name": "Check-out Booking",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/{{booking_id}}/check-out",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{booking_id}}",
+								"check-out"
+							]
+						},
+						"description": "Check-out một booking (chuyển trạng thái sang CHECKED_OUT)"
+					},
+					"response": []
+				}
+			],
+			"description": "Các API quản lý trạng thái booking"
+		},
+		{
+			"name": "Payment Related",
+			"item": [
+				{
+					"name": "Get Booking Payment Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/{{booking_id}}/payment-status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{booking_id}}",
+								"payment-status"
+							]
+						},
+						"description": "Lấy trạng thái thanh toán của một booking"
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Booking Payment",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/{{booking_id}}/payment/confirm",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{booking_id}}",
+								"payment",
+								"confirm"
+							]
+						},
+						"description": "Xác nhận thanh toán của một booking (chuyển trạng thái sang PAID)"
+					},
+					"response": []
+				}
+			],
+			"description": "Các API liên quan đến thanh toán"
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "Send Booking Confirmation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/{{booking_id}}/send-confirmation",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{booking_id}}",
+								"send-confirmation"
+							]
+						},
+						"description": "Gửi email xác nhận booking cho khách hàng"
+					},
+					"response": []
+				},
+				{
+					"name": "Send Booking Reminder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/{{booking_id}}/send-reminder",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{booking_id}}",
+								"send-reminder"
+							]
+						},
+						"description": "Gửi email nhắc nhở booking cho khách hàng"
+					},
+					"response": []
+				}
+			],
+			"description": "Các API gửi thông báo"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Pre-request script để thiết lập các biến môi trường",
+					"console.log('Setting up environment variables...');"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Test script để kiểm tra response",
+					"pm.test(\"Status code is 200\", function () {",
+					"    pm.response.to.have.status(200);",
+					"});",
+					"",
+					"pm.test(\"Response time is less than 2000ms\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+					"});",
+					"",
+					"pm.test(\"Response has required headers\", function () {",
+					"    pm.response.to.have.header(\"Content-Type\");",
+					"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string",
+			"description": "Base URL của ứng dụng"
+		},
+		{
+			"key": "booking_id",
+			"value": "550e8400-e29b-41d4-a716-446655440000",
+			"type": "string",
+			"description": "ID của booking để test (UUID)"
+		},
+		{
+			"key": "customer_id",
+			"value": "550e8400-e29b-41d4-a716-446655440001",
+			"type": "string",
+			"description": "ID của customer để test (UUID)"
+		},
+		{
+			"key": "room_id",
+			"value": "550e8400-e29b-41d4-a716-446655440002",
+			"type": "string",
+			"description": "ID của room để test (UUID)"
+		},
+		{
+			"key": "check_in_date",
+			"value": "2024-12-01",
+			"type": "string",
+			"description": "Ngày check-in mẫu (YYYY-MM-DD)"
+		},
+		{
+			"key": "check_out_date",
+			"value": "2024-12-03",
+			"type": "string",
+			"description": "Ngày check-out mẫu (YYYY-MM-DD)"
+		},
+		{
+			"key": "updated_check_in_date",
+			"value": "2024-12-02",
+			"type": "string",
+			"description": "Ngày check-in cập nhật mẫu (YYYY-MM-DD)"
+		},
+		{
+			"key": "updated_check_out_date",
+			"value": "2024-12-04",
+			"type": "string",
+			"description": "Ngày check-out cập nhật mẫu (YYYY-MM-DD)"
+		}
+	]
+}

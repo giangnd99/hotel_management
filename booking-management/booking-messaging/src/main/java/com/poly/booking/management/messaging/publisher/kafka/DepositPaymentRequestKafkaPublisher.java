@@ -108,8 +108,8 @@ public class DepositPaymentRequestKafkaPublisher implements DepositPaymentReques
     /**
      * Tạo BookingPaymentRequestAvro model từ thông tin payment
      */
-    private BookingPaymentRequestAvro createPaymentRequestAvro(String sagaId, 
-                                                             PaymentEventPayload paymentEventPayload) {
+    private BookingPaymentRequestAvro createPaymentRequestAvro(String sagaId,
+                                                               PaymentEventPayload paymentEventPayload) {
         return bookingDataMapper.bookingPaymentEventToPaymentRequestAvroModel(sagaId, paymentEventPayload);
     }
 

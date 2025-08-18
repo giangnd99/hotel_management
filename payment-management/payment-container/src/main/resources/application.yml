@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: payment-management
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/mysql
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+  sql:
+    init:
+      schema-locations: classpath:init-schema.sql
+
+
+payos:
+  clientId: ${PAYOS_CLIENT_ID:d81f99f4-f1c5-4438-bd9d-7ad884c9c18a}
+  apiKey: ${PAYOS_API_KEY:68e9fb54-5f64-4df0-9d98-007c32c58ab8}
+  checksumKey: ${PAYOS_CHECKSUM_KEY:003945057010a8b73a1a9b6127b9be3bad1f72340598328c0e5be3eb19b8332e}

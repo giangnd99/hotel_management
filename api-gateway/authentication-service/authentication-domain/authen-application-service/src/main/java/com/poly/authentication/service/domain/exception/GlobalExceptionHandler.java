@@ -1,105 +1,78 @@
 package com.poly.authentication.service.domain.exception;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poly.authentication.service.domain.dto.ApiResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import lombok.extern.slf4j.Slf4j; // Sử dụng SLF4J cho logging
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler; // Quan trọng cho WebFlux
-import org.springframework.core.annotation.Order; // Để xác định thứ tự của handler
-import org.springframework.core.io.buffer.DataBufferFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.MethodArgumentNotValidException; // Vẫn có thể dùng cho lỗi validation
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
-
-import java.nio.file.AccessDeniedException; // vẫn có thể sử dụng
+import java.nio.file.AccessDeniedException;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
-@Order(-1) // Đảm bảo handler này được thực thi trước các handler mặc định của Spring
-@Slf4j // Lombok for logging
-public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
+@ControllerAdvice
+public class GlobalExceptionHandler {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+//    @ExceptionHandler(value = Exception.class)
+//    ResponseEntity<ApiResponse> handlingRuntimeException() {
+//        ApiResponse apiResponse = ApiResponse.builder().
+//                code(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode()).
+//                message(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage()).
+//                build();
+//
+//        return ResponseEntity.badRequest().body(apiResponse);
+//    }
 
-    @Override
-    public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
-        ServerHttpResponse response = exchange.getResponse();
-        DataBufferFactory bufferFactory = response.bufferFactory();
+    @ExceptionHandler(value = AppException.class)
+    ResponseEntity<ApiResponse> handlingAppException(AppException exception) {
+        ErrorCode errorCode = exception.getErrorCode();
+        ApiResponse apiResponse = ApiResponse.builder().
+                code(errorCode.getCode()).
+                message(errorCode.getMessage()).build();
 
-        ApiResponse<?> apiResponse = null;
-        ErrorCode errorCode = null;
+        return ResponseEntity.
+                status(errorCode.getHttpStatus()).
+                body(apiResponse);
+    }
 
-        // Xử lý các loại ngoại lệ cụ thể
-        if (ex instanceof AppException) {
-            errorCode = ((AppException) ex).getErrorCode();
-        } else if (ex instanceof MethodArgumentNotValidException) {
-            // Xử lý lỗi validation cho WebFlux
-            MethodArgumentNotValidException validationEx = (MethodArgumentNotValidException) ex;
-            String enumKey = validationEx.getFieldError() != null ? validationEx.getFieldError().getDefaultMessage() : null;
-            errorCode = ErrorCode.INVALID_KEY; // Mặc định là INVALID_KEY
-            try {
-                if (enumKey != null) {
-                    errorCode = ErrorCode.valueOf(enumKey);
-                }
-            } catch (IllegalArgumentException e) {
-                log.warn("Invalid ErrorCode enum key: {}", enumKey, e);
-                // Giữ nguyên errorCode = ErrorCode.INVALID_KEY nếu không tìm thấy enum
-            }
-            apiResponse = ApiResponse.builder()
-                    .code(errorCode.getCode())
-                    .message(errorCode.getMessage())
-                    .build();
-            response.setStatusCode(HttpStatus.BAD_REQUEST); // 400 Bad Request cho lỗi validation
-        } else if (ex instanceof ConstraintViolationException constraintEx) {
-            // Xử lý ConstraintViolationException (từ @Valid trên RequestParam/PathVariable)
-            Map<String, Object> details = constraintEx.getConstraintViolations().stream()
-                    .collect(Collectors.toMap(violation ->
-                            violation.getPropertyPath().toString(), ConstraintViolation::getMessage));
-            errorCode = ErrorCode.INVALID_PARAMETER;
-            apiResponse = ApiResponse.builder()
-                    .code(errorCode.getCode())
-                    .message(errorCode.getMessage())
-                    .result(details)
-                    .build();
-            response.setStatusCode(HttpStatus.BAD_REQUEST); // 400 Bad Request
-        } else if (ex instanceof AccessDeniedException) {
-            // Xử lý AccessDeniedException
-            errorCode = ErrorCode.UNAUTHORIZED; // Hoặc ErrorCode.FORBIDDEN tùy theo ngữ cảnh của bạn
-            response.setStatusCode(errorCode.getHttpStatus());
-        } else {
-            // Mặc định cho các ngoại lệ chưa được phân loại
-            errorCode = ErrorCode.UNCATEGORIZED_EXCEPTION;
-            response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR); // 500 Internal Server Error
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    ResponseEntity<ApiResponse> handlingMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+
+        String enumKey = exception.getFieldError().getDefaultMessage();
+        ErrorCode errorCode = ErrorCode.INVALID_KEY;
+        try {
+            errorCode = ErrorCode.valueOf(enumKey);
+        } catch (IllegalArgumentException e) {
+
         }
+        ApiResponse apiResponse = ApiResponse.builder().
+                code(errorCode.getCode()).
+                message(errorCode.getMessage()).build();
 
-        // Nếu apiResponse chưa được tạo bởi các khối if/else trên, tạo nó từ errorCode
-        if (apiResponse == null) {
-            apiResponse = ApiResponse.builder()
-                    .code(errorCode.getCode())
-                    .message(errorCode.getMessage())
-                    .build();
-        }
+        return ResponseEntity.badRequest().body(apiResponse);
+    }
 
-        // Đặt Content-Type là application/json
-        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+    @ExceptionHandler(value = AccessDeniedException.class)
+    ResponseEntity<ApiResponse> handlingAccessDeniedException(AccessDeniedException exception) {
+        ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(ApiResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .build());
+    }
 
-        // Chuyển ApiResponse thành JSON bytes và ghi vào response body
-        ApiResponse<?> finalApiResponse = apiResponse;
-        return response.writeWith(Mono.fromCallable(() -> {
-            try {
-                return bufferFactory.wrap(objectMapper.writeValueAsBytes(finalApiResponse));
-            } catch (JsonProcessingException e) {
-                log.error("Error writing error response", e);
-                return bufferFactory.wrap("{\"code\":9999,\"message\":\"Internal server error\"}".getBytes()); // Fallback error
-            }
-        }));
+    @ExceptionHandler(ConstraintViolationException.class)
+    public final ResponseEntity<ApiResponse> handleConstraintViolationException(ConstraintViolationException ex) {
+        Map<String, Object> details = ex.getConstraintViolations().stream()
+                .collect(Collectors.toMap(violation ->
+                        violation.getPropertyPath().toString(), ConstraintViolation::getMessage));
+        ErrorCode errorCode = ErrorCode.INVALID_PARAMETER;
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(ApiResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage()).
+                result(details)
+                .build());
     }
 }
