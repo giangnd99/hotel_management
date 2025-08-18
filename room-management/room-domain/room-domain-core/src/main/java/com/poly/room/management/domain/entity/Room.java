@@ -1,9 +1,12 @@
 package com.poly.room.management.domain.entity;
 
 import com.poly.domain.entity.BaseEntity;
-import com.poly.domain.valueobject.ERoomStatus;
+import com.poly.domain.valueobject.Money;
+import com.poly.domain.valueobject.RoomStatus;
 import com.poly.domain.valueobject.RoomId;
 import com.poly.room.management.domain.exception.RoomDomainException;
+
+import java.util.List;
 
 public class Room extends BaseEntity<RoomId> {
 
@@ -15,13 +18,20 @@ public class Room extends BaseEntity<RoomId> {
 
     private RoomStatus roomStatus;
 
+    private Money roomPrice;
+
+    private String area;
+
+    private List<Furniture> furnitures;
+
+    private List<RoomMaintenance> roomMaintenances;
+
     private Room(Builder builder) {
         super.setId(builder.id);
         roomNumber = builder.roomNumber;
         floor = builder.floor;
         roomType = builder.roomType;
         roomStatus = builder.roomStatus;
-        validate();
     }
 
     public void validate() {
@@ -30,50 +40,71 @@ public class Room extends BaseEntity<RoomId> {
     }
 
     public void setVacantRoomStatus() {
-        if (roomStatus.getRoomStatus().equals(ERoomStatus.OCCUPIED.name())) {
+        if (roomStatus == RoomStatus.CHECKED_IN) {
             throw new RoomDomainException("Room is occupied");
-        } else if (roomStatus.getRoomStatus().equals(ERoomStatus.BOOKED.name())) {
+        } else if (roomStatus == RoomStatus.BOOKED) {
             throw new RoomDomainException("Room is already booked");
         }
-        this.roomStatus = new RoomStatus(ERoomStatus.VACANT);
+        this.roomStatus = RoomStatus.VACANT;
     }
 
     public void setBookedRoomStatus() {
-        if (this.roomStatus.getRoomStatus().equals(ERoomStatus.MAINTENANCE.name())) {
-            throw new RoomDomainException("Room maintenance");
-        } else if (roomStatus.getRoomStatus().equals(ERoomStatus.OCCUPIED.name())) {
+        if (roomStatus == RoomStatus.MAINTENANCE) {
+            throw new RoomDomainException("Room is maintenance");
+        } else if (roomStatus == RoomStatus.CHECKED_IN) {
             throw new RoomDomainException("Room is already checkin");
-        } else if (!this.roomStatus.getRoomStatus().equals(ERoomStatus.VACANT.name())) {
+        } else if (roomStatus != RoomStatus.VACANT) {
             throw new RoomDomainException("Room must vacant before booking");
         }
-        this.roomStatus = new RoomStatus(ERoomStatus.BOOKED);
+        this.roomStatus = RoomStatus.BOOKED;
     }
 
     public void setMaintenanceRoomStatus() {
-        if (roomStatus.getRoomStatus().equals(ERoomStatus.OCCUPIED.name())) {
+        if (roomStatus == RoomStatus.CHECKED_IN) {
             throw new RoomDomainException("Room is already checkin");
         }
-        this.roomStatus = new RoomStatus(ERoomStatus.MAINTENANCE);
+        this.roomStatus = RoomStatus.MAINTENANCE;
     }
 
     public void setCleanRoomStatus() {
-        if (roomStatus.getRoomStatus().equals(ERoomStatus.OCCUPIED.name())) {
+        if (roomStatus == RoomStatus.CHECKED_IN) {
             throw new RoomDomainException("Room is already checkin");
         }
-        this.roomStatus = new RoomStatus(ERoomStatus.CLEANING);
+        this.roomStatus = RoomStatus.CLEANING;
     }
 
     public void setOccupiedRoomStatus() {
-        if (this.roomStatus.getRoomStatus().equals(ERoomStatus.MAINTENANCE.name())) {
+        if (this.roomStatus == RoomStatus.MAINTENANCE) {
             throw new RoomDomainException("Room cannot be occupied when it is under maintenance.");
         }
-        if (this.roomStatus.getRoomStatus().equals(ERoomStatus.CLEANING.name())) {
+        if (this.roomStatus == RoomStatus.CLEANING) {
             throw new RoomDomainException("Room cannot be occupied when it is being cleaned.");
         }
-        if (!(this.roomStatus.getRoomStatus().equals(ERoomStatus.BOOKED.name()) || this.roomStatus.getRoomStatus().equals(ERoomStatus.VACANT.name()))) {
+        if (!(this.roomStatus == RoomStatus.BOOKED || this.roomStatus == RoomStatus.VACANT)) {
             throw new RoomDomainException("Room can only be occupied from BOOKED or VACANT status.");
         }
-        this.roomStatus = new RoomStatus(ERoomStatus.OCCUPIED);
+        this.roomStatus = RoomStatus.CHECKED_IN;
+    }
+
+    public void setCheckOutRoomStatus() {
+        if (this.roomStatus == RoomStatus.CLEANING) {
+            throw new RoomDomainException("Room cannot be checked out when it is being cleaned.");
+        }
+        if (!(this.roomStatus == RoomStatus.CHECKED_IN || this.roomStatus == RoomStatus.BOOKED)) {
+            throw new RoomDomainException("Room can only be checked out from CHECKED_IN or BOOKED status.");
+        }
+        this.roomStatus = RoomStatus.CHECKED_OUT;
+    }
+
+    public Money getRoomPrice() {
+        return getRoomType().getBasePrice();
+    }
+
+    public List<Furniture> getFurnitures() {
+        return roomType.getFurnituresRequirements()
+                .stream()
+                .map(RoomTypeFurniture::getFurniture)
+                .toList();
     }
 
     public String getRoomNumber() {
@@ -128,6 +159,9 @@ public class Room extends BaseEntity<RoomId> {
         private int floor;
         private RoomType roomType;
         private RoomStatus roomStatus;
+        private Money roomPrice;
+        private String area;
+        private List<Furniture> furnitures;
 
         private Builder() {
         }
@@ -138,6 +172,21 @@ public class Room extends BaseEntity<RoomId> {
 
         public Builder id(RoomId val) {
             id = val;
+            return this;
+        }
+
+        public Builder roomPrice(Money val) {
+            roomPrice = val;
+            return this;
+        }
+
+        public Builder area(String val) {
+            area = val;
+            return this;
+        }
+
+        public Builder furnitures(List<Furniture> val) {
+            furnitures = val;
             return this;
         }
 

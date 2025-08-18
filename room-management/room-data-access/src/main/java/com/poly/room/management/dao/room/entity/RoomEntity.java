@@ -1,5 +1,6 @@
 package com.poly.room.management.dao.room.entity;
 
+import com.poly.domain.valueobject.RoomStatus;
 import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
@@ -8,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Builder
@@ -18,17 +21,20 @@ public class RoomEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private Integer roomId;
+    private UUID roomId;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "room_type_id")
+    @OneToOne(mappedBy = "room",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private RoomTypeEntity roomType;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "status_id")
-    private RoomStatusEntity status;
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<RoomMaintenanceEntity> roomMaintenances;
+
+    @Enumerated(EnumType.STRING)
+    private RoomStatus roomStatus;
 
     private String roomNumber;
 
     private int floor;
+
+    private String area;
 }

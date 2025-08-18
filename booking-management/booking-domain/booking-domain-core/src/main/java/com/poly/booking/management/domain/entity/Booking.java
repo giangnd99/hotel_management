@@ -7,51 +7,124 @@ import com.poly.domain.valueobject.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+/**
+ * Entity Booking đại diện cho một lượt đặt phòng khách sạn.
+ * Quản lý trạng thái, thông tin khách hàng, phòng, dịch vụ, QR check-in, v.v.
+ */
 public class Booking extends AggregateRoot<BookingId> {
 
-    private CustomerId customerId;
+    private Customer customer;
     private DateCustom checkInDate;
     private DateCustom checkOutDate;
-    private EBookingStatus status;
-
+    private BookingStatus status;
     private TrackingId trackingId;
-
     private DateCustom actualCheckInDate;
     private DateCustom actualCheckOutDate;
-
-    private RestaurantId restaurantId;
-    private ServiceId serviceId;
-
     private Money totalPrice;
     private String upgradeSuggestion;
-    private QRCodeCheckIn qrCodeCheckIn;
-
-    private Order order;
-    private List<Service> services;
-    public List<Room> rooms;
-
+    private List<BookingRoom> bookingRooms;
     private List<String> failureMessages;
     public static final String FAILURE_MESSAGE_DELIMITER = ",";
 
     private Booking(Builder builder) {
         super.setId(builder.id);
-        customerId = builder.customerId;
+        customer = builder.customer;
         checkInDate = builder.checkInDate;
         checkOutDate = builder.checkOutDate;
         status = builder.status;
         trackingId = builder.trackingId;
         setActualCheckInDate(builder.actualCheckInDate);
         setActualCheckOutDate(builder.actualCheckOutDate);
-        restaurantId = builder.restaurantId;
-        serviceId = builder.serviceId;
         setTotalPrice(builder.totalPrice);
         upgradeSuggestion = builder.upgradeSuggestion;
-        qrCodeCheckIn = builder.qrCodeCheckIn;
-        setOrder(builder.order);
-        services = builder.services;
-        rooms = builder.rooms;
+        bookingRooms = builder.bookingRooms;
         failureMessages = builder.failureMessages;
+    }
+
+    /**
+     * Khởi tạo booking ở trạng thái PENDING.
+     */
+    public void initiateBooking() {
+        setId(new BookingId(UUID.randomUUID()));
+        trackingId = new TrackingId(UUID.randomUUID());
+        validateDateRange();
+        status = BookingStatus.PENDING;
+    }
+
+    /**
+     * Đặt cọc booking, chuyển sang trạng thái DEPOSITED.
+     */
+    public void depositBooking() {
+        validateStatusForDeposit();
+        status = BookingStatus.DEPOSITED;
+    }
+
+    /**
+     * Xác nhận đặt cọc, chuyển sang trạng thái CONFIRMED.
+     */
+    public void confirmBooking() {
+        validateStatusForConfirmDeposit();
+        status = BookingStatus.CONFIRMED;
+    }
+
+    /**
+     * Check-in thành công, chuyển sang trạng thái CHECKED_IN.
+     */
+    public void checkIn() {
+        validateStatusForCheckIn();
+        status = BookingStatus.CHECKED_IN;
+    }
+
+    /**
+     * Thanh toán thành công, chuyển sang trạng thái PAID.
+     */
+    public void paidBooking() {
+        validateStatusForPaid();
+        status = BookingStatus.PAID;
+    }
+
+    /**
+     * Hủy booking khi thanh toán thất bại hoặc khi cần rollback.
+     */
+    public void cancelBooking() {
+        validateStatusForCancel();
+        status = BookingStatus.CANCELLED;
+    }
+
+    /**
+     * Hủy booking đã xác nhận.
+     */
+    public void cancelConfirmedBooking() {
+        validateStatusForCancelConfirmed();
+        status = BookingStatus.CANCELLED;
+    }
+
+    /**
+     * Check-out thành công, chuyển sang trạng thái CHECKED_OUT.
+     */
+    public void checkOut() {
+        validateStatusForCheckOut();
+        status = BookingStatus.CHECKED_OUT;
+    }
+
+    // ================= PRIVATE VALIDATION METHODS =================
+
+    private String formatData() {
+        String bookingId = getId().getValue().toString();
+        String customerName = customer.toString();
+        String checkInDateStr = getCheckInDate().toString();
+        String checkOutDateStr = getCheckOutDate().toISOString();
+        String roomsListString = bookingRooms.stream()
+                .map(bookingRoom ->
+                        bookingRoom.getRoom().getRoomNumber()
+                ).collect(Collectors.joining(", "));
+        String totalPriceStr = getTotalPrice().toString();
+
+        return String.format(
+                "Mã booking: %s|Tên khách hàng: %s|Ngày check-in: %s|Ngày check-out: %s|Phòng đã đặt: %s|Tổng tiền: %s",
+                bookingId, customerName, checkInDateStr, checkOutDateStr, roomsListString, totalPriceStr);
     }
 
     private void validateDateRange() {
@@ -60,133 +133,94 @@ public class Booking extends AggregateRoot<BookingId> {
         }
     }
 
-    public void validateTotalPrice() {
-        if (!totalPrice.isGreaterThanZero()) {
+    private void validateTotalPrice() {
+        if (totalPrice == null || !totalPrice.isGreaterThanZero()) {
             throw new BookingDomainException("Total price must be greater than zero");
         }
     }
 
-    //Khi khoi tao booking se o trang thai pending
-    public void initiateBooking() {
-        setId(new BookingId(UUID.randomUUID()));
-        trackingId = new TrackingId(UUID.randomUUID());
-        validateDateRange();
-        status = EBookingStatus.PENDING;
+    private void validateStatusForDeposit() {
+        if (!BookingStatus.PENDING.equals(status)) {
+            throw new BookingDomainException("Booking is not pending for deposit");
+        }
     }
 
-    //Khi thanh toan tien coc thi se chuyen sang trang thai confirm
-    public void confirmDepositBooking() {
-        if (!EBookingStatus.PENDING.equals(status)) {
+    private void validateStatusForConfirmDeposit() {
+        if (!BookingStatus.PENDING.equals(status)) {
             throw new BookingDomainException("Booking is not pending for confirmation");
         }
-        status = EBookingStatus.CONFIRMED;
     }
 
-    //Sau khi da xac nhan ma QR thanh cong chuyen sang trang thai check-in
-    public void checkIn() {
-        if (!EBookingStatus.CONFIRMED.equals(status)) {
+    private void validateStatusForCheckIn() {
+        if (!BookingStatus.CONFIRMED.equals(status)) {
             throw new BookingDomainException("Booking is not confirmed for check-in");
         }
-        status = EBookingStatus.CHECKED_IN;
     }
 
-    public void paidBooking() {
-        if (!EBookingStatus.CHECKED_IN.equals(status)) {
+    private void validateStatusForPaid() {
+        if (!BookingStatus.CHECKED_IN.equals(status)) {
             throw new BookingDomainException("Booking is not checked-in for payment");
         }
-        status = EBookingStatus.PAID;
     }
 
-    ///
-    public void cancelWhilePaidFailed() {
-        if (!EBookingStatus.CHECKED_OUT.equals(status)) {
-            throw new BookingDomainException("Booking is not checked-out for cancellation");
-        } else if (!EBookingStatus.PENDING.equals(status)) {
-            throw new BookingDomainException("Booking is not pending for cancellation");
+    private void validateStatusForCancel() {
+        if (!(BookingStatus.PENDING.equals(status) || BookingStatus.CHECKED_OUT.equals(status))) {
+            throw new BookingDomainException("Booking is not in a cancellable state");
         }
-        status = EBookingStatus.CANCELLED;
     }
 
-    ///
-    public void cancelConfirmedBooking() {
-        if (!EBookingStatus.CONFIRMED.equals(status)) {
+    private void validateStatusForCancelConfirmed() {
+        if (!BookingStatus.CONFIRMED.equals(status)) {
             throw new BookingDomainException("Booking is not confirmed for cancellation");
-        } else if (checkRegularity()) {
+        }
+        if (isRegularBooking()) {
             throw new BookingDomainException("Booking is not regular for cancellation");
         }
-        status = EBookingStatus.CANCELLED;
     }
 
-    private boolean checkRegularity() {
+    private void validateStatusForCheckOut() {
+        if (!BookingStatus.CHECKED_IN.equals(status)) {
+            throw new BookingDomainException("Booking is not checked-in for check-out");
+        }
+    }
+
+    private boolean isRegularBooking() {
         return checkInDate.getDay() - DateCustom.now().getDay() <= 3;
     }
 
-    //Khach hang thanh toan sau khi check-in tai quay se chuyen duoc sang trang thai check-out
-    public void checkOut() {
-        if (!EBookingStatus.CHECKED_OUT.equals(status)) {
-            throw new BookingDomainException("Booking is not available for payment");
-        }
-        status = EBookingStatus.CHECKED_OUT;
-    }
-
-    public void setActualCheckInDate(DateCustom actualCheckInDate) {
-        this.actualCheckInDate = actualCheckInDate;
-    }
-
-    public void setActualCheckOutDate(DateCustom actualCheckOutDate) {
-        this.actualCheckOutDate = actualCheckOutDate;
-    }
-
-    private void updateFailureMessages(List<String> failureMessages) {
-        if (this.failureMessages != null && failureMessages != null) {
-            this.failureMessages.addAll(failureMessages.stream().filter(message -> !message.isEmpty()).toList());
-        }
-        if (this.failureMessages == null) {
-            this.failureMessages = failureMessages;
-        }
-    }
-
-    public EBookingStatus getStatus() {
+    // ================= GETTER/SETTER =================
+    public BookingStatus getStatus() {
         return status;
     }
 
     public void setTotalPrice(Money totalPrice) {
-        validateTotalPrice();
         this.totalPrice = totalPrice;
-    }
-
-    public List<Service> getServices() {
-        return services;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
+        validateTotalPrice();
     }
 
     public void updateAndValidateTotalPrice() {
-        Money currentTotalRoomPrice = rooms.stream()
-                .map(Room::getBasePrice)
-                .reduce(Money.ZERO, Money::add);
-        Money currentTotalServicePrice = services.stream()
-                .map(Service::getTotalCost)
-                .reduce(Money.ZERO, Money::add);
-        Money currentTotalOrderPrice = order.getTotalCost();
+        Money currentTotalRoomPrice = bookingRooms != null ? bookingRooms.stream()
+                .map(bookingRoom -> bookingRoom.getRoom().getBasePrice())
+                .reduce(Money.ZERO, Money::add) : Money.ZERO;
+        this.totalPrice = currentTotalRoomPrice;
+        validateTotalPrice();
+    }
 
-        this.totalPrice = currentTotalRoomPrice
-                .add(currentTotalServicePrice)
-                .add(currentTotalOrderPrice);
+    public void setBookingRooms(List<BookingRoom> bookingRooms) {
+        this.bookingRooms = bookingRooms;
+        updateAndValidateTotalPrice();
     }
 
     public Money getTotalPrice() {
         return totalPrice;
     }
 
-    public CustomerId getCustomerId() {
-        return customerId;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public List<Room> getRooms() {
-        return rooms;
+    public List<BookingRoom> getBookingRooms() {
+        return bookingRooms;
     }
 
     public DateCustom getCheckInDate() {
@@ -205,16 +239,25 @@ public class Booking extends AggregateRoot<BookingId> {
         return actualCheckInDate;
     }
 
+    public void setActualCheckInDate(DateCustom actualCheckInDate) {
+        this.actualCheckInDate = actualCheckInDate;
+    }
+
     public DateCustom getActualCheckOutDate() {
         return actualCheckOutDate;
     }
 
+    public void setActualCheckOutDate(DateCustom actualCheckOutDate) {
+        this.actualCheckOutDate = actualCheckOutDate;
+    }
+
+    // ================= BUILDER =================
     public static final class Builder {
         private BookingId id;
-        private CustomerId customerId;
+        private Customer customer;
         private DateCustom checkInDate;
         private DateCustom checkOutDate;
-        private EBookingStatus status;
+        private BookingStatus status;
         private TrackingId trackingId;
         private DateCustom actualCheckInDate;
         private DateCustom actualCheckOutDate;
@@ -222,10 +265,7 @@ public class Booking extends AggregateRoot<BookingId> {
         private ServiceId serviceId;
         private Money totalPrice;
         private String upgradeSuggestion;
-        private QRCodeCheckIn qrCodeCheckIn;
-        private Order order;
-        private List<Service> services;
-        private List<Room> rooms;
+        private List<BookingRoom> bookingRooms;
         private List<String> failureMessages;
 
         private Builder() {
@@ -240,8 +280,8 @@ public class Booking extends AggregateRoot<BookingId> {
             return this;
         }
 
-        public Builder customerId(CustomerId val) {
-            customerId = val;
+        public Builder customer(Customer val) {
+            customer = val;
             return this;
         }
 
@@ -255,7 +295,7 @@ public class Booking extends AggregateRoot<BookingId> {
             return this;
         }
 
-        public Builder status(EBookingStatus val) {
+        public Builder status(BookingStatus val) {
             status = val;
             return this;
         }
@@ -275,16 +315,6 @@ public class Booking extends AggregateRoot<BookingId> {
             return this;
         }
 
-        public Builder restaurantId(RestaurantId val) {
-            restaurantId = val;
-            return this;
-        }
-
-        public Builder serviceId(ServiceId val) {
-            serviceId = val;
-            return this;
-        }
-
         public Builder totalPrice(Money val) {
             totalPrice = val;
             return this;
@@ -295,23 +325,8 @@ public class Booking extends AggregateRoot<BookingId> {
             return this;
         }
 
-        public Builder qrCodeCheckIn(QRCodeCheckIn val) {
-            qrCodeCheckIn = val;
-            return this;
-        }
-
-        public Builder order(Order val) {
-            order = val;
-            return this;
-        }
-
-        public Builder services(List<Service> val) {
-            services = val;
-            return this;
-        }
-
-        public Builder rooms(List<Room> val) {
-            rooms = val;
+        public Builder bookingRooms(List<BookingRoom> val) {
+            bookingRooms = val;
             return this;
         }
 

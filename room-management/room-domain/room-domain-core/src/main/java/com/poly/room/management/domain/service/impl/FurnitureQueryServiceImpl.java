@@ -23,17 +23,6 @@ public class FurnitureQueryServiceImpl implements FurnitureQueryService {
                 .findFirst();
     }
 
-    @Override
-    public Optional<Furniture> getFurnitureByInventoryItemId(List<Furniture> allFurnitures, 
-            InventoryItemId inventoryItemId) {
-        if (inventoryItemId == null) {
-            throw new RoomDomainException("InventoryItemId cannot be null");
-        }
-        
-        return allFurnitures.stream()
-                .filter(f -> f.getInventoryItemId().equals(inventoryItemId))
-                .findFirst();
-    }
 
     @Override
     public List<Furniture> getAllFurnitures(List<Furniture> allFurnitures) {

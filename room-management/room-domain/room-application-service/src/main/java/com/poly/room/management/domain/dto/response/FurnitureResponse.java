@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FurnitureResponse {
     private Integer id;
-    private String inventoryItemId;
+    private String name;
+    private String price;
 }

@@ -10,17 +10,11 @@ public interface BookingDomainService {
     BookingCreatedEvent validateAndInitiateBooking(Booking booking,
                                                    List<Room> rooms);
 
-    DepositCreatedEvent validateAndInitiateDeposit(Deposit deposit, Booking booking);
-
-    DepositPaidEvent payDeposit(Deposit deposit, Booking booking);
-
-    DepositRefundedEvent refundDeposit(Deposit deposit, Booking booking,String reason);
-
-    DepositCancelledEvent cancelPaymentDeposit(Deposit deposit, Booking booking,List<String> failureMessages);
-
     BookingCancelledEvent cancelDepositBooking(Booking booking);
 
-    BookingDepositEvent confirmDepositBooking(Booking booking);
+    BookingDepositedEvent depositBooking(Booking booking);
+
+    BookingConfirmedEvent confirmBooking(Booking booking);
 
     CheckInEvent checkInBooking(Booking booking);
 

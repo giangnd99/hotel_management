@@ -11,9 +11,11 @@
 
     <modules>
         <module>payment-domain</module>
-        <module>payment-application</module>
+        <module>payment-application-service</module>
         <module>payment-data-access</module>
         <module>payment-container</module>
+        <module>payment-application</module>
+        <module>payment-messaging</module>
     </modules>
 
     <artifactId>payment-management</artifactId>

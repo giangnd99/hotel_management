@@ -1,6 +1,11 @@
 server:
-  port: 8087 # Cổng cho dịch vụ room-management
-
+  port: 8087
+openapi:
+  service:
+    api-docs: room-service-docs
+    title: Room Service API
+    version: 1.0.0
+    server: http://localhost:8087
 spring:
   application:
     name: room-management # Tên ứng dụng
@@ -8,7 +13,7 @@ spring:
   eureka:
     client:
       service-url:
-        defaultZone: http://localhost:8761/ # Sửa lại cổng thành 8761 (nếu Eureka chạy trên 8761)
+        defaultZone: http://localhost:8761/
   jpa:
     open-in-view: false
     show-sql: true
@@ -16,9 +21,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-          # hibernate.ddl-auto: update # Cần cẩn thận với cái này trong production.
-          # Nếu bạn chỉ muốn chạy init-schema.sql và data.sql,
-          # bạn có thể để ddl-auto là 'none' hoặc 'validate'
+        # hibernate.ddl-auto: update # Cần cẩn thận với cái này trong production.
+        # Nếu bạn chỉ muốn chạy init-schema.sql và data.sql,
+        # bạn có thể để ddl-auto là 'none' hoặc 'validate'
         # để tránh Hibernate tạo/cập nhật schema.
   datasource:
     url: jdbc:postgresql://localhost:5433/postgres?currentSchema=room_management&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
@@ -28,5 +33,46 @@ spring:
   sql:
     init:
       mode: ALWAYS
-      schema-locations: classpath:init-schema.sql # Chỉ định script tạo schema
-      data-locations: classpath:init-data.sql # Chỉ định script chèn dữ liệu
+      schema-locations: classpath:init-schema.sql
+  data:
+    redis:
+      port: ${REDIS_PORT:6379} # Cổng Redis (mặc định 6379)
+      host: ${REDIS_HOST:localhost} # Host Redis (mặc định localhost)
+
+  # Kafka Configuration
+kafka-config:
+  bootstrap-servers: localhost:19092, localhost:29092, localhost:39092
+  schema-registry-url-key: schema.registry.url
+  schema-registry-url: http://localhost:8081
+  num-of-partitions: 3
+  replication-factor: 3
+
+  # Kafka Producer Configuration
+kafka-producer-config:
+  key-serializer-class: org.apache.kafka.common.serialization.StringSerializer
+  value-serializer-class: io.confluent.kafka.serializers.KafkaAvroSerializer
+  compression-type: snappy
+  acks: all
+  batch-size: 16384
+  batch-size-boost-factor: 100
+  linger-ms: 5
+  request-timeout-ms: 60000
+  retry-count: 5
+
+  # Kafka Consumer Configuration
+kafka-consumer-config:
+  key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+  auto-offset-reset: earliest
+  specific-avro-reader-key: specific.avro.reader
+  specific-avro-reader: true
+  batch-listener: true
+  auto-startup: true
+  concurrency-level: 3
+  session-timeout-ms: 10000
+  heartbeat-interval-ms: 3000
+  max-poll-interval-ms: 300000
+  max-poll-records: 500
+  max-partition-fetch-bytes-default: 1048576
+  max-partition-fetch-bytes-boost-factor: 1
+  poll-timeout-ms: 150

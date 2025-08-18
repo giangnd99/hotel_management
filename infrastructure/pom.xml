@@ -15,6 +15,7 @@
         <module>kafka</module>
         <module>outbox</module>
         <module>saga</module>
+        <module>kafka/kafka-json-message</module>
     </modules>
 
 </project>

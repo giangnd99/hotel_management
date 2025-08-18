@@ -1,0 +1,576 @@
+{
+  "info": {
+    "_postman_id": "c7956a5a-8c73-4a7c-bd68-443bafcbbc39",
+    "name": "Restaurant Management API",
+    "description": "API collection for Restaurant Management System with integrated services",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "40521251"
+  },
+  "item": [
+    {
+      "name": "Menu Management",
+      "item": [
+        {
+          "name": "Get All Menu Items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/menu",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "menu"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Menu Item by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/menu/103",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "menu",
+                "103"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Menu Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 107,\n    \"name\": \"Grilled Salmon\",\n    \"description\": \"Fresh salmon with herbs\",\n    \"price\": 25.99,\n    \"category\": \"MAIN_COURSE\",\n    \"quantity\": 150,\n    \"isAvailable\": true,\n    \"preparationTime\": 20\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/menu",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "menu"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Menu Item",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 107,\n    \"name\": \"Updated Grilled Salmon\",\n    \"description\": \"Fresh salmon with herbs and lemon\",\n    \"price\": 28.99,\n    \"category\": \"MAIN_COURSE\",\n    \"isAvailable\": true,\n    \"quantity\": 15,\n    \"preparationTime\": 25\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/menu/107",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "menu",
+                "107"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Menu Item",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/menu/107",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "menu",
+                "107"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Order Management",
+      "item": [
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/orders/order_004",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "orders",
+                "order_004"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"customer123\",\n  \"tableId\": \"table1\",\n  \"items\": [\n    {\n      \"menuItemId\": \"menu1\",\n      \"quantity\": 2,\n      \"specialInstructions\": \"No onions please\"\n    },\n    {\n      \"menuItemId\": \"menu2\",\n      \"quantity\": 1,\n      \"specialInstructions\": \"Extra spicy\"\n    }\n  ],\n  \"notes\": \"Please serve quickly\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Order with Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"customer123\",\n  \"tableId\": \"table1\",\n  \"items\": [\n    {\n      \"menuItemId\": \"menu1\",\n      \"quantity\": 2,\n      \"specialInstructions\": \"No onions please\"\n    }\n  ],\n  \"paymentMethod\": \"CREDIT_CARD\",\n  \"notes\": \"Please serve quickly\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/orders/with-payment",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "orders",
+                "with-payment"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"PREPARING\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/orders/{orderId}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "orders",
+                "{orderId}",
+                "status"
+              ],
+              "variable": [
+                {
+                  "key": "orderId",
+                  "value": "",
+                  "description": "Order ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Process Order with Notification",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/orders/{orderId}/process",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "orders",
+                "{orderId}",
+                "process"
+              ],
+              "variable": [
+                {
+                  "key": "orderId",
+                  "value": "",
+                  "description": "Order ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Order with Notification",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/orders/{orderId}/complete",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "orders",
+                "{orderId}",
+                "complete"
+              ],
+              "variable": [
+                {
+                  "key": "orderId",
+                  "value": "",
+                  "description": "Order ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Order with Refund",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Customer requested cancellation\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/orders/{orderId}/cancel",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "orders",
+                "{orderId}",
+                "cancel"
+              ],
+              "variable": [
+                {
+                  "key": "orderId",
+                  "value": "",
+                  "description": "Order ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Orders by Customer",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/orders/customer/{customerId}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "orders",
+                "customer",
+                "{customerId}"
+              ],
+              "variable": [
+                {
+                  "key": "customerId",
+                  "value": "",
+                  "description": "Customer ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Orders by Table",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/orders/table/{tableId}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "orders",
+                "table",
+                "{tableId}"
+              ],
+              "variable": [
+                {
+                  "key": "tableId",
+                  "value": "",
+                  "description": "Table ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Orders by Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/orders/status/{status}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "orders",
+                "status",
+                "{status}"
+              ],
+              "variable": [
+                {
+                  "key": "status",
+                  "value": "NEW",
+                  "description": "Order status (NEW, PREPARING, READY, COMPLETED, CANCELLED)"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Table Management",
+      "item": [
+        {
+          "name": "Get All Tables",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/tables",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "tables"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Table by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/tables/table_003",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "tables",
+                "table_003"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Table",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"table_006\",\n    \"number\": 6,\n    \"status\": \"AVAILABLE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/tables",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "tables"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Table Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/tables/table_006?status=OCCUPIED",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurant",
+                "tables",
+                "table_006"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "OCCUPIED"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8082",
+      "type": "string"
+    },
+    {
+      "key": "orderId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customerId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "tableId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

@@ -1,14 +1,6 @@
 server:
   port: 8761
 
-spring:
-  application:
-    name: eureka-server
-  cloud:
-    gateway:
-      discovery:
-        locator:
-          enabled: true
 eureka:
   client:
     register-with-eureka: false

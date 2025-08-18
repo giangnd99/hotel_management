@@ -1,9 +1,9 @@
--- src/test/resources/sql/OrderPaymentSagaTestSetUp.sql
+-- src/test/resources/sql/OrderPaymentSagaTestSetUpinit-schema.sql
 -- Script này được chạy TRƯỚC mỗi lớp test (hoặc phương thức test)
 -- Nó đảm bảo dữ liệu cơ bản cần thiết cho các test tồn tại.
 
 -- Chèn các vai trò cơ bản nếu chúng chưa tồn tại
--- Sử dụng INSERT INTO ... ON CONFLICT DO NOTHING để tránh lỗi nếu các vai vai trò đã được init bởi init-data.sql
+-- Sử dụng INSERT INTO ... ON CONFLICT DO NOTHING để tránh lỗi nếu các vai vai trò đã được init bởi init-datainit-schema.sql
 INSERT INTO authentication_service.roles (id, name) VALUES ('USER', 'ROLE_USER') ON CONFLICT (id) DO NOTHING;
 INSERT INTO authentication_service.roles (id, name) VALUES ('ADMIN', 'ROLE_ADMIN') ON CONFLICT (id) DO NOTHING;
 

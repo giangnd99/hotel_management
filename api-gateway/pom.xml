@@ -15,6 +15,7 @@
         <module>authentication-service</module>
         <module>eureka-server</module>
         <module>swagger-hub</module>
+        <module>security</module>
     </modules>
 
 </project>

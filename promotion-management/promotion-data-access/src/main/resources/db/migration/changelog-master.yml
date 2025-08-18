@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - property:
+      name: db.changelog.core.package
+      value: db/migration/changes
+  
+  - property:
+      name: db.changelog.core.include.prefix
+      value: V
+  
+  - property:
+      name: db.changelog.core.include.separator
+      value: __
+  
+  - property:
+      name: db.changelog.core.include.suffix
+      value: .yml
+  
+  - include:
+      file: db/migration/changes/V001__create_voucher_packs_table.yml
+      relativeToChangelogFile: true
+  
+  - include:
+      file: db/migration/changes/V002__create_vouchers_table.yml
+      relativeToChangelogFile: true
+  
+  - include:
+      file: db/migration/changes/V003__create_indexes_and_constraints.yml
+      relativeToChangelogFile: true
+  
+  - include:
+      file: db/migration/changes/V004__insert_initial_data.yml
+      relativeToChangelogFile: true

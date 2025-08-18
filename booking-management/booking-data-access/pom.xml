@@ -28,5 +28,9 @@
             <groupId>com.poly</groupId>
             <artifactId>booking-application-service</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>booking-domain-core</artifactId>
+        </dependency>
     </dependencies>
 </project>

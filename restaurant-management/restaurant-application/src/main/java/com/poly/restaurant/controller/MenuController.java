@@ -36,8 +36,20 @@ public class MenuController {
     @Operation(summary = "Lấy món ăn theo ID")
     public ResponseEntity<MenuDTO> getMenuItemById(@PathVariable Integer id) {
         log.info("Getting menu item by id: {}", id);
-        // TODO: Implement get menu item by id logic
-        return ResponseEntity.ok().build();
+        MenuDTO menuItem = useCase.getMenuItemById(id);
+        if (menuItem != null) {
+            return ResponseEntity.ok(menuItem);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/category/{category}")
+    @Operation(summary = "Lấy món ăn theo danh mục")
+    public ResponseEntity<List<MenuDTO>> getMenuItemsByCategory(@PathVariable String category) {
+        log.info("Getting menu items by category: {}", category);
+        List<MenuDTO> menuItems = useCase.getMenuItemsByCategory(category);
+        return ResponseEntity.ok(menuItems);
     }
 
     @PostMapping
@@ -62,14 +74,6 @@ public class MenuController {
         log.info("Deleting menu item: {}", id);
         useCase.deleteMenu(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/category/{category}")
-    @Operation(summary = "Lấy món ăn theo danh mục")
-    public ResponseEntity<List<MenuDTO>> getMenuItemsByCategory(@PathVariable String category) {
-        log.info("Getting menu items by category: {}", category);
-        // TODO: Implement get menu items by category logic
-        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{menuId}/review")

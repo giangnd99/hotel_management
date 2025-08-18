@@ -2,43 +2,37 @@ package com.poly.authentication.service.domain.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poly.authentication.service.domain.dto.ApiResponse;
-import com.poly.authentication.service.domain.exception.AppException;
 import com.poly.authentication.service.domain.exception.ErrorCode;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 
 @Slf4j
 @Component
-public class JwtAuthenticationEntryPoint implements ServerAuthenticationEntryPoint {
+public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
-    public Mono<Void> commence(ServerWebExchange exchange, AuthenticationException ex) {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
-        return Mono.fromRunnable(() -> {
-            exchange.getResponse().setStatusCode(errorCode.getHttpStatus());
-            exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
-            ApiResponse<?> apiResponse = ApiResponse.builder()
-                    .code(errorCode.getCode())
-                    .message(errorCode.getMessage())
-                    .build();
-            ObjectMapper mapper = new ObjectMapper();
 
-            try {
-                exchange.getResponse().writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(
-                        mapper.writeValueAsBytes(apiResponse)
-                ))).subscribe();
-            } catch (Exception e) {
-                log.error("Error when writing response: {}", e.getMessage());
-                throw new AppException(ErrorCode.UNAUTHENTICATED_EXCEPTION);
-            }
-        });
+        response.setStatus(errorCode.getHttpStatus().value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        ApiResponse<?> apiResponse = ApiResponse.builder().
+                code(errorCode.getCode()).
+                message(errorCode.getMessage()).
+                build();
+
+        response.getWriter().write(mapper.writeValueAsString(apiResponse));
+        response.flushBuffer();
     }
 }
