@@ -52,31 +52,58 @@ CREATE TABLE birthday_notification_log
     FOREIGN KEY (customer_id) REFERENCES customer (customer_id) ON DELETE CASCADE
 );
 
-INSERT INTO customer (customer_id, user_id, first_name, last_name, address, date_of_birth, level, behavior_data)
+-- Insert 10 Customers
+INSERT INTO customer (customer_id, user_id, first_name, last_name, address, image_url, date_of_birth, level, behavior_data)
 VALUES
-    (UUID_TO_BIN('9f8d2531-6724-4a2f-b9cc-66e2fa4b9d01'), UUID_TO_BIN('a84f7cda-1b6b-4fa4-9943-6fdc99a6e97d'), 'Nguyen', 'Van A', '123 Lê Lợi, Q1, TP.HCM', '2000-01-01', 'BRONZE', '{
-      "favoriteRoomTypes": "Deluxe",
-      "frequentlyUsedServices": "SPA"
-    }'),
-    (UUID_TO_BIN('b2e5fc6e-69fc-4aeb-b237-65c7277e9b95'), UUID_TO_BIN('84c2e19d-4646-48a5-9e29-b18f3c8b620d'), 'Tran', 'Thi B', '234 Hai Bà Trưng, Q3, TP.HCM', '1995-03-12', 'SILVER', '{
-      "favoriteRoomTypes": "Standard",
-      "frequentlyUsedServices": "SPA"
-    }');
+    (UUID_TO_BIN('11111111-1111-1111-1111-111111111111'), UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'), 'Nguyen','Van A','123A, Đường Lê Lợi, Quận 1, TP. Ho Chi Minh',NULL,'2000-01-01','BRONZE','{"favoriteRoomTypes":"Deluxe","frequentlyUsedServices":"SPA"}'),
+    (UUID_TO_BIN('22222222-2222-2222-2222-222222222222'), UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'), 'Tran','Thi B','234B, Đường Hai Bà Trưng, Quận 3, TP. Ho Chi Minh',NULL,'1995-03-12','SILVER','{"favoriteRoomTypes":"Standard","frequentlyUsedServices":"Gym"}'),
+    (UUID_TO_BIN('33333333-3333-3333-3333-333333333333'), UUID_TO_BIN('cccccccc-cccc-cccc-cccc-cccccccccccc'), 'Le','Van C','56C, Đường Pasteur, Quận 1, TP. Ho Chi Minh',NULL,'1990-07-15','GOLD','{"favoriteRoomTypes":"Suite","frequentlyUsedServices":"Bar"}'),
+    (UUID_TO_BIN('44444444-4444-4444-4444-444444444444'), UUID_TO_BIN('dddddddd-dddd-dddd-dddd-dddddddddddd'), 'Pham','Thi D','89D, Đường Nguyễn Huệ, Quận 1, TP. Ho Chi Minh',NULL,'1988-11-30','PLATINUM','{"favoriteRoomTypes":"Deluxe","frequentlyUsedServices":"SPA"}'),
+    (UUID_TO_BIN('55555555-5555-5555-5555-555555555555'), UUID_TO_BIN('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee'), 'Hoang','Van E','101E, Đường Điện Biên Phủ, Quận Bình Thạnh, TP. Ho Chi Minh',NULL,'1992-05-25','DIAMOND','{"favoriteRoomTypes":"Standard","frequentlyUsedServices":"Pool"}'),
+    (UUID_TO_BIN('66666666-6666-6666-6666-666666666666'), UUID_TO_BIN('ffffffff-ffff-ffff-ffff-ffffffffffff'), 'Do','Thi F','202F, Đường Nguyễn Văn Cừ, Quận 5, TP. Ho Chi Minh',NULL,'1998-09-09','BRONZE','{"favoriteRoomTypes":"Suite","frequentlyUsedServices":"Karaoke"}'),
+    (UUID_TO_BIN('77777777-7777-7777-7777-777777777777'), UUID_TO_BIN('12121212-1212-1212-1212-121212121212'), 'Bui','Van G','303G, Đường Lê Văn Sỹ, Quận Phú Nhuận, TP. Ho Chi Minh',NULL,'2001-12-01','SILVER','{"favoriteRoomTypes":"Deluxe","frequentlyUsedServices":"Gym"}'),
+    (UUID_TO_BIN('88888888-8888-8888-8888-888888888888'), UUID_TO_BIN('13131313-1313-1313-1313-131313131313'), 'Ngo','Thi H','404H, Đường Trần Hưng Đạo, Quận 5, TP. Ho Chi Minh',NULL,'1993-02-20','GOLD','{"favoriteRoomTypes":"Standard","frequentlyUsedServices":"SPA"}'),
+    (UUID_TO_BIN('99999999-9999-9999-9999-999999999999'), UUID_TO_BIN('14141414-1414-1414-1414-141414141414'), 'Vo','Van I','505I, Đường Nguyễn Trãi, Quận 1, TP. Ho Chi Minh',NULL,'1985-08-18','PLATINUM','{"favoriteRoomTypes":"Suite","frequentlyUsedServices":"Pool"}'),
+    (UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01'), UUID_TO_BIN('15151515-1515-1515-1515-151515151515'), 'Dang','Thi J','606J, Đường Cách Mạng Tháng 8, Quận 10, TP. Ho Chi Minh',NULL,'1999-04-04','DIAMOND','{"favoriteRoomTypes":"Deluxe","frequentlyUsedServices":"Karaoke"}');
 
-
+-- Insert 10 Loyalty Points
 INSERT INTO loyalty_point (loyalty_id, customer_id, points)
 VALUES
-    (UUID_TO_BIN('468e28fc-4c19-42ae-8457-0492f7000018'), UUID_TO_BIN('9f8d2531-6724-4a2f-b9cc-66e2fa4b9d01'), 24192.14),
-    (UUID_TO_BIN('4efdc1a2-8c92-44f1-810d-3c03a85094aa'), UUID_TO_BIN('b2e5fc6e-69fc-4aeb-b237-65c7277e9b95'), 36382.07);
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0001'), UUID_TO_BIN('11111111-1111-1111-1111-111111111111'), 1200.50),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0002'), UUID_TO_BIN('22222222-2222-2222-2222-222222222222'), 2400.00),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0003'), UUID_TO_BIN('33333333-3333-3333-3333-333333333333'), 3600.75),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0004'), UUID_TO_BIN('44444444-4444-4444-4444-444444444444'), 1500.00),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0005'), UUID_TO_BIN('55555555-5555-5555-5555-555555555555'), 4700.25),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0006'), UUID_TO_BIN('66666666-6666-6666-6666-666666666666'), 520.00),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0007'), UUID_TO_BIN('77777777-7777-7777-7777-777777777777'), 987.45),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0008'), UUID_TO_BIN('88888888-8888-8888-8888-888888888888'), 3320.60),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0009'), UUID_TO_BIN('99999999-9999-9999-9999-999999999999'), 7500.10),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0010'), UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01'), 1999.99);
 
-
+-- Insert 10 Loyalty Transactions
 INSERT INTO loyalty_transaction (loyalty_id, points_changed, transaction_type, transaction_date, description)
 VALUES
-    (UUID_TO_BIN('468e28fc-4c19-42ae-8457-0492f7000018'), 5000.00, 'EARN', '2025-07-01 10:00:00', 'Earned via invoice INV001'),
-    (UUID_TO_BIN('4efdc1a2-8c92-44f1-810d-3c03a85094aa'), -2000.00, 'REDEEM', '2025-07-03 15:00:00', 'Redeemed for gift');
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0001'), 200.00, 'EARN','2025-01-01 10:00:00','Earned invoice INV001'),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0002'), -100.00,'REDEEM','2025-01-05 14:00:00','Redeem voucher'),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0003'), 300.50,'EARN','2025-02-01 09:30:00','Earned booking BK001'),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0004'), -50.00,'REDEEM','2025-02-10 16:00:00','Gift redeem'),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0005'), 400.00,'EARN','2025-03-01 11:00:00','Earned invoice INV002'),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0006'), -75.00,'REDEEM','2025-03-05 13:00:00','Used for discount'),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0007'), 120.00,'EARN','2025-04-01 10:00:00','Earned invoice INV003'),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0008'), -30.00,'REDEEM','2025-04-15 15:30:00','Redeemed for gift'),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0009'), 600.00,'EARN','2025-05-01 10:00:00','Earned invoice INV004'),
+    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0010'), -90.00,'REDEEM','2025-05-10 18:00:00','Gift voucher used');
 
-
+-- Insert 10 Birthday Logs
 INSERT INTO birthday_notification_log (customer_id, sent_date, status, message_content)
 VALUES
-    (UUID_TO_BIN('9f8d2531-6724-4a2f-b9cc-66e2fa4b9d01'), '2025-01-01 09:00:00', 'SENT', 'Chúc mừng sinh nhật A! Nhận ưu đãi sinh nhật 10%.'),
-    (UUID_TO_BIN('b2e5fc6e-69fc-4aeb-b237-65c7277e9b95'), '2025-03-12 09:00:00', 'SENT', 'Chúc mừng sinh nhật B! Đừng quên kiểm tra ưu đãi của bạn.');
+    (UUID_TO_BIN('11111111-1111-1111-1111-111111111111'),'2025-01-01 09:00:00','SENT','Chúc mừng sinh nhật A! Ưu đãi 10%.'),
+    (UUID_TO_BIN('22222222-2222-2222-2222-222222222222'),'2025-03-12 09:00:00','SENT','Chúc mừng sinh nhật B! Ưu đãi đặc biệt.'),
+    (UUID_TO_BIN('33333333-3333-3333-3333-333333333333'),'2025-07-15 09:00:00','SENT','Chúc mừng sinh nhật C! Nhận voucher.'),
+    (UUID_TO_BIN('44444444-4444-4444-4444-444444444444'),'2025-11-30 09:00:00','SENT','Chúc mừng sinh nhật D! Ưu đãi Diamond.'),
+    (UUID_TO_BIN('55555555-5555-5555-5555-555555555555'),'2025-05-25 09:00:00','SENT','Chúc mừng sinh nhật E! Ưu đãi Spa.'),
+    (UUID_TO_BIN('66666666-6666-6666-6666-666666666666'),'2025-09-09 09:00:00','SENT','Chúc mừng sinh nhật F! Giảm giá 15%.'),
+    (UUID_TO_BIN('77777777-7777-7777-7777-777777777777'),'2025-12-01 09:00:00','SENT','Chúc mừng sinh nhật G! Ưu đãi Gym.'),
+    (UUID_TO_BIN('88888888-8888-8888-8888-888888888888'),'2025-02-20 09:00:00','SENT','Chúc mừng sinh nhật H! Ưu đãi Pool.'),
+    (UUID_TO_BIN('99999999-9999-9999-9999-999999999999'),'2025-08-18 09:00:00','SENT','Chúc mừng sinh nhật I! Ưu đãi Karaoke.'),
+    (UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01'),'2025-04-04 09:00:00','SENT','Chúc mừng sinh nhật J! Ưu đãi phòng Suite.');

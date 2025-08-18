@@ -13,7 +13,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableDiscoveryClient
 @EnableJpaRepositories(basePackages = "com.poly.customerdataaccess.repository")
 @EntityScan(basePackages = "com.poly.customerdataaccess.entity")
-@ComponentScan(basePackages = {"com.poly.customerdataaccess"})
 public class CustomerContainerApplication {
 
     public static void main(String[] args) {

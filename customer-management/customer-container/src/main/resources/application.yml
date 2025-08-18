@@ -32,7 +32,13 @@ spring:
       schema-locations: classpath:init-schema.sql
 
   datasource:
-    url: jdbc:mysql://localhost:3307/mysql
+    url: jdbc:mysql://localhost:3307/customer_management
     username: root
     password: root
+
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,info,mappings
 

@@ -40,7 +40,9 @@ public class SecurityConfig {
             "api/rooms", "api/rooms/**",
             "/payment/vn-pay-callback", "/payment/vn-pay-callback/**",
             "/reset-password", "/reset-password/**",
-             "/users", // Nếu bạn muốn /users là public (cẩn thận với bảo mật)
+             "/users",
+            "/customer/",
+            "/customer/**"// Nếu bạn muốn /users là public (cẩn thận với bảo mật)
             // Nếu có các phương thức HTTP cụ thể cho public URLs, bạn có thể thêm:
             // HttpMethod.GET + "/some-public-read-only-endpoint",
             // "/some-other-public-path"
