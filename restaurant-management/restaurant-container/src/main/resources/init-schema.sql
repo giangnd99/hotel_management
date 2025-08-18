@@ -1,42 +1,40 @@
--- Create schema for restaurant service
-CREATE SCHEMA IF NOT EXISTS restaurant;
+-- Create database for restaurant service
+CREATE DATABASE IF NOT EXISTS restaurant;
 
--- Set search path to restaurant schema
-SET search_path TO restaurant, public;
-
--- Create restaurant schema for test environment
-CREATE SCHEMA IF NOT EXISTS restaurant_test;
+-- Use the restaurant database
+USE restaurant;
 
 -- Create tables for restaurant service
 -- Note: These are basic tables, you may need to adjust based on your actual domain entities
 
 -- Categories table
-CREATE TABLE IF NOT EXISTS restaurant.categories (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+CREATE TABLE IF NOT EXISTS categories (
+                                          id VARCHAR(36) PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    );
 
 -- Menu items table
-CREATE TABLE IF NOT EXISTS restaurant.menu_items (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+CREATE TABLE IF NOT EXISTS menu_items (
+                                          id VARCHAR(36) PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
     description TEXT,
     price DECIMAL(10,2) NOT NULL,
-    category_id UUID REFERENCES restaurant.categories(id),
+    category_id VARCHAR(36),
     is_available BOOLEAN DEFAULT true,
     image_url VARCHAR(500),
     preparation_time INTEGER, -- in minutes
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES categories(id)
+    );
 
 -- Orders table
-CREATE TABLE IF NOT EXISTS restaurant.orders (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+CREATE TABLE IF NOT EXISTS orders (
+                                      id VARCHAR(36) PRIMARY KEY,
     order_number VARCHAR(50) UNIQUE NOT NULL,
     customer_id VARCHAR(100) NOT NULL,
     room_id VARCHAR(100),
@@ -46,68 +44,46 @@ CREATE TABLE IF NOT EXISTS restaurant.orders (
     order_type VARCHAR(50) DEFAULT 'DINE_IN', -- DINE_IN, ROOM_SERVICE, TAKEAWAY
     special_instructions TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    );
 
 -- Order items table
-CREATE TABLE IF NOT EXISTS restaurant.order_items (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    order_id UUID REFERENCES restaurant.orders(id) ON DELETE CASCADE,
-    menu_item_id UUID REFERENCES restaurant.menu_items(id),
+CREATE TABLE IF NOT EXISTS order_items (
+                                           id VARCHAR(36) PRIMARY KEY,
+    order_id VARCHAR(36),
+    menu_item_id VARCHAR(36),
     quantity INTEGER NOT NULL,
     unit_price DECIMAL(10,2) NOT NULL,
     total_price DECIMAL(10,2) NOT NULL,
     special_instructions TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (menu_item_id) REFERENCES menu_items(id)
+    );
 
 -- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_orders_customer_id ON restaurant.orders(customer_id);
-CREATE INDEX IF NOT EXISTS idx_orders_room_id ON restaurant.orders(room_id);
-CREATE INDEX IF NOT EXISTS idx_orders_status ON restaurant.orders(status);
-CREATE INDEX IF NOT EXISTS idx_orders_created_at ON restaurant.orders(created_at);
-CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON restaurant.order_items(order_id);
-CREATE INDEX IF NOT EXISTS idx_menu_items_category_id ON restaurant.menu_items(category_id);
-CREATE INDEX IF NOT EXISTS idx_menu_items_available ON restaurant.menu_items(is_available);
-
--- Create function to update updated_at timestamp
-CREATE OR REPLACE FUNCTION restaurant.update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
--- Create triggers for updated_at
-CREATE TRIGGER update_categories_updated_at 
-    BEFORE UPDATE ON restaurant.categories 
-    FOR EACH ROW EXECUTE FUNCTION restaurant.update_updated_at_column();
-
-CREATE TRIGGER update_menu_items_updated_at 
-    BEFORE UPDATE ON restaurant.menu_items 
-    FOR EACH ROW EXECUTE FUNCTION restaurant.update_updated_at_column();
-
-CREATE TRIGGER update_orders_updated_at 
-    BEFORE UPDATE ON restaurant.orders 
-    FOR EACH ROW EXECUTE FUNCTION restaurant.update_updated_at_column();
+CREATE INDEX idx_orders_customer_id ON orders(customer_id);
+CREATE INDEX idx_orders_room_id ON orders(room_id);
+CREATE INDEX idx_orders_status ON orders(status);
+CREATE INDEX idx_orders_created_at ON orders(created_at);
+CREATE INDEX idx_order_items_order_id ON order_items(order_id);
+CREATE INDEX idx_menu_items_category_id ON menu_items(category_id);
+CREATE INDEX idx_menu_items_available ON menu_items(is_available);
 
 -- Insert sample data for development
-INSERT INTO restaurant.categories (name, description) VALUES
-    ('Appetizers', 'Starters and small plates'),
-    ('Main Courses', 'Primary dishes'),
-    ('Desserts', 'Sweet endings'),
-    ('Beverages', 'Drinks and refreshments')
-ON CONFLICT DO NOTHING;
+INSERT IGNORE INTO categories (id, name, description) VALUES
+    (UUID(), 'Appetizers', 'Starters and small plates'),
+    (UUID(), 'Main Courses', 'Primary dishes'),
+    (UUID(), 'Desserts', 'Sweet endings'),
+    (UUID(), 'Beverages', 'Drinks and refreshments');
 
 -- Insert sample menu items
-INSERT INTO restaurant.menu_items (name, description, price, category_id, preparation_time) VALUES
-    ('Caesar Salad', 'Fresh romaine lettuce with Caesar dressing', 12.99, 
-     (SELECT id FROM restaurant.categories WHERE name = 'Appetizers'), 10),
-    ('Grilled Salmon', 'Fresh salmon with seasonal vegetables', 28.99, 
-     (SELECT id FROM restaurant.categories WHERE name = 'Main Courses'), 25),
-    ('Chocolate Cake', 'Rich chocolate cake with vanilla ice cream', 8.99, 
-     (SELECT id FROM restaurant.categories WHERE name = 'Desserts'), 5),
-    ('Fresh Orange Juice', 'Freshly squeezed orange juice', 4.99, 
-     (SELECT id FROM restaurant.categories WHERE name = 'Beverages'), 3)
-ON CONFLICT DO NOTHING;
+INSERT IGNORE INTO menu_items (id, name, description, price, category_id, preparation_time) VALUES
+    (UUID(), 'Caesar Salad', 'Fresh romaine lettuce with Caesar dressing', 12.99,
+     (SELECT id FROM categories WHERE name = 'Appetizers'), 10),
+    (UUID(), 'Grilled Salmon', 'Fresh salmon with seasonal vegetables', 28.99,
+     (SELECT id FROM categories WHERE name = 'Main Courses'), 25),
+    (UUID(), 'Chocolate Cake', 'Rich chocolate cake with vanilla ice cream', 8.99,
+     (SELECT id FROM categories WHERE name = 'Desserts'), 5),
+    (UUID(), 'Fresh Orange Juice', 'Freshly squeezed orange juice', 4.99,
+     (SELECT id FROM categories WHERE name = 'Beverages'), 3);

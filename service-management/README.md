@@ -27,7 +27,7 @@ Service Management là một microservice trong hệ thống quản lý khách s
 
 ```
 service-management/
-├── src/main/java/edu/poly/servicemanagement/
+├── src/main/java/com/poly/servicemanagement/
 │   ├── controller/           # REST Controllers
 │   ├── service/             # Business Logic
 │   ├── repository/          # Data Access Layer
@@ -42,7 +42,7 @@ service-management/
 │   └── config/              # Configuration Classes
 ├── src/main/resources/
 │   ├── application.yml      # Application Configuration
-│   └── db.sql              # Database Schema
+│   └── dbinit-schema.sql              # Database Schema
 └── pom.xml                 # Maven Dependencies
 ```
 
@@ -59,7 +59,7 @@ Service Management sử dụng Avro schemas để đảm bảo type safety và c
 - `service_model.avsc` - ServiceModelAvro
 
 ### Namespace:
-Tất cả schemas đều sử dụng namespace: `edu.poly.servicemanagement.messaging.message`
+Tất cả schemas đều sử dụng namespace: `com.poly.servicemanagement.messaging.message`
 
 ## API Endpoints
 

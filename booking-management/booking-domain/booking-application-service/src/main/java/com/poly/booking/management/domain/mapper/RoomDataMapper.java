@@ -52,7 +52,7 @@ public class RoomDataMapper {
     public ReservedEventPayload bookingDepositedEventToBookingReservedEventPayload(BookingDepositedEvent domainEvent) {
         return ReservedEventPayload.builder()
                 .bookingId(domainEvent.getBooking().getId().getValue().toString())
-                .customerId(domainEvent.getBooking().getCustomerId().getValue().toString())
+                .customerId(domainEvent.getBooking().getCustomer().getId().getValue().toString())
                 .price(domainEvent.getBooking().getTotalPrice().getAmount())
                 .createdAt(domainEvent.getCreatedAt().getValue())
                 .roomBookingStatus(RoomResponseStatus.PENDING.toString())
@@ -92,7 +92,7 @@ public class RoomDataMapper {
                                 roomToBookingRoomEventPayload(bookingRoom.getRoom())
                         ).toList())
                 .price(domainEvent.getBooking().getTotalPrice().getAmount())
-                .customerId(domainEvent.getBooking().getCustomerId().getValue().toString())
+                .customerId(domainEvent.getBooking().getCustomer().getId().getValue().toString())
                 .createdAt(domainEvent.getCreatedAt().getValue())
                 .build();
     }

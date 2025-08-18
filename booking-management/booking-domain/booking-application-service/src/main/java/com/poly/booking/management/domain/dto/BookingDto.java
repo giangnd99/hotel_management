@@ -11,15 +11,22 @@ import java.util.UUID;
 @Data
 public class BookingDto {
     private UUID bookingId;
-    private Long customerId;
-    private String customerName; // Added for display
-    private Long roomId;
-    private String roomNumber; // Added for display
+    private UUID customerId;
+    private String customerName;
+    private String customerEmail;
+    private String customerPhone;
+    private UUID roomId;
+    private String roomNumber;
+    private String roomType;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
-    private int numberOfGuests;
+    private Integer numberOfGuests;
     private BigDecimal totalAmount;
-    private LocalDateTime bookingDate;
-    private BookingStatus status;
+    private String status; // PENDING, CONFIRMED, CHECKED_IN, CHECKED_OUT, CANCELLED
+    private String paymentStatus; // PENDING, PAID, FAILED
     private String specialRequests;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private String createdBy;
+    private String notes;
 }

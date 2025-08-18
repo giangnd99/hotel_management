@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  */
 public class Booking extends AggregateRoot<BookingId> {
 
-    private CustomerId customerId;
+    private Customer customer;
     private DateCustom checkInDate;
     private DateCustom checkOutDate;
     private BookingStatus status;
@@ -30,7 +30,7 @@ public class Booking extends AggregateRoot<BookingId> {
 
     private Booking(Builder builder) {
         super.setId(builder.id);
-        customerId = builder.customerId;
+        customer = builder.customer;
         checkInDate = builder.checkInDate;
         checkOutDate = builder.checkOutDate;
         status = builder.status;
@@ -113,7 +113,7 @@ public class Booking extends AggregateRoot<BookingId> {
 
     private String formatData() {
         String bookingId = getId().getValue().toString();
-        String customerName = customerId.toString();
+        String customerName = customer.toString();
         String checkInDateStr = getCheckInDate().toString();
         String checkOutDateStr = getCheckOutDate().toISOString();
         String roomsListString = bookingRooms.stream()
@@ -215,8 +215,8 @@ public class Booking extends AggregateRoot<BookingId> {
         return totalPrice;
     }
 
-    public CustomerId getCustomerId() {
-        return customerId;
+    public Customer getCustomer() {
+        return customer;
     }
 
     public List<BookingRoom> getBookingRooms() {
@@ -254,7 +254,7 @@ public class Booking extends AggregateRoot<BookingId> {
     // ================= BUILDER =================
     public static final class Builder {
         private BookingId id;
-        private CustomerId customerId;
+        private Customer customer;
         private DateCustom checkInDate;
         private DateCustom checkOutDate;
         private BookingStatus status;
@@ -280,8 +280,8 @@ public class Booking extends AggregateRoot<BookingId> {
             return this;
         }
 
-        public Builder customerId(CustomerId val) {
-            customerId = val;
+        public Builder customer(Customer val) {
+            customer = val;
             return this;
         }
 

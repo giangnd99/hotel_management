@@ -1,8 +1,7 @@
 package com.poly.booking.management.dao.customer.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.poly.booking.management.dao.booking.entity.BookingEntity;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
@@ -22,4 +21,6 @@ public class CustomerEntity {
     private String firstName;
     private String lastName;
     private String email;
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    private BookingEntity booking;
 }

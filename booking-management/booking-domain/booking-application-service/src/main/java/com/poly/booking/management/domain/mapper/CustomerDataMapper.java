@@ -1,7 +1,7 @@
 package com.poly.booking.management.domain.mapper;
 
 import com.poly.booking.management.domain.entity.Customer;
-import com.poly.booking.management.messaging.message.CustomerCreatedMessageResponse;
+import com.poly.booking.management.domain.message.CustomerCreatedMessageResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;

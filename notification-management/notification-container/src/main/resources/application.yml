@@ -1,0 +1,103 @@
+# Cấu hình cho môi trường phát triển (dev)
+server:
+  port: 8190
+
+spring:
+  application:
+    name: notification-management
+  
+  # Cấu hình Mail
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: taintps37696@fpt.edu.vn
+    password: vdxw xyjf tkvm byri
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  
+  # Cấu hình Redis (cho OtpService)
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  
+  # Cấu hình Database
+  datasource:
+    url: jdbc:mysql://localhost:3307/mysql
+    username: root
+    password: root
+  
+  # Cấu hình JPA/Hibernate
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+    show-sql: true
+  
+  # Cấu hình SQL Init
+  sql:
+    init:
+      schema-locations: classpath:schema.sql
+
+
+# QR Code Service Configuration
+qr:
+  code:
+    storage:
+      path: ./qr-codes  # Đường dẫn lưu trữ QR code images
+    image:
+      format: PNG       # Format mặc định cho QR code images
+      default-width: 300   # Kích thước mặc định (pixels)
+      default-height: 300  # Kích thước mặc định (pixels)
+      max-width: 1000      # Kích thước tối đa (pixels)
+      max-height: 1000     # Kích thước tối đa (pixels)
+      min-width: 100       # Kích thước tối thiểu (pixels)
+      min-height: 100      # Kích thước tối thiểu (pixels)
+
+# Logging Configuration
+logging:
+  level:
+    com.poly.notification.management.service.QrCodeService: DEBUG
+    com.poly.notification.management.repository.QrCodeRepository: DEBUG
+    org.springframework.data.jpa: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+kafka-config:
+  bootstrap-servers: localhost:19092, localhost:29092, localhost:39092
+  schema-registry-url-key: schema.registry.url
+  schema-registry-url: http://localhost:8081
+  num-of-partitions: 3
+  replication-factor: 3
+
+kafka-producer-config:
+  key-serializer-class: org.apache.kafka.common.serialization.StringSerializer
+  value-serializer-class: io.confluent.kafka.serializers.KafkaAvroSerializer
+  compression-type: snappy
+  acks: all
+  batch-size: 16384
+  batch-size-boost-factor: 100
+  linger-ms: 5
+  request-timeout-ms: 60000
+  retry-count: 5
+
+kafka-consumer-config:
+  key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+  auto-offset-reset: earliest
+  specific-avro-reader-key: specific.avro.reader
+  specific-avro-reader: true
+  batch-listener: true
+  auto-startup: true
+  concurrency-level: 3
+  session-timeout-ms: 10000
+  heartbeat-interval-ms: 3000
+  max-poll-interval-ms: 300000
+  max-poll-records: 500
+  max-partition-fetch-bytes-default: 1048576
+  max-partition-fetch-bytes-boost-factor: 1
+  poll-timeout-ms: 150

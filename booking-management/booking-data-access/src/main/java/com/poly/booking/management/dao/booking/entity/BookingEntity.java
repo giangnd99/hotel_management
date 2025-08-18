@@ -1,5 +1,6 @@
 package com.poly.booking.management.dao.booking.entity;
 
+import com.poly.booking.management.dao.customer.entity.CustomerEntity;
 import com.poly.booking.management.dao.room.entity.RoomEntity;
 import com.poly.booking.management.domain.entity.Booking;
 import jakarta.persistence.*;
@@ -21,7 +22,9 @@ public class BookingEntity {
 
     @Id
     private UUID id;
-    private UUID customerId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_id")
+    private CustomerEntity customer;
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
     private LocalDateTime actualCheckIn;

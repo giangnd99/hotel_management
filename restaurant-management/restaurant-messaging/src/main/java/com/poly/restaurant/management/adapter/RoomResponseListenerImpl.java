@@ -2,9 +2,9 @@ package com.poly.restaurant.management.adapter;
 
 import com.poly.message.model.room.RoomResponseMessage;
 import com.poly.restaurant.application.port.in.message.listener.RoomResponseListener;
-import com.poly.restaurant.application.port.out.OrderRepositoryPort;
-import com.poly.restaurant.application.port.out.RoomOrderRepositoryPort;
-import com.poly.restaurant.application.port.out.RoomRepositoryPort;
+import com.poly.restaurant.application.port.out.repo.OrderRepositoryPort;
+import com.poly.restaurant.application.port.out.repo.RoomOrderRepositoryPort;
+import com.poly.restaurant.application.port.out.repo.RoomRepositoryPort;
 import com.poly.restaurant.domain.entity.Order;
 import com.poly.restaurant.domain.entity.OrderRoom;
 import com.poly.restaurant.domain.entity.Room;

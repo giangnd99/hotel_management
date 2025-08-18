@@ -12,7 +12,7 @@ import com.poly.booking.management.domain.outbox.service.impl.PaymentOutboxImpl;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.saga.BookingSagaHelper;
 import com.poly.booking.management.domain.service.BookingDomainService;
-import com.poly.booking.management.messaging.message.NotificationMessageResponse;
+import com.poly.booking.management.domain.message.NotificationMessageResponse;
 import com.poly.domain.valueobject.BookingId;
 import com.poly.domain.valueobject.BookingStatus;
 import com.poly.domain.valueobject.NotificationStatus;
@@ -205,7 +205,7 @@ public class NotificationSagaHelper {
         }
 
         // TODO: Gửi notification cho customer về check-in failure
-        // notificationService.sendCheckInFailureNotification(data.getCustomerId(), data.getBookingId());
+        // notificationService.sendCheckInFailureNotification(data.getCustomer(), data.getBookingId());
     }
 
     /**

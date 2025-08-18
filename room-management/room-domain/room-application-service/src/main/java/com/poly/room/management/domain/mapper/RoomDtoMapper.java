@@ -10,6 +10,8 @@ import com.poly.room.management.domain.port.out.repository.RoomTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class RoomDtoMapper {
@@ -31,8 +33,7 @@ public class RoomDtoMapper {
     public Room toEntity(UpdateRoomRequest request) {
         RoomType roomType = roomTypeRepository.findById(request.getRoomTypeId()).get();
         return Room.Builder.builder()
-                .id(new RoomId(request.getRoomId()))
-                .roomNumber(request.getRoomNumber())
+                .id(new RoomId(UUID.fromString(request.getRoomId())))
                 .floor(request.getFloor())
                 .roomType(roomType)
                 .build();
@@ -40,11 +41,11 @@ public class RoomDtoMapper {
 
     public RoomResponse toResponse(Room room) {
         return RoomResponse.builder()
-                .id(room.getId().getValue())
+                .id(room.getId().getValue().toString())
                 .roomNumber(room.getRoomNumber())
                 .floor(room.getFloor())
                 .roomType(roomTypeMapper.toResponse(room.getRoomType()))
-                .roomStatus(room.getRoomStatus())
+                .roomStatus(room.getRoomStatus().name())
                 .build();
     }
 }

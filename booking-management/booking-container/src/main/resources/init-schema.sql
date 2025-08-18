@@ -24,7 +24,7 @@ CREATE TABLE booking.customers
 -- Bảng Bookings
 -- =====================================================================================================================
 DROP TYPE IF EXISTS booking_status;
-CREATE TYPE booking_status AS ENUM ('PENDING', 'PAID', 'APPROVED', 'CANCELLED', 'CANCELLING');
+CREATE TYPE booking_status AS ENUM ('PENDING', 'DEPOSITED', 'CONFIRMED', 'CHECKED_IN', 'PAID', 'CHECKED_OUT', 'CANCELLING', 'CANCELLED');
 
 CREATE TABLE booking.bookings
 (
@@ -37,7 +37,9 @@ CREATE TABLE booking.bookings
     tracking_id uuid NOT NULL,
     total_price numeric(10,2) NOT NULL,
     status booking_status NOT NULL,
-    CONSTRAINT bookings_pkey PRIMARY KEY (id)
+    CONSTRAINT bookings_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_customer FOREIGN KEY (customer_id) REFERENCES booking.customers (id) ON DELETE CASCADE
+
 );
 
 CREATE INDEX booking_customer_id ON booking.bookings (customer_id);
@@ -53,6 +55,7 @@ CREATE TABLE booking.rooms
     description varchar NOT NULL,
     price numeric(10,2) NOT NULL,
     status varchar NOT NULL,
+    capacity integer NULL,
     CONSTRAINT rooms_pkey PRIMARY KEY (id)
 );
 

@@ -1,6 +1,6 @@
 package com.poly.restaurant.dataaccess.adapter;
 
-import com.poly.restaurant.application.port.out.OrderRepositoryPort;
+import com.poly.restaurant.application.port.out.repo.OrderRepositoryPort;
 import com.poly.restaurant.dataaccess.entity.OrderJpaEntity;
 import com.poly.restaurant.dataaccess.jpa.JpaOrderRepository;
 import com.poly.restaurant.dataaccess.mapper.OrderEntityMapper;

@@ -1,6 +1,6 @@
 package com.poly.room.management.domain.port.out.publisher.reponse;
 
-import com.poly.room.management.kafka.message.BookingRoomResponseMessage;
+import com.poly.room.management.domain.message.BookingRoomResponseMessage;
 
 public interface BookingRoomReservePublisher {
 

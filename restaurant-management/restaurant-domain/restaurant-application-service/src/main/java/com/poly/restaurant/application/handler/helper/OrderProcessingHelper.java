@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * Helper class cho order processing logic
@@ -105,9 +106,9 @@ public class OrderProcessingHelper {
             BigDecimal totalAmount = calculateTotalAmount(orderDTO);
 
             // 2. Create payment request message
-            PaymentRequestMessage paymentRequestMessage = PaymentMessageHelper.createPaymentRequestMessage(
+            PaymentRequestMessage paymentRequestMessage = createPaymentRequestMessage(
                     orderDTO.id(),
-                    totalAmount.toString(),
+                    totalAmount,
                     "DIRECT_PAYMENT"
             );
 
@@ -136,11 +137,9 @@ public class OrderProcessingHelper {
             BigDecimal totalAmount = calculateTotalAmount(orderDTO);
 
             // 2. Create room order request message
-            RoomRequestMessage roomOrderRequestMessage = RoomOrderMessageHelper.createAttachOrderRequest(
-                    orderDTO.id(),
+            RoomRequestMessage roomOrderRequestMessage = createAttachOrderRequest(orderDTO.id(),
                     roomId,
-                    orderDTO.customerId(),
-                    totalAmount.toString()
+                    orderDTO.customerId()
             );
 
             // 3. Publish room order request
@@ -168,9 +167,9 @@ public class OrderProcessingHelper {
             BigDecimal totalAmount = calculateTotalAmount(orderDTO);
 
             // 2. Create payment request message
-            PaymentRequestMessage paymentRequestMessage = PaymentMessageHelper.createPaymentRequestMessage(
+            PaymentRequestMessage paymentRequestMessage = createPaymentRequestMessage(
                     orderDTO.id(),
-                    totalAmount.toString(),
+                    totalAmount,
                     "ROOM_CHECKOUT_PAYMENT"
             );
 
@@ -178,7 +177,7 @@ public class OrderProcessingHelper {
             paymentRequestPublisher.publish(paymentRequestMessage);
 
             // 4. Create detach order request
-            RoomRequestMessage detachRequestMessage = RoomOrderMessageHelper.createDetachOrderRequest(
+            RoomRequestMessage detachRequestMessage = createDetachOrderRequest(
                     orderDTO.id(),
                     roomId,
                     orderDTO.customerId()
@@ -269,4 +268,41 @@ public class OrderProcessingHelper {
                 .map(item -> item.price().multiply(BigDecimal.valueOf(item.quantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+    /**
+     * Helper method to create payment request message
+     */
+    public PaymentRequestMessage createPaymentRequestMessage(String orderId, BigDecimal amount, String paymentMethod) {
+        return PaymentRequestMessage.builder()
+                .paymentId(UUID.randomUUID().toString())
+                .bookingId(orderId)
+                .amount(amount)
+                .currency("VND")
+                .paymentMethod(paymentMethod)
+                .customerId("customer-id-placeholder")
+                .build();
+    }
+
+    /**
+     * Helper method to create room request message to attach an order
+     */
+    public RoomRequestMessage createAttachOrderRequest(String orderId, String roomId, String customerId) {
+        return RoomRequestMessage.builder()
+                .roomId(roomId)
+                .roomType("AttachOrder")
+                .customerId(customerId)
+                .build();
+    }
+
+    /**
+     * Helper method to create a room request message to detach an order
+     */
+    public RoomRequestMessage createDetachOrderRequest(String orderId, String roomId, String customerId) {
+        return RoomRequestMessage.builder()
+                .roomId(roomId)
+                .roomType("DetachOrder")
+                .customerId(customerId)
+                .build();
+    }
+
 }

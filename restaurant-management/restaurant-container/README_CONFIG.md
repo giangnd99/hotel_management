@@ -91,7 +91,7 @@ kafka-config:
 - `restaurant.order_items` - Chi tiết đơn hàng
 
 ### Schema Initialization:
-- File: `init-schema.sql`
+- File: `init-schemainit-schema.sql`
 - Tự động tạo schema và sample data
 - Chỉ chạy trong development và test
 

@@ -3,7 +3,6 @@ package com.poly.restaurant.domain.entity;
 import com.poly.domain.valueobject.Money;
 import lombok.*;
 
-import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
@@ -16,7 +15,7 @@ public class OrderRoom {
     private Order order;
     private Money price;
 
-    public void calculatePrice(){
-        price = order.
+    public void calculatePrice() {
+        price = order.getTotalPrice();
     }
 }
