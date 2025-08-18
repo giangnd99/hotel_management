@@ -5,7 +5,6 @@ import com.poly.promotion.data.access.jparepository.VoucherPackJpaRepository;
 import com.poly.promotion.data.access.transformer.VoucherPackTransformer;
 import com.poly.promotion.domain.application.spi.repository.VoucherPackRepository;
 import com.poly.promotion.domain.core.entity.VoucherPack;
-import com.poly.promotion.domain.core.valueobject.VoucherPackId;
 import com.poly.promotion.domain.core.valueobject.VoucherPackStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

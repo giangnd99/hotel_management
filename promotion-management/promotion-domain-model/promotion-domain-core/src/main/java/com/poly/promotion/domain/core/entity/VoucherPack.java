@@ -1,7 +1,7 @@
 package com.poly.promotion.domain.core.entity;
 
 import com.poly.domain.entity.BaseEntity;
-import com.poly.promotion.domain.core.exception.PromotionDomainException;
+import com.poly.promotion.domain.core.exception.VoucherDomainException;
 import com.poly.promotion.domain.core.valueobject.DateRange;
 import com.poly.promotion.domain.core.valueobject.Discount;
 import com.poly.promotion.domain.core.valueobject.VoucherPackId;
@@ -139,7 +139,7 @@ public class VoucherPack extends BaseEntity<VoucherPackId> {
      */
     public void validatePackDates() {
         if (packValidFrom != null && packValidTo != null && packValidFrom.isAfter(packValidTo)) {
-            throw new PromotionDomainException("Pack valid from date must be before valid to date");
+            throw new VoucherDomainException("Pack valid from date must be before valid to date");
         }
     }
 
@@ -150,7 +150,7 @@ public class VoucherPack extends BaseEntity<VoucherPackId> {
      */
     public void validateQuantity() {
         if (quantity == null || quantity <= 0) {
-            throw new PromotionDomainException("Quantity must be positive");
+            throw new VoucherDomainException("Quantity must be positive");
         }
     }
 
@@ -161,7 +161,7 @@ public class VoucherPack extends BaseEntity<VoucherPackId> {
      */
     public void validateRequiredPoints() {
         if (requiredPoints == null || requiredPoints <= 0) {
-            throw new PromotionDomainException("Required points must be positive");
+            throw new VoucherDomainException("Required points must be positive");
         }
     }
 
@@ -204,11 +204,11 @@ public class VoucherPack extends BaseEntity<VoucherPackId> {
      * It should be called after successfully creating vouchers from this pack.</p>
      * 
      * @param quantity the number of vouchers redeemed
-     * @throws PromotionDomainException if the pack cannot provide the requested quantity
+     * @throws VoucherDomainException if the pack cannot provide the requested quantity
      */
     public void redeem(Integer quantity) {
         if (!canRedeem(quantity)) {
-            throw new PromotionDomainException("Cannot redeem " + quantity + " vouchers from pack " + getId());
+            throw new VoucherDomainException("Cannot redeem " + quantity + " vouchers from pack " + getId());
         }
         this.quantity -= quantity;
         if (this.quantity <= 0) {

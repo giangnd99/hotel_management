@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003
+      author: system
+      comment: Add data integrity constraints for voucher management system
+      
+      - addCheckConstraint:
+          tableName: voucher_packs
+          constraintName: chk_voucher_packs_quantity_positive
+          checkConstraint: quantity > 0
+          
+      - addCheckConstraint:
+          tableName: voucher_packs
+          constraintName: chk_voucher_packs_required_points_positive
+          checkConstraint: required_points > 0
+          
+      - addCheckConstraint:
+          tableName: voucher_packs
+          constraintName: chk_voucher_packs_valid_dates
+          checkConstraint: (valid_from IS NULL OR valid_to IS NULL OR valid_from <= valid_to)
+          
+      - addCheckConstraint:
+          tableName: voucher_packs
+          constraintName: chk_voucher_packs_status_valid
+          checkConstraint: status IN ('PENDING', 'PUBLISHED', 'CLOSED', 'EXPIRED')
+          
+      - addCheckConstraint:
+          tableName: vouchers
+          constraintName: chk_vouchers_discount_amount_positive
+          checkConstraint: discount_amount > 0
+          
+      - addCheckConstraint:
+          tableName: vouchers
+          constraintName: chk_vouchers_valid_dates
+          checkConstraint: redeemed_at <= valid_to
+          
+      - addCheckConstraint:
+          tableName: vouchers
+          constraintName: chk_vouchers_status_valid
+          checkConstraint: status IN ('PENDING', 'REDEEMED', 'USED', 'EXPIRED')
+          
+      - addCheckConstraint:
+          tableName: vouchers
+          constraintName: chk_vouchers_used_at_consistency
+          checkConstraint: (status != 'USED' OR used_at IS NOT NULL)
+          
+      - addCheckConstraint:
+          tableName: vouchers
+          constraintName: chk_vouchers_used_at_after_redeemed
+          checkConstraint: (used_at IS NULL OR used_at >= redeemed_at)

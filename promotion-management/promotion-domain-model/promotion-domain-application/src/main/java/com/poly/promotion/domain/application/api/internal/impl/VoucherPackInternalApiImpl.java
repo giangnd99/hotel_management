@@ -156,10 +156,7 @@ public class VoucherPackInternalApiImpl implements VoucherPackInternalApi {
      * @throws com.poly.promotion.domain.core.exception.PromotionDomainException if the pack cannot be updated
      */
     @Override
-    public VoucherPackInternalResponse updateVoucherPack(Long voucherPackId, VoucherPackUpdateRequest request) {
-        // Retrieve the existing voucher pack
-        VoucherPack existingPack = voucherPackService.getVoucherPackById(voucherPackId);
-        
+    public VoucherPackInternalResponse updateVoucherPack(Long voucherPackId, VoucherPackUpdateRequest request) {        
         // Apply the updates from the request
         VoucherPack updatedPack = request.toEntity();
         

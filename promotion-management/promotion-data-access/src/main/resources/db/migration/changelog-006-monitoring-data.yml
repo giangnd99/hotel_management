@@ -1,0 +1,126 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006
+      author: system
+      comment: Create monitoring_data table for local monitoring data persistence
+      
+      - createTable:
+          tableName: monitoring_data
+          columns:
+            - column:
+                name: id
+                type: BIGSERIAL
+                constraints:
+                  primaryKey: true
+                  nullable: false
+            - column:
+                name: data_type
+                type: VARCHAR(50)
+                constraints:
+                  nullable: false
+            - column:
+                name: external_id
+                type: VARCHAR(255)
+                constraints:
+                  nullable: true
+            - column:
+                name: data_content
+                type: TEXT
+                constraints:
+                  nullable: false
+            - column:
+                name: synced
+                type: BOOLEAN
+                defaultValueBoolean: false
+                constraints:
+                  nullable: false
+            - column:
+                name: sync_attempts
+                type: INTEGER
+                defaultValueNumeric: 0
+                constraints:
+                  nullable: false
+            - column:
+                name: last_sync_attempt
+                type: TIMESTAMP
+                constraints:
+                  nullable: true
+            - column:
+                name: last_sync_error
+                type: TEXT
+                constraints:
+                  nullable: true
+            - column:
+                name: created_at
+                type: TIMESTAMP
+                defaultValueComputed: CURRENT_TIMESTAMP
+                constraints:
+                  nullable: false
+            - column:
+                name: updated_at
+                type: TIMESTAMP
+                defaultValueComputed: CURRENT_TIMESTAMP
+                constraints:
+                  nullable: false
+            - column:
+                name: version
+                type: BIGINT
+                defaultValueNumeric: 0
+                constraints:
+                  nullable: false
+
+      - createIndex:
+          tableName: monitoring_data
+          indexName: idx_monitoring_data_type
+          columns:
+            - column:
+                name: data_type
+      - createIndex:
+          tableName: monitoring_data
+          indexName: idx_monitoring_data_synced
+          columns:
+            - column:
+                name: synced
+      - createIndex:
+          tableName: monitoring_data
+          indexName: idx_monitoring_data_created_at
+          columns:
+            - column:
+                name: created_at
+      - createIndex:
+          tableName: monitoring_data
+          indexName: idx_monitoring_data_external_id
+          columns:
+            - column:
+                name: external_id
+      - createIndex:
+          tableName: monitoring_data
+          indexName: idx_monitoring_data_sync_attempts
+          columns:
+            - column:
+                name: sync_attempts
+
+      - addCheckConstraint:
+          tableName: monitoring_data
+          constraintName: chk_monitoring_data_sync_attempts
+          checkCondition: sync_attempts >= 0
+
+      - addCheckConstraint:
+          tableName: monitoring_data
+          constraintName: chk_monitoring_data_type
+          checkCondition: data_type IN ('METHOD_EXECUTION_METRICS', 'PERFORMANCE_METRICS', 'SYSTEM_HEALTH_METRICS', 'AUDIT_LOG_ENTRY', 'ERROR_INFO')
+
+      - sql:
+          comment: Add comments to monitoring_data table
+          - comment on table monitoring_data is 'Stores monitoring data locally to prevent data loss when external service is unavailable'
+          - comment on column monitoring_data.id is 'Primary key for monitoring data records'
+          - comment on column monitoring_data.data_type is 'Type of monitoring data (enum)'
+          - comment on column monitoring_data.external_id is 'External ID for the monitoring data'
+          - comment on column monitoring_data.data_content is 'JSON content of the monitoring data'
+          - comment on column monitoring_data.synced is 'Flag indicating if data has been synced to external service'
+          - comment on column monitoring_data.sync_attempts is 'Number of sync attempts made'
+          - comment on column monitoring_data.last_sync_attempt is 'Timestamp of last sync attempt'
+          - comment on column monitoring_data.last_sync_error is 'Error message from last failed sync attempt'
+          - comment on column monitoring_data.created_at is 'Timestamp when record was created'
+          - comment on column monitoring_data.updated_at is 'Timestamp when record was last updated'
+          - comment on column monitoring_data.version is 'Optimistic locking version'
