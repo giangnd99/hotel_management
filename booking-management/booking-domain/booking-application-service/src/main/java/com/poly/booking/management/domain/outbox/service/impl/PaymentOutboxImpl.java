@@ -66,7 +66,7 @@ public class PaymentOutboxImpl implements PaymentOutboxService {
         log.info("Outbox message has been created successfully! ");
     }
 
-    private String createPayload(PaymentEventPayload payload) {
+    public String createPayload(PaymentEventPayload payload) {
         try {
             return objectMapper.writeValueAsString(payload);
         } catch (Exception e) {

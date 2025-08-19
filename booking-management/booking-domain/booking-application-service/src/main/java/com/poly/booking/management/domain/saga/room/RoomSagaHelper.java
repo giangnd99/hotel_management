@@ -10,7 +10,7 @@ import com.poly.booking.management.domain.outbox.service.impl.RoomOutboxServiceI
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.saga.BookingSagaHelper;
 import com.poly.booking.management.domain.service.BookingDomainService;
-import com.poly.booking.management.domain.message.RoomMessageResponse;
+import com.poly.booking.management.domain.message.reponse.RoomMessageResponse;
 import com.poly.domain.valueobject.RoomResponseStatus;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;
@@ -130,7 +130,7 @@ public class RoomSagaHelper {
      * @return BookingRoomOutboxMessage nếu tìm thấy, null nếu đã rollback
      */
     public RoomOutboxMessage findOutboxMessageForRollback(RoomMessageResponse data) {
-        SagaStatus[] validStatuses = getValidSagaStatusesForRollback(data.getRoomResponseStatus());
+        SagaStatus[] validStatuses = getValidSagaStatusesForRollback(data.getRoomBookingStatus());
 
         Optional<RoomOutboxMessage> outboxMessageOpt =
                 roomOutboxServiceImpl.getRoomOutboxMessageBySagaIdAndSagaStatus(

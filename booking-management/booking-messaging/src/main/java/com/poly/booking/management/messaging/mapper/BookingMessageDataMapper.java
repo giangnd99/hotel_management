@@ -1,10 +1,11 @@
 package com.poly.booking.management.messaging.mapper;
 
 import com.poly.booking.management.domain.kafka.model.*;
+import com.poly.booking.management.domain.message.reponse.BookingPaymentPendingResponse;
 import com.poly.booking.management.domain.outbox.payload.ReservedEventPayload;
-import com.poly.booking.management.domain.message.CustomerCreatedMessageResponse;
-import com.poly.booking.management.domain.message.PaymentMessageResponse;
-import com.poly.booking.management.domain.message.RoomMessageResponse;
+import com.poly.booking.management.domain.message.reponse.CustomerCreatedMessageResponse;
+import com.poly.booking.management.domain.message.reponse.PaymentMessageResponse;
+import com.poly.booking.management.domain.message.reponse.RoomMessageResponse;
 import com.poly.booking.management.domain.entity.Room;
 import com.poly.booking.management.domain.outbox.payload.PaymentEventPayload;
 import com.poly.booking.management.domain.outbox.payload.RoomEventPayload;
@@ -19,6 +20,21 @@ import java.util.UUID;
 
 @Component
 public class BookingMessageDataMapper {
+
+    public BookingPaymentPendingResponseAvro toBookingPaymentPendingResponseAvro(BookingPaymentPendingResponse message) {
+        return BookingPaymentPendingResponseAvro.newBuilder()
+                .setBookingId(message.getBookingId())
+                .setCustomerId(message.getCustomerId())
+                .setPaymentBookingStatus(PaymentBookingStatus.valueOf(message.getPaymentBookingStatus().name()))
+                .setCreatedAt(message.getCreatedAt())
+                .setId(message.getId())
+                .setSagaId(message.getSagaId())
+                .setPrice(message.getPrice())
+                .setCreatedAt(message.getCreatedAt())
+                .setUrlPayment(message.getUrlPayment())
+                .build();
+    }
+
     public CustomerCreatedMessageResponse customerAvroToCustomerEntity(CustomerModelAvro customerModelAvro) {
         return CustomerCreatedMessageResponse.builder().id(customerModelAvro.getId()).firstName(customerModelAvro.getFirstName()).lastName(customerModelAvro.getLastName()).username(customerModelAvro.getUsername()).build();
     }

@@ -6,7 +6,7 @@ import com.poly.room.management.domain.dto.request.UpdateRoomRequest;
 import com.poly.room.management.domain.dto.RoomStatisticsDto;
 import com.poly.room.management.domain.dto.RoomTypeDto;
 import com.poly.room.management.domain.dto.RoomStatusDto;
-import com.poly.room.management.domain.port.in.service.RoomService;
+import com.poly.room.management.domain.service.RoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

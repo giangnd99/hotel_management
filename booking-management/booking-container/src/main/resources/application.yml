@@ -6,6 +6,7 @@ booking-service:
   payment-response-topic-name: payment-response
   room-reserve-request-topic-name: room-approval-request
   room-reserve-response-topic-name: room-approval-response
+  room-check-out-topic-name: room-check-out-topic
   customer-topic-name: customer
   booking-notification-request-topic-name: notification-send-mail-request
   booking-notification-response-topic-name: notification-send-mail-response
@@ -63,7 +64,7 @@ kafka-producer-config:
 kafka-consumer-config:
   key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
   value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-  payment-consumer-group-id: payment-topic-consumer
+
   deposit-consumer-group-id: deposit-topic-consumer
   room-consumer-group-id: booking-room-topic-consumer
   customer-group-id: customer-topic-consumer

@@ -3,7 +3,7 @@ package com.poly.room.management.application.controller.rest;
 import com.poly.booking.management.domain.dto.RoomServiceDto;
 import com.poly.room.management.domain.dto.*;
 import com.poly.room.management.domain.dto.reception.*;
-import com.poly.room.management.domain.port.in.service.ReceptionService;
+import com.poly.room.management.domain.service.ReceptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

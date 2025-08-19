@@ -12,7 +12,7 @@ import com.poly.booking.management.domain.outbox.service.impl.RoomOutboxServiceI
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.saga.BookingSagaHelper;
 import com.poly.booking.management.domain.service.BookingDomainService;
-import com.poly.booking.management.domain.message.PaymentMessageResponse;
+import com.poly.booking.management.domain.message.reponse.PaymentMessageResponse;
 import com.poly.domain.valueobject.DateCustom;
 import com.poly.domain.valueobject.BookingStatus;
 import com.poly.domain.valueobject.PaymentStatus;

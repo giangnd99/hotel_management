@@ -1,0 +1,291 @@
+{
+	"info": {
+		"_postman_id": "room-management-api-collection",
+		"name": "Room Management API",
+		"description": "Collection để test toàn bộ Room Management API trong hệ thống khách sạn",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Dashboard & Statistics",
+			"item": [
+				{
+					"name": "Get Room Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/statistics",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "statistics"]
+						}
+					}
+				},
+				{
+					"name": "Get Room Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/count",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "count"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "CRUD Operations",
+			"item": [
+				{
+					"name": "Get All Rooms",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms?page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms"],
+							"query": [
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Room By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/{{room_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "{{room_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Create Room",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"roomNumber\": \"101\",\n  \"roomTypeId\": 1,\n  \"floor\": 1,\n  \"basePrice\": 100.00,\n  \"description\": \"Phòng tiêu chuẩn tầng 1\",\n  \"amenities\": \"TV, WiFi, Điều hòa\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/rooms",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms"]
+						}
+					}
+				},
+				{
+					"name": "Update Room",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"roomTypeId\": 2,\n  \"floor\": 2,\n  \"basePrice\": 150.00,\n  \"description\": \"Phòng cao cấp tầng 2\",\n  \"amenities\": \"TV, WiFi, Điều hòa, Mini bar\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/rooms/{{room_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "{{room_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Delete Room",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/{{room_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "{{room_id}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Search & Filter",
+			"item": [
+				{
+					"name": "Search Rooms",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/search?roomNumber=101&roomType=1&status=VACANT&floor=1&minPrice=50&maxPrice=200&page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "search"],
+							"query": [
+								{"key": "roomNumber", "value": "101"},
+								{"key": "roomType", "value": "1"},
+								{"key": "status", "value": "VACANT"},
+								{"key": "floor", "value": "1"},
+								{"key": "minPrice", "value": "50"},
+								{"key": "maxPrice", "value": "200"},
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Filter Rooms By Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/filter/status?status=VACANT&page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "filter", "status"],
+							"query": [
+								{"key": "status", "value": "VACANT"},
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Status Management",
+			"item": [
+				{
+					"name": "Update Room Status",
+					"request": {
+						"method": "PATCH",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"VACANT\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/rooms/{{room_id}}/status",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "{{room_id}}", "status"]
+						}
+					}
+				},
+				{
+					"name": "Set Room Available",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/{{room_id}}/available",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "{{room_id}}", "available"]
+						}
+					}
+				},
+				{
+					"name": "Set Room Occupied",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/{{room_id}}/occupied",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "{{room_id}}", "occupied"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Room Type Management",
+			"item": [
+				{
+					"name": "Get All Room Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/types",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "types"]
+						}
+					}
+				},
+				{
+					"name": "Create Room Type",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"typeName\": \"Deluxe\",\n  \"description\": \"Phòng cao cấp với đầy đủ tiện nghi\",\n  \"basePrice\": 200.00,\n  \"maxOccupancy\": 3,\n  \"amenities\": \"TV, WiFi, Điều hòa, Mini bar, Jacuzzi\",\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/rooms/types",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "types"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Availability & Maintenance",
+			"item": [
+				{
+					"name": "Get Available Rooms",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/available?roomType=1&floor=1&minPrice=50&maxPrice=200&page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "available"],
+							"query": [
+								{"key": "roomType", "value": "1"},
+								{"key": "floor", "value": "1"},
+								{"key": "minPrice", "value": "50"},
+								{"key": "maxPrice", "value": "200"},
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Maintenance Rooms",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/maintenance?page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "maintenance"],
+							"query": [
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "room_id",
+			"value": "1",
+			"type": "string"
+		}
+	]
+}

@@ -2,7 +2,7 @@ package com.poly.booking.management.domain.outbox.scheduler;
 
 import com.poly.booking.management.domain.outbox.model.NotifiOutboxMessage;
 import com.poly.booking.management.domain.outbox.service.NotificationOutboxService;
-import com.poly.booking.management.domain.port.out.message.publisher.notification.NotificationRequestMessagePublisher;
+import com.poly.booking.management.domain.port.out.message.publisher.NotificationRequestMessagePublisher;
 import com.poly.outbox.OutboxScheduler;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;

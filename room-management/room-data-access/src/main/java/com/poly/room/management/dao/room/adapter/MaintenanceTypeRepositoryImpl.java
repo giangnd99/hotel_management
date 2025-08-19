@@ -47,4 +47,9 @@ public class MaintenanceTypeRepositoryImpl implements MaintenanceTypeRepository 
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
     }
+    
+    @Override
+    public Optional<MaintenanceType> findByName(String name) {
+        return jpaRepository.findByName(name).map(mapper::toDomain);
+    }
 }

@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.UUID;
 
 @Data
@@ -14,16 +13,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CheckInPendingDto {
-    private UUID bookingId;
-    private String guestName;
-    private String guestPhone;
-    private String guestEmail;
+    private UUID checkInId;
     private String roomNumber;
-    private String roomType;
+    private String guestName;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
-    private LocalTime expectedCheckInTime;
-    private Integer numberOfGuests;
-    private String specialRequests;
-    private String status; // CONFIRMED, PENDING_PAYMENT
+    private String status;
 }

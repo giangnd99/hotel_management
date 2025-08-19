@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
 @Entity
 @Builder
@@ -16,14 +17,16 @@ import java.sql.Timestamp;
 public class RoomMaintenanceEntity {
 
     @Id
-    private Integer maintenanceId;
+    private UUID maintenanceId;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "room_id")
     private RoomEntity room;
 
-    private String staffId;
+    private String assignedTo;
 
+    private Timestamp scheduledDate;
+    private Timestamp completedDate;
     private Timestamp maintenanceDate;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -31,6 +34,8 @@ public class RoomMaintenanceEntity {
     private MaintenanceTypeEntity maintenanceType;
 
     private String description;
+
+    private String priority;
 
     private String status;
 }

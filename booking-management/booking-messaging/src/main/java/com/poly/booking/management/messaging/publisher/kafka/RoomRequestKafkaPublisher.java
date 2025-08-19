@@ -4,7 +4,7 @@ import com.poly.booking.management.domain.config.BookingServiceConfigData;
 import com.poly.booking.management.domain.kafka.model.BookingRoomRequestAvro;
 import com.poly.booking.management.domain.outbox.payload.ReservedEventPayload;
 import com.poly.booking.management.domain.outbox.model.RoomOutboxMessage;
-import com.poly.booking.management.domain.port.out.message.publisher.room.RoomRequestReserveMessagePublisher;
+import com.poly.booking.management.domain.port.out.message.publisher.RoomRequestReserveMessagePublisher;
 import com.poly.booking.management.messaging.mapper.BookingMessageDataMapper;
 import com.poly.kafka.producer.KafkaMessageHelper;
 import com.poly.kafka.producer.service.KafkaProducer;
