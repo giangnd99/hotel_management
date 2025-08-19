@@ -9,9 +9,6 @@ public class UserId {
     private final UUID value;
 
     public UserId(UUID value) {
-        if(value == null){
-            throw new InvalidCustomerUserIdException();
-        }
         this.value = value;
     }
 

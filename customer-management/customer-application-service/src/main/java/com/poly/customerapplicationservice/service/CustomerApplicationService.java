@@ -35,11 +35,11 @@ public class CustomerApplicationService implements CustomerUsecase {
     @Override
     public CustomerDto initializeCustomerProfile(CreateCustomerCommand command) {
 
-        validateUserId(command.getUserId(), Mode.CREATE);
+//        validateUserId(command.getUserId(), Mode.RETRIEVE);
 
         Customer newCustomer = Customer.builder()
                 .customerId(CustomerId.generate())
-                .userId(UserId.from(command.getUserId()))
+                .userId(UserId.from(command.getUserId() != null ?  command.getUserId() : null))
                 .name(Name.from(command.getFirstName().trim(), command.getLastName().trim()))
                 .address(Address.from(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity()))
                 .dateOfBirth(DateOfBirth.from(command.getDateOfBirth()))
@@ -48,6 +48,8 @@ public class CustomerApplicationService implements CustomerUsecase {
                 .behaviorData(BehaviorData.empty())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
+                .sex(Sex.valueOf(command.getSex().toUpperCase()))
+                .active(true)
                 .build();
 
         Customer savedCustomer = customerRepository.save(newCustomer);
@@ -64,6 +66,15 @@ public class CustomerApplicationService implements CustomerUsecase {
         validateUserId(command.getUserId(), Mode.RETRIEVE);
 
         return customerRepository.findByUserId(command.getUserId())
+                .map(CustomerDto::from)
+                .orElseThrow(() -> new CustomerNotFoundException(command.getUserId()));
+    }
+
+    @Override
+    public CustomerDto retrieveCustomerProfileById(RetrieveCustomerProfileCommand command) {
+        validateUserId(command.getUserId(), Mode.RETRIEVE);
+
+        return customerRepository.findById(command.getUserId())
                 .map(CustomerDto::from)
                 .orElseThrow(() -> new CustomerNotFoundException(command.getUserId()));
     }

@@ -39,6 +39,14 @@ public class CustomerController {
         return ResponseEntity.ok(ApiResponse.success(dto));
     }
 
+    @GetMapping("/profile/customer/{customerId}")
+    public ResponseEntity<ApiResponse<CustomerDto>> retrieveCustomerProfileById(@PathVariable UUID customerId) {
+        RetrieveCustomerProfileCommand command = new RetrieveCustomerProfileCommand();
+        command.setUserId(customerId);
+        var dto = customerUsecase.retrieveCustomerProfileById(command);
+        return ResponseEntity.ok(ApiResponse.success(dto));
+    }
+
     @GetMapping()
     public ResponseEntity<ApiResponse<PageResult<CustomerDto>>> retrieveAllCustomers(@RequestParam int page, @RequestParam int size) {
         return ResponseEntity.ok(ApiResponse.success(customerUsecase.retrieveAllCustomers(page, size)));

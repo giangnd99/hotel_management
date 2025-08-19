@@ -2,6 +2,7 @@ package com.poly.customerapplicationservice.dto;
 
 import com.poly.customerdomain.model.entity.Customer;
 import com.poly.customerdomain.model.entity.valueobject.Level;
+import com.poly.customerdomain.model.entity.valueobject.Sex;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +24,8 @@ public class CustomerDto {
     private String imageUrl;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
+    private String sex;
+    private boolean active;
 
     public static CustomerDto from(Customer customer) {
         CustomerDto dto = new CustomerDto();
@@ -35,6 +38,8 @@ public class CustomerDto {
         dto.setImageUrl(customer.getImage().getUrl());
         dto.setCreatedDate(customer.getCreatedAt());
         dto.setUpdatedDate(customer.getUpdatedAt());
+        dto.setSex(customer.getSex().name());
+        dto.setActive(customer.isActive());
         return dto;
     }
 }
