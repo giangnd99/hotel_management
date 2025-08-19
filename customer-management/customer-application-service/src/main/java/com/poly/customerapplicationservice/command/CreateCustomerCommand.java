@@ -1,6 +1,7 @@
 package com.poly.customerapplicationservice.command;
 
 import com.poly.customerapplicationservice.shared.AddressDto;
+import com.poly.customerdomain.model.entity.valueobject.Sex;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,5 +15,6 @@ public class CreateCustomerCommand {
     private String firstName;
     private String lastName;
     private AddressDto address;
+    private String sex;
     private LocalDate dateOfBirth;
 }

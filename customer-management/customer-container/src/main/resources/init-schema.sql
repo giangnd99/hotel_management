@@ -10,11 +10,13 @@ CREATE TABLE customer
     user_id         BINARY(16),
     first_name      VARCHAR(100)                                                     NOT NULL,
     last_name       VARCHAR(100)                                                     NOT NULL,
+    sex             ENUM('FEMALE','MALE','OTHER')                                    NOT NULL DEFAULT 'OTHER',
     address         TEXT,
     image_url       VARCHAR(100),
     date_of_birth   DATE,
     level           ENUM ('NONE', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND') NOT NULL DEFAULT 'NONE',
     behavior_data   JSON,
+    active          BOOLEAN                                                          NOT NULL DEFAULT TRUE,
     created_at      DATETIME                                                         NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at      DATETIME                                                         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -52,19 +54,18 @@ CREATE TABLE birthday_notification_log
     FOREIGN KEY (customer_id) REFERENCES customer (customer_id) ON DELETE CASCADE
 );
 
--- Insert 10 Customers
-INSERT INTO customer (customer_id, user_id, first_name, last_name, address, image_url, date_of_birth, level, behavior_data)
+INSERT INTO customer (customer_id, user_id, first_name, last_name, sex, address, image_url, date_of_birth, level, behavior_data, active)
 VALUES
-    (UUID_TO_BIN('11111111-1111-1111-1111-111111111111'), UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'), 'Nguyen','Van A','123A, Đường Lê Lợi, Quận 1, TP. Ho Chi Minh',NULL,'2000-01-01','BRONZE','{"favoriteRoomTypes":"Deluxe","frequentlyUsedServices":"SPA"}'),
-    (UUID_TO_BIN('22222222-2222-2222-2222-222222222222'), UUID_TO_BIN('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12'), 'Tran','Thi B','234B, Đường Hai Bà Trưng, Quận 3, TP. Ho Chi Minh',NULL,'1995-03-12','SILVER','{"favoriteRoomTypes":"Standard","frequentlyUsedServices":"Gym"}'),
-    (UUID_TO_BIN('33333333-3333-3333-3333-333333333333'), UUID_TO_BIN('cccccccc-cccc-cccc-cccc-cccccccccccc'), 'Le','Van C','56C, Đường Pasteur, Quận 1, TP. Ho Chi Minh',NULL,'1990-07-15','GOLD','{"favoriteRoomTypes":"Suite","frequentlyUsedServices":"Bar"}'),
-    (UUID_TO_BIN('44444444-4444-4444-4444-444444444444'), UUID_TO_BIN('dddddddd-dddd-dddd-dddd-dddddddddddd'), 'Pham','Thi D','89D, Đường Nguyễn Huệ, Quận 1, TP. Ho Chi Minh',NULL,'1988-11-30','PLATINUM','{"favoriteRoomTypes":"Deluxe","frequentlyUsedServices":"SPA"}'),
-    (UUID_TO_BIN('55555555-5555-5555-5555-555555555555'), UUID_TO_BIN('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee'), 'Hoang','Van E','101E, Đường Điện Biên Phủ, Quận Bình Thạnh, TP. Ho Chi Minh',NULL,'1992-05-25','DIAMOND','{"favoriteRoomTypes":"Standard","frequentlyUsedServices":"Pool"}'),
-    (UUID_TO_BIN('66666666-6666-6666-6666-666666666666'), UUID_TO_BIN('ffffffff-ffff-ffff-ffff-ffffffffffff'), 'Do','Thi F','202F, Đường Nguyễn Văn Cừ, Quận 5, TP. Ho Chi Minh',NULL,'1998-09-09','BRONZE','{"favoriteRoomTypes":"Suite","frequentlyUsedServices":"Karaoke"}'),
-    (UUID_TO_BIN('77777777-7777-7777-7777-777777777777'), UUID_TO_BIN('12121212-1212-1212-1212-121212121212'), 'Bui','Van G','303G, Đường Lê Văn Sỹ, Quận Phú Nhuận, TP. Ho Chi Minh',NULL,'2001-12-01','SILVER','{"favoriteRoomTypes":"Deluxe","frequentlyUsedServices":"Gym"}'),
-    (UUID_TO_BIN('88888888-8888-8888-8888-888888888888'), UUID_TO_BIN('13131313-1313-1313-1313-131313131313'), 'Ngo','Thi H','404H, Đường Trần Hưng Đạo, Quận 5, TP. Ho Chi Minh',NULL,'1993-02-20','GOLD','{"favoriteRoomTypes":"Standard","frequentlyUsedServices":"SPA"}'),
-    (UUID_TO_BIN('99999999-9999-9999-9999-999999999999'), UUID_TO_BIN('14141414-1414-1414-1414-141414141414'), 'Vo','Van I','505I, Đường Nguyễn Trãi, Quận 1, TP. Ho Chi Minh',NULL,'1985-08-18','PLATINUM','{"favoriteRoomTypes":"Suite","frequentlyUsedServices":"Pool"}'),
-    (UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01'), UUID_TO_BIN('15151515-1515-1515-1515-151515151515'), 'Dang','Thi J','606J, Đường Cách Mạng Tháng 8, Quận 10, TP. Ho Chi Minh',NULL,'1999-04-04','DIAMOND','{"favoriteRoomTypes":"Deluxe","frequentlyUsedServices":"Karaoke"}');
+    (UUID_TO_BIN('11111111-1111-1111-1111-111111111111'), UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),'Nguyen','Van A','MALE','123A Lê Lợi, Q1, TP.HCM',NULL,'2000-01-01','BRONZE','{"favoriteRoomTypes":"Deluxe","frequentlyUsedServices":"SPA"}',TRUE),
+    (UUID_TO_BIN('22222222-2222-2222-2222-222222222222'), UUID_TO_BIN('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12'),'Tran','Thi B','FEMALE','234B Hai Bà Trưng, Q3, TP.HCM',NULL,'1995-03-12','SILVER','{"favoriteRoomTypes":"Standard","frequentlyUsedServices":"Gym"}',TRUE),
+    (UUID_TO_BIN('33333333-3333-3333-3333-333333333333'), UUID_TO_BIN('cccccccc-cccc-cccc-cccc-cccccccccccc'),'Le','Van C','MALE','56C Pasteur, Q1, TP.HCM',NULL,'1990-07-15','GOLD','{"favoriteRoomTypes":"Suite","frequentlyUsedServices":"Bar"}',TRUE),
+    (UUID_TO_BIN('44444444-4444-4444-4444-444444444444'), UUID_TO_BIN('dddddddd-dddd-dddd-dddd-dddddddddddd'),'Pham','Thi D','FEMALE','89D Nguyễn Huệ, Q1, TP.HCM',NULL,'1988-11-30','PLATINUM','{"favoriteRoomTypes":"Deluxe","frequentlyUsedServices":"SPA"}',FALSE),
+    (UUID_TO_BIN('55555555-5555-5555-5555-555555555555'), UUID_TO_BIN('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee'),'Hoang','Van E','MALE','101E Điện Biên Phủ, Q.Bình Thạnh, TP.HCM',NULL,'1992-05-25','DIAMOND','{"favoriteRoomTypes":"Standard","frequentlyUsedServices":"Pool"}',TRUE),
+    (UUID_TO_BIN('66666666-6666-6666-6666-666666666666'), UUID_TO_BIN('ffffffff-ffff-ffff-ffff-ffffffffffff'),'Do','Thi F','FEMALE','202F Nguyễn Văn Cừ, Q5, TP.HCM',NULL,'1998-09-09','BRONZE','{"favoriteRoomTypes":"Suite","frequentlyUsedServices":"Karaoke"}',TRUE),
+    (UUID_TO_BIN('77777777-7777-7777-7777-777777777777'), UUID_TO_BIN('12121212-1212-1212-1212-121212121212'),'Bui','Van G','MALE','303G Lê Văn Sỹ, Q.Phú Nhuận, TP.HCM',NULL,'2001-12-01','SILVER','{"favoriteRoomTypes":"Deluxe","frequentlyUsedServices":"Gym"}',FALSE),
+    (UUID_TO_BIN('88888888-8888-8888-8888-888888888888'), UUID_TO_BIN('13131313-1313-1313-1313-131313131313'),'Ngo','Thi H','FEMALE','404H Trần Hưng Đạo, Q5, TP.HCM',NULL,'1993-02-20','GOLD','{"favoriteRoomTypes":"Standard","frequentlyUsedServices":"SPA"}',TRUE),
+    (UUID_TO_BIN('99999999-9999-9999-9999-999999999999'), UUID_TO_BIN('14141414-1414-1414-1414-141414141414'),'Vo','Van I','MALE','505I Nguyễn Trãi, Q1, TP.HCM',NULL,'1985-08-18','PLATINUM','{"favoriteRoomTypes":"Suite","frequentlyUsedServices":"Pool"}',TRUE),
+    (UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01'), UUID_TO_BIN('15151515-1515-1515-1515-151515151515'),'Dang','Thi J','FEMALE','606J CMT8, Q10, TP.HCM',NULL,'1999-04-04','DIAMOND','{"favoriteRoomTypes":"Deluxe","frequentlyUsedServices":"Karaoke"}',TRUE);
 
 -- Insert 10 Loyalty Points
 INSERT INTO loyalty_point (loyalty_id, customer_id, points)

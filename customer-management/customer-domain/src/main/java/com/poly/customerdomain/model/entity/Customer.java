@@ -22,6 +22,8 @@ public class Customer extends AggregateRoot<CustomerId> {
     private BehaviorData behaviorData;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Sex sex;
+    private boolean active;
 
     private Customer(Builder builder) {
         this.setId(builder.customerId);
@@ -34,6 +36,9 @@ public class Customer extends AggregateRoot<CustomerId> {
         this.image = builder.image != null ? builder.image : ImageUrl.empty();
         this.createdAt = builder.createdAt != null ? builder.createdAt : LocalDateTime.now();
         this.updatedAt = builder.updatedAt != null ? builder.updatedAt : LocalDateTime.now();
+        this.sex = builder.sex;
+        this.active = builder.active;
+
     }
 
     public static final class Builder {
@@ -47,6 +52,8 @@ public class Customer extends AggregateRoot<CustomerId> {
         private BehaviorData behaviorData;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
+        private Sex sex;
+        private boolean active;
 
         public Builder() {
         }
@@ -98,6 +105,16 @@ public class Customer extends AggregateRoot<CustomerId> {
 
         public Builder updatedAt(LocalDateTime val) {
             updatedAt = val;
+            return this;
+        }
+
+        public Builder sex(Sex val) {
+            sex = val;
+            return this;
+        }
+
+        public Builder active(boolean val) {
+            active = val;
             return this;
         }
 
