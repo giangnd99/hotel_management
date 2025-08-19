@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8801
 
 spring:
   application:
@@ -24,4 +24,4 @@ openapi:
     api-docs: inventory-service-docs
     title: Inventory Service API
     version: 1.0.0
-    server: http://localhost:8081
+    server: http://localhost:8801

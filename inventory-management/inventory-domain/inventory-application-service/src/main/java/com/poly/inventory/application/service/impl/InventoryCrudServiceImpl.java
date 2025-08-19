@@ -1,5 +1,7 @@
 package com.poly.inventory.application.service.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.poly.inventory.application.dto.InventoryItemDto;
 import com.poly.inventory.application.mapper.InventoryDtoMapper;
 import com.poly.inventory.application.port.out.DeleteInventoryPort;
@@ -11,6 +13,7 @@ import com.poly.inventory.domain.entity.InventoryItem;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class InventoryCrudServiceImpl implements InventoryCrudService {
     private final LoadInventoryPort loadPort;
     private final SaveInventoryPort savePort;

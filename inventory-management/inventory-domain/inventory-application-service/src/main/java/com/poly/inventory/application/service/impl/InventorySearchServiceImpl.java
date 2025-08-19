@@ -1,10 +1,13 @@
 package com.poly.inventory.application.service.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.poly.inventory.application.dto.InventoryItemDto;
 import com.poly.inventory.application.service.InventorySearchService;
 
 import java.util.List;
 
+@Service
 public class InventorySearchServiceImpl implements InventorySearchService {
     @Override
     public List<InventoryItemDto> searchItemsByName(String name) {

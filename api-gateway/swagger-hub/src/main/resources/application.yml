@@ -21,7 +21,7 @@ services:
   swagger:
     inventory:
       name: Inventory Service
-      url: http://localhost:8081
+      url: http://localhost:8801
       docs-path: /v3/api-docs
       ui-path: /swagger-ui.html
     restaurant:
