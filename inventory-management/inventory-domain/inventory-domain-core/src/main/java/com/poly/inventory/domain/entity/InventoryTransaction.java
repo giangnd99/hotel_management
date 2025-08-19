@@ -3,6 +3,7 @@ package com.poly.inventory.domain.entity;
 import com.poly.inventory.domain.value_object.ItemId;
 import com.poly.inventory.domain.value_object.Quantity;
 import com.poly.inventory.domain.value_object.TransactionId;
+import com.poly.inventory.domain.value_object.TransactionType;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -11,11 +12,11 @@ public class InventoryTransaction {
     private final TransactionId transactionId;
     private final ItemId itemId;
     private final Integer staffId;
-    private final String transactionType;
+    private final TransactionType transactionType;
     private final Quantity quantity;
     private final LocalDateTime transactionDate;
 
-    public InventoryTransaction(TransactionId transactionId, ItemId itemId, Integer staffId, String transactionType, Quantity quantity, LocalDateTime transactionDate) {
+    public InventoryTransaction(TransactionId transactionId, ItemId itemId, Integer staffId, TransactionType transactionType, Quantity quantity, LocalDateTime transactionDate) {
         this.transactionId = transactionId;
         this.itemId = itemId;
         this.staffId = staffId;
@@ -36,7 +37,7 @@ public class InventoryTransaction {
         return staffId;
     }
 
-    public String getTransactionType() {
+    public TransactionType getTransactionType() {
         return transactionType;
     }
 

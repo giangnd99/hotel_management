@@ -5,7 +5,7 @@ import com.poly.inventory.domain.exception.InvalidQuantityException;
 public record Quantity(int value) {
 
     public Quantity {
-        if (value <= 0) {
+        if (value < 0) {
             throw new InvalidQuantityException(value);
         }
     }
@@ -20,7 +20,7 @@ public record Quantity(int value) {
 
     public Quantity subtract(Quantity other) {
         int result = this.value - other.value;
-        if (result <= 0) {
+        if (result < 0) {
             throw new InvalidQuantityException(result);
         }
         return new Quantity(result);

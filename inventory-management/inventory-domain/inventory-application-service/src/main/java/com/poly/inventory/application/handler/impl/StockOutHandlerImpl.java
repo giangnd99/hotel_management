@@ -27,17 +27,21 @@ public class StockOutHandlerImpl implements StockOutHandler {
 
     @Override
     public TransactionDto handle(TransactionDto dto) {
+        if (dto.getQuantity() == null || dto.getQuantity() <= 0) {
+            throw new IllegalArgumentException("Số lượng xuất phải > 0");
+        }
+
         InventoryItem item = loadInventoryPort.loadItemById(dto.getItemId())
                 .orElseThrow(() -> new RuntimeException("Item not found"));
 
         if (item.getQuantity().getValue() < dto.getQuantity()) {
-            throw new IllegalArgumentException("Not enough stock");
+            throw new IllegalArgumentException("Không đủ tồn kho");
         }
 
         item.setQuantity(item.getQuantity().subtract(new Quantity(dto.getQuantity())));
         saveInventoryPort.save(item);
 
-        dto.setTransactionType("OUT");
+        dto.setTransactionType("EXPORT");
         dto.setTransactionDate(LocalDateTime.now());
 
         var domain = saveTransactionPort.save(toDomain(dto));

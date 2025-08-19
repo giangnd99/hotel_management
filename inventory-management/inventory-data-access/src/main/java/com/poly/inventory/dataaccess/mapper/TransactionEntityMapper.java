@@ -5,6 +5,7 @@ import com.poly.inventory.domain.entity.InventoryTransaction;
 import com.poly.inventory.domain.value_object.ItemId;
 import com.poly.inventory.domain.value_object.Quantity;
 import com.poly.inventory.domain.value_object.TransactionId;
+import com.poly.inventory.domain.value_object.TransactionType;
 
 public class TransactionEntityMapper {
 
@@ -15,7 +16,7 @@ public class TransactionEntityMapper {
                 new TransactionId(entity.getId()),
                 new ItemId(entity.getItemId()),
                 entity.getStaffId(),
-                entity.getTransactionType(),
+                TransactionType.valueOf(entity.getTransactionType()),
                 new Quantity(entity.getQuantity()),
                 entity.getTransactionDate()
         );
@@ -28,7 +29,7 @@ public class TransactionEntityMapper {
         entity.setId(transaction.getTransactionId().getValue());
         entity.setItemId(transaction.getItemId().getValue());
         entity.setStaffId(transaction.getStaffId());
-        entity.setTransactionType(transaction.getTransactionType());
+        entity.setTransactionType(transaction.getTransactionType().name());
         entity.setQuantity(transaction.getQuantity().getValue());
         entity.setTransactionDate(transaction.getTransactionDate());
         return entity;

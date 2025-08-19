@@ -1,7 +1,33 @@
+spring:
+  application:
+    name: staff-management
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hotel_management
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  jackson:
+    default-property-inclusion: NON_NULL
+
 server:
-  port: ${STAFF_MANAGEMENT_PORT}
-  servlet:
-    context-path: /staff-management
+  port: 8082
+
+logging:
+  level:
+    com.poly.staff: DEBUG
+    org.springframework.web: DEBUG
+
 springdoc:
   api-docs:
     path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
