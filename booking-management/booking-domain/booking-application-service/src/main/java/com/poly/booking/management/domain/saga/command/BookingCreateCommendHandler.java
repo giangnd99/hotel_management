@@ -42,7 +42,6 @@ public class BookingCreateCommendHandler {
         BookingCreatedEvent bookingCreatedEvent =
                 bookingCreateHelper.initAndValidateBookingCreatedEvent(createBookingCommand);
 
-        bookingCreateHelper.triggerDepositStep(bookingCreatedEvent);
 
         return bookingCreateHelper.responseDto(bookingCreatedEvent,
                 createBookingCommand);

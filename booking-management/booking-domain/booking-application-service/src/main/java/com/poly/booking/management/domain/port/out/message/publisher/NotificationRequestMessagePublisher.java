@@ -1,4 +1,4 @@
-package com.poly.booking.management.domain.port.out.message.publisher.notification;
+package com.poly.booking.management.domain.port.out.message.publisher;
 
 import com.poly.booking.management.domain.outbox.model.NotifiOutboxMessage;
 import com.poly.outbox.OutboxStatus;

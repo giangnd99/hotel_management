@@ -4,7 +4,7 @@ import com.poly.booking.management.domain.config.BookingServiceConfigData;
 import com.poly.booking.management.domain.kafka.model.NotificationMessageAvro;
 import com.poly.booking.management.domain.outbox.payload.NotifiEventPayload;
 import com.poly.booking.management.domain.outbox.model.NotifiOutboxMessage;
-import com.poly.booking.management.domain.port.out.message.publisher.notification.NotificationRequestMessagePublisher;
+import com.poly.booking.management.domain.port.out.message.publisher.NotificationRequestMessagePublisher;
 import com.poly.booking.management.messaging.mapper.BookingMessageDataMapper;
 import com.poly.kafka.producer.KafkaMessageHelper;
 import com.poly.kafka.producer.service.KafkaProducer;

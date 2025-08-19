@@ -1,24 +1,22 @@
 package com.poly.room.management.domain.dto.reception;
 
-import com.poly.domain.valueobject.RoomStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoomAvailabilityDto {
+    private UUID roomId;
     private String roomNumber;
     private String roomType;
     private Integer floor;
-    private BigDecimal price;
-    private RoomStatus status;
-    private String amenities;
-    private Boolean isClean;
-    private Boolean isMaintained;
+    private BigDecimal basePrice;
+    private Boolean isAvailable;
 }

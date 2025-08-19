@@ -2,7 +2,7 @@ package com.poly.booking.management.domain.outbox.scheduler;
 
 import com.poly.booking.management.domain.outbox.model.RoomOutboxMessage;
 import com.poly.booking.management.domain.outbox.service.RoomOutboxService;
-import com.poly.booking.management.domain.port.out.message.publisher.room.RoomRequestReserveMessagePublisher;
+import com.poly.booking.management.domain.port.out.message.publisher.RoomRequestReserveMessagePublisher;
 import com.poly.outbox.OutboxScheduler;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;

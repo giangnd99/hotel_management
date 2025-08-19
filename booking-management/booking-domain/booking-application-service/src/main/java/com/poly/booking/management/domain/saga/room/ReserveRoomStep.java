@@ -2,7 +2,7 @@ package com.poly.booking.management.domain.saga.room;
 
 import com.poly.booking.management.domain.event.BookingConfirmedEvent;
 import com.poly.booking.management.domain.outbox.model.RoomOutboxMessage;
-import com.poly.booking.management.domain.message.RoomMessageResponse;
+import com.poly.booking.management.domain.message.reponse.RoomMessageResponse;
 import com.poly.saga.SagaStep;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -4,7 +4,9 @@ import com.poly.booking.management.domain.exception.BookingDomainException;
 import com.poly.booking.management.domain.valueobject.TrackingId;
 import com.poly.domain.entity.AggregateRoot;
 import com.poly.domain.valueobject.*;
+import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
  * Entity Booking đại diện cho một lượt đặt phòng khách sạn.
  * Quản lý trạng thái, thông tin khách hàng, phòng, dịch vụ, QR check-in, v.v.
  */
+@Slf4j
 public class Booking extends AggregateRoot<BookingId> {
 
     private Customer customer;
@@ -41,6 +44,13 @@ public class Booking extends AggregateRoot<BookingId> {
         upgradeSuggestion = builder.upgradeSuggestion;
         bookingRooms = builder.bookingRooms;
         failureMessages = builder.failureMessages;
+    }
+
+
+    public Money calculateDepositAmount() {
+        Money depositAmount = totalPrice.multiply(new BigDecimal("0.3"));
+        log.info("Deposit amount: {}", depositAmount);
+        return depositAmount;
     }
 
     /**

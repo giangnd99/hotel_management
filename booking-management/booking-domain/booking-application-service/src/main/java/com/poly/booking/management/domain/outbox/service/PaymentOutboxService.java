@@ -30,4 +30,6 @@ public interface PaymentOutboxService {
 
     void deleteByOutboxStatusAndSagaStatus(OutboxStatus outboxStatus,
                                            SagaStatus... sagaStatus);
+
+    public String createPayload(PaymentEventPayload payload);
 }

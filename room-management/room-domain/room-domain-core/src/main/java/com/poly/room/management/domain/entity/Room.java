@@ -6,6 +6,7 @@ import com.poly.domain.valueobject.RoomStatus;
 import com.poly.domain.valueobject.RoomId;
 import com.poly.room.management.domain.exception.RoomDomainException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Room extends BaseEntity<RoomId> {
@@ -22,6 +23,8 @@ public class Room extends BaseEntity<RoomId> {
 
     private String area;
 
+    private List<RoomCost> roomCosts;
+
     private List<Furniture> furnitures;
 
     private List<RoomMaintenance> roomMaintenances;
@@ -37,6 +40,43 @@ public class Room extends BaseEntity<RoomId> {
     public void validate() {
         validateRoomNumber();
         validateRoomTypeAndStatus();
+    }
+
+
+    public void setRoomCosts(List<RoomCost> roomCosts) {
+        this.roomCosts = roomCosts;
+        updatedRoomPriceAfterAddRoomCost();
+    }
+
+    public List<RoomCost> getRoomCosts() {
+        updatedRoomPriceAfterAddRoomCost();
+        return roomCosts;
+    }
+
+    public void addRoomCost(RoomCost roomCost) {
+        if (roomCosts == null) {
+            roomCosts = new ArrayList<>();
+        }
+        roomCosts.add(roomCost);
+        updatedRoomPriceAfterAddRoomCost();
+    }
+
+    public void addRoomMaintenance(RoomMaintenance roomMaintenance) {
+        if (roomMaintenances == null) {
+            roomMaintenances = new ArrayList<>();
+        }
+    }
+
+    public Money updateRoomPriceAfterAddRoomCost() {
+        Money totalRoomCost = this.roomCosts.stream().map(roomCost ->
+                roomCost.getCost().getPrice()).reduce(Money.ZERO, Money::add);
+        return this.roomPrice.add(totalRoomCost);
+    }
+
+    public void updatedRoomPriceAfterAddRoomCost() {
+        Money totalRoomCost = this.roomCosts.stream().map(roomCost ->
+                roomCost.getCost().getPrice()).reduce(Money.ZERO, Money::add);
+        this.roomPrice.add(totalRoomCost);
     }
 
     public void setVacantRoomStatus() {
