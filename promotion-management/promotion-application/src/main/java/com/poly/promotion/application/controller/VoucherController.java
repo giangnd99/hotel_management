@@ -1,5 +1,7 @@
 package com.poly.promotion.application.controller;
 
+import com.poly.promotion.application.dto.response.hateoas.VoucherHateoasResponse;
+import com.poly.promotion.application.service.HateoasLinkBuilderService;
 import com.poly.promotion.domain.application.api.external.VoucherExternalApi;
 import com.poly.promotion.domain.application.dto.request.internal.voucher.VoucherRedeemRequest;
 import com.poly.promotion.domain.application.dto.response.external.VoucherExternalResponse;
@@ -10,8 +12,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.poly.promotion.application.annotation.LogBusinessOperation;
+import com.poly.promotion.application.annotation.LogMethodEntry;
+import com.poly.promotion.application.annotation.LogMethodError;
+import com.poly.promotion.application.annotation.LogMethodExit;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <h2>VoucherController Class</h2>
@@ -58,12 +65,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/vouchers")
 @RequiredArgsConstructor
-@Slf4j
 @Validated
 @Tag(name = "Voucher Management", description = "APIs for managing individual vouchers in the promotion system")
 public class VoucherController {
 
     private final VoucherExternalApi voucherExternalApi;
+    private final HateoasLinkBuilderService hateoasLinkBuilderService;
 
     /**
      * Retrieves all vouchers belonging to a specific customer.
@@ -134,32 +141,36 @@ public class VoucherController {
             description = "Internal server error"
         )
     })
-    public ResponseEntity<List<VoucherExternalResponse>> getCustomerVouchers(
+    @LogBusinessOperation(
+        value = "Retrieve customer vouchers",
+        category = "VOUCHER_READ"
+    )
+    @LogMethodEntry
+    @LogMethodExit
+    @LogMethodError
+    public ResponseEntity<CollectionModel<VoucherHateoasResponse>> getCustomerVouchers(
             @Parameter(description = "Unique identifier of the customer")
             @PathVariable @NotBlank String customerId) {
-        log.info("Retrieving vouchers for customer: {}", customerId);
+        List<VoucherExternalResponse> customerVouchers = voucherExternalApi.getCustomerVouchers(customerId);
         
-        try {
-            List<VoucherExternalResponse> customerVouchers = voucherExternalApi.getCustomerVouchers(customerId);
-            
-            if (customerVouchers.isEmpty()) {
-                log.info("No vouchers found for customer: {}", customerId);
-                return ResponseEntity.noContent().build();
-            }
-            
-            log.info("Successfully retrieved {} vouchers for customer: {}", customerVouchers.size(), customerId);
-            return ResponseEntity.ok(customerVouchers);
-            
-        } catch (IllegalArgumentException e) {
-            log.warn("Invalid customer ID format: {}", e.getMessage());
-            return ResponseEntity.badRequest().build();
-        } catch (SecurityException e) {
-            log.warn("Access denied for customer: {}", customerId);
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        } catch (Exception e) {
-            log.error("Error retrieving vouchers for customer: {}", customerId, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        if (customerVouchers.isEmpty()) {
+            return ResponseEntity.noContent().build();
         }
+        
+        // Convert to HATEOAS responses
+        List<VoucherHateoasResponse> hateoasResponses = customerVouchers.stream()
+                .map(voucher -> {
+                    VoucherHateoasResponse response = new VoucherHateoasResponse(voucher);
+                    response.add(hateoasLinkBuilderService.buildVoucherLinks("default"));
+                    return response;
+                })
+                .collect(Collectors.toList());
+        
+        // Create collection model with links
+        CollectionModel<VoucherHateoasResponse> collectionModel = CollectionModel.of(hateoasResponses);
+        collectionModel.add(hateoasLinkBuilderService.buildCollectionLinks());
+        
+        return ResponseEntity.ok(collectionModel);
     }
 
     /**
@@ -240,28 +251,16 @@ public class VoucherController {
             description = "Internal server error"
         )
     })
+    @LogBusinessOperation(
+        value = "Redeem voucher from pack",
+        category = "VOUCHER_REDEMPTION"
+    )
+    @LogMethodEntry
+    @LogMethodExit
+    @LogMethodError
     public ResponseEntity<VoucherExternalResponse> redeemVoucherFromPack(
             @Valid @RequestBody VoucherRedeemRequest request) {
-        log.info("Processing voucher redemption request for customer: {} from pack: {}", 
-                request.getCustomerId(), request.getVoucherPackId());
-        
-        try {
-            VoucherExternalResponse redeemedVoucher = voucherExternalApi.redeemVoucherFromPack(request);
-            
-            log.info("Successfully redeemed voucher for customer: {} from pack: {}", 
-                    request.getCustomerId(), request.getVoucherPackId());
-            return ResponseEntity.status(HttpStatus.CREATED).body(redeemedVoucher);
-            
-        } catch (IllegalArgumentException e) {
-            log.warn("Invalid redemption request data: {}", e.getMessage());
-            return ResponseEntity.badRequest().build();
-        } catch (SecurityException e) {
-            log.warn("Security violation during redemption: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        } catch (Exception e) {
-            log.error("Error processing voucher redemption for customer: {} from pack: {}", 
-                    request.getCustomerId(), request.getVoucherPackId(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        VoucherExternalResponse redeemedVoucher = voucherExternalApi.redeemVoucherFromPack(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(redeemedVoucher);
     }
 }

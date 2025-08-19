@@ -5,9 +5,6 @@ import com.poly.promotion.domain.core.entity.VoucherPack;
 import com.poly.promotion.domain.core.valueobject.*;
 import org.mapstruct.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -47,10 +44,10 @@ import java.util.List;
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
     nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
     uses = {
-        VoucherPackIdMapper.class,
+        SharedMappers.VoucherPackIdMapper.class,
         VoucherPackStatusMapper.class,
-        DiscountMapper.class,
-        DateRangeMapper.class
+        SharedMappers.DiscountMapper.class,
+        SharedMappers.DateRangeMapper.class
     }
 )
 public interface VoucherPackTransformer {
@@ -245,125 +242,6 @@ abstract class VoucherPackStatusMapper {
     }
 }
 
-/**
- * <h2>DiscountMapper Class</h2>
- * 
- * <p>Custom mapper for converting between Discount value objects and BigDecimal primitives.
- * This class handles the conversion between domain value objects and database primitives.</p>
- */
-@Mapper(componentModel = "spring")
-abstract class DiscountMapper {
 
-    /**
-     * Converts a Discount value object to a BigDecimal primitive.
-     * 
-     * @param discount the Discount value object
-     * @return the corresponding BigDecimal value
-     */
-    @Named("discountToBigDecimal")
-    public BigDecimal discountToBigDecimal(Discount discount) {
-        return discount != null ? discount.getValue() : null;
-    }
 
-    /**
-     * Converts a BigDecimal primitive to a Discount value object.
-     * Note: This is a simplified mapping - in practice, you might need to determine
-     * the discount type based on business logic or additional context.
-     * 
-     * @param amount the BigDecimal value
-     * @return the corresponding Discount value object
-     */
-    @Named("bigDecimalToDiscount")
-    public Discount bigDecimalToDiscount(BigDecimal amount) {
-        if (amount == null) {
-            return null;
-        }
-        
-        // Default to percentage discount for values <= 100
-        // This is a simplified approach - in practice, you might need more context
-        if (amount.compareTo(BigDecimal.valueOf(100)) <= 0) {
-            return new DiscountPercentage(amount.doubleValue());
-        } else {
-            // For fixed amount discounts, we'll use a default approach
-            // In practice, you might need to determine the discount type differently
-            return new DiscountPercentage(amount.doubleValue());
-        }
-    }
-}
 
-/**
- * <h2>DateRangeMapper Class</h2>
- * 
- * <p>Custom mapper for converting between DateRange value objects and String primitives.
- * This class handles the conversion between domain value objects and database primitives.</p>
- */
-@Mapper(componentModel = "spring")
-abstract class DateRangeMapper {
-
-    /**
-     * Converts a DateRange value object to a String primitive.
-     * 
-     * @param dateRange the DateRange value object
-     * @return the corresponding String representation
-     */
-    @Named("dateRangeToString")
-    public String dateRangeToString(DateRange dateRange) {
-        return dateRange != null ? dateRange.toString() : null;
-    }
-
-    /**
-     * Converts a String primitive to a DateRange value object.
-     * 
-     * @param dateRangeString the String representation
-     * @return the corresponding DateRange value object
-     */
-    @Named("stringToDateRange")
-    public DateRange stringToDateRange(String dateRangeString) {
-        if (dateRangeString == null || dateRangeString.trim().isEmpty()) {
-            return null;
-        }
-        
-        try {
-            // Parse the date range string in format "X UNIT"
-            String[] parts = dateRangeString.trim().split("\\s+");
-            if (parts.length != 2) {
-                throw new IllegalArgumentException("Invalid date range format. Expected 'X UNIT' format.");
-            }
-            
-            long value = Long.parseLong(parts[0]);
-            String unitStr = parts[1].toUpperCase();
-            
-            // Map string units to ChronoUnit
-            java.time.temporal.ChronoUnit unit;
-            switch (unitStr) {
-                case "DAYS":
-                    unit = java.time.temporal.ChronoUnit.DAYS;
-                    break;
-                case "WEEKS":
-                    unit = java.time.temporal.ChronoUnit.WEEKS;
-                    break;
-                case "MONTHS":
-                    unit = java.time.temporal.ChronoUnit.MONTHS;
-                    break;
-                case "YEARS":
-                    unit = java.time.temporal.ChronoUnit.YEARS;
-                    break;
-                case "HOURS":
-                    unit = java.time.temporal.ChronoUnit.HOURS;
-                    break;
-                case "MINUTES":
-                    unit = java.time.temporal.ChronoUnit.MINUTES;
-                    break;
-                case "SECONDS":
-                    unit = java.time.temporal.ChronoUnit.SECONDS;
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unknown time unit: " + unitStr);
-            }
-            
-            return new DateRange((int) value, unit);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid number in date range: " + dateRangeString, e);
-        }
-    }
-}

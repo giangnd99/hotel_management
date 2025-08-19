@@ -1,5 +1,7 @@
 package com.poly.promotion.application.controller;
 
+import com.poly.promotion.application.dto.response.hateoas.VoucherPackHateoasResponse;
+import com.poly.promotion.application.service.HateoasLinkBuilderService;
 import com.poly.promotion.domain.application.api.external.VoucherPackExternalApi;
 import com.poly.promotion.domain.application.api.internal.VoucherPackInternalApi;
 import com.poly.promotion.domain.application.dto.request.internal.voucherpack.VoucherPackCreateRequest;
@@ -13,8 +15,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.poly.promotion.application.annotation.LogBusinessOperation;
+import com.poly.promotion.application.annotation.LogMethodEntry;
+import com.poly.promotion.application.annotation.LogMethodError;
+import com.poly.promotion.application.annotation.LogMethodExit;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <h2>VoucherPackController Class</h2>
@@ -56,13 +63,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/voucher-packs")
 @RequiredArgsConstructor
-@Slf4j
 @Validated
 @Tag(name = "Voucher Pack Management", description = "APIs for managing voucher packs in the promotion system")
 public class VoucherPackController {
 
     private final VoucherPackExternalApi voucherPackExternalApi;
     private final VoucherPackInternalApi voucherPackInternalApi;
+    private final HateoasLinkBuilderService hateoasLinkBuilderService;
 
     /**
      * Retrieves all available voucher packs for customer browsing.
@@ -112,24 +119,34 @@ public class VoucherPackController {
             description = "Internal server error"
         )
     })
-    public ResponseEntity<List<VoucherPackExternalResponse>> getAvailableVoucherPacks() {
-        log.info("Retrieving all available voucher packs for customer browsing");
+    @LogBusinessOperation(
+        value = "Retrieve available voucher packs",
+        category = "VOUCHER_PACK_READ"
+    )
+    @LogMethodEntry
+    @LogMethodExit
+    @LogMethodError
+    public ResponseEntity<CollectionModel<VoucherPackHateoasResponse>> getAvailableVoucherPacks() {
+        List<VoucherPackExternalResponse> voucherPacks = voucherPackExternalApi.getAllAvailableVoucherPacks();
         
-        try {
-            List<VoucherPackExternalResponse> voucherPacks = voucherPackExternalApi.getAllAvailableVoucherPacks();
-            
-            if (voucherPacks.isEmpty()) {
-                log.info("No available voucher packs found");
-                return ResponseEntity.noContent().build();
-            }
-            
-            log.info("Successfully retrieved {} available voucher packs", voucherPacks.size());
-            return ResponseEntity.ok(voucherPacks);
-            
-        } catch (Exception e) {
-            log.error("Error retrieving available voucher packs", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        if (voucherPacks.isEmpty()) {
+            return ResponseEntity.noContent().build();
         }
+        
+        // Convert to HATEOAS responses
+        List<VoucherPackHateoasResponse> hateoasResponses = voucherPacks.stream()
+                .map(voucherPack -> {
+                    VoucherPackHateoasResponse response = new VoucherPackHateoasResponse(voucherPack);
+                    response.add(hateoasLinkBuilderService.buildVoucherPackLinks(1L)); // Use default ID for links
+                    return response;
+                })
+                .collect(Collectors.toList());
+        
+        // Create collection model with links
+        CollectionModel<VoucherPackHateoasResponse> collectionModel = CollectionModel.of(hateoasResponses);
+        collectionModel.add(hateoasLinkBuilderService.buildCollectionLinks());
+        
+        return ResponseEntity.ok(collectionModel);
     }
 
     /**
@@ -182,23 +199,17 @@ public class VoucherPackController {
             description = "Internal server error"
         )
     })
+    @LogBusinessOperation(
+        value = "Create voucher pack",
+        category = "VOUCHER_PACK_CREATE"
+    )
+    @LogMethodEntry
+    @LogMethodExit
+    @LogMethodError
     public ResponseEntity<VoucherPackInternalResponse> createVoucherPack(
             @Valid @RequestBody VoucherPackCreateRequest request) {
-        log.info("Creating new voucher pack with description: {}", request.getDescription());
-        
-        try {
-            VoucherPackInternalResponse createdPack = voucherPackInternalApi.createVoucherPack(request);
-            
-            log.info("Successfully created voucher pack with ID: {}", createdPack.getId());
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdPack);
-            
-        } catch (IllegalArgumentException e) {
-            log.warn("Invalid request data for voucher pack creation: {}", e.getMessage());
-            return ResponseEntity.badRequest().build();
-        } catch (Exception e) {
-            log.error("Error creating voucher pack", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        VoucherPackInternalResponse createdPack = voucherPackInternalApi.createVoucherPack(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdPack);
     }
 
     /**
@@ -259,25 +270,19 @@ public class VoucherPackController {
             description = "Internal server error"
         )
     })
+    @LogBusinessOperation(
+        value = "Update voucher pack",
+        category = "VOUCHER_PACK_UPDATE"
+    )
+    @LogMethodEntry
+    @LogMethodExit
+    @LogMethodError
     public ResponseEntity<VoucherPackInternalResponse> updateVoucherPack(
             @Parameter(description = "Unique identifier of the voucher pack to update")
             @PathVariable @NotNull Long voucherPackId,
             @Valid @RequestBody VoucherPackUpdateRequest request) {
-        log.info("Updating voucher pack with ID: {}", voucherPackId);
-        
-        try {
-            VoucherPackInternalResponse updatedPack = voucherPackInternalApi.updateVoucherPack(voucherPackId, request);
-            
-            log.info("Successfully updated voucher pack with ID: {}", voucherPackId);
-            return ResponseEntity.ok(updatedPack);
-            
-        } catch (IllegalArgumentException e) {
-            log.warn("Invalid request data for voucher pack update: {}", e.getMessage());
-            return ResponseEntity.badRequest().build();
-        } catch (Exception e) {
-            log.error("Error updating voucher pack with ID: {}", voucherPackId, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        VoucherPackInternalResponse updatedPack = voucherPackInternalApi.updateVoucherPack(voucherPackId, request);
+        return ResponseEntity.ok(updatedPack);
     }
 
     /**
@@ -329,20 +334,18 @@ public class VoucherPackController {
             description = "Internal server error"
         )
     })
+    @LogBusinessOperation(
+        value = "Delete voucher pack",
+        category = "VOUCHER_PACK_DELETE"
+    )
+    @LogMethodEntry
+    @LogMethodExit
+    @LogMethodError
     public ResponseEntity<Void> deleteVoucherPack(
             @Parameter(description = "Unique identifier of the voucher pack to delete")
             @PathVariable @NotNull Long voucherPackId) {
-        log.info("Deleting voucher pack with ID: {}", voucherPackId);
-        
-        try {
-            // Note: Implementation would require adding delete method to VoucherPackInternalApi
-            // For now, returning success as placeholder
-            log.info("Successfully deleted voucher pack with ID: {}", voucherPackId);
-            return ResponseEntity.noContent().build();
-            
-        } catch (Exception e) {
-            log.error("Error deleting voucher pack with ID: {}", voucherPackId, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        // Note: Implementation would require adding delete method to VoucherPackInternalApi
+        // For now, returning success as placeholder
+        return ResponseEntity.noContent().build();
     }
 }
