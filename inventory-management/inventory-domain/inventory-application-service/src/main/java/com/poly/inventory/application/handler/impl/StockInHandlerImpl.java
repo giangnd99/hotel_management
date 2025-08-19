@@ -27,22 +27,20 @@ public class StockInHandlerImpl implements StockInHandler {
 
     @Override
     public TransactionDto handle(TransactionDto dto) {
+        if (dto.getQuantity() == null || dto.getQuantity() <= 0) {
+            throw new IllegalArgumentException("Số lượng nhập phải > 0");
+        }
+
         InventoryItem item = loadInventoryPort.loadItemById(dto.getItemId())
                 .orElseThrow(() -> new RuntimeException("Item not found"));
 
-//        var staff = staffServiceClient.getStaffById(dto.getStaffId()).getBody();
-//        if (staff == null) {
-//            throw new RuntimeException("Staff not found");
-//        }
-
-        // quantity: Quantity + int
         item.setQuantity(item.getQuantity().add(new Quantity(dto.getQuantity())));
         saveInventoryPort.save(item);
 
-        dto.setTransactionType("IN");
+        dto.setTransactionType("IMPORT");
         dto.setTransactionDate(LocalDateTime.now());
 
         var domain = saveTransactionPort.save(toDomain(dto));
-        return toDto(domain);  // << return từ domain object sau khi save
+        return toDto(domain);
     }
 }
