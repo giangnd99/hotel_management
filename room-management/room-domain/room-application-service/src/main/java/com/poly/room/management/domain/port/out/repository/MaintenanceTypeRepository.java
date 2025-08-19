@@ -16,4 +16,6 @@ public interface MaintenanceTypeRepository {
     void delete(MaintenanceType maintenanceType);
 
     List<MaintenanceType> findAll();
+    
+    Optional<MaintenanceType> findByName(String name);
 }

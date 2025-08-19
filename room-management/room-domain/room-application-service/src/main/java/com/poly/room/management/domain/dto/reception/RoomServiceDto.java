@@ -1,4 +1,4 @@
-package com.poly.booking.management.domain.dto;
+package com.poly.room.management.domain.dto.reception;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

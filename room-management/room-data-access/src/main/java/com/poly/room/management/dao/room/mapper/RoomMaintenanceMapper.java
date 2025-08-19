@@ -23,9 +23,10 @@ public class RoomMaintenanceMapper {
         return RoomMaintenance.Builder.builder()
                 .id(new MaintenanceId(entity.getMaintenanceId()))
                 .room(roomMapper.toDomain(entity.getRoom()))
-                .scheduledDate(DateCustom.of(entity.getMaintenanceDate().toLocalDateTime()))
-                .status(MaintenanceStatus.valueOf(entity.getStatus()))
+                .scheduledDate(entity.getScheduledDate() != null ? DateCustom.of(entity.getScheduledDate().toLocalDateTime()) : null)
+                .status(entity.getStatus() != null ? MaintenanceStatus.valueOf(entity.getStatus()) : MaintenanceStatus.PENDING)
                 .maintenanceType(maintenanceTypeMapper.toDomain(entity.getMaintenanceType()))
+                .description(entity.getDescription())
                 .build();
     }
 
@@ -33,9 +34,14 @@ public class RoomMaintenanceMapper {
         return RoomMaintenanceEntity.builder()
                 .maintenanceId(domain.getId().getValue())
                 .room(roomMapper.toEntity(domain.getRoom()))
-                .maintenanceDate(Timestamp.valueOf(domain.getScheduledDate().getValue()))
-                .status(domain.getStatus().name())
+                .scheduledDate(domain.getScheduledDate() != null ? Timestamp.valueOf(domain.getScheduledDate().getValue()) : null)
+                .status(domain.getStatus() != null ? domain.getStatus().name() : MaintenanceStatus.PENDING.name())
                 .maintenanceType(maintenanceTypeMapper.toEntity(domain.getMaintenanceType()))
+                .description(domain.getDescription())
                 .build();
+    }
+
+    public RoomMaintenanceEntity toEntity(RoomMaintenance domain) {
+        return toJpaEntity(domain);
     }
 }

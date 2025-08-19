@@ -38,11 +38,7 @@ public class BookingCreateHelper {
     private final BookingRepository bookingRepository;
     private final RoomClient roomClient;
     private final RoomDataMapper roomDataMapper;
-    private final CustomerDataMapper customerDataMapper;
-    private final PaymentDataMapper paymentDataMapper;
     private final BookingDataMapper bookingDataMapper;
-    private final BookingSagaHelper bookingSagaHelper;
-    private final PaymentOutboxImpl paymentOutboxHelper;
     private final CustomerRepository customerRepository;
     private final BookingDomainService bookingDomainService;
 
@@ -103,16 +99,7 @@ public class BookingCreateHelper {
         return bookingCreatedEvent;
     }
 
-    public void triggerDepositStep(BookingCreatedEvent bookingCreatedEvent) {
 
-        paymentOutboxHelper.saveWithPayloadAndBookingStatusAndSagaStatusAndOutboxStatusAndSagaId(
-                paymentDataMapper.bookingCreatedEventToRoomBookingEventPayload(bookingCreatedEvent),
-                bookingCreatedEvent.getBooking().getStatus(),
-                bookingSagaHelper.bookingStatusToSagaStatus(bookingCreatedEvent.getBooking().getStatus()),
-                OutboxStatus.STARTED,
-                UUID.randomUUID());
-
-    }
 
     public BookingCreatedResponse responseDto(BookingCreatedEvent bookingCreatedEvent, CreateBookingCommand createBookingCommand) {
         return bookingDataMapper.bookingCreatedEventToBookingCreatedResponse(bookingCreatedEvent,

@@ -3,7 +3,6 @@ package com.poly.payment.management.domain.model;
 import com.poly.domain.entity.AggregateRoot;
 import com.poly.domain.valueobject.InvoiceId;
 import com.poly.payment.management.domain.value_object.*;
-import com.poly.paymentdomain.model.value_object.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

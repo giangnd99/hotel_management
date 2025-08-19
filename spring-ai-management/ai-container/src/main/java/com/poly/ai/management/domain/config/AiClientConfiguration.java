@@ -26,10 +26,10 @@ public class AiClientConfiguration {
     @Value("${spring.ai.ollama.base-url:http://localhost:11434}")
     private String ollamaBaseUrl;
 
-    @Value("${spring.ai.ollama.chat.options.model:llama3}")
+    @Value("${spring.ai.ollama.chat.model}")
     private String ollamaChatModel;
 
-    @Value("${spring.ai.ollama.embedding.options.model:nomic-embed-text}")
+    @Value("${spring.ai.ollama.embedding.model}")
     private String ollamaEmbeddingModel;
 
     @Bean

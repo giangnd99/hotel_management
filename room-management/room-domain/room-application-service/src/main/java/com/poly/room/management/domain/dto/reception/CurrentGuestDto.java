@@ -13,15 +13,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CurrentGuestDto {
-    private UUID guestId;
-    private String name;
-    private String phone;
-    private String email;
+    private UUID checkInId;
     private String roomNumber;
-    private String roomType;
+    private String guestName;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
-    private Integer numberOfGuests;
-    private String status; // CHECKED_IN, EXTENDED
-    private String specialRequests;
+    private String status;
 }

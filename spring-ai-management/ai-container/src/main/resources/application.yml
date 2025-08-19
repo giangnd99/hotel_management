@@ -32,12 +32,11 @@ spring:
 
   application:
     name: spring-management
-  # Spring AI - Ollama
   ai:
     ollama:
       base-url: http://localhost:11434
       chat:
-        model: llama3
+        model: gemma:2b
       embedding:
         model: nomic-embed-text
         enabled: true

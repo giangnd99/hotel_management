@@ -1,5 +1,19 @@
 version: '3.8'
 services:
+  ollama:
+    build: ./ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:11434/api/tags" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
   postgres:
     image: ankane/pgvector:latest
     container_name: pgvector-db
@@ -190,7 +204,7 @@ volumes:
   kafka-data-1:
   kafka-data-2:
   kafka-data-3:
-
+  ollama_models:
 networks:
   kafka-net:
     driver: bridge

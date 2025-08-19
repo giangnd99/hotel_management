@@ -7,12 +7,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class WalkInCheckInRequest {
+    @NotNull(message = "Guest ID is required")
+    private UUID guestId;
+
     @NotBlank(message = "Guest name is required")
     private String guestName;
 
@@ -40,4 +44,5 @@ public class WalkInCheckInRequest {
     private String idNumber;
     private String specialRequests;
     private String notes;
+    private String checkedInBy;
 }

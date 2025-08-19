@@ -4,7 +4,7 @@ package com.poly.booking.management.domain.saga.payment;
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.event.BookingDepositedEvent;
 import com.poly.booking.management.domain.outbox.model.PaymentOutboxMessage;
-import com.poly.booking.management.domain.message.PaymentMessageResponse;
+import com.poly.booking.management.domain.message.reponse.PaymentMessageResponse;
 import com.poly.domain.valueobject.PaymentStatus;
 import com.poly.saga.SagaStep;
 import lombok.RequiredArgsConstructor;

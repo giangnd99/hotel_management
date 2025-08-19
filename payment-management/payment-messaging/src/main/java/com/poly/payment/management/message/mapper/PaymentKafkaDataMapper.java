@@ -1,9 +1,11 @@
 package com.poly.payment.management.message.mapper;
 
+import com.poly.booking.management.domain.kafka.model.BookingPaymentPendingResponseAvro;
 import com.poly.booking.management.domain.kafka.model.BookingPaymentRequestAvro;
 import com.poly.booking.management.domain.kafka.model.BookingPaymentResponseAvro;
 import com.poly.booking.management.domain.kafka.model.PaymentBookingStatus;
 
+import com.poly.payment.management.domain.message.BookingPaymentPendingResponse;
 import com.poly.payment.management.domain.message.BookingPaymentRequest;
 import com.poly.payment.management.domain.message.BookingPaymentResponse;
 import com.poly.payment.management.domain.message.PaymentStatus;
@@ -11,6 +13,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PaymentKafkaDataMapper {
+
+    public BookingPaymentPendingResponseAvro toBookingPaymentPendingResponseAvro(BookingPaymentPendingResponse message) {
+        return BookingPaymentPendingResponseAvro.newBuilder()
+                .setBookingId(message.getBookingId())
+                .setCustomerId(message.getCustomerId())
+                .setPaymentBookingStatus(PaymentBookingStatus.valueOf(message.getPaymentBookingStatus().name()))
+                .setCreatedAt(message.getCreatedAt())
+                .setId(message.getId())
+                .setSagaId(message.getSagaId())
+                .setPrice(message.getPrice())
+                .setCreatedAt(message.getCreatedAt())
+                .setUrlPayment(message.getUrlPayment())
+                .build();
+    }
 
     public BookingPaymentRequestAvro toBookingPaymentRequestAvro(BookingPaymentRequest message) {
         return BookingPaymentRequestAvro.newBuilder()
