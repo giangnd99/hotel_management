@@ -38,9 +38,9 @@ public class Booking extends AggregateRoot<BookingId> {
         checkOutDate = builder.checkOutDate;
         status = builder.status;
         trackingId = builder.trackingId;
-        setActualCheckInDate(builder.actualCheckInDate);
-        setActualCheckOutDate(builder.actualCheckOutDate);
-        setTotalPrice(builder.totalPrice);
+        actualCheckInDate = builder.actualCheckInDate;
+        actualCheckOutDate = builder.actualCheckOutDate;
+        totalPrice = builder.totalPrice;
         upgradeSuggestion = builder.upgradeSuggestion;
         bookingRooms = builder.bookingRooms;
         failureMessages = builder.failureMessages;
@@ -141,6 +141,10 @@ public class Booking extends AggregateRoot<BookingId> {
         if (checkInDate.isAfter(checkOutDate)) {
             throw new BookingDomainException("Check-in date must be before check-out date");
         }
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     private void validateTotalPrice() {

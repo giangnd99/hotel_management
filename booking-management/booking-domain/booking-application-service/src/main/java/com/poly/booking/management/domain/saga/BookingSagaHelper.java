@@ -30,7 +30,7 @@ public class BookingSagaHelper {
      * Tìm booking theo ID
      */
     public Booking findBooking(String bookingId) {
-        Optional<Booking> booking = bookingRepository.findById(new BookingId(UUID.fromString(bookingId)));
+        Optional<Booking> booking = bookingRepository.findById(UUID.fromString(bookingId));
         if (booking.isEmpty()) {
             log.error("Booking with id: {} could not be found!", bookingId);
             throw new BookingDomainException("Booking with id " + bookingId + " could not be found!");

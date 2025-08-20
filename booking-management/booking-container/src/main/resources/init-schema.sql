@@ -1,8 +1,5 @@
--- Xóa schema cũ nếu tồn tại để tạo mới hoàn toàn
 DROP SCHEMA IF EXISTS booking CASCADE;
-
--- Tạo schema mới
-CREATE SCHEMA booking;
+CREATE SCHEMA IF NOT EXISTS booking;
 
 -- Tạo extension để hỗ trợ UUID
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

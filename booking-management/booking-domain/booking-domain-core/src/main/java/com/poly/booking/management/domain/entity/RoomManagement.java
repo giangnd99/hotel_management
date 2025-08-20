@@ -4,7 +4,6 @@ import com.poly.domain.valueobject.Money;
 import com.poly.domain.valueobject.RoomId;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class RoomManagement {
 
@@ -14,26 +13,27 @@ public class RoomManagement {
         this.rooms = rooms;
     }
 
-    public void setRoomsInformation(Booking booking) {
+    public List<Room> setRoomsInformation(List<RoomId> requestedRooms) {
         HashMap<RoomId, Room> roomMapById = getRoomMapById();
 
         Set<RoomId> availableRooms = new HashSet<>();
 
-        booking.getBookingRooms().forEach(
-                bookingRoom -> {
-                    RoomId roomId = bookingRoom.getRoom().getId();
-                    Room roomInHotel = roomMapById.get(bookingRoom.getId());
+        List<Room> updatedRooms = new ArrayList<>();
+        requestedRooms.forEach(
+                bookingRoomId -> {
+                    Room roomInHotel = roomMapById.get(bookingRoomId);
                     if (roomInHotel != null
-                            && !availableRooms.contains(bookingRoom.getId())
+                            && !availableRooms.contains(bookingRoomId)
                             && roomInHotel.checkAvailableRoom()) {
-
-                        availableRooms.add(roomId);
-                        bookingRoom.getRoom().updateBookedRoom(
+                        availableRooms.add(bookingRoomId);
+                        roomInHotel.updateBookedRoom(
                                 roomInHotel.getRoomNumber(),
                                 roomInHotel.getBasePrice());
+                        updatedRooms.add(roomInHotel);
                     }
                 }
         );
+        return updatedRooms;
     }
 
     private HashMap<RoomId, Room> getRoomMapById() {

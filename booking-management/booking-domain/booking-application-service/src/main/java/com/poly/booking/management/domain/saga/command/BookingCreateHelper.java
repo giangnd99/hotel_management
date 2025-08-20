@@ -1,31 +1,25 @@
 package com.poly.booking.management.domain.saga.command;
 
-import com.poly.booking.management.domain.dto.request.CreateBookingCommand;
-import com.poly.booking.management.domain.dto.response.BookingCreatedResponse;
+import com.poly.booking.management.domain.dto.request.CreateBookingRequest;
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.entity.BookingRoom;
 import com.poly.booking.management.domain.entity.Customer;
 import com.poly.booking.management.domain.entity.Room;
-import com.poly.booking.management.domain.event.BookingCreatedEvent;
 import com.poly.booking.management.domain.exception.BookingDomainException;
 import com.poly.booking.management.domain.mapper.BookingDataMapper;
-import com.poly.booking.management.domain.mapper.CustomerDataMapper;
-import com.poly.booking.management.domain.mapper.PaymentDataMapper;
 import com.poly.booking.management.domain.mapper.RoomDataMapper;
-import com.poly.booking.management.domain.outbox.service.impl.PaymentOutboxImpl;
-import com.poly.booking.management.domain.port.out.client.CustomerClient;
 import com.poly.booking.management.domain.port.out.client.RoomClient;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
-import com.poly.booking.management.domain.port.out.repository.CustomerRepository;
-import com.poly.booking.management.domain.saga.BookingSagaHelper;
+import com.poly.booking.management.domain.port.out.repository.RoomRepository;
 import com.poly.booking.management.domain.service.BookingDomainService;
 import com.poly.domain.dto.response.room.RoomResponse;
 import com.poly.domain.valueobject.*;
-import com.poly.outbox.OutboxStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,7 +34,7 @@ public class BookingCreateHelper {
     private final RoomClient roomClient;
     private final RoomDataMapper roomDataMapper;
     private final BookingDataMapper bookingDataMapper;
-    private final CustomerRepository customerRepository;
+    private final RoomRepository roomRepository;
     private final BookingDomainService bookingDomainService;
 
     public List<Room> getRooms() {
@@ -78,44 +72,17 @@ public class BookingCreateHelper {
         log.info("Booking with id: {} has been created successfully!", savedBooking.getId().getValue());
     }
 
-    public BookingCreatedEvent initAndValidateBookingCreatedEvent(CreateBookingCommand createBookingCommand) {
-        List<Room> roomsRequest = roomDataMapper.roomsDtoToRooms(createBookingCommand.getRooms());
+    public Booking initAndValidateBookingCreatedEvent(CreateBookingRequest request, Customer customer) {
+        List<RoomId> roomsRequest = request.getListRoomId().stream().map(RoomId::new).toList();
         List<Room> allRooms = getRooms();
-        Customer customer = validateAndGetCustomer(createBookingCommand.getCustomerId());
+
         Booking booking = Booking.Builder.builder()
-                .customer(customer)
-                .checkInDate(DateCustom.of(createBookingCommand.getCheckInDate()))
-                .checkOutDate(DateCustom.of(createBookingCommand.getCheckOutDate()))
+                .checkInDate(DateCustom.of(LocalDateTime.of(request.getCheckInDate(), LocalTime.now())))
+                .checkOutDate(DateCustom.of(LocalDateTime.of(request.getCheckOutDate(), LocalTime.now())))
                 .build();
-
-        List<BookingRoom> bookingRooms = roomDataMapper.mapRoomWithBooking(booking, roomsRequest);
-
-        booking.setBookingRooms(bookingRooms);
-
-        BookingCreatedEvent bookingCreatedEvent =
-                bookingDomainService.validateAndInitiateBooking(booking, allRooms);
-
-        saveBooking(bookingCreatedEvent.getBooking());
-
-        return bookingCreatedEvent;
-    }
-
-
-    public BookingCreatedResponse responseDto(BookingCreatedEvent bookingCreatedEvent, CreateBookingCommand createBookingCommand) {
-        return bookingDataMapper.bookingCreatedEventToBookingCreatedResponse(bookingCreatedEvent,
-                createBookingCommand);
-    }
-
-
-    private Customer validateAndGetCustomer(String customerId) {
-        checkCustomer(customerId);
-        Optional<Customer> customerOpt = customerRepository.findById(UUID.fromString(customerId));
-
-        if (customerOpt.isEmpty()) {
-            log.warn("Customer with id: {} could not be found! in booking service", customerId);
-            throw new BookingDomainException("Customer with id " + customerId + " could not be found! in booking service");
-        }
-
-        return customerOpt.get();
+        bookingDomainService.validateAndInitiateBooking(booking, roomsRequest, allRooms);
+        booking.setCustomer(customer);
+        saveBooking(booking);
+        return booking;
     }
 }

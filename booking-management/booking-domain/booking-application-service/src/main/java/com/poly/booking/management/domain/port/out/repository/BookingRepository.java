@@ -1,7 +1,6 @@
 package com.poly.booking.management.domain.port.out.repository;
 
 import com.poly.booking.management.domain.entity.Booking;
-import com.poly.domain.valueobject.BookingId;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,7 +11,7 @@ public interface BookingRepository {
 
     Booking save(Booking booking);
 
-    Optional<Booking> findById(BookingId bookingId);
+    Optional<Booking> findById(UUID bookingId);
     
     // Dashboard & Statistics
     Long countTodayBookings();
@@ -22,10 +21,10 @@ public interface BookingRepository {
     
     // CRUD Operations
     List<Booking> findAll(int page, int size);
-    void deleteById(BookingId bookingId);
+    void deleteById(UUID bookingId);
     
     // Search & Filter
-    List<Booking> searchBookings(String customerName, String customerEmail, String roomNumber,
+    List<Booking> searchBookings(UUID customerName , String roomNumber,
                                 LocalDate checkInDate, LocalDate checkOutDate, int page, int size);
     List<Booking> filterBookingsByStatus(String status, int page, int size);
     List<Booking> filterBookingsByDateRange(LocalDate fromDate, LocalDate toDate, int page, int size);

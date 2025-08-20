@@ -3,6 +3,7 @@ package com.poly.booking.management.application.controller.rest;
 import com.poly.booking.management.domain.dto.*;
 import com.poly.booking.management.domain.dto.request.CreateBookingRequest;
 import com.poly.booking.management.domain.dto.request.UpdateBookingRequest;
+import com.poly.booking.management.domain.dto.response.DepositBookingResponse;
 import com.poly.booking.management.domain.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -122,8 +123,7 @@ public class BookingController {
     @GetMapping("/search")
     @Operation(summary = "Tìm kiếm booking")
     public ResponseEntity<List<BookingDto>> searchBookings(
-            @RequestParam(required = false) String customerName,
-            @RequestParam(required = false) String customerEmail,
+            @RequestParam(required = false) UUID customerId,
             @RequestParam(required = false) String roomNumber,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
@@ -131,7 +131,7 @@ public class BookingController {
             @RequestParam(defaultValue = "20") int size) {
         log.info("Searching bookings with filters");
         List<BookingDto> bookings = bookingService.searchBookings(
-                customerName, customerEmail, roomNumber, checkInDate, checkOutDate, page, size);
+                customerId, roomNumber, checkInDate, checkOutDate, page, size);
         return ResponseEntity.ok(bookings);
     }
 
@@ -246,9 +246,9 @@ public class BookingController {
 
     @PutMapping("/{bookingId}/payment/confirm")
     @Operation(summary = "Xác nhận thanh toán booking")
-    public ResponseEntity<BookingDto> confirmBookingPayment(@PathVariable UUID bookingId) {
+    public ResponseEntity<DepositBookingResponse> confirmBookingPayment(@PathVariable String bookingId) {
         log.info("Confirming payment for booking: {}", bookingId);
-        BookingDto updatedBooking = bookingService.confirmBookingPayment(bookingId);
+        DepositBookingResponse updatedBooking = bookingService.confirmBookingPayment(UUID.fromString(bookingId));
         return ResponseEntity.ok(updatedBooking);
     }
 

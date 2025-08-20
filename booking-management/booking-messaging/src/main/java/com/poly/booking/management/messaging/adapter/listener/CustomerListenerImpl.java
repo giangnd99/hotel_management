@@ -105,7 +105,7 @@ public class CustomerListenerImpl implements CustomerMessageListener {
 
     private Customer saveCustomerToRepo(Customer customer) {
         Customer savedCustomer = customerRepository.save(customer);
-        if (customerRepository.save(savedCustomer) == null) {
+        if (savedCustomer == null) {
             log.debug("Failed to saved the customer with id: {} in repository domain application",
                     savedCustomer.getId().getValue());
             throw new BookingDomainException(

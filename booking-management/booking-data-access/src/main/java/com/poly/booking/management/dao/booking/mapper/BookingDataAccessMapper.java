@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Component
@@ -19,7 +20,7 @@ public class BookingDataAccessMapper {
     public Booking toDomainEntity(BookingEntity bookingEntity) {
         return Booking.Builder.builder()
                 .id(new BookingId(bookingEntity.getId()))
-                .customer(customerEntityToCustomer(bookingEntity.getCustomer()))
+                .customer(customerEntityToCustomer(bookingEntity.getCustomerId()))
                 .checkInDate(DateCustom.of(bookingEntity.getCheckIn()))
                 .checkOutDate(DateCustom.of(bookingEntity.getCheckOut()))
                 .totalPrice(new Money(bookingEntity.getTotalPrice()))
@@ -42,32 +43,27 @@ public class BookingDataAccessMapper {
         dto.setStatus(booking.getStatus().name());
         dto.setCreatedAt(LocalDateTime.now()); // Có thể cần thêm trường này vào entity
         dto.setUpdatedAt(LocalDateTime.now()); // Có thể cần thêm trường này vào entity
-        
+
         // Set room information if available
         if (booking.getBookingRooms() != null && !booking.getBookingRooms().isEmpty()) {
             dto.setRoomId(booking.getBookingRooms().get(0).getRoom().getId().getValue());
             dto.setRoomNumber(booking.getBookingRooms().get(0).getRoom().getRoomNumber());
             // Room type not available in current Room entity
         }
-        
+
         return dto;
     }
 
-    private Customer customerEntityToCustomer(CustomerEntity customerEntity) {
+    private Customer customerEntityToCustomer(UUID customerId) {
         return Customer.Builder.builder()
-                .id(new CustomerId(customerEntity.getId()))
-                .email(customerEntity.getEmail())
-                .username(customerEntity.getUsername())
-                .name(customerEntity.getFirstName() + " " + customerEntity.getLastName())
-                .firstName(customerEntity.getFirstName())
-                .lastName(customerEntity.getLastName())
+                .id(new CustomerId(customerId))
                 .build();
     }
 
     public BookingEntity toEntity(Booking booking) {
         return BookingEntity.builder()
                 .id(booking.getId().getValue())
-                .customer(customerToCustomerEntity(booking.getCustomer()))
+                .customerId(booking.getCustomer().getId().getValue())
                 .checkIn(booking.getCheckInDate().getValue())
                 .checkOut(booking.getCheckOutDate().getValue())
                 .actualCheckIn(booking.getActualCheckInDate() != null ? booking.getActualCheckInDate().getValue() : null)

@@ -2,13 +2,13 @@ package com.poly.booking.management.domain.service;
 
 import com.poly.booking.management.domain.entity.*;
 import com.poly.booking.management.domain.event.*;
+import com.poly.domain.valueobject.RoomId;
 
 import java.util.List;
 
 public interface BookingDomainService {
 
-    BookingCreatedEvent validateAndInitiateBooking(Booking booking,
-                                                   List<Room> rooms);
+    BookingCreatedEvent validateAndInitiateBooking(Booking booking, List<RoomId> requestRooms, List<Room> rooms);
 
     BookingCancelledEvent cancelDepositBooking(Booking booking);
 

@@ -17,6 +17,7 @@ import java.util.UUID;
 public class BookingRoomEntity {
 
     @Id
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID id;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "booking_id")

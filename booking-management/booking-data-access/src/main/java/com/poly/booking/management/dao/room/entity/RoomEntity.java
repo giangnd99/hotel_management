@@ -1,10 +1,7 @@
 package com.poly.booking.management.dao.room.entity;
 
 import com.poly.booking.management.dao.booking.entity.BookingRoomEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
@@ -20,6 +17,7 @@ import java.util.UUID;
 public class RoomEntity {
 
     @Id
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID id;
 
     private String roomNumber;

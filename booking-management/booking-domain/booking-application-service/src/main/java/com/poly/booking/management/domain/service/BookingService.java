@@ -4,6 +4,7 @@ import com.poly.booking.management.domain.dto.BookingDto;
 import com.poly.booking.management.domain.dto.BookingStatisticsDto;
 import com.poly.booking.management.domain.dto.request.CreateBookingRequest;
 import com.poly.booking.management.domain.dto.request.UpdateBookingRequest;
+import com.poly.booking.management.domain.dto.response.DepositBookingResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,7 +28,7 @@ public interface BookingService {
     void deleteBooking(UUID bookingId);
 
     // Search & Filter
-    List<BookingDto> searchBookings(String customerName, String customerEmail, String roomNumber,
+    List<BookingDto> searchBookings(UUID customerId, String roomNumber,
                                     LocalDate checkInDate, LocalDate checkOutDate, int page, int size);
     List<BookingDto> filterBookingsByStatus(String status, int page, int size);
     List<BookingDto> filterBookingsByDateRange(LocalDate fromDate, LocalDate toDate, int page, int size);
@@ -49,7 +50,7 @@ public interface BookingService {
 
     // Payment
     String getBookingPaymentStatus(UUID bookingId);
-    BookingDto confirmBookingPayment(UUID bookingId);
+    DepositBookingResponse confirmBookingPayment(UUID bookingId);
 
     // Notifications
     void sendBookingConfirmation(UUID bookingId);

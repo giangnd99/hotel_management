@@ -43,6 +43,7 @@ public class ProcessWebhookDataUseCaseImpl implements ProcessWebhookDataUseCase 
     @Override
     public void handleProcessWebhook(ConfirmPaymentCommand command) {
         Optional<Payment> paymentOpt = paymentRepository.findByOrderCode(command.getReferenceCode());
+        log.info("Payment {}: {}", paymentOpt.isPresent() ? paymentOpt.get().getId().getValue() : null, paymentOpt.isPresent() ? paymentOpt.get().getStatus() : null);
 
         if (paymentOpt.isEmpty()) return;
         if (paymentOpt.get().getStatus().equals(PaymentStatus.PAID)) return;
@@ -67,8 +68,10 @@ public class ProcessWebhookDataUseCaseImpl implements ProcessWebhookDataUseCase 
                     Invoice invoice = invoiceOpt.get();
                     // Cập nhật trạng thái invoice
                     if (command.isStatus()) {
+                        log.info("Payment {}: {}", invoice.getId().getValue(), invoice.getStatus());
                         invoice.markAsPaid(command.getTransactionDateTime());
                     } else {
+                        log.info("Payment {}: {}", invoice.getId().getValue(), invoice.getStatus());
                         invoice.markAsFailed(command.getTransactionDateTime());
                     }
                     invoiceRepository.save(invoice);
@@ -82,8 +85,8 @@ public class ProcessWebhookDataUseCaseImpl implements ProcessWebhookDataUseCase 
         }
 
         paymentRepository.save(payment);
-
-        if (payment.getDescription().getValue().contains("Deposit for booking")) {
+        log.info("Payment {}: {} description {}", payment.getId().getValue(), payment.getStatus(), payment.getDescription().getValue());
+        if (payment.getDescription().getValue().contains("deposit")) {
             BookingPaymentResponse message = createBookingPaymentResponse(payment);
             log.info("Payment {}: {}", payment.getId().getValue(), message);
             bookingPaymentReplyPublisher.publishBookingPaymentReply(message);

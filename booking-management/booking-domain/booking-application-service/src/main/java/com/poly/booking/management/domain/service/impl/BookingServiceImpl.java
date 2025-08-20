@@ -2,43 +2,42 @@ package com.poly.booking.management.domain.service.impl;
 
 import com.poly.booking.management.domain.dto.BookingDto;
 import com.poly.booking.management.domain.dto.BookingStatisticsDto;
-import com.poly.booking.management.domain.dto.RoomDto;
-import com.poly.booking.management.domain.dto.request.CreateBookingCommand;
 import com.poly.booking.management.domain.dto.request.CreateBookingRequest;
 import com.poly.booking.management.domain.dto.request.UpdateBookingRequest;
-import com.poly.booking.management.domain.dto.response.BookingCreatedResponse;
+import com.poly.booking.management.domain.dto.response.CustomerDto;
+import com.poly.booking.management.domain.dto.response.DepositBookingResponse;
 import com.poly.booking.management.domain.entity.Booking;
-import com.poly.booking.management.domain.entity.BookingRoom;
 import com.poly.booking.management.domain.entity.Customer;
-import com.poly.booking.management.domain.entity.Room;
-import com.poly.booking.management.domain.mapper.BookingDataMapper;
+import com.poly.booking.management.domain.port.out.client.CustomerClient;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.port.out.repository.CustomerRepository;
-import com.poly.booking.management.domain.port.out.repository.RoomRepository;
 
-import com.poly.booking.management.domain.saga.command.BookingCreateCommendHandler;
+import com.poly.booking.management.domain.saga.command.BookingCreateHelper;
 import com.poly.booking.management.domain.service.BookingService;
+import com.poly.booking.management.domain.service.DepositBookingCommand;
 import com.poly.domain.valueobject.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
     private final CustomerRepository customerRepository;
-    private final RoomRepository roomRepository;
-    private final BookingCreateCommendHandler bookingCreateCommendHandler;
-    private final BookingDataMapper bookingDataMapper;
+    private final CustomerClient customerClient;
+    private final BookingCreateHelper bookingCreateHelper;
+
+    private final DepositBookingCommand depositBookingCommand;
 
 
     @Override
@@ -94,69 +93,47 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Optional<BookingDto> getBookingById(UUID bookingId) {
-        return bookingRepository.findById(new BookingId(bookingId))
+        return bookingRepository.findById(bookingId)
                 .map(this::mapToDto);
     }
 
     @Override
     public BookingDto createBooking(CreateBookingRequest request) {
-        // Validate customer exists
-        Customer customer = customerRepository.findById(request.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+        Optional<Customer> customerOpt = customerRepository.findByEmail(request.getCustomerEmail());
+        Customer customer = null;
+        if (customerOpt.isEmpty()) {
+            CustomerDto response = customerClient.getCustomerById(request.getCustomerId());
+            if (response != null) {
+                customer = mapToCustomer(response);
+                customer.setEmail(request.getCustomerEmail());
+                customer.setUsername(request.getCustomerEmail());
+                customer = customerRepository.save(customer);
+            } else {
+                log.error("Customer not found!");
+                throw new RuntimeException("Customer not found!");
+            }
+        }
+        customer = customerOpt.orElse(customer);
 
-        // Create new booking
-        Booking booking = Booking.Builder.builder()
-                .customer(customer)
-                .checkInDate(DateCustom.of(request.getCheckInDate().atStartOfDay()))
-                .checkOutDate(DateCustom.of(request.getCheckOutDate().atStartOfDay()))
-                .status(BookingStatus.PENDING)
-                .build();
+        Booking booking = bookingCreateHelper.initAndValidateBookingCreatedEvent(request, customer);
 
-        CreateBookingCommand createBookingCommand = CreateBookingCommand.builder()
-                .checkInDate(LocalDateTime.of(request.getCheckInDate(), LocalTime.now()))
-                .checkOutDate(LocalDateTime.of(request.getCheckOutDate(), LocalTime.now()))
-                .customerId(request.getCustomerId().toString())
-                .numberOfGuests(request.getNumberOfGuests())
-                .rooms(getListRoomsById(request.getListRoomId(), request))
-                .specialRequests(request.getSpecialRequests())
-                .build();
-        BookingCreatedResponse response = bookingCreateCommendHandler.createBooking(createBookingCommand);
-        // Save and return
-        booking.setBookingRooms(getListRoomsById(request.getListRoomId(), booking));
-        booking.setTotalPrice(new Money(response.getTotalAmount()));
-        booking.initiateBooking();
-        Booking savedBooking = bookingRepository.save(booking);
-        return mapToDto(savedBooking);
+        return mapToDto(booking);
     }
 
-    private List<RoomDto> getListRoomsById(List<UUID> roomsId, CreateBookingRequest request) {
-        return roomsId.stream().map(roomRepository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(room ->
-                        RoomDto.builder()
-                                .roomId(room.getId().getValue().toString())
-                                .roomNumber(room.getRoomNumber())
-                                .status(room.getStatus())
-                                .capacity(request.getNumberOfGuests())
-                                .basePrice(room.getBasePrice().getAmount())
-                                .build()).toList();
-    }
+    private Customer mapToCustomer(CustomerDto customerDto) {
 
-    private List<BookingRoom> getListRoomsById(List<UUID> roomsId, Booking booking) {
-        return roomsId.stream().map(roomRepository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get).map(room ->
-                        BookingRoom.builder()
-                                .room(room)
-                                .price(room.getBasePrice())
-                                .booking(booking)
-                                .build()).toList();
+        return Customer.Builder.builder()
+                .lastName(customerDto.getLastName())
+                .firstName(customerDto.getFirstName())
+                .name(customerDto.getLastName().concat(" ").concat(customerDto.getFirstName()))
+                .status(customerDto.isActive() ? Customer.CustomerStatus.ACTIVE : Customer.CustomerStatus.INACTIVE)
+                .id(new CustomerId(customerDto.getCustomerId()))
+                .build();
     }
 
     @Override
     public BookingDto updateBooking(UUID bookingId, UpdateBookingRequest request) {
-        Booking existingBooking = bookingRepository.findById(new BookingId(bookingId))
+        Booking existingBooking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         // Create a new builder with existing data
@@ -189,14 +166,14 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public void deleteBooking(UUID bookingId) {
-        bookingRepository.deleteById(new BookingId(bookingId));
+        bookingRepository.deleteById(bookingId);
     }
 
     @Override
-    public List<BookingDto> searchBookings(String customerName, String customerEmail, String roomNumber,
+    public List<BookingDto> searchBookings(UUID customerId, String roomNumber,
                                            LocalDate checkInDate, LocalDate checkOutDate, int page, int size) {
         List<Booking> bookings = bookingRepository.searchBookings(
-                customerName, customerEmail, roomNumber, checkInDate, checkOutDate, page, size);
+                customerId, roomNumber, checkInDate, checkOutDate, page, size);
         return bookings.stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
@@ -247,7 +224,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto cancelBooking(UUID bookingId) {
-        Booking booking = bookingRepository.findById(new BookingId(bookingId))
+        Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         booking.cancelBooking();
@@ -257,7 +234,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto confirmBooking(UUID bookingId) {
-        Booking booking = bookingRepository.findById(new BookingId(bookingId))
+        Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         booking.confirmBooking();
@@ -267,7 +244,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto checkInBooking(UUID bookingId) {
-        Booking booking = bookingRepository.findById(new BookingId(bookingId))
+        Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         booking.checkIn();
@@ -277,7 +254,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto checkOutBooking(UUID bookingId) {
-        Booking booking = bookingRepository.findById(new BookingId(bookingId))
+        Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         booking.checkOut();
@@ -287,20 +264,16 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public String getBookingPaymentStatus(UUID bookingId) {
-        Booking booking = bookingRepository.findById(new BookingId(bookingId))
+        Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         return booking.getStatus().name();
     }
 
     @Override
-    public BookingDto confirmBookingPayment(UUID bookingId) {
-        Booking booking = bookingRepository.findById(new BookingId(bookingId))
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
-
-        booking.paidBooking();
-        Booking paidBooking = bookingRepository.save(booking);
-        return mapToDto(paidBooking);
+    public DepositBookingResponse confirmBookingPayment(UUID bookingId) {
+        log.info("Confirming booking payment for booking id: {}", bookingId);
+        return depositBookingCommand.depositBooking(bookingId);
     }
 
     @Override

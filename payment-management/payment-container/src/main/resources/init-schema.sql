@@ -109,10 +109,8 @@ CREATE INDEX idx_invoice_restaurant_booking_id ON invoice_restaurant(invoice_boo
 -- Tạo bảng `invoice_payment`
 CREATE TABLE invoice_payment (
                                  id UUID PRIMARY KEY,
-                                 invoice_id UUID NOT NULL,
-                                 payment_id UUID NOT NULL,
-                                 FOREIGN KEY (invoice_id) REFERENCES invoice (id) ON DELETE CASCADE,
-                                 FOREIGN KEY (payment_id) REFERENCES payment (id) ON DELETE CASCADE
+                                 invoice_id UUID ,
+                                 payment_id UUID
 );
 
 -- Thêm ràng buộc UNIQUE để ngăn chặn việc liên kết thanh toán trùng lặp

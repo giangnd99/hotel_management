@@ -6,7 +6,6 @@ import com.poly.booking.management.dao.booking.repository.BookingJpaRepository;
 import com.poly.booking.management.domain.entity.Booking;
 
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
-import com.poly.domain.valueobject.BookingId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,31 +33,31 @@ public class BookingRepositoryImpl implements BookingRepository {
     }
 
     @Override
-    public Optional<Booking> findById(BookingId bookingId) {
-        return bookingJpaRepository.findById(bookingId.getValue())
+    public Optional<Booking> findById(UUID bookingId) {
+        return bookingJpaRepository.findById(bookingId)
                 .map(bookingDataAccessMapper::toDomainEntity);
     }
-    
+
     @Override
     public Long countTodayBookings() {
         return bookingJpaRepository.countTodayBookings(LocalDate.now());
     }
-    
+
     @Override
     public Long countTodayBookingsByStatus(String status) {
         return bookingJpaRepository.countTodayBookingsByStatus(LocalDate.now(), status);
     }
-    
+
     @Override
     public Double getTodayTotalRevenue() {
         return bookingJpaRepository.getTodayTotalRevenue(LocalDate.now());
     }
-    
+
     @Override
     public Double getTodayAverageBookingValue() {
         return bookingJpaRepository.getTodayAverageBookingValue(LocalDate.now());
     }
-    
+
     @Override
     public List<Booking> findAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -67,23 +66,23 @@ public class BookingRepositoryImpl implements BookingRepository {
                 .map(bookingDataAccessMapper::toDomainEntity)
                 .collect(Collectors.toList());
     }
-    
+
     @Override
-    public void deleteById(BookingId bookingId) {
-        bookingJpaRepository.deleteById(bookingId.getValue());
+    public void deleteById(UUID bookingId) {
+        bookingJpaRepository.deleteById(bookingId);
     }
-    
+
     @Override
-    public List<Booking> searchBookings(String customerName, String customerEmail, String roomNumber,
-                                       LocalDate checkInDate, LocalDate checkOutDate, int page, int size) {
+    public List<Booking> searchBookings(UUID customerId, String roomNumber,
+                                        LocalDate checkInDate, LocalDate checkOutDate, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<BookingEntity> bookingPage = bookingJpaRepository.searchBookings(
-                customerName, customerEmail, roomNumber, checkInDate, checkOutDate, pageable);
+                customerId, roomNumber, checkInDate, checkOutDate, pageable);
         return bookingPage.getContent().stream()
                 .map(bookingDataAccessMapper::toDomainEntity)
                 .collect(Collectors.toList());
     }
-    
+
     @Override
     public List<Booking> filterBookingsByStatus(String status, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -92,7 +91,7 @@ public class BookingRepositoryImpl implements BookingRepository {
                 .map(bookingDataAccessMapper::toDomainEntity)
                 .collect(Collectors.toList());
     }
-    
+
     @Override
     public List<Booking> filterBookingsByDateRange(LocalDate fromDate, LocalDate toDate, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -101,7 +100,7 @@ public class BookingRepositoryImpl implements BookingRepository {
                 .map(bookingDataAccessMapper::toDomainEntity)
                 .collect(Collectors.toList());
     }
-    
+
     @Override
     public List<Booking> findBookingsByCustomerId(UUID customerId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -110,7 +109,7 @@ public class BookingRepositoryImpl implements BookingRepository {
                 .map(bookingDataAccessMapper::toDomainEntity)
                 .collect(Collectors.toList());
     }
-    
+
     @Override
     public List<Booking> findCustomerBookingHistory(UUID customerId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
