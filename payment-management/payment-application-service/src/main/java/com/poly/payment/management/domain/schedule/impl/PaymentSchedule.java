@@ -1,4 +1,4 @@
-package com.poly.payment.management.data.access.schedule;
+package com.poly.payment.management.domain.schedule;
 
 import com.poly.payment.management.domain.port.input.service.AutoExpirePaymentsUsecase;
 import com.poly.payment.management.domain.service.PaymentExpiredSchedule;
