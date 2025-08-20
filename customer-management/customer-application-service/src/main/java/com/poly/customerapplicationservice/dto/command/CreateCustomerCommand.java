@@ -1,6 +1,7 @@
-package com.poly.customerapplicationservice.command;
+package com.poly.customerapplicationservice.dto.command;
 
 import com.poly.customerapplicationservice.shared.AddressDto;
+import com.poly.customerdomain.model.entity.valueobject.Sex;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,11 +10,11 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class UpdateCustomerCommand {
+public class CreateCustomerCommand {
     private UUID userId;
     private String firstName;
     private String lastName;
     private AddressDto address;
-    private String image;
+    private String sex;
     private LocalDate dateOfBirth;
 }

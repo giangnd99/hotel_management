@@ -1,6 +1,6 @@
 package com.poly.customerdataaccess.feign;
 
-import com.poly.customerapplicationservice.command.RedeemVoucherCommand;
+import com.poly.customerapplicationservice.dto.command.RedeemVoucherCommand;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 

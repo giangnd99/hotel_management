@@ -1,8 +1,8 @@
 package com.poly.customerapplicationservice.port.input;
 
-import com.poly.customerapplicationservice.command.CreateCustomerCommand;
-import com.poly.customerapplicationservice.command.RetrieveCustomerProfileCommand;
-import com.poly.customerapplicationservice.command.UpdateCustomerCommand;
+import com.poly.customerapplicationservice.dto.command.CreateCustomerCommand;
+import com.poly.customerapplicationservice.dto.command.RetrieveCustomerProfileCommand;
+import com.poly.customerapplicationservice.dto.command.UpdateCustomerCommand;
 import com.poly.customerapplicationservice.dto.CustomerDto;
 import com.poly.customerapplicationservice.dto.PageResult;
 

@@ -14,10 +14,10 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class CustomerModelAvro extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -881676068899062474L;
+  private static final long serialVersionUID = -5320820566895665083L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"CustomerModelAvro\",\"namespace\":\"com.poly.booking.management.domain.kafka.model\",\"fields\":[{\"name\":\"id\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"username\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"firstName\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"lastName\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"CustomerModelAvro\",\"namespace\":\"com.poly.booking.management.domain.kafka.model\",\"fields\":[{\"name\":\"id\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"username\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"firstName\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"lastName\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"isActive\",\"type\":\"boolean\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -77,6 +77,7 @@ public class CustomerModelAvro extends org.apache.avro.specific.SpecificRecordBa
   private java.lang.String username;
   private java.lang.String firstName;
   private java.lang.String lastName;
+  private boolean isActive;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -91,12 +92,14 @@ public class CustomerModelAvro extends org.apache.avro.specific.SpecificRecordBa
    * @param username The new value for username
    * @param firstName The new value for firstName
    * @param lastName The new value for lastName
+   * @param isActive The new value for isActive
    */
-  public CustomerModelAvro(java.lang.String id, java.lang.String username, java.lang.String firstName, java.lang.String lastName) {
+  public CustomerModelAvro(java.lang.String id, java.lang.String username, java.lang.String firstName, java.lang.String lastName, java.lang.Boolean isActive) {
     this.id = id;
     this.username = username;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.isActive = isActive;
   }
 
   @Override
@@ -113,6 +116,7 @@ public class CustomerModelAvro extends org.apache.avro.specific.SpecificRecordBa
     case 1: return username;
     case 2: return firstName;
     case 3: return lastName;
+    case 4: return isActive;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -126,6 +130,7 @@ public class CustomerModelAvro extends org.apache.avro.specific.SpecificRecordBa
     case 1: username = value$ != null ? value$.toString() : null; break;
     case 2: firstName = value$ != null ? value$.toString() : null; break;
     case 3: lastName = value$ != null ? value$.toString() : null; break;
+    case 4: isActive = (java.lang.Boolean)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -199,6 +204,23 @@ public class CustomerModelAvro extends org.apache.avro.specific.SpecificRecordBa
   }
 
   /**
+   * Gets the value of the 'isActive' field.
+   * @return The value of the 'isActive' field.
+   */
+  public boolean getIsActive() {
+    return isActive;
+  }
+
+
+  /**
+   * Sets the value of the 'isActive' field.
+   * @param value the value to set.
+   */
+  public void setIsActive(boolean value) {
+    this.isActive = value;
+  }
+
+  /**
    * Creates a new CustomerModelAvro RecordBuilder.
    * @return A new CustomerModelAvro RecordBuilder
    */
@@ -243,6 +265,7 @@ public class CustomerModelAvro extends org.apache.avro.specific.SpecificRecordBa
     private java.lang.String username;
     private java.lang.String firstName;
     private java.lang.String lastName;
+    private boolean isActive;
 
     /** Creates a new Builder */
     private Builder() {
@@ -271,6 +294,10 @@ public class CustomerModelAvro extends org.apache.avro.specific.SpecificRecordBa
         this.lastName = data().deepCopy(fields()[3].schema(), other.lastName);
         fieldSetFlags()[3] = other.fieldSetFlags()[3];
       }
+      if (isValidValue(fields()[4], other.isActive)) {
+        this.isActive = data().deepCopy(fields()[4].schema(), other.isActive);
+        fieldSetFlags()[4] = other.fieldSetFlags()[4];
+      }
     }
 
     /**
@@ -294,6 +321,10 @@ public class CustomerModelAvro extends org.apache.avro.specific.SpecificRecordBa
       if (isValidValue(fields()[3], other.lastName)) {
         this.lastName = data().deepCopy(fields()[3].schema(), other.lastName);
         fieldSetFlags()[3] = true;
+      }
+      if (isValidValue(fields()[4], other.isActive)) {
+        this.isActive = data().deepCopy(fields()[4].schema(), other.isActive);
+        fieldSetFlags()[4] = true;
       }
     }
 
@@ -457,6 +488,45 @@ public class CustomerModelAvro extends org.apache.avro.specific.SpecificRecordBa
       return this;
     }
 
+    /**
+      * Gets the value of the 'isActive' field.
+      * @return The value.
+      */
+    public boolean getIsActive() {
+      return isActive;
+    }
+
+
+    /**
+      * Sets the value of the 'isActive' field.
+      * @param value The value of 'isActive'.
+      * @return This builder.
+      */
+    public com.poly.booking.management.domain.kafka.model.CustomerModelAvro.Builder setIsActive(boolean value) {
+      validate(fields()[4], value);
+      this.isActive = value;
+      fieldSetFlags()[4] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'isActive' field has been set.
+      * @return True if the 'isActive' field has been set, false otherwise.
+      */
+    public boolean hasIsActive() {
+      return fieldSetFlags()[4];
+    }
+
+
+    /**
+      * Clears the value of the 'isActive' field.
+      * @return This builder.
+      */
+    public com.poly.booking.management.domain.kafka.model.CustomerModelAvro.Builder clearIsActive() {
+      fieldSetFlags()[4] = false;
+      return this;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public CustomerModelAvro build() {
@@ -466,6 +536,7 @@ public class CustomerModelAvro extends org.apache.avro.specific.SpecificRecordBa
         record.username = fieldSetFlags()[1] ? this.username : (java.lang.String) defaultValue(fields()[1]);
         record.firstName = fieldSetFlags()[2] ? this.firstName : (java.lang.String) defaultValue(fields()[2]);
         record.lastName = fieldSetFlags()[3] ? this.lastName : (java.lang.String) defaultValue(fields()[3]);
+        record.isActive = fieldSetFlags()[4] ? this.isActive : (java.lang.Boolean) defaultValue(fields()[4]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -506,6 +577,8 @@ public class CustomerModelAvro extends org.apache.avro.specific.SpecificRecordBa
 
     out.writeString(this.lastName);
 
+    out.writeBoolean(this.isActive);
+
   }
 
   @Override public void customDecode(org.apache.avro.io.ResolvingDecoder in)
@@ -521,8 +594,10 @@ public class CustomerModelAvro extends org.apache.avro.specific.SpecificRecordBa
 
       this.lastName = in.readString();
 
+      this.isActive = in.readBoolean();
+
     } else {
-      for (int i = 0; i < 4; i++) {
+      for (int i = 0; i < 5; i++) {
         switch (fieldOrder[i].pos()) {
         case 0:
           this.id = in.readString();
@@ -538,6 +613,10 @@ public class CustomerModelAvro extends org.apache.avro.specific.SpecificRecordBa
 
         case 3:
           this.lastName = in.readString();
+          break;
+
+        case 4:
+          this.isActive = in.readBoolean();
           break;
 
         default:

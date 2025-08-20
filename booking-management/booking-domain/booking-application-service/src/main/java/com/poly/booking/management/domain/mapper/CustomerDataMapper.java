@@ -20,7 +20,7 @@ public class CustomerDataMapper {
      */
     public Customer customerCreatedEventToCustomer(CustomerCreatedMessageResponse customerCreatedEvent) {
         return Customer.createCustomer(
-                UUID.fromString(customerCreatedEvent.getId()),
+                UUID.fromString(customerCreatedEvent.getCustomerId()),
                 customerCreatedEvent.getUsername(),
                 customerCreatedEvent.getFirstName(),
                 customerCreatedEvent.getLastName()

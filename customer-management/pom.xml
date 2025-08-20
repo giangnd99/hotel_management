@@ -19,6 +19,7 @@
         <module>customer-application-service</module>
         <module>customer-data-access</module>
         <module>customer-container</module>
+        <module>customer-messaging</module>
     </modules>
 
 </project>

@@ -9,8 +9,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CustomerCreatedMessageResponse {
 
-    private String id;
+    private String customerId;
     private String username;
     private String firstName;
     private String lastName;
+    private boolean active;
 }

@@ -1,11 +1,13 @@
 package com.poly.customerapplicationservice.service;
 
-import com.poly.customerapplicationservice.command.CreateCustomerCommand;
-import com.poly.customerapplicationservice.command.RetrieveCustomerProfileCommand;
-import com.poly.customerapplicationservice.command.UpdateCustomerCommand;
+import com.poly.customerapplicationservice.dto.command.CreateCustomerCommand;
+import com.poly.customerapplicationservice.dto.command.RetrieveCustomerProfileCommand;
+import com.poly.customerapplicationservice.dto.command.UpdateCustomerCommand;
 import com.poly.customerapplicationservice.dto.CustomerDto;
 import com.poly.customerapplicationservice.dto.PageResult;
+import com.poly.customerapplicationservice.message.CustomerBookingMessage;
 import com.poly.customerapplicationservice.port.input.CustomerUsecase;
+import com.poly.customerapplicationservice.port.output.publisher.CustomerCreationRequestPublisher;
 import com.poly.customerdomain.model.entity.Customer;
 import com.poly.customerdomain.model.entity.LoyaltyPoint;
 import com.poly.customerdomain.model.entity.valueobject.*;
@@ -15,23 +17,27 @@ import com.poly.customerdomain.model.exception.UserExistException;
 import com.poly.customerdomain.output.CustomerRepository;
 import com.poly.customerdomain.output.LoyaltyPointRepository;
 import com.poly.domain.valueobject.CustomerId;
-import com.poly.domain.valueobject.Money;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Slf4j
+@Component
 public class CustomerApplicationService implements CustomerUsecase {
 
     private final CustomerRepository customerRepository;
 
     private final LoyaltyPointRepository loyaltyPointRepository;
 
-    public CustomerApplicationService(CustomerRepository customerRepo, LoyaltyPointRepository loyaltyRepo) {
+    private final CustomerCreationRequestPublisher customerCreationRequestPublisher;
+
+    public CustomerApplicationService(CustomerRepository customerRepo, LoyaltyPointRepository loyaltyRepo, CustomerCreationRequestPublisher customerCreationRequestPublisher) {
         this.customerRepository = customerRepo;
         this.loyaltyPointRepository = loyaltyRepo;
+        this.customerCreationRequestPublisher = customerCreationRequestPublisher;
     }
 
     @Override
@@ -59,8 +65,20 @@ public class CustomerApplicationService implements CustomerUsecase {
         LoyaltyPoint newLoyaltyPoint = LoyaltyPoint.createNew(newCustomer.getId());
 
         LoyaltyPoint savedLoyaltyPoint = loyaltyPointRepository.save(newLoyaltyPoint);
+        //send request to Booking service
+        customerCreationRequestPublisher.publish(creatMessage(savedCustomer));
 
         return CustomerDto.from(newCustomer);
+    }
+
+    private CustomerBookingMessage creatMessage(Customer customer) {
+        return CustomerBookingMessage.builder()
+                .customerId(customer.getId().getValue().toString())
+                .firstName(customer.getFullName().getFirstName())
+                .lastName(customer.getFullName().getLastName())
+                .username(customer.getUserId() == null ? "" : customer.getUserId().getValue().toString())
+                .active(customer.isActive())
+                .build();
     }
 
     @Override

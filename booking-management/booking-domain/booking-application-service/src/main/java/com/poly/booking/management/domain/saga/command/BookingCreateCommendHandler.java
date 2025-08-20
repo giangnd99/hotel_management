@@ -37,8 +37,6 @@ public class BookingCreateCommendHandler {
     @Transactional
     public BookingCreatedResponse createBooking(CreateBookingCommand createBookingCommand) {
 
-        bookingCreateHelper.checkCustomer(createBookingCommand.getCustomerId());
-
         BookingCreatedEvent bookingCreatedEvent =
                 bookingCreateHelper.initAndValidateBookingCreatedEvent(createBookingCommand);
 

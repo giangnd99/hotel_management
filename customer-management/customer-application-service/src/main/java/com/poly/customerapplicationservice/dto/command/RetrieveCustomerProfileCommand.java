@@ -1,4 +1,4 @@
-package com.poly.customerapplicationservice.command;
+package com.poly.customerapplicationservice.dto.command;
 
 import lombok.Getter;
 import lombok.Setter;

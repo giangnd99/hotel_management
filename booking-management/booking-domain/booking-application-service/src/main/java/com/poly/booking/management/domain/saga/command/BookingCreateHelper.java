@@ -13,6 +13,7 @@ import com.poly.booking.management.domain.mapper.CustomerDataMapper;
 import com.poly.booking.management.domain.mapper.PaymentDataMapper;
 import com.poly.booking.management.domain.mapper.RoomDataMapper;
 import com.poly.booking.management.domain.outbox.service.impl.PaymentOutboxImpl;
+import com.poly.booking.management.domain.port.out.client.CustomerClient;
 import com.poly.booking.management.domain.port.out.client.RoomClient;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.port.out.repository.CustomerRepository;
@@ -100,7 +101,6 @@ public class BookingCreateHelper {
     }
 
 
-
     public BookingCreatedResponse responseDto(BookingCreatedEvent bookingCreatedEvent, CreateBookingCommand createBookingCommand) {
         return bookingDataMapper.bookingCreatedEventToBookingCreatedResponse(bookingCreatedEvent,
                 createBookingCommand);
@@ -108,11 +108,14 @@ public class BookingCreateHelper {
 
 
     private Customer validateAndGetCustomer(String customerId) {
-        Optional<Customer> customer = customerRepository.findById(UUID.fromString(customerId));
-        if (customer.isEmpty()) {
-            log.error("Customer with id: {} could not be found!", customerId);
-            throw new BookingDomainException("Customer with id " + customerId + " could not be found!");
+        checkCustomer(customerId);
+        Optional<Customer> customerOpt = customerRepository.findById(UUID.fromString(customerId));
+
+        if (customerOpt.isEmpty()) {
+            log.warn("Customer with id: {} could not be found! in booking service", customerId);
+            throw new BookingDomainException("Customer with id " + customerId + " could not be found! in booking service");
         }
-        return customer.get();
+
+        return customerOpt.get();
     }
 }

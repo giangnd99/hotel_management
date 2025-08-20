@@ -1,6 +1,6 @@
 package com.poly.customerdataaccess.feign.impl;
 
-import com.poly.customerapplicationservice.command.RedeemVoucherCommand;
+import com.poly.customerapplicationservice.dto.command.RedeemVoucherCommand;
 import com.poly.customerapplicationservice.port.output.PromotionServicePort;
 import com.poly.customerdataaccess.feign.PromotionFeignClient;
 import lombok.RequiredArgsConstructor;

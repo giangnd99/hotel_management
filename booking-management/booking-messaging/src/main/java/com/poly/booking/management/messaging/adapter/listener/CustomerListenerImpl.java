@@ -69,14 +69,14 @@ public class CustomerListenerImpl implements CustomerMessageListener {
     @Override
     @Transactional
     public void customerCreated(CustomerCreatedMessageResponse customerCreatedEvent) {
-        log.info("Processing customer created event for customer: {}", customerCreatedEvent.getId());
+        log.info("Processing customer created event for customer: {}", customerCreatedEvent.getCustomerId());
 
         try {
             // Step 1: Validate input data
             validateCustomerCreatedEvent(customerCreatedEvent);
 
             // Step 2: Check if customer already exists
-            UUID customerId = UUID.fromString(customerCreatedEvent.getId());
+            UUID customerId = UUID.fromString(customerCreatedEvent.getCustomerId());
             if (customerRepository.existsById(customerId)) {
                 log.warn("Customer already exists with id: {}", customerId);
                 return;
@@ -96,7 +96,7 @@ public class CustomerListenerImpl implements CustomerMessageListener {
 
         } catch (Exception e) {
             log.error("Error processing customer created event for customer: {}",
-                    customerCreatedEvent.getId(), e);
+                    customerCreatedEvent.getCustomerId(), e);
             throw new BookingDomainException("Failed to process customer created event", e);
         }
     }
@@ -125,7 +125,7 @@ public class CustomerListenerImpl implements CustomerMessageListener {
             throw new BookingDomainException("Customer created event cannot be null");
         }
 
-        if (customerCreatedEvent.getId() == null || customerCreatedEvent.getId().trim().isEmpty()) {
+        if (customerCreatedEvent.getCustomerId() == null || customerCreatedEvent.getCustomerId().trim().isEmpty()) {
             throw new BookingDomainException("Customer ID cannot be null or empty");
         }
 
@@ -143,12 +143,12 @@ public class CustomerListenerImpl implements CustomerMessageListener {
 
         // Validate UUID format
         try {
-            UUID.fromString(customerCreatedEvent.getId());
+            UUID.fromString(customerCreatedEvent.getCustomerId());
         } catch (IllegalArgumentException e) {
-            throw new BookingDomainException("Invalid customer ID format: " + customerCreatedEvent.getId());
+            throw new BookingDomainException("Invalid customer ID format: " + customerCreatedEvent.getCustomerId());
         }
 
-        log.debug("Customer created event validation passed for customer: {}", customerCreatedEvent.getId());
+        log.debug("Customer created event validation passed for customer: {}", customerCreatedEvent.getCustomerId());
     }
 
     /**
@@ -178,6 +178,10 @@ public class CustomerListenerImpl implements CustomerMessageListener {
             throw new BookingDomainException("Customer last name cannot be null or empty");
         }
 
+        if(customer.getEmail() == null || customer.getEmail().trim().isEmpty()) {
+            log.warn("Customer email is empty");
+            customer.setEmail("not_registered@gmail.com");
+        }
         log.debug("Customer entity validation passed for customer: {}", customer.getId().getValue());
     }
 }

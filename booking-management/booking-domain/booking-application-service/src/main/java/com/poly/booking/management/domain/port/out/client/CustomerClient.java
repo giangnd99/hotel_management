@@ -12,5 +12,5 @@ import java.util.UUID;
 public interface CustomerClient {
 
     @GetMapping(value = "/{customerId}")
-    EntityResponse<CustomerDto> getCustomerById(@PathVariable UUID customerId);
+    CustomerDto getCustomerById(@PathVariable UUID customerId);
 }

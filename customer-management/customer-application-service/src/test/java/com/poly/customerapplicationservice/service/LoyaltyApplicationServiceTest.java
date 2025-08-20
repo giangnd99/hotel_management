@@ -1,7 +1,7 @@
 package com.poly.customerapplicationservice.service;
 
-import com.poly.customerapplicationservice.command.EarnPointLoyaltyCommand;
-import com.poly.customerapplicationservice.command.RedeemPointLoyaltyCommand;
+import com.poly.customerapplicationservice.dto.command.EarnPointLoyaltyCommand;
+import com.poly.customerapplicationservice.dto.command.RedeemPointLoyaltyCommand;
 import com.poly.customerapplicationservice.dto.LoyaltyPointDto;
 import com.poly.customerapplicationservice.port.output.PromotionServicePort;
 import com.poly.customerapplicationservice.shared.RedeemTargetType;

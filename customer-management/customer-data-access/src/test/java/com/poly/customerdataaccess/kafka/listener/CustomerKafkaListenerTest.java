@@ -1,9 +1,8 @@
 package com.poly.customerdataaccess.kafka.listener;
 
-import com.poly.customerapplicationservice.command.CreateCustomerCommand;
+import com.poly.customerapplicationservice.dto.command.CreateCustomerCommand;
 import com.poly.customerapplicationservice.port.input.CustomerUsecase;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
