@@ -11,6 +11,10 @@ import java.util.UUID;
 @Getter
 @Setter
 public class CreateCustomerCommand {
+
+    private String password;
+    private String email;
+    private String phone;
     private UUID userId;
     private String firstName;
     private String lastName;

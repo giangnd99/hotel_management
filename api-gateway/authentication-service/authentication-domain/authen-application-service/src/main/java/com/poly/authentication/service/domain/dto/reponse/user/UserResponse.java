@@ -1,4 +1,4 @@
-package com.poly.authentication.service.domain.dto.reponse;
+package com.poly.authentication.service.domain.dto.reponse.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
@@ -11,22 +11,12 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserGGResponse {
+public class UserResponse {
     String id;
 
     String email;
 
-    String fullName;
-
-    String firstName;
-
-    String lastName;
-
     String phone;
-
-    String role;
-
-    String avatar;
 
     String token;
 }

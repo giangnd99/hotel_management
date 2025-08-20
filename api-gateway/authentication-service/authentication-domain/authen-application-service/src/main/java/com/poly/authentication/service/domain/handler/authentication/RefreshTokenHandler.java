@@ -1,8 +1,8 @@
 package com.poly.authentication.service.domain.handler.authentication;
 
 import com.nimbusds.jose.JOSEException;
-import com.poly.authentication.service.domain.dto.reponse.AuthenticationResponse;
-import com.poly.authentication.service.domain.dto.request.RefreshRequest;
+import com.poly.authentication.service.domain.dto.reponse.authen.AuthenticationResponse;
+import com.poly.authentication.service.domain.dto.request.auth.RefreshRequest;
 import com.poly.authentication.service.domain.entity.Token;
 import com.poly.authentication.service.domain.exception.AppException;
 import com.poly.authentication.service.domain.exception.ErrorCode;

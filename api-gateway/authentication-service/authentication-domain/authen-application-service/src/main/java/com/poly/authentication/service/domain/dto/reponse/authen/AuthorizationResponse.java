@@ -1,4 +1,4 @@
-package com.poly.authentication.service.domain.dto.reponse;
+package com.poly.authentication.service.domain.dto.reponse.authen;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

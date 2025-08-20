@@ -1,9 +1,7 @@
-package com.poly.authentication.service.domain.dto.request;
+package com.poly.authentication.service.domain.dto.request.user;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Setter
 @Getter

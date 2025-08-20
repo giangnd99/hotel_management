@@ -1,6 +1,6 @@
 package com.poly.authentication.service.domain.port.in.service;
 
-import com.poly.authentication.service.domain.dto.reponse.UserGGResponse;
+import com.poly.authentication.service.domain.dto.reponse.user.UserGGResponse;
 
 public interface GoogleService {
 

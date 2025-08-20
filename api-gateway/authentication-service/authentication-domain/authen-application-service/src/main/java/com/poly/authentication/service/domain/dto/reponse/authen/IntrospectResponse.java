@@ -1,4 +1,4 @@
-package com.poly.authentication.service.domain.dto.reponse;
+package com.poly.authentication.service.domain.dto.reponse.authen;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

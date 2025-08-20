@@ -1,8 +1,8 @@
-package com.poly.customerdataaccess.feign.impl;
+package com.poly.customerapplicationservice.port.output.feign.impl;
 
 import com.poly.customerapplicationservice.dto.command.RedeemVoucherCommand;
 import com.poly.customerapplicationservice.port.output.PromotionServicePort;
-import com.poly.customerdataaccess.feign.PromotionFeignClient;
+import com.poly.customerapplicationservice.port.output.feign.PromotionFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

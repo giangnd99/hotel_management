@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(scanBasePackages = "com.poly")
-@EnableFeignClients(basePackages = "com.poly.customerdataaccess.feign")
+@EnableFeignClients(basePackages = "com.poly")
 @EnableDiscoveryClient
 @EnableJpaRepositories(basePackages = "com.poly.customerdataaccess.repository")
 @EntityScan(basePackages = "com.poly.customerdataaccess.entity")

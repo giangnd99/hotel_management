@@ -32,38 +32,38 @@ public class DataIngestionServiceImpl implements DataIngestionService {
     public void ingestHotelData() {
         try {
             log.info("Bắt đầu nạp dữ liệu khách sạn vào AI Vector Store...");
-            
+
             List<Document> allDocuments = new ArrayList<>();
-            
+
             // 1. Nạp thông tin phòng
             ingestRoomData(allDocuments);
-            
+
             // 2. Nạp thông tin loại phòng
             ingestRoomTypeData(allDocuments);
-            
+
             // 3. Nạp thông tin nội thất
             ingestFurnitureData(allDocuments);
-            
+
             // 4. Nạp thông tin bảo trì
             ingestMaintenanceData(allDocuments);
-            
+
             // 5. Nạp thông tin dọn dẹp
             ingestCleaningData(allDocuments);
-            
+
             // 6. Nạp thông tin dịch vụ phòng
             ingestServiceData(allDocuments);
-            
+
             // 7. Nạp thông tin khách hàng
             ingestGuestData(allDocuments);
-            
+
             // 8. Nạp thống kê tổng quan
             ingestStatisticsData(allDocuments);
-            
+
             if (allDocuments.isEmpty()) {
                 log.warn("Không có dữ liệu nào để nạp vào Vector Store");
                 return;
             }
-            
+
             // Chia nhỏ các Document thành chunks
             TokenTextSplitter textSplitter = new TokenTextSplitter();
             List<Document> chunks = textSplitter.apply(allDocuments);
@@ -72,7 +72,7 @@ public class DataIngestionServiceImpl implements DataIngestionService {
             // Thêm các chunks vào Vector Store
             vectorStore.add(chunks);
             log.info("Đã thêm {} chunks vào Vector Store thành công.", chunks.size());
-            
+
         } catch (Exception e) {
             log.error("Lỗi trong quá trình nạp dữ liệu khách sạn: {}", e.getMessage(), e);
         }
@@ -87,18 +87,18 @@ public class DataIngestionServiceImpl implements DataIngestionService {
 
                 for (RoomResponse room : rooms) {
                     String content = String.format("""
-                            THÔNG TIN PHÒNG KHÁCH SẠN 5 SAO VIỆT NAM
-                            Số phòng: %s
-                            Tầng: %d
-                            Diện tích: %s
-                            Loại phòng: %s
-                            Trạng thái: %s
-                            Đặc điểm: %s
-                            View: %s
-                            Tiện nghi đặc biệt: %s
-                            Lần dọn dẹp cuối: %s
-                            Lần bảo trì cuối: %s
-                            """,
+                                    THÔNG TIN PHÒNG KHÁCH SẠN 5 SAO VIỆT NAM
+                                    Số phòng: %s
+                                    Tầng: %d
+                                    Diện tích: %s
+                                    Loại phòng: %s
+                                    Trạng thái: %s
+                                    Đặc điểm: %s
+                                    View: %s
+                                    Tiện nghi đặc biệt: %s
+                                    Lần dọn dẹp cuối: %s
+                                    Lần bảo trì cuối: %s
+                                    """,
                             room.getRoomNumber(),
                             room.getFloor(),
                             room.getArea() != null ? room.getArea() : "Chưa cập nhật",
@@ -117,7 +117,7 @@ public class DataIngestionServiceImpl implements DataIngestionService {
                     document.getMetadata().put("floor", String.valueOf(room.getFloor()));
                     document.getMetadata().put("roomStatus", room.getRoomStatus());
                     document.getMetadata().put("category", "room_information");
-                    
+
                     documents.add(document);
                 }
             }
@@ -132,33 +132,24 @@ public class DataIngestionServiceImpl implements DataIngestionService {
             if (response.getBody() != null && !response.getBody().isEmpty()) {
                 List<RoomTypeResponse> roomTypes = response.getBody();
                 log.info("Đã tìm thấy {} loại phòng", roomTypes.size());
-
+                String cancellationRegular = "Chính sách hủy phòng: Khách hàng hủy trước 24 giờ sẽ được hoàn lại 100% tiền. Hủy trong vòng 24 giờ sẽ mất phí 30%";
+                String extension = "";
                 for (RoomTypeResponse roomType : roomTypes) {
                     String content = String.format("""
-                            LOẠI PHÒNG KHÁCH SẠN 5 SAO VIỆT NAM
-                            Tên loại: %s
-                            Mô tả: %s
-                            Giá cơ bản: %s VND/đêm
-                            Sức chứa tối đa: %d người
-                            Diện tích: %s
-                            Cấu hình giường: %s
-                            Loại phòng tắm: %s
-                            Loại view: %s
-                            Tiện nghi: %s
-                            Chính sách hủy: %s
-                            Bữa sáng: %s
-                            """,
+                                    LOẠI PHÒNG KHÁCH SẠN 5 SAO VIỆT NAM
+                                    Tên loại: %s
+                                    Mô tả: %s
+                                    Giá cơ bản: %s VND/đêm
+                                    Sức chứa tối đa: %d người
+                                    Diện tích: %s
+                                    Chính sách hủy: %s
+                                    """,
                             roomType.getTypeName(),
                             roomType.getDescription(),
                             roomType.getBasePrice(),
                             roomType.getMaxOccupancy(),
-                            roomType.getRoomSize() != null ? roomType.getRoomSize() : "Chưa cập nhật",
-                            roomType.getBedConfiguration() != null ? roomType.getBedConfiguration() : "Chưa cập nhật",
-                            roomType.getBathroomType() != null ? roomType.getBathroomType() : "Chưa cập nhật",
-                            roomType.getViewType() != null ? roomType.getViewType() : "Chưa cập nhật",
                             roomType.getAmenities() != null ? roomType.getAmenities() : "Không có",
-                            roomType.getCancellationPolicy() != null ? roomType.getCancellationPolicy() : "Chưa cập nhật",
-                            roomType.getBreakfastIncluded() != null ? roomType.getBreakfastIncluded() : "Chưa cập nhật"
+                            cancellationRegular
                     );
 
                     Document document = new Document(content);
@@ -166,7 +157,7 @@ public class DataIngestionServiceImpl implements DataIngestionService {
                     document.getMetadata().put("typeName", roomType.getTypeName());
                     document.getMetadata().put("maxOccupancy", String.valueOf(roomType.getMaxOccupancy()));
                     document.getMetadata().put("category", "room_type_information");
-                    
+
                     documents.add(document);
                 }
             }
@@ -184,14 +175,14 @@ public class DataIngestionServiceImpl implements DataIngestionService {
 
                 for (FurnitureRequirementResponse item : furniture) {
                     String content = String.format("""
-                            NỘI THẤT KHÁCH SẠN 5 SAO VIỆT NAM
-                            Tên nội thất: %s
-                            Mô tả: %s
-                            Chất liệu: %s
-                            Thương hiệu: %s
-                            Thông tin bảo hành: %s
-                            Lịch bảo trì: %s
-                            """,
+                                    NỘI THẤT KHÁCH SẠN 5 SAO VIỆT NAM
+                                    Tên nội thất: %s
+                                    Mô tả: %s
+                                    Chất liệu: %s
+                                    Thương hiệu: %s
+                                    Thông tin bảo hành: %s
+                                    Lịch bảo trì: %s
+                                    """,
                             item.getFurnitureName(),
                             item.getDescription() != null ? item.getDescription() : "Chưa cập nhật",
                             item.getMaterial() != null ? item.getMaterial() : "Chưa cập nhật",
@@ -204,7 +195,7 @@ public class DataIngestionServiceImpl implements DataIngestionService {
                     document.getMetadata().put("type", "furniture");
                     document.getMetadata().put("furnitureName", item.getFurnitureName());
                     document.getMetadata().put("category", "furniture_information");
-                    
+
                     documents.add(document);
                 }
             }
@@ -222,20 +213,20 @@ public class DataIngestionServiceImpl implements DataIngestionService {
 
                 for (RoomMaintenanceResponse item : maintenance) {
                     String content = String.format("""
-                            BẢO TRÌ PHÒNG KHÁCH SẠN 5 SAO VIỆT NAM
-                            Số phòng: %s
-                            Loại vấn đề: %s
-                            Mức độ ưu tiên: %s
-                            Mô tả: %s
-                            Trạng thái: %s
-                            Yêu cầu bởi: %s
-                            Được giao cho: %s
-                            Chi phí ước tính: %s VND
-                            Ngày lên lịch: %s
-                            Bắt đầu: %s
-                            Hoàn thành: %s
-                            Ghi chú: %s
-                            """,
+                                    BẢO TRÌ PHÒNG KHÁCH SẠN 5 SAO VIỆT NAM
+                                    Số phòng: %s
+                                    Loại vấn đề: %s
+                                    Mức độ ưu tiên: %s
+                                    Mô tả: %s
+                                    Trạng thái: %s
+                                    Yêu cầu bởi: %s
+                                    Được giao cho: %s
+                                    Chi phí ước tính: %s VND
+                                    Ngày lên lịch: %s
+                                    Bắt đầu: %s
+                                    Hoàn thành: %s
+                                    Ghi chú: %s
+                                    """,
                             item.getRoomNumber(),
                             item.getIssueType(),
                             item.getPriority(),
@@ -256,7 +247,7 @@ public class DataIngestionServiceImpl implements DataIngestionService {
                     document.getMetadata().put("status", item.getStatus());
                     document.getMetadata().put("priority", item.getPriority());
                     document.getMetadata().put("category", "maintenance_information");
-                    
+
                     documents.add(document);
                 }
             }
@@ -274,21 +265,21 @@ public class DataIngestionServiceImpl implements DataIngestionService {
 
                 for (RoomCleaningResponse item : cleaning) {
                     String content = String.format("""
-                            DỌN DẸP PHÒNG KHÁCH SẠN 5 SAO VIỆT NAM
-                            Số phòng: %s
-                            Loại dọn dẹp: %s
-                            Mức độ ưu tiên: %s
-                            Mô tả: %s
-                            Trạng thái: %s
-                            Yêu cầu bởi: %s
-                            Được giao cho: %s
-                            Ngày lên lịch: %s
-                            Bắt đầu: %s
-                            Hoàn thành: %s
-                            Sản phẩm dọn dẹp: %s
-                            Hướng dẫn đặc biệt: %s
-                            Ghi chú: %s
-                            """,
+                                    DỌN DẸP PHÒNG KHÁCH SẠN 5 SAO VIỆT NAM
+                                    Số phòng: %s
+                                    Loại dọn dẹp: %s
+                                    Mức độ ưu tiên: %s
+                                    Mô tả: %s
+                                    Trạng thái: %s
+                                    Yêu cầu bởi: %s
+                                    Được giao cho: %s
+                                    Ngày lên lịch: %s
+                                    Bắt đầu: %s
+                                    Hoàn thành: %s
+                                    Sản phẩm dọn dẹp: %s
+                                    Hướng dẫn đặc biệt: %s
+                                    Ghi chú: %s
+                                    """,
                             item.getRoomNumber(),
                             item.getCleaningType(),
                             item.getPriority(),
@@ -310,7 +301,7 @@ public class DataIngestionServiceImpl implements DataIngestionService {
                     document.getMetadata().put("status", item.getStatus());
                     document.getMetadata().put("priority", item.getPriority());
                     document.getMetadata().put("category", "cleaning_information");
-                    
+
                     documents.add(document);
                 }
             }
@@ -328,22 +319,22 @@ public class DataIngestionServiceImpl implements DataIngestionService {
 
                 for (RoomServiceResponse item : services) {
                     String content = String.format("""
-                            DỊCH VỤ PHÒNG KHÁCH SẠN 5 SAO VIỆT NAM
-                            Số phòng: %s
-                            Tên khách: %s
-                            Loại dịch vụ: %s
-                            Tên dịch vụ: %s
-                            Mô tả: %s
-                            Số lượng: %d
-                            Đơn giá: %s VND
-                            Tổng tiền: %s VND
-                            Trạng thái: %s
-                            Yêu cầu bởi: %s
-                            Thời gian yêu cầu: %s
-                            Thời gian giao: %s
-                            Hướng dẫn đặc biệt: %s
-                            Ghi chú ăn uống: %s
-                            """,
+                                    DỊCH VỤ PHÒNG KHÁCH SẠN 5 SAO VIỆT NAM
+                                    Số phòng: %s
+                                    Tên khách: %s
+                                    Loại dịch vụ: %s
+                                    Tên dịch vụ: %s
+                                    Mô tả: %s
+                                    Số lượng: %d
+                                    Đơn giá: %s VND
+                                    Tổng tiền: %s VND
+                                    Trạng thái: %s
+                                    Yêu cầu bởi: %s
+                                    Thời gian yêu cầu: %s
+                                    Thời gian giao: %s
+                                    Hướng dẫn đặc biệt: %s
+                                    Ghi chú ăn uống: %s
+                                    """,
                             item.getRoomNumber(),
                             item.getGuestName(),
                             item.getServiceType(),
@@ -366,7 +357,7 @@ public class DataIngestionServiceImpl implements DataIngestionService {
                     document.getMetadata().put("serviceType", item.getServiceType());
                     document.getMetadata().put("status", item.getStatus());
                     document.getMetadata().put("category", "room_service_information");
-                    
+
                     documents.add(document);
                 }
             }
@@ -384,20 +375,20 @@ public class DataIngestionServiceImpl implements DataIngestionService {
 
                 for (GuestResponse guest : guests) {
                     String content = String.format("""
-                            THÔNG TIN KHÁCH HÀNG KHÁCH SẠN 5 SAO VIỆT NAM
-                            Họ và tên: %s %s
-                            Tên đầy đủ: %s
-                            Số điện thoại: %s
-                            Email: %s
-                            Quốc tịch: %s
-                            Địa chỉ: %s
-                            Ngày sinh: %s
-                            Giới tính: %s
-                            Yêu cầu đặc biệt: %s
-                            Cấp độ thành viên: %s
-                            Ngôn ngữ ưa thích: %s
-                            Hạn chế ăn uống: %s
-                            """,
+                                    THÔNG TIN KHÁCH HÀNG KHÁCH SẠN 5 SAO VIỆT NAM
+                                    Họ và tên: %s %s
+                                    Tên đầy đủ: %s
+                                    Số điện thoại: %s
+                                    Email: %s
+                                    Quốc tịch: %s
+                                    Địa chỉ: %s
+                                    Ngày sinh: %s
+                                    Giới tính: %s
+                                    Yêu cầu đặc biệt: %s
+                                    Cấp độ thành viên: %s
+                                    Ngôn ngữ ưa thích: %s
+                                    Hạn chế ăn uống: %s
+                                    """,
                             guest.getFirstName(),
                             guest.getLastName(),
                             guest.getFullName(),
@@ -418,7 +409,7 @@ public class DataIngestionServiceImpl implements DataIngestionService {
                     document.getMetadata().put("guestName", guest.getFullName());
                     document.getMetadata().put("nationality", guest.getNationality());
                     document.getMetadata().put("category", "guest_information");
-                    
+
                     documents.add(document);
                 }
             }
@@ -467,7 +458,7 @@ public class DataIngestionServiceImpl implements DataIngestionService {
             Document document = new Document(content);
             document.getMetadata().put("type", "hotel_statistics");
             document.getMetadata().put("category", "hotel_overview");
-            
+
             documents.add(document);
         } catch (Exception e) {
             log.error("Lỗi khi nạp dữ liệu thống kê: {}", e.getMessage());

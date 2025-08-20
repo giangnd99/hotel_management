@@ -1,4 +1,4 @@
-package com.poly.authentication.service.domain.dto.request;
+package com.poly.authentication.service.domain.dto.request.auth;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RefreshRequest {
+public class LogoutRequest {
 
     private String token;
 }

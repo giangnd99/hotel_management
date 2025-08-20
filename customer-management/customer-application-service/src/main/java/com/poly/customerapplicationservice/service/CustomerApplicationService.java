@@ -5,8 +5,11 @@ import com.poly.customerapplicationservice.dto.command.RetrieveCustomerProfileCo
 import com.poly.customerapplicationservice.dto.command.UpdateCustomerCommand;
 import com.poly.customerapplicationservice.dto.CustomerDto;
 import com.poly.customerapplicationservice.dto.PageResult;
+import com.poly.customerapplicationservice.dto.request.UserCreationRequest;
+import com.poly.customerapplicationservice.dto.response.UserResponse;
 import com.poly.customerapplicationservice.message.CustomerBookingMessage;
 import com.poly.customerapplicationservice.port.input.CustomerUsecase;
+import com.poly.customerapplicationservice.port.output.feign.AuthenticationClient;
 import com.poly.customerapplicationservice.port.output.publisher.CustomerCreationRequestPublisher;
 import com.poly.customerdomain.model.entity.Customer;
 import com.poly.customerdomain.model.entity.LoyaltyPoint;
@@ -34,20 +37,23 @@ public class CustomerApplicationService implements CustomerUsecase {
 
     private final CustomerCreationRequestPublisher customerCreationRequestPublisher;
 
-    public CustomerApplicationService(CustomerRepository customerRepo, LoyaltyPointRepository loyaltyRepo, CustomerCreationRequestPublisher customerCreationRequestPublisher) {
+    private final AuthenticationClient authenticationClient;
+
+    public CustomerApplicationService(CustomerRepository customerRepo, LoyaltyPointRepository loyaltyRepo, CustomerCreationRequestPublisher customerCreationRequestPublisher, AuthenticationClient authenticationClient) {
         this.customerRepository = customerRepo;
         this.loyaltyPointRepository = loyaltyRepo;
         this.customerCreationRequestPublisher = customerCreationRequestPublisher;
+        this.authenticationClient = authenticationClient;
     }
 
     @Override
     public CustomerDto initializeCustomerProfile(CreateCustomerCommand command) {
 
-//        validateUserId(command.getUserId(), Mode.RETRIEVE);
+        UserResponse response = authenticationClient.createUser(creationRequest(command)).getResult();
 
         Customer newCustomer = Customer.builder()
                 .customerId(CustomerId.generate())
-                .userId(UserId.from(command.getUserId() != null ? command.getUserId() : null))
+                .userId(UserId.from(response.getId() != null ? command.getUserId() : null))
                 .name(Name.from(command.getFirstName().trim(), command.getLastName().trim()))
                 .address(Address.from(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity()))
                 .dateOfBirth(DateOfBirth.from(command.getDateOfBirth()))
@@ -66,17 +72,27 @@ public class CustomerApplicationService implements CustomerUsecase {
 
         LoyaltyPoint savedLoyaltyPoint = loyaltyPointRepository.save(newLoyaltyPoint);
         //send request to Booking service
-        customerCreationRequestPublisher.publish(creatMessage(savedCustomer));
+        log.info("User id created successfully: {} ", response.getId());
+        log.info("Customer with id: {} created successfully", savedCustomer.getId().getValue().toString());
+        customerCreationRequestPublisher.publish(creatMessage(savedCustomer, response));
 
         return CustomerDto.from(newCustomer);
     }
 
-    private CustomerBookingMessage creatMessage(Customer customer) {
+    private UserCreationRequest creationRequest(CreateCustomerCommand command) {
+        return UserCreationRequest.builder()
+                .email(command.getEmail())
+                .password(command.getPassword())
+                .phone(command.getPhone())
+                .build();
+    }
+
+    private CustomerBookingMessage creatMessage(Customer customer, UserResponse response) {
         return CustomerBookingMessage.builder()
                 .customerId(customer.getId().getValue().toString())
                 .firstName(customer.getFullName().getFirstName())
                 .lastName(customer.getFullName().getLastName())
-                .username(customer.getUserId() == null ? "" : customer.getUserId().getValue().toString())
+                .username(response.getEmail())
                 .active(customer.isActive())
                 .build();
     }

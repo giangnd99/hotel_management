@@ -1,10 +1,8 @@
-package com.poly.authentication.service.domain.dto.request;
+package com.poly.authentication.service.domain.dto.request.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-
-import java.time.LocalDate;
 
 @Setter
 @Getter

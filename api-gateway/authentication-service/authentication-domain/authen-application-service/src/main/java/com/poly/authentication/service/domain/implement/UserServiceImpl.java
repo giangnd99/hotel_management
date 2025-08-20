@@ -1,8 +1,8 @@
 package com.poly.authentication.service.domain.implement;
 
-import com.poly.authentication.service.domain.dto.reponse.UserResponse;
-import com.poly.authentication.service.domain.dto.request.UserCreationRequest;
-import com.poly.authentication.service.domain.dto.request.UserUpdatedRequest;
+import com.poly.authentication.service.domain.dto.reponse.user.UserResponse;
+import com.poly.authentication.service.domain.dto.request.user.UserCreationRequest;
+import com.poly.authentication.service.domain.dto.request.user.UserUpdatedRequest;
 import com.poly.authentication.service.domain.entity.Role;
 import com.poly.authentication.service.domain.entity.User;
 import com.poly.authentication.service.domain.exception.AppException;

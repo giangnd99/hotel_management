@@ -1,4 +1,4 @@
-package com.poly.authentication.service.domain.dto.request;
+package com.poly.authentication.service.domain.dto.request.auth;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

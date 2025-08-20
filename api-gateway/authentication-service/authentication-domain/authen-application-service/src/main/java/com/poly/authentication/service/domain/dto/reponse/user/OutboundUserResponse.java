@@ -1,4 +1,4 @@
-package com.poly.authentication.service.domain.dto.reponse;
+package com.poly.authentication.service.domain.dto.reponse.user;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -11,12 +11,14 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class ExchangeTokenResonse {
+public class OutboundUserResponse {
 
-    String accessToken;
-    Long expiresIn;
-    String refreshToken;
-    String scope;
-    String tokenType;
-
+    String id;
+    String email;
+    boolean verifiedEmail;
+    String name;
+    String givenName;
+    String familyName;
+    String picture;
+    String locale;
 }

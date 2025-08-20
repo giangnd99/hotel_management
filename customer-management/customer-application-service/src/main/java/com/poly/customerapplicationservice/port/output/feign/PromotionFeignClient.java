@@ -1,4 +1,4 @@
-package com.poly.customerdataaccess.feign;
+package com.poly.customerapplicationservice.port.output.feign;
 
 import com.poly.customerapplicationservice.dto.command.RedeemVoucherCommand;
 import org.springframework.cloud.openfeign.FeignClient;

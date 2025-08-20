@@ -2,6 +2,7 @@ package com.poly.booking.management.domain.mapper;
 
 import com.poly.booking.management.domain.entity.Customer;
 import com.poly.booking.management.domain.message.reponse.CustomerCreatedMessageResponse;
+import com.poly.domain.valueobject.CustomerId;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -19,11 +20,14 @@ public class CustomerDataMapper {
      * @return Customer entity
      */
     public Customer customerCreatedEventToCustomer(CustomerCreatedMessageResponse customerCreatedEvent) {
-        return Customer.createCustomer(
-                UUID.fromString(customerCreatedEvent.getCustomerId()),
-                customerCreatedEvent.getUsername(),
-                customerCreatedEvent.getFirstName(),
-                customerCreatedEvent.getLastName()
-        );
+        return Customer.Builder.builder()
+                .name(customerCreatedEvent.getLastName().concat(" ").concat(customerCreatedEvent.getFirstName()))
+                .email(customerCreatedEvent.getUsername())
+                .username(customerCreatedEvent.getUsername())
+                .id(new CustomerId(UUID.fromString(customerCreatedEvent.getCustomerId())))
+                .lastName(customerCreatedEvent.getLastName())
+                .firstName(customerCreatedEvent.getFirstName())
+                .status(customerCreatedEvent.isActive() ? Customer.CustomerStatus.ACTIVE : Customer.CustomerStatus.INACTIVE)
+                .build();
     }
 }
