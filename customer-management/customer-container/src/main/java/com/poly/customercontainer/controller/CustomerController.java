@@ -58,20 +58,8 @@ public class CustomerController {
         return ResponseEntity.ok(ApiResponse.success(customerId));
     }
 
-    @PutMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<CustomerDto>> updateCustomer(
-            @ModelAttribute UpdateCustomerCommand command,
-            @RequestPart(value = "imageRaw", required = false) MultipartFile imageFile) {
-
-        if (imageFile != null && !imageFile.isEmpty()) {
-            try {
-                byte[] imageBytes = imageFile.getBytes();
-                String imageLink = cloudinaryImage.upload(imageBytes);
-                command.setImage(imageLink);
-            } catch (IOException e) {
-                throw new RuntimeException("Không đọc được ảnh", e);
-            }
-        }
+    @PutMapping(value = "/profile")
+    public ResponseEntity<ApiResponse<CustomerDto>> updateCustomer(@RequestBody UpdateCustomerCommand command) {
         var customer = customerUsecase.ChangeCustomerInformation(command);
         return ResponseEntity.ok(ApiResponse.success(customer));
     }
@@ -86,4 +74,25 @@ public class CustomerController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PutMapping(value = "/profile/{customerId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<CustomerDto>> updateCustomerAvatar(
+            @PathVariable String customerId,
+            @RequestPart("imageRaw") MultipartFile imageFile) {
+
+        if (imageFile == null || imageFile.isEmpty()) {
+            throw new RuntimeException("Ảnh không hợp lệ");
+        }
+
+        try {
+            byte[] imageBytes = imageFile.getBytes();
+            String imageLink = cloudinaryImage.upload(imageBytes);
+
+            var customer = customerUsecase.updateCustomerAvatar(customerId, imageLink);
+            return ResponseEntity.ok(ApiResponse.success(customer));
+        } catch (IOException e) {
+            throw new RuntimeException("Không đọc được ảnh", e);
+        }
+    }
+
 }

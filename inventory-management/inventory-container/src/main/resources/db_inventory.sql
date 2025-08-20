@@ -1,3 +1,6 @@
+DROP DATABASE IF EXISTS inventory_management;
+CREATE DATABASE IF NOT EXISTS inventory_management;
+USE inventory_management;
 
 CREATE TABLE inventory_items (
     item_id INT PRIMARY KEY,

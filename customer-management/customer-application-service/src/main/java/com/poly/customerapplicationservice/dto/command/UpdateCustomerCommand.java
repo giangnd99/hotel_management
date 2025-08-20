@@ -10,10 +10,11 @@ import java.util.UUID;
 @Getter
 @Setter
 public class UpdateCustomerCommand {
-    private UUID userId;
+    private UUID customerId;
     private String firstName;
     private String lastName;
     private AddressDto address;
-    private String image;
     private LocalDate dateOfBirth;
+    private String sex;
+    private boolean active;
 }
