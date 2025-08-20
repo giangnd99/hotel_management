@@ -54,10 +54,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
     "com.poly.promotion.data.access"
 })
 @EntityScan(basePackages = {
-    "com.poly.promotion.domain.core.entity"
+    "com.poly.promotion.domain.core.entity",
+    "com.poly.promotion.data.access.jpaentity"
 })
 @EnableJpaRepositories(basePackages = {
-    "com.poly.promotion.data.access.repository"
+    "com.poly.promotion.data.access.jparepository"
 })
 @EnableScheduling
 @EnableTransactionManagement

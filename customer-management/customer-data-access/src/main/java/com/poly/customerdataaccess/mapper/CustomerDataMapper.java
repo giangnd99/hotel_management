@@ -2,6 +2,7 @@ package com.poly.customerdataaccess.mapper;
 
 import com.poly.customerdataaccess.entity.CustomerEntity;
 import com.poly.customerdataaccess.entity.Level;
+import com.poly.customerdataaccess.entity.SexEnum;
 import com.poly.customerdomain.model.entity.Customer;
 import com.poly.customerdomain.model.entity.valueobject.*;
 import com.poly.domain.valueobject.CustomerId;
@@ -22,6 +23,8 @@ public class CustomerDataMapper {
         customerEntity.setBehaviorData(domain.getBehaviorData().toJson());
         customerEntity.setCreatedAt(domain.getCreatedAt());
         customerEntity.setUpdatedAt(domain.getUpdatedAt());
+        customerEntity.setSex(SexEnum.valueOf(domain.getSex().name()));
+        customerEntity.setActive(domain.isActive());
         return customerEntity;
     }
 
@@ -37,6 +40,8 @@ public class CustomerDataMapper {
                 .image(ImageUrl.from(entity.getImageUrl()))
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
+                .sex(Sex.valueOf(entity.getSex().name()))
+                .active(entity.isActive())
                 .build();
     }
 }

@@ -5,6 +5,7 @@ import com.poly.inventory.domain.entity.InventoryTransaction;
 import com.poly.inventory.domain.value_object.ItemId;
 import com.poly.inventory.domain.value_object.Quantity;
 import com.poly.inventory.domain.value_object.TransactionId;
+import com.poly.inventory.domain.value_object.TransactionType;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class TransactionDtoMapper {
         dto.setTransactionId(transaction.getTransactionId().getValue());
         dto.setItemId(transaction.getItemId().getValue());
         dto.setStaffId(transaction.getStaffId());
-        dto.setTransactionType(transaction.getTransactionType());
+        dto.setTransactionType(transaction.getTransactionType().name());
         dto.setQuantity(transaction.getQuantity().getValue());
         dto.setTransactionDate(transaction.getTransactionDate());
         return dto;
@@ -26,7 +27,7 @@ public class TransactionDtoMapper {
                 new TransactionId(dto.getTransactionId()),
                 new ItemId(dto.getItemId()),
                 dto.getStaffId(),
-                dto.getTransactionType(),
+                TransactionType.valueOf(dto.getTransactionType()),
                 new Quantity(dto.getQuantity()),
                 dto.getTransactionDate()
         );

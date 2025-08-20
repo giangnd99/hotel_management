@@ -1,432 +1,373 @@
-# Hotel Promotion Management System
+# 🎫 Hotel Promotion Management System
 
-## Overview
+A comprehensive voucher and promotion management service built with **Spring Boot**, **Clean Architecture**, **Domain-Driven Design (DDD)**, and **Hexagonal Architecture**. This service manages voucher packs, individual vouchers, and customer redemption using loyalty points.
 
-The Hotel Promotion Management System is a comprehensive solution for managing hotel promotions, voucher packs, and customer voucher operations. Built using Spring Boot with Clean Architecture and Domain-Driven Design principles, the system provides a robust foundation for hotel marketing and customer loyalty programs.
+## 🏗️ Architecture Overview
 
-## Architecture
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    Promotion Management                        │
+├─────────────────────────────────────────────────────────────────┤
+│  🚀 Application Layer (REST Controllers, DTOs, AOP)           │
+│  🔧 Domain Layer (Entities, Services, Business Logic)         │
+│  💾 Data Access Layer (JPA, Liquibase, PostgreSQL)           │
+│  🐳 Container Layer (Spring Boot, Configuration)              │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-### Module Structure
+### **Core Principles**
+- **Clean Architecture**: Separation of concerns with clear dependency flow
+- **Domain-Driven Design**: Business logic centered around domain entities
+- **Hexagonal Architecture**: Adapters for external systems and databases
+- **SOLID Principles**: Single responsibility, open/closed, dependency inversion
+
+## 🚀 Quick Start
+
+### **Prerequisites**
+- **Java 17** or higher
+- **Maven 3.9+**
+- **Docker & Docker Compose**
+- **PostgreSQL 15+** (or use Docker)
+
+### **Option 1: Docker Compose (Recommended)**
+
+1. **Clone and Navigate**
+   ```bash
+   cd promotion-management
+   ```
+
+2. **Start Services**
+   ```bash
+   docker compose up -d
+   ```
+   This will start:
+   - PostgreSQL database
+   - Redis cache (optional)
+   - Your application
+
+3. **Verify Services**
+   ```bash
+   docker compose ps
+   ```
+
+4. **Check Application Health**
+   ```bash
+   curl http://localhost:8080/promotion-management/actuator/health
+   ```
+
+### **Option 2: Local Development**
+
+1. **Setup Database**
+   ```bash
+   # Start PostgreSQL
+   docker run -d --name postgres \
+     -e POSTGRES_DB=promotiondb \
+     -e POSTGRES_USER=promotion \
+     -e POSTGRES_PASSWORD=promotion \
+     -p 5432:5432 \
+     postgres:15-alpine
+   ```
+
+2. **Build Project**
+   ```bash
+   mvn clean compile
+   ```
+
+3. **Run Application**
+   ```bash
+   mvn spring-boot:run -pl promotion-container
+   ```
+
+## 📁 Project Structure
 
 ```
 promotion-management/
-├── promotion-domain-model/          # Domain model and business logic
-│   ├── promotion-domain-core/      # Core domain entities and value objects
-│   └── promotion-domain-application/ # Application services and APIs
-├── promotion-application/           # REST controllers and web layer
-├── promotion-container/             # Configuration and main application
-└── promotion-data-access/          # Data persistence layer
+├── 📦 promotion-domain-model/          # Domain entities & business logic
+│   ├── 🏗️ promotion-domain-core/      # Core domain entities
+│   └── 🔧 promotion-domain-application/ # Domain services & use cases
+├── 🚀 promotion-application/           # REST controllers & DTOs
+├── 💾 promotion-data-access/           # Database & external integrations
+├── 🐳 promotion-container/             # Spring Boot configuration
+├── 🐳 Dockerfile                       # Multi-stage Docker build
+├── 🐳 docker-compose.yml               # Service orchestration
+└── 📚 README.md                        # This file
 ```
 
-### Architecture Principles
-
-- **Clean Architecture**: Separation of concerns with clear boundaries
-- **Hexagonal Architecture**: Ports and adapters for external integrations
-- **Domain-Driven Design**: Business logic centered around domain concepts
-- **SOLID Principles**: Single responsibility, open/closed, Liskov substitution, interface segregation, dependency inversion
-
-## Spring Boot Implementation
-
-### Controllers
-
-#### 1. VoucherPackController
-
-**Purpose**: Manages voucher pack operations including CRUD operations and customer access.
-
-**Endpoints**:
-- `GET /api/v1/voucher-packs` - Retrieve available voucher packs for customers
-- `POST /api/v1/voucher-packs` - Create new voucher packs (administrative)
-- `PUT /api/v1/voucher-packs/{id}` - Update existing voucher packs (administrative)
-- `DELETE /api/v1/voucher-packs/{id}` - Delete voucher packs (administrative)
-
-**Features**:
-- Comprehensive OpenAPI/Swagger documentation
-- Input validation and error handling
-- Business rule enforcement
-- Audit logging and monitoring
-- Role-based access control
-
-**Usage Example**:
-```bash
-# Get available voucher packs
-curl -X GET "http://localhost:8080/promotion-management/api/v1/voucher-packs"
-
-# Create new voucher pack
-curl -X POST "http://localhost:8080/promotion-management/api/v1/voucher-packs" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "description": "20% off room bookings",
-    "discountAmount": "20.0",
-    "validRange": "30 DAYS",
-    "requiredPoints": 1000,
-    "quantity": 100,
-    "validFrom": "2025-01-01",
-    "validTo": "2025-12-31"
-  }'
-```
-
-#### 2. VoucherController
-
-**Purpose**: Manages individual voucher operations including redemption and customer access.
-
-**Endpoints**:
-- `GET /api/v1/vouchers/customer/{customerId}` - Retrieve customer's vouchers
-- `POST /api/v1/vouchers/redeem` - Redeem voucher from voucher pack
-
-**Features**:
-- Customer-specific voucher access
-- Loyalty point validation during redemption
-- Business rule enforcement
-- Security and privacy protection
-- Comprehensive error handling
-
-**Usage Example**:
-```bash
-# Get customer vouchers
-curl -X GET "http://localhost:8080/promotion-management/api/v1/vouchers/customer/CUST001"
-
-# Redeem voucher
-curl -X POST "http://localhost:8080/promotion-management/api/v1/vouchers/redeem" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "customerId": "CUST001",
-    "voucherPackId": 123
-  }'
-```
-
-### Configuration
-
-#### 1. PromotionManagementConfig
-
-**Purpose**: Main configuration class for component scanning and Spring features.
-
-**Features**:
-- Component scanning across all modules
-- Entity scanning for JPA operations
-- Repository scanning for data access
-- Scheduling and transaction management
-
-#### 2. OpenApiConfig
-
-**Purpose**: OpenAPI/Swagger documentation configuration.
-
-**Features**:
-- Comprehensive API documentation
-- Multiple server environments
-- Contact and license information
-- Detailed endpoint descriptions
-
-#### 3. Main Application Class
-
-**Purpose**: Spring Boot application entry point.
-
-**Features**:
-- Component scanning configuration
-- Entity and repository scanning
-- Scheduling and transaction management
-- Environment-specific configurations
-
-### Configuration Files
-
-#### application.yml
-
-**Purpose**: Comprehensive configuration for all system aspects.
-
-**Configuration Sections**:
-
-1. **Server Configuration**
-   - Port and context path
-   - Compression settings
-   - Servlet configuration
-
-2. **Database Configuration**
-   - PostgreSQL connection settings
-   - Hikari connection pool
-   - JPA and Hibernate settings
-
-3. **Spring Configuration**
-   - Application metadata
-   - Jackson serialization
-   - Validation settings
-   - Actuator endpoints
-
-4. **Business Logic Configuration**
-   - Voucher pack limits
-   - Voucher constraints
-   - Expiration management
-   - Rate limiting
-
-5. **Security Configuration**
-   - CORS settings
-   - Rate limiting
-   - Authentication requirements
-
-6. **Monitoring Configuration**
-   - Metrics export
-   - Prometheus integration
-   - Health checks
-
-7. **Environment Profiles**
-   - Development (dev)
-   - Production (prod)
-   - Testing (test)
-
-## Getting Started
-
-### Prerequisites
-
-- Java 17 or higher
-- Maven 3.6 or higher
-- PostgreSQL 12 or higher
-- Redis (optional, for caching)
-
-### Environment Variables
-
-```bash
-# Database Configuration
-export DATABASE_URL=jdbc:postgresql://localhost:5432/hotel_management
-export DATABASE_USERNAME=postgres
-export DATABASE_PASSWORD=your_password
-
-# Application Configuration
-export PROMOTION_MANAGEMENT_PORT=8080
-export SPRING_PROFILES_ACTIVE=dev
-
-# Business Logic Configuration
-export MAX_VOUCHER_PACK_QUANTITY=10000
-export MIN_REQUIRED_POINTS=100
-export MAX_REQUIRED_POINTS=100000
-
-# Logging Configuration
-export LOG_LEVEL=INFO
-export LOG_FILE_PATH=logs/promotion-management.log
-```
-
-### Running the Application
-
-1. **Clone and Build**:
-   ```bash
-   git clone <repository-url>
-   cd hotel_management/promotion-management
-   mvn clean install
-   ```
-
-2. **Start the Application**:
-   ```bash
-   cd promotion-container
-   mvn spring-boot:run
-   ```
-
-3. **Access the Application**:
-   - Application: http://localhost:8080/promotion-management
-   - Swagger UI: http://localhost:8080/promotion-management/swagger-ui.html
-   - API Docs: http://localhost:8080/promotion-management/api-docs
-
-### Database Setup
-
-1. **Create Database**:
-   ```sql
-   CREATE DATABASE hotel_management;
-   ```
-
-2. **Run Migrations** (if using Flyway or similar):
-   ```bash
-   mvn flyway:migrate
-   ```
-
-3. **Verify Connection**:
-   - Check application logs for successful database connection
-   - Verify JPA entity scanning
-
-## API Documentation
-
-### OpenAPI/Swagger
-
-The system provides comprehensive API documentation through OpenAPI/Swagger:
-
-- **Interactive Documentation**: Swagger UI for testing endpoints
-- **API Specification**: OpenAPI JSON for integration
-- **Request/Response Examples**: Detailed examples for all endpoints
-- **Error Codes**: Comprehensive error response documentation
-
-### API Categories
-
-1. **Voucher Pack Management**
-   - Create, read, update, delete operations
-   - Status management and validation
-   - Business rule enforcement
-
-2. **Voucher Operations**
-   - Customer voucher redemption
-   - Voucher status management
-   - Expiration handling
-
-3. **Customer Operations**
-   - Customer voucher portfolio
-   - Redemption history
-   - Loyalty point integration
-
-4. **Administrative Functions**
-   - System monitoring
-   - Audit trail access
-   - Configuration management
-
-## Security Features
-
-### Authentication & Authorization
-
-- Customer authentication required for voucher operations
-- Role-based access control for administrative functions
-- Secure token-based authentication (configurable)
-
-### Data Protection
-
-- Customer data isolation
-- Input validation and sanitization
-- SQL injection prevention
-- XSS protection
-
-### Rate Limiting
-
-- Configurable rate limits per endpoint
-- Per-customer and per-IP limiting
-- Burst protection and throttling
-
-## Monitoring & Observability
-
-### Health Checks
-
-- Application health status
-- Database connectivity
-- External service dependencies
-- Custom business health indicators
-
-### Metrics
-
-- Prometheus metrics export
-- Custom business metrics
-- Performance monitoring
-- Resource utilization tracking
-
-### Logging
-
-- Structured logging with JSON format
-- Log level configuration
-- File rotation and retention
-- Audit trail logging
-
-## Development Guidelines
-
-### Code Quality
-
-- Comprehensive Java documentation (Javadoc)
-- Unit test coverage
-- Integration test coverage
-- Code style consistency
-
-### Architecture Compliance
-
-- Clean Architecture principles
-- Domain-Driven Design patterns
-- SOLID principles adherence
-- Dependency injection usage
-
-### Testing Strategy
-
-- Unit tests for business logic
-- Integration tests for APIs
-- End-to-end tests for workflows
-- Performance and load testing
-
-## Deployment
-
-### Containerization
-
-- Docker support for containerized deployment
-- Multi-stage builds for optimization
-- Environment-specific configurations
-- Health check integration
-
-### Cloud Deployment
-
-- Kubernetes deployment manifests
-- Helm charts for package management
-- Cloud-native configuration
-- Auto-scaling capabilities
-
-### CI/CD Integration
-
-- Maven build automation
-- Automated testing
-- Deployment pipelines
-- Environment promotion
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Database Connection Failures**
-   - Verify database credentials
-   - Check network connectivity
-   - Validate database schema
-
-2. **Component Scanning Issues**
-   - Verify package structure
-   - Check component annotations
-   - Validate dependency injection
-
-3. **Configuration Problems**
-   - Validate YAML syntax
-   - Check environment variables
-   - Verify profile activation
-
-### Debug Mode
-
-Enable debug logging for troubleshooting:
-
+## 🎯 Core Features
+
+### **Voucher Pack Management**
+- Create, read, update, delete voucher packs
+- Configure loyalty point requirements
+- Set validity periods and quantities
+- Manage pack availability
+
+### **Voucher Management**
+- Customer voucher redemption
+- Loyalty point deduction
+- Voucher status tracking
+- Expiration management
+
+### **Business Operations**
+- Batch processing for expired vouchers
+- Monitoring and health checks
+- Comprehensive logging and auditing
+- Rate limiting and security
+
+## 🔧 Configuration
+
+### **Environment Variables**
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PROMOTION_MANAGEMENT_PORT` | `8080` | Application port |
+| `DATABASE_URL` | `jdbc:postgresql://localhost:5432/promotiondb` | Database connection |
+| `DATABASE_USERNAME` | `promotion` | Database username |
+| `DATABASE_PASSWORD` | `promotion` | Database password |
+| `REDIS_HOST` | `localhost` | Redis host (optional) |
+| `REDIS_PORT` | `6379` | Redis port |
+
+### **Application Properties**
+
+Key configurations in `application.yml`:
+- **Database**: PostgreSQL with Hikari connection pool
+- **Liquibase**: Database migration management
+- **Actuator**: Health checks and metrics
+- **Caching**: Redis (optional) or in-memory
+- **Security**: Rate limiting and CORS
+
+## 🌐 API Endpoints
+
+### **Base URL**: `http://localhost:8080/promotion-management`
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/` | GET | Root with HATEOAS links |
+| `/api` | GET | API discovery endpoint |
+| `/api/v1/voucher-packs` | GET | List available voucher packs |
+| `/api/v1/vouchers` | GET | Get customer vouchers |
+| `/api/v1/vouchers/redeem` | POST | Redeem voucher from pack |
+| `/actuator/health` | GET | Service health status |
+| `/swagger-ui.html` | GET | API documentation |
+
+### **API Documentation**
+- **Swagger UI**: `/swagger-ui.html`
+- **OpenAPI Spec**: `/api-docs`
+- **HATEOAS**: All responses include navigation links
+
+## 🗄️ Database Schema
+
+### **Core Tables**
+- `voucher_packs`: Voucher pack definitions
+- `vouchers`: Individual vouchers
+- `batch_job_execution`: Spring Batch job tracking
+- `monitoring_data`: Local monitoring persistence
+
+### **Database Migration**
+- **Liquibase**: Type-safe DDL scripts
+- **Location**: `promotion-data-access/src/main/resources/db/migration/`
+- **Auto-execution**: On application startup
+
+## 🔄 Batch Processing
+
+### **Scheduled Jobs**
+- **Voucher Expiration**: Daily at 12 AM
+- **Monitoring Sync**: Every 6 hours
+- **Data Cleanup**: Weekly cleanup of old monitoring data
+
+### **Job Configuration**
 ```yaml
-logging:
-  level:
-    com.poly.promotion: DEBUG
-    org.springframework.web: DEBUG
-    org.hibernate.SQL: DEBUG
+batch:
+  job:
+    enabled: true
+    name: promotion-management-batch
+  jdbc:
+    initialize-schema: always
 ```
 
-## Contributing
+## 📊 Monitoring & Health
 
-### Development Setup
+### **Spring Actuator Endpoints**
+- `/actuator/health` - Service health
+- `/actuator/metrics` - Application metrics
+- `/actuator/prometheus` - Prometheus metrics
+- `/actuator/info` - Application information
 
-1. Fork the repository
-2. Create a feature branch
-3. Implement changes with tests
-4. Submit a pull request
+### **Custom Health Checks**
+- Database connectivity
+- Redis connectivity (if enabled)
+- External monitoring service status
 
-### Code Standards
+## 🚀 Development
 
-- Follow existing code style
-- Add comprehensive documentation
-- Include unit tests
-- Update relevant documentation
+### **Building the Project**
+```bash
+# Clean build
+mvn clean compile
 
-## License
+# Run tests
+mvn test
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+# Package
+mvn package -DskipTests
 
-## Support
+# Run specific module
+mvn spring-boot:run -pl promotion-container
+```
 
-For support and questions:
+### **Module Dependencies**
+```
+promotion-container
+    ↓
+promotion-application
+    ↓
+promotion-domain-model
+    ↓
+promotion-data-access
+```
 
-- **Email**: dev@hotelmanagement.com
-- **Documentation**: https://hotelmanagement.com/developers
-- **Issues**: GitHub Issues repository
+### **Code Quality**
+- **Lombok**: Reduces boilerplate code
+- **MapStruct**: Type-safe object mapping
+- **JUnit 5**: Unit testing framework
+- **Mockito**: Mocking framework
 
-## Version History
+## 🐳 Docker
 
-- **v1.0.0** - Initial release with core functionality
-- **v1.1.0** - Enhanced expiration management
-- **v1.2.0** - Improved security and monitoring
-- **v1.3.0** - Performance optimizations and caching
+### **Building Image**
+```bash
+docker build -t promotion-management:latest .
+```
+
+### **Running with Docker Compose**
+```bash
+# Start all services
+docker compose up -d
+
+# View logs
+docker compose logs -f app
+
+# Stop services
+docker compose down
+
+# Rebuild and restart
+docker compose up -d --build
+```
+
+### **Service Ports**
+- **Application**: `8080`
+- **PostgreSQL**: `5432`
+- **Redis**: `6379`
+
+## 🧪 Testing
+
+### **Test Structure**
+```
+src/test/java/
+├── unit/           # Unit tests
+├── integration/    # Integration tests
+└── e2e/           # End-to-end tests
+```
+
+### **Running Tests**
+```bash
+# All tests
+mvn test
+
+# Specific module
+mvn test -pl promotion-domain-model
+
+# Integration tests only
+mvn verify -DskipUnitTests
+```
+
+## 🔍 Troubleshooting
+
+### **Common Issues**
+
+1. **Database Connection Failed**
+   ```bash
+   # Check PostgreSQL status
+   docker compose ps postgres
+   
+   # Check logs
+   docker compose logs postgres
+   ```
+
+2. **Port Already in Use**
+   ```bash
+   # Find process using port 8080
+   lsof -i :8080
+   
+   # Kill process
+   kill -9 <PID>
+   ```
+
+3. **Build Failures**
+   ```bash
+   # Clean and rebuild
+   mvn clean compile
+   
+   # Check Java version
+   java -version
+   ```
+
+### **Logs**
+```bash
+# Application logs
+docker compose logs -f app
+
+# Database logs
+docker compose logs -f postgres
+
+# All services
+docker compose logs -f
+```
+
+## 📚 Additional Resources
+
+### **Architecture Patterns**
+- [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+- [Hexagonal Architecture](https://alistair.cockburn.us/hexagonal-architecture/)
+- [Domain-Driven Design](https://martinfowler.com/bliki/DomainDrivenDesign.html)
+
+### **Spring Boot**
+- [Spring Boot Reference](https://docs.spring.io/spring-boot/docs/current/reference/html/)
+- [Spring Data JPA](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/)
+- [Spring Batch](https://docs.spring.io/spring-batch/docs/current/reference/html/)
+
+### **Tools & Libraries**
+- [Liquibase](https://docs.liquibase.com/)
+- [MapStruct](https://mapstruct.org/documentation/stable/reference/html/)
+- [Lombok](https://projectlombok.org/features/all)
+
+## 🤝 Contributing
+
+1. **Fork the repository**
+2. **Create a feature branch**
+3. **Make your changes**
+4. **Add tests**
+5. **Submit a pull request**
+
+### **Development Guidelines**
+- Follow Clean Architecture principles
+- Write comprehensive tests
+- Use meaningful commit messages
+- Update documentation as needed
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+For questions or issues:
+1. Check the troubleshooting section
+2. Review the logs
+3. Create an issue with detailed information
+4. Contact the development team
 
 ---
 
-**Note**: This system is designed for production use in hotel management environments. Ensure proper security measures and testing before deployment in production environments.
+**Happy Coding! 🎉**
+
+*Built with ❤️ using Spring Boot, Clean Architecture, and Domain-Driven Design*

@@ -9,9 +9,11 @@ import com.poly.domain.valueobject.CustomerId;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class CustomerRepositoryImpl implements CustomerRepository {
@@ -43,10 +45,9 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     public List<Customer> findAll() {
-        return customerJpaRepository.findAll()
-                .stream()
-                .map(CustomerDataMapper::mapToDomain)
-                .toList();
+        List<CustomerEntity> entities = customerJpaRepository.findAll();
+        List<Customer>  customers = entities.stream().map(CustomerDataMapper::mapToDomain).collect(Collectors.toList());
+        return customers;
     }
 
     @Override

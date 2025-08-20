@@ -49,4 +49,11 @@ public class CustomerEntity {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "sex", nullable = false)
+    private SexEnum sex;
+
+    @Column(name = "active")
+    private boolean active;
 }

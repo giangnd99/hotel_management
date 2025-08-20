@@ -17,6 +17,11 @@ spring:
     name: promotion-management
     description: Hotel Promotion Management System
   
+  # Banner Configuration
+  banner:
+    charset: UTF-8
+    location: classpath:banner.txt
+  
   # Database Configuration
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/hotel_management}
@@ -33,7 +38,7 @@ spring:
   # JPA Configuration
   jpa:
     hibernate:
-      ddl-auto: ${JPA_DDL_AUTO:validate}
+      ddl-auto: ${JPA_DDL_AUTO:none}
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
@@ -48,6 +53,18 @@ spring:
         batch_versioned_data: true
     open-in-view: false
   
+  # Liquibase Configuration
+  liquibase:
+    enabled: ${LIQUIBASE_ENABLED:true}
+    change-log: classpath:db/migration/changelog-master.yml
+    contexts: ${LIQUIBASE_CONTEXTS:}
+    default-schema: ${LIQUIBASE_DEFAULT_SCHEMA:public}
+    database-change-log-table: DATABASECHANGELOG
+    database-change-log-lock-table: DATABASECHANGELOGLOCK
+    drop-first: ${LIQUIBASE_DROP_FIRST:false}
+    rollback-file: ${LIQUIBASE_ROLLBACK_FILE:}
+    test-rollback-on-update: ${LIQUIBASE_TEST_ROLLBACK:false}
+  
   # Jackson Configuration
   jackson:
     default-property-inclusion: NON_NULL
@@ -61,6 +78,16 @@ spring:
   # Validation Configuration
   validation:
     enabled: true
+  
+  # Batch Configuration
+  batch:
+    job:
+      enabled: ${BATCH_JOB_ENABLED:true}
+      name: ${BATCH_JOB_NAME:promotion-management-batch}
+    jdbc:
+      initialize-schema: ${BATCH_JDBC_INITIALIZE_SCHEMA:always}
+    job-repository:
+      table-prefix: ${BATCH_TABLE_PREFIX:BATCH_}
   
   # Actuator Configuration
   management:
@@ -172,15 +199,55 @@ security:
 
 # Monitoring and Metrics Configuration
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,env,configprops,beans,loggers
+      base-path: /actuator
+    health:
+      show-details: when-authorized
+      show-components: always
+  endpoint:
+    health:
+      show-details: when-authorized
+      show-components: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
   metrics:
     tags:
       application: ${spring.application.name}
       environment: ${ENVIRONMENT:development}
-    export:
-      prometheus:
+  prometheus:
+    metrics:
+      export:
         enabled: true
         descriptions: true
         step: 60s
+
+# External Monitoring Service Configuration
+monitoring:
+  service:
+    url: ${MONITORING_SERVICE_URL:http://localhost:8081}
+  data:
+    retention:
+      days: ${MONITORING_DATA_RETENTION_DAYS:30}
+      synced:
+        days: ${MONITORING_DATA_SYNCED_RETENTION_DAYS:7}
+    cleanup:
+      cron: ${MONITORING_DATA_CLEANUP_CRON:0 0 2 * * ?}
+      synced:
+        cron: ${MONITORING_DATA_SYNCED_CLEANUP_CRON:0 30 2 * * ?}
+  sync:
+    interval: ${MONITORING_SYNC_INTERVAL:60000}
+    max-retries: ${MONITORING_SYNC_MAX_RETRIES:3}
+
+# Batch Job Scheduling Configuration
+batch:
+  job:
+    expiration:
+      cron: ${BATCH_JOB_EXPIRATION_CRON:0 0 0 * * ?} # Daily at midnight
 
 # Environment-specific overrides
 ---

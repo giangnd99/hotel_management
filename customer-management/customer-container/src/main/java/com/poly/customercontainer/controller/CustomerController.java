@@ -8,6 +8,7 @@ import com.poly.customerapplicationservice.dto.PageResult;
 import com.poly.customerapplicationservice.port.input.CustomerUsecase;
 import com.poly.customercontainer.shared.request.ApiResponse;
 import com.poly.customerdataaccess.image.CloudinaryImage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/customers")
 public class CustomerController {
@@ -34,6 +36,14 @@ public class CustomerController {
         RetrieveCustomerProfileCommand command = new RetrieveCustomerProfileCommand();
         command.setUserId(userId);
         var dto = customerUsecase.retrieveCustomerProfile(command);
+        return ResponseEntity.ok(ApiResponse.success(dto));
+    }
+
+    @GetMapping("/profile/customer/{customerId}")
+    public ResponseEntity<ApiResponse<CustomerDto>> retrieveCustomerProfileById(@PathVariable UUID customerId) {
+        RetrieveCustomerProfileCommand command = new RetrieveCustomerProfileCommand();
+        command.setUserId(customerId);
+        var dto = customerUsecase.retrieveCustomerProfileById(command);
         return ResponseEntity.ok(ApiResponse.success(dto));
     }
 
