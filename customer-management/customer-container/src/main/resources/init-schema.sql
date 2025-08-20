@@ -34,7 +34,7 @@ CREATE TABLE loyalty_point
 -- Bảng Loyalty Transaction
 CREATE TABLE loyalty_transaction
 (
-    transaction_id   INT AUTO_INCREMENT PRIMARY KEY,
+    transaction_id   BINARY(16) PRIMARY KEY,
     loyalty_id       BINARY(16)                        NOT NULL,
     points_changed   DECIMAL(10, 2)                    NOT NULL,
     transaction_type ENUM ('EARN', 'REDEEM', 'ADJUST') NOT NULL,
@@ -82,18 +82,19 @@ VALUES
     (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0010'), UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01'), 1999.99);
 
 -- Insert 10 Loyalty Transactions
-INSERT INTO loyalty_transaction (loyalty_id, points_changed, transaction_type, transaction_date, description)
+INSERT INTO loyalty_transaction
+(transaction_id, loyalty_id, points_changed, transaction_type, transaction_date, description)
 VALUES
-    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0001'), 200.00, 'EARN','2025-01-01 10:00:00','Earned invoice INV001'),
-    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0002'), -100.00,'REDEEM','2025-01-05 14:00:00','Redeem voucher'),
-    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0003'), 300.50,'EARN','2025-02-01 09:30:00','Earned booking BK001'),
-    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0004'), -50.00,'REDEEM','2025-02-10 16:00:00','Gift redeem'),
-    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0005'), 400.00,'EARN','2025-03-01 11:00:00','Earned invoice INV002'),
-    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0006'), -75.00,'REDEEM','2025-03-05 13:00:00','Used for discount'),
-    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0007'), 120.00,'EARN','2025-04-01 10:00:00','Earned invoice INV003'),
-    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0008'), -30.00,'REDEEM','2025-04-15 15:30:00','Redeemed for gift'),
-    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0009'), 600.00,'EARN','2025-05-01 10:00:00','Earned invoice INV004'),
-    (UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0010'), -90.00,'REDEEM','2025-05-10 18:00:00','Gift voucher used');
+    (UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa0011'), UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0001'), 200.00,  'EARN',  '2025-01-01 10:00:00', 'Earned invoice INV001'),
+    (UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa0012'), UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0002'), -100.00, 'REDEEM', '2025-01-05 14:00:00', 'Redeem voucher'),
+    (UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa0013'), UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0003'), 300.50,  'EARN',  '2025-02-01 09:30:00', 'Earned booking BK001'),
+    (UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa0014'), UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0004'), -50.00,  'REDEEM', '2025-02-10 16:00:00', 'Gift redeem'),
+    (UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa0015'), UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0005'), 400.00,  'EARN',  '2025-03-01 11:00:00', 'Earned invoice INV002'),
+    (UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa0016'), UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0006'), -75.00,  'REDEEM', '2025-03-05 13:00:00', 'Used for discount'),
+    (UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa0017'), UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0007'), 120.00,  'EARN',  '2025-04-01 10:00:00', 'Earned invoice INV003'),
+    (UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa0018'), UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0008'), -30.00,  'REDEEM', '2025-04-15 15:30:00', 'Redeemed for gift'),
+    (UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa0019'), UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0009'), 600.00,  'EARN',  '2025-05-01 10:00:00', 'Earned invoice INV004'),
+    (UUID_TO_BIN('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa0020'), UUID_TO_BIN('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb0010'), -90.00,  'REDEEM', '2025-05-10 18:00:00', 'Gift voucher used');
 
 -- Insert 10 Birthday Logs
 INSERT INTO birthday_notification_log (customer_id, sent_date, status, message_content)

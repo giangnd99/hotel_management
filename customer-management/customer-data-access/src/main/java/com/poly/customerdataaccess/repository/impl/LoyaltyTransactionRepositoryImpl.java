@@ -8,8 +8,10 @@ import com.poly.customerdomain.output.LoyaltyTransactionRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class LoyaltyTransactionRepositoryImpl implements LoyaltyTransactionRepository {
@@ -29,6 +31,8 @@ public class LoyaltyTransactionRepositoryImpl implements LoyaltyTransactionRepos
 
     @Override
     public List<LoyaltyTransaction> findAllByLoyaltyId(UUID loyaltyId) {
-        return loyaltyTransactionJpaRepository.findByLoyaltyPointId(loyaltyId).stream().map(LoyaltyTransactionDataMapper::toDomain).toList();
+        List<LoyaltyTransactionEntity> entities = loyaltyTransactionJpaRepository.findByLoyaltyPointId(loyaltyId);
+        List<LoyaltyTransaction> loyaltyTransactions = entities.stream().map(LoyaltyTransactionDataMapper::toDomain).collect(Collectors.toList());
+        return loyaltyTransactions;
     }
 }
