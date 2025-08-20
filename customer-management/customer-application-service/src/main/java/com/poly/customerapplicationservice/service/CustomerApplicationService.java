@@ -96,17 +96,31 @@ public class CustomerApplicationService implements CustomerUsecase {
 
     @Override
     public CustomerDto ChangeCustomerInformation(UpdateCustomerCommand command) {
-        validateUserId(command.getUserId(), Mode.RETRIEVE);
+        validateUserId(command.getCustomerId(), Mode.RETRIEVE);
 
-        Customer customer = customerRepository.findByUserId(command.getUserId())
-                .orElseThrow(() -> new CustomerNotFoundException(command.getUserId()));
-        customer.setUserId(UserId.from(command.getUserId()));
+        Customer customer = customerRepository.findById(command.getCustomerId())
+                .orElseThrow(() -> new CustomerNotFoundException(command.getCustomerId()));
+//        customer.setUserId(UserId.from(command.getCustomerId() != null ?  command.getCustomerId() : null));
         customer.setFullName(Name.from(command.getFirstName().trim(), command.getLastName().trim()));
         customer.setAddress(Address.from(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity()));
         customer.setDateOfBirth(DateOfBirth.from(command.getDateOfBirth()));
-        customer.setImage(ImageUrl.from(command.getImage()));
         customer.setUpdatedAt(LocalDateTime.now());
+        customer.setSex(Sex.valueOf(command.getSex().toUpperCase()));
+        customer.setActive(command.isActive());
 
+        Customer savedCustomer = customerRepository.save(customer);
+        return CustomerDto.from(savedCustomer);
+    }
+
+    @Override
+    public CustomerDto updateCustomerAvatar(String customerId, String imageLink) {
+        UUID customerIdFinded = UUID.fromString(customerId);
+
+        validateUserId(customerIdFinded, Mode.RETRIEVE);
+        Customer customer = customerRepository.findById(customerIdFinded)
+                .orElseThrow(() -> new CustomerNotFoundException(customerIdFinded));
+
+        customer.setImage(ImageUrl.from(imageLink));
         Customer savedCustomer = customerRepository.save(customer);
         return CustomerDto.from(savedCustomer);
     }
@@ -116,7 +130,7 @@ public class CustomerApplicationService implements CustomerUsecase {
             throw new BlankUserIdException();
         }
 
-        if (mode == Mode.CREATE && customerRepository.existsByUserId(userId)) {
+        if (mode == Mode.CREATE && customerRepository.findById(userId).isPresent()) {
             throw new UserExistException(userId);
         }
     }
