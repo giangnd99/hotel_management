@@ -3,7 +3,7 @@
 
 # Server Configuration
 server:
-  port: ${PROMOTION_MANAGEMENT_PORT}
+  port: ${PROMOTION_MANAGEMENT_PORT:9999}
   servlet:
     context-path: /promotion-management
   compression:

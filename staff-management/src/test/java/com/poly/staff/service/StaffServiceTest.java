@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,11 +31,15 @@ class StaffServiceTest {
 
     private StaffEntity testStaffEntity;
     private CreateStaffRequest testCreateRequest;
+    private UUID testUserId;
 
     @BeforeEach
     void setUp() {
+        testUserId = UUID.randomUUID();
+        
         testStaffEntity = StaffEntity.builder()
                 .staffId("S001")
+                .userId(testUserId)
                 .name("John Doe")
                 .email("john.doe@hotel.com")
                 .phone("1234567890")
@@ -44,6 +49,7 @@ class StaffServiceTest {
 
         testCreateRequest = CreateStaffRequest.builder()
                 .staffId("S001")
+                .userId(testUserId)
                 .name("John Doe")
                 .email("john.doe@hotel.com")
                 .phone("1234567890")
@@ -63,6 +69,7 @@ class StaffServiceTest {
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("S001", result.get(0).getStaffId());
+        assertEquals(testUserId, result.get(0).getUserId());
         verify(staffRepository).findAll();
     }
 
@@ -77,6 +84,7 @@ class StaffServiceTest {
         // Assert
         assertTrue(result.isPresent());
         assertEquals("S001", result.get().getStaffId());
+        assertEquals(testUserId, result.get().getUserId());
         verify(staffRepository).findById("S001");
     }
 
@@ -98,6 +106,7 @@ class StaffServiceTest {
         // Arrange
         when(staffRepository.existsByStaffId("S001")).thenReturn(false);
         when(staffRepository.existsByEmail("john.doe@hotel.com")).thenReturn(false);
+        when(staffRepository.existsByUserId(testUserId)).thenReturn(false);
         when(staffRepository.save(any(StaffEntity.class))).thenReturn(testStaffEntity);
 
         // Act
@@ -106,6 +115,7 @@ class StaffServiceTest {
         // Assert
         assertNotNull(result);
         assertEquals("S001", result.getStaffId());
+        assertEquals(testUserId, result.getUserId());
         assertEquals("John Doe", result.getName());
         verify(staffRepository).save(any(StaffEntity.class));
     }
@@ -129,5 +139,43 @@ class StaffServiceTest {
         // Act & Assert
         assertThrows(IllegalArgumentException.class, () -> staffService.createStaff(testCreateRequest));
         verify(staffRepository, never()).save(any(StaffEntity.class));
+    }
+
+    @Test
+    void createStaff_WhenUserIdExists_ShouldThrowException() {
+        // Arrange
+        when(staffRepository.existsByStaffId("S001")).thenReturn(false);
+        when(staffRepository.existsByEmail("john.doe@hotel.com")).thenReturn(false);
+        when(staffRepository.existsByUserId(testUserId)).thenReturn(true);
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> staffService.createStaff(testCreateRequest));
+        verify(staffRepository, never()).save(any(StaffEntity.class));
+    }
+
+    @Test
+    void existsByUserId_ShouldReturnTrue_WhenUserIdExists() {
+        // Arrange
+        when(staffRepository.existsByUserId(testUserId)).thenReturn(true);
+
+        // Act
+        boolean result = staffService.existsByUserId(testUserId);
+
+        // Assert
+        assertTrue(result);
+        verify(staffRepository).existsByUserId(testUserId);
+    }
+
+    @Test
+    void existsByUserId_ShouldReturnFalse_WhenUserIdDoesNotExist() {
+        // Arrange
+        when(staffRepository.existsByUserId(testUserId)).thenReturn(false);
+
+        // Act
+        boolean result = staffService.existsByUserId(testUserId);
+
+        // Assert
+        assertFalse(result);
+        verify(staffRepository).existsByUserId(testUserId);
     }
 }
