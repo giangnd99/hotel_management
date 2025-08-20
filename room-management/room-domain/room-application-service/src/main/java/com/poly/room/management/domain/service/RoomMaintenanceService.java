@@ -5,6 +5,7 @@ import com.poly.room.management.domain.dto.request.CreateMaintenanceRequest;
 import com.poly.room.management.domain.dto.response.RoomMaintenanceResponse;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RoomMaintenanceService {
@@ -16,8 +17,8 @@ public interface RoomMaintenanceService {
     RoomMaintenanceResponse assignStaffToMaintenance(Integer maintenanceId, Integer newStaffId) throws RoomDomainException;
     RoomMaintenanceResponse getRoomMaintenanceById(Integer maintenanceId) throws RoomDomainException;
     List<RoomMaintenanceResponse> getAllRoomMaintenances();
-    List<RoomMaintenanceResponse> getRoomMaintenancesByRoomId(Integer roomId) throws RoomDomainException;
-    List<RoomMaintenanceResponse> getRoomMaintenancesByStaffId(Integer staffId) throws RoomDomainException;
+    List<RoomMaintenanceResponse> getRoomMaintenancesByRoomId(String roomId) throws RoomDomainException;
+    List<RoomMaintenanceResponse> getRoomMaintenancesByStaffId(String staffId) throws RoomDomainException;
     List<RoomMaintenanceResponse> getRoomMaintenancesByStatus(String status);
-    List<RoomMaintenanceResponse> getRoomMaintenancesBetweenDates(Timestamp startDate, Timestamp endDate);
+    List<RoomMaintenanceResponse> getRoomMaintenancesBetweenDates(LocalDateTime startDate, LocalDateTime endDate);
 }

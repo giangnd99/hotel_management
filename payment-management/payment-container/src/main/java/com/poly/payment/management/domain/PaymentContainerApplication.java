@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableJpaRepositories(basePackages = "com.poly")
-@EntityScan(basePackages = "com.poly.payment")
+@EntityScan(basePackages = "com.poly")
 @EnableScheduling
 @ComponentScan(basePackages = {"com.poly"})
 @SpringBootApplication(scanBasePackages = "com.poly")

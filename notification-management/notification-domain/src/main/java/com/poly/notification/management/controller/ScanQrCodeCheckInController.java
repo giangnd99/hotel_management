@@ -15,8 +15,8 @@ public class ScanQrCodeCheckInController {
     private final BookingCheckedInCommand bookingCheckedInCommand;
 
     @PostMapping("/check-in")
-    public void checkIn(@RequestBody String bookingId) {
-        bookingCheckedInCommand.processCheckInByQrCodeWithBookingId(bookingId);
+    public void checkIn(@RequestBody String bookingId, @RequestBody String staffId) {
+        bookingCheckedInCommand.processCheckInByQrCodeWithBookingId(bookingId, staffId);
     }
 
 }

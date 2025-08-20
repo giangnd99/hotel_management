@@ -1,11 +1,15 @@
 package com.poly.room.management.domain.command;
 
 import com.poly.domain.valueobject.BookingStatus;
+import com.poly.domain.valueobject.Money;
 import com.poly.domain.valueobject.RoomResponseStatus;
+import com.poly.room.management.domain.entity.Cost;
 import com.poly.room.management.domain.entity.Room;
+import com.poly.room.management.domain.entity.RoomCost;
 import com.poly.room.management.domain.event.RoomBookedEvent;
 import com.poly.room.management.domain.port.out.publisher.reponse.BookingRoomReservePublisher;
 import com.poly.room.management.domain.port.out.repository.RoomRepository;
+import com.poly.room.management.domain.service.RoomDomainService;
 import com.poly.room.management.domain.service.RoomEventService;
 import com.poly.room.management.domain.message.BookingRoomRequestMessage;
 import com.poly.room.management.domain.message.BookingRoomResponseMessage;
@@ -24,22 +28,59 @@ public class RoomBookingCommand {
 
     private final RoomRepository roomRepository;
     private final RoomEventService roomEventService;
+    private final RoomDomainService roomDomainService;
     private final BookingRoomReservePublisher roomBookedResponseKafkaPublisher;
 
     public void process(BookingRoomRequestMessage bookingRoomRequestMessage) {
 
-        RoomBookingCommand.log.info("Processing booking rooms request message: {}", bookingRoomRequestMessage);
+        log.info("Processing booking rooms request message: {}", bookingRoomRequestMessage);
         List<Room> rooms = validateRoomMessage(bookingRoomRequestMessage);
 
+        // Kiểm tra nếu trạng thái là DEPOSITED (đã đặt cọc)
         if (BookingStatus.DEPOSITED.name().equalsIgnoreCase(bookingRoomRequestMessage.getBookingStatus())) {
+            log.info("Processing DEPOSITED status for booking ID: {}", bookingRoomRequestMessage.getBookingId());
+
+            // Cập nhật trạng thái tất cả các phòng trong danh sách
             for (Room room : rooms) {
-                RoomBookedEvent bookedEvent = roomEventService.bookedRoom(room);
-                roomRepository.update(bookedEvent.getRoom());
-                RoomBookingCommand.log.info("Room booked event sent successfully: {}", bookedEvent.getRoom().getRoomNumber());
+                try {
+                    // Tạo event đặt phòng
+
+
+                    room.addRoomCost(RoomCost.builder()
+                            .cost(Cost.builder()
+                                    .id(UUID.randomUUID().toString())
+                                    .name("Deposit")
+                                    .price(new Money(bookingRoomRequestMessage.getPrice()))
+                                    .referenceId(bookingRoomRequestMessage.getBookingId())
+                                    .build())
+                            .room(room)
+                            .id(UUID.randomUUID().toString())
+                            .build());
+                    // Cập nhật trạng thái phòng trong database
+                    roomRepository.update(room);
+                    RoomBookedEvent bookedEvent = roomEventService.bookedRoom(room);
+                    log.info("Successfully updated room status to BOOKED for room: {}",
+                            bookedEvent.getRoom().getRoomNumber());
+
+                } catch (Exception e) {
+                    log.error("Error updating room status for room: {}", room.getRoomNumber(), e);
+                    throw new RuntimeException("Failed to update room status: " + room.getRoomNumber(), e);
+                }
             }
-            BookingRoomResponseMessage responseMessage =
-                    validateBookingRoomRequestMessage(bookingRoomRequestMessage);
+
+            // Tạo response message để gửi về booking service
+            BookingRoomResponseMessage responseMessage = createSuccessResponseMessage(bookingRoomRequestMessage);
+
+            // Gửi response về booking service
             roomBookedResponseKafkaPublisher.publish(responseMessage);
+
+            log.info("Successfully processed all rooms for booking ID: {} and sent response",
+                    bookingRoomRequestMessage.getBookingId());
+
+        } else {
+            log.warn("Unsupported booking status: {} for booking ID: {}",
+                    bookingRoomRequestMessage.getBookingStatus(),
+                    bookingRoomRequestMessage.getBookingId());
         }
     }
 
@@ -52,7 +93,7 @@ public class RoomBookingCommand {
         return rooms;
     }
 
-    private BookingRoomResponseMessage validateBookingRoomRequestMessage(
+    private BookingRoomResponseMessage createSuccessResponseMessage(
             BookingRoomRequestMessage bookingRoomRequestMessage) {
         return BookingRoomResponseMessage.builder()
                 .bookingId(bookingRoomRequestMessage.getBookingId())
@@ -61,6 +102,8 @@ public class RoomBookingCommand {
                 .totalPrice(bookingRoomRequestMessage.getPrice())
                 .reservationStatus(RoomResponseStatus.SUCCESS.name())
                 .id(UUID.randomUUID().toString())
+                .SagaId(bookingRoomRequestMessage.getSagaId())
+                .reason("All rooms have been successfully booked and updated")
                 .build();
     }
 }

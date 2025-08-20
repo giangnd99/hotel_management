@@ -1,4 +1,4 @@
-package com.poly.room.management.domain.dto.reception;
+package com.poly.notification.management.dto.checkin;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

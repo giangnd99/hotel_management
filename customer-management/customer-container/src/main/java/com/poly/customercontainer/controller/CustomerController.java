@@ -54,7 +54,7 @@ public class CustomerController {
 
     @PostMapping()
     public ResponseEntity<ApiResponse<CustomerDto>> createCustomer(@RequestBody CreateCustomerCommand createCustomerCommand) {
-         var customerId = customerUsecase.initializeCustomerProfile(createCustomerCommand);
+        var customerId = customerUsecase.initializeCustomerProfile(createCustomerCommand);
         return ResponseEntity.ok(ApiResponse.success(customerId));
     }
 
@@ -74,5 +74,16 @@ public class CustomerController {
         }
         var customer = customerUsecase.ChangeCustomerInformation(command);
         return ResponseEntity.ok(ApiResponse.success(customer));
+    }
+
+    @GetMapping(value = "/{customerId}")
+    public ResponseEntity<CustomerDto> getCustomerById(@PathVariable UUID customerId) {
+        try {
+            CustomerDto response = customerUsecase.findCustomerById(customerId);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Not found customer with id: {}", customerId);
+            return ResponseEntity.notFound().build();
+        }
     }
 }

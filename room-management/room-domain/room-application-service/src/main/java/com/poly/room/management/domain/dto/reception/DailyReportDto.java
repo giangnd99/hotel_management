@@ -7,31 +7,28 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class DailyReportDto {
-    private LocalDate reportDate;
+    private LocalDate date;
     private Long totalRooms;
     private Long occupiedRooms;
     private Long availableRooms;
     private Long checkIns;
     private Long checkOuts;
-    private Long walkInCheckIns;
-    private Long earlyCheckOuts;
+    private Double occupancyRate;
+    private BigDecimal revenue;
+    private BigDecimal averageRoomRate;
     private Long totalGuests;
     private Long newGuests;
     private Long returningGuests;
-    private Double occupancyRate;
-    private BigDecimal totalRevenue;
-    private BigDecimal averageRoomRate;
-    private BigDecimal totalServiceRevenue;
-    private Long housekeepingRequests;
+    private Long pendingCheckIns;
+    private Long pendingCheckOuts;
     private Long maintenanceRequests;
-    private Long roomServiceRequests;
-    private Long complaints;
-    private Long compliments;
-    private String notes;
+    private Long cleaningRequests;
+    private List<String> notes;
 }

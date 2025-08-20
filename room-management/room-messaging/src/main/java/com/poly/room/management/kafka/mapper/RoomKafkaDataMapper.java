@@ -62,6 +62,7 @@ public class RoomKafkaDataMapper {
                 .price(bookingRoomRequestAvro.getPrice())
                 .SagaId(bookingRoomRequestAvro.getSagaId().toString())
                 .sagaStatus(bookingRoomRequestAvro.getSagaStatus())
+                .rooms(roomsAvroToRooms(bookingRoomRequestAvro.getRooms()))
                 .build();
     }
 
@@ -79,6 +80,33 @@ public class RoomKafkaDataMapper {
                 .roomId(UUID.fromString(bookingRoomResponseAvro.getBookingId()))
                 .cancellationStatus(bookingRoomResponseAvro.getReservationStatus())
                 .message(bookingRoomResponseAvro.getReason())
+                .build();
+    }
+
+    /**
+     * Chuyển đổi RoomCancellationRequestMessage thành BookingRoomResponseAvro
+     * <p>
+     * NGHIỆP VỤ:
+     * - Chuyển đổi domain message thành Avro model để gửi qua Kafka
+     * - Đảm bảo tính nhất quán dữ liệu giữa các service
+     * <p>
+     * FLOW XỬ LÝ:
+     * 1. Nhận domain message
+     * 2. Chuyển đổi các field tương ứng
+     * 3. Tạo và trả về Avro model
+     *
+     * @param roomCancellationRequestMessage Domain message cần chuyển đổi
+     * @return BookingRoomResponseAvro model
+     */
+    public BookingRoomResponseAvro toBookingRoomResponseAvroFromCancellationRequest(RoomCancellationRequestMessage roomCancellationRequestMessage) {
+        return BookingRoomResponseAvro.newBuilder()
+                .setId(UUID.randomUUID().toString()) // Tạo ID mới cho response
+                .setSagaId(roomCancellationRequestMessage.getBookingId().toString()) // Sử dụng bookingId làm sagaId
+                .setBookingId(roomCancellationRequestMessage.getBookingId().toString())
+                .setRooms(null) // Không có thông tin phòng trong cancellation request
+                .setTotalPrice(null) // Không có thông tin giá trong cancellation request
+                .setReason(roomCancellationRequestMessage.getCancellationReason())
+                .setReservationStatus("CANCELLED") // Trạng thái mặc định là CANCELLED
                 .build();
     }
 

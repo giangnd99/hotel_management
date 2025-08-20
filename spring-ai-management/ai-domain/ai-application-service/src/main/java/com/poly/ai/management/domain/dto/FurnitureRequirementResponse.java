@@ -10,8 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FurnitureRequirementResponse {
-    private Integer furnitureId;
-    private String furnitureInventoryItemId; // Hiển thị ID của vật phẩm tồn kho
-    private Integer roomTypeId;
-    private int requiredQuantity;
+    private String furnitureName;
+    private String description;
+    private String material;
+    private String brand;
+    private String warrantyInfo;
+    private String maintenanceSchedule;
 }

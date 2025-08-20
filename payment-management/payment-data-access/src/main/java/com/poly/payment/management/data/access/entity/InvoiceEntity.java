@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "invoice")
+@Table(name = "invoice", schema = "payment_db")
 @Getter
 @Setter
 @Builder

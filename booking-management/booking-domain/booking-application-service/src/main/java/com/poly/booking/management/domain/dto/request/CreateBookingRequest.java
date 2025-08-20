@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -17,8 +18,8 @@ public class CreateBookingRequest {
     @NotNull(message = "Customer ID is required")
     private UUID customerId;
 
-    @NotNull(message = "Room ID is required")
-    private UUID roomId;
+    @NotNull(message = "List Room ID is required")
+    private List<UUID> listRoomId;
 
     @NotNull(message = "Check-in date is required")
     @Future(message = "Check-in date must be in the future")

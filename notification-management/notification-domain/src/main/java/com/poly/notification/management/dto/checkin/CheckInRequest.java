@@ -1,6 +1,8 @@
-package com.poly.room.management.domain.dto.reception;
+package com.poly.notification.management.dto.checkin;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

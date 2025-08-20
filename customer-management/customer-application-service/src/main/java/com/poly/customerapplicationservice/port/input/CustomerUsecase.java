@@ -6,10 +6,13 @@ import com.poly.customerapplicationservice.command.UpdateCustomerCommand;
 import com.poly.customerapplicationservice.dto.CustomerDto;
 import com.poly.customerapplicationservice.dto.PageResult;
 
+import java.util.UUID;
+
 public interface CustomerUsecase {
     CustomerDto initializeCustomerProfile(CreateCustomerCommand command);
     CustomerDto retrieveCustomerProfile(RetrieveCustomerProfileCommand command);
     CustomerDto retrieveCustomerProfileById(RetrieveCustomerProfileCommand command);
     PageResult<CustomerDto> retrieveAllCustomers(int page, int size);
     CustomerDto ChangeCustomerInformation (UpdateCustomerCommand command);
+    CustomerDto findCustomerById(UUID customerId);
 }

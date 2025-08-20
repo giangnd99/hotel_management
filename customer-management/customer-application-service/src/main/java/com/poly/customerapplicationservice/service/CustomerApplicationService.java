@@ -16,11 +16,13 @@ import com.poly.customerdomain.output.CustomerRepository;
 import com.poly.customerdomain.output.LoyaltyPointRepository;
 import com.poly.domain.valueobject.CustomerId;
 import com.poly.domain.valueobject.Money;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 public class CustomerApplicationService implements CustomerUsecase {
 
     private final CustomerRepository customerRepository;
@@ -39,7 +41,7 @@ public class CustomerApplicationService implements CustomerUsecase {
 
         Customer newCustomer = Customer.builder()
                 .customerId(CustomerId.generate())
-                .userId(UserId.from(command.getUserId() != null ?  command.getUserId() : null))
+                .userId(UserId.from(command.getUserId() != null ? command.getUserId() : null))
                 .name(Name.from(command.getFirstName().trim(), command.getLastName().trim()))
                 .address(Address.from(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity()))
                 .dateOfBirth(DateOfBirth.from(command.getDateOfBirth()))
@@ -109,6 +111,16 @@ public class CustomerApplicationService implements CustomerUsecase {
 
         Customer savedCustomer = customerRepository.save(customer);
         return CustomerDto.from(savedCustomer);
+    }
+
+    @Override
+    public CustomerDto findCustomerById(UUID customerId) {
+        if (customerId == null) {
+            log.error("Customer id is null");
+            throw new RuntimeException("Customer id is null");
+        }
+        return customerRepository.findById(customerId).map(CustomerDto::from)
+                .orElseThrow(() -> new CustomerNotFoundException(customerId));
     }
 
     private void validateUserId(UUID userId, Mode mode) {

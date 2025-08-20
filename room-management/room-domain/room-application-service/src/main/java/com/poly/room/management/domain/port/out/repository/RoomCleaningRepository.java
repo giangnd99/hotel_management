@@ -1,6 +1,6 @@
 package com.poly.room.management.domain.port.out.repository;
 
-
+import com.poly.room.management.domain.entity.RoomCleaning;
 
 import java.time.LocalDateTime;
 import java.util.List;

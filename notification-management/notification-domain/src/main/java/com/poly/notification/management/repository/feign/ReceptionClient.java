@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.UUID;
 
 @FeignClient(name = "room-service", url = "http://localhost:8087/api/reception/")
-public interface RoomClient {
+public interface ReceptionClient {
     /// checkin/{bookingId}
     @PostMapping("/checkin/{bookingId}")
     ResponseEntity<CheckInDto> performCheckIn(

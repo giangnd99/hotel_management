@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EntityScan(basePackages = {"com.poly.room.management.dao"})
-@EnableJpaRepositories(basePackages = {"com.poly.room.management.dao"})
+@EnableJpaRepositories(basePackages = {"com.poly"})
 @SpringBootApplication(scanBasePackages = "com.poly")
 @EnableDiscoveryClient
 @ComponentScan(basePackages = {"com.poly"})
