@@ -120,25 +120,27 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @PostMapping("/{id}/trigger-direct-payment")
-    @Operation(summary = "Kích hoạt payment request cho đơn hàng trực tiếp")
-    public ResponseEntity<Void> triggerDirectPaymentRequest(@PathVariable String id) {
-        log.info("Triggering direct payment request for order: {}", id);
-        OrderDTO order = orderUseCase.getOrderById(id);
-        orderUseCase.triggerDirectPaymentRequest(order);
-        return ResponseEntity.ok().build();
-    }
+    // Temporarily disabled payment triggering to decouple from Kafka
+    // @PostMapping("/{id}/trigger-direct-payment")
+    // @Operation(summary = "Kích hoạt payment request cho đơn hàng trực tiếp")
+    // public ResponseEntity<Void> triggerDirectPaymentRequest(@PathVariable String id) {
+    //     log.info("Triggering direct payment request for order: {}", id);
+    //     OrderDTO order = orderUseCase.getOrderById(id);
+    //     orderUseCase.triggerDirectPaymentRequest(order);
+    //     return ResponseEntity.ok().build();
+    // }
 
-    @PostMapping("/{id}/trigger-room-payment")
-    @Operation(summary = "Kích hoạt payment request cho đơn hàng đính kèm room (khi checkout)")
-    public ResponseEntity<Void> triggerRoomOrderPaymentRequest(@PathVariable String id) {
-        log.info("Triggering room order payment request for order: {}", id);
-        OrderDTO order = orderUseCase.getOrderById(id);
-        orderUseCase.triggerRoomOrderPaymentRequest(order);
-        return ResponseEntity.ok().build();
-    }
+    // Temporarily disabled room payment triggering to decouple from Kafka
+    // @PostMapping("/{id}/trigger-room-payment")
+    // @Operation(summary = "Kích hoạt payment request cho đơn hàng đính kèm room (khi checkout)")
+    // public ResponseEntity<Void> triggerRoomOrderPaymentRequest(@PathVariable String id) {
+    //     log.info("Triggering room order payment request for order: {}", id);
+    //     OrderDTO order = orderUseCase.getOrderById(id);
+    //     orderUseCase.triggerRoomOrderPaymentRequest(order);
+    //     return ResponseEntity.ok().build();
+    // }
 
-    @PostMapping("/direct")
+    @PostMapping("/direct/merge")
     @Operation(summary = "Kích hoạt payment request cho đơn hàng trực tiếp")
     public ResponseEntity<Void> triggerDirectPaymentRequest(@RequestBody @Valid OrderDTO request) {
         log.info("Triggering direct payment request for order: {}", request.id());

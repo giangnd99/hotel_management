@@ -62,13 +62,13 @@ CREATE TABLE IF NOT EXISTS order_items (
     );
 
 -- Create indexes for better performance
-CREATE INDEX idx_orders_customer_id ON orders(customer_id);
-CREATE INDEX idx_orders_room_id ON orders(room_id);
-CREATE INDEX idx_orders_status ON orders(status);
-CREATE INDEX idx_orders_created_at ON orders(created_at);
-CREATE INDEX idx_order_items_order_id ON order_items(order_id);
-CREATE INDEX idx_menu_items_category_id ON menu_items(category_id);
-CREATE INDEX idx_menu_items_available ON menu_items(is_available);
+-- CREATE INDEX idx_orders_customer_id ON orders(customer_id);
+-- CREATE INDEX idx_orders_room_id ON orders(room_id);
+-- CREATE INDEX idx_orders_status ON orders(status);
+-- CREATE INDEX idx_orders_created_at ON orders(created_at);
+-- CREATE INDEX idx_order_items_order_id ON order_items(order_id);
+-- CREATE INDEX idx_menu_items_category_id ON menu_items(category_id);
+-- CREATE INDEX idx_menu_items_available ON menu_items(is_available);
 
 -- Insert sample data for development
 INSERT IGNORE INTO categories (id, name, description) VALUES

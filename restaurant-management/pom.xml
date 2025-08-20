@@ -16,7 +16,6 @@
         <module>restaurant-application</module>
         <module>restaurant-container</module>
         <module>restaurant-data-access</module>
-        <module>restaurant-messaging</module>
     </modules>
 
 </project>
