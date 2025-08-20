@@ -12,4 +12,5 @@ public interface CustomerUsecase {
     CustomerDto retrieveCustomerProfileById(RetrieveCustomerProfileCommand command);
     PageResult<CustomerDto> retrieveAllCustomers(int page, int size);
     CustomerDto ChangeCustomerInformation (UpdateCustomerCommand command);
+    CustomerDto updateCustomerAvatar(String customerId, String imageLink);
 }
