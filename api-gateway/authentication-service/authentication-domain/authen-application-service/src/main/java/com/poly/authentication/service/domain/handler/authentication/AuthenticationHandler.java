@@ -1,6 +1,6 @@
 package com.poly.authentication.service.domain.handler.authentication;
-import com.poly.authentication.service.domain.dto.reponse.AuthenticationResponse;
-import com.poly.authentication.service.domain.dto.request.AuthenticationRequest;
+import com.poly.authentication.service.domain.dto.reponse.authen.AuthenticationResponse;
+import com.poly.authentication.service.domain.dto.request.auth.AuthenticationRequest;
 import com.poly.authentication.service.domain.exception.AppException;
 import com.poly.authentication.service.domain.exception.ErrorCode;
 import com.poly.authentication.service.domain.port.out.repository.UserRepository;

@@ -16,7 +16,7 @@ public class RoomCommandServiceImpl implements RoomCommandService {
                 .floor(floor)
                 .roomType(roomType)
                 .build();
-        newRoom.setVacantRoomStatus();
+        newRoom.setRoomStatus(RoomStatus.VACANT);
         newRoom.validate();
         return newRoom;
     }
@@ -40,7 +40,7 @@ public class RoomCommandServiceImpl implements RoomCommandService {
 
     @Override
     public Room setRoomVacant(Room room) {
-        room.setVacantRoomStatus();
+        room.setRoomStatus(RoomStatus.VACANT);
         return room;
     }
 

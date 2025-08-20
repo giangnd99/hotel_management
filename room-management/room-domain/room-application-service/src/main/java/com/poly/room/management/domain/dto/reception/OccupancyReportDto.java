@@ -19,15 +19,13 @@ public class OccupancyReportDto {
     private Long totalRooms;
     private Long totalNights;
     private Long occupiedNights;
-    private Double averageOccupancyRate;
-    private Double peakOccupancyRate;
-    private LocalDate peakDate;
-    private Double lowestOccupancyRate;
-    private LocalDate lowestDate;
+    private Long availableNights;
+    private Double occupancyRate;
     private BigDecimal totalRevenue;
-    private BigDecimal averageDailyRevenue;
-    private BigDecimal revenuePerRoom;
-    private List<DailyOccupancyDto> dailyData;
-    private List<RoomTypeOccupancyDto> roomTypeData;
-    private List<FloorOccupancyDto> floorData;
+    private BigDecimal averageRoomRate;
+    private Long totalCheckIns;
+    private Long totalCheckOuts;
+    private Long totalGuests;
+    private List<DailyOccupancyDto> dailyBreakdown;
+    private String notes;
 }

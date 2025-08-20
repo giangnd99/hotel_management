@@ -16,9 +16,6 @@ import java.util.UUID;
 public interface GuestJpaRepository extends JpaRepository<GuestEntity, UUID> {
 
     // Basic CRUD operations
-    List<GuestEntity> findAll();
-    Page<GuestEntity> findAll(Pageable pageable);
-
     // Search operations
     @Query("SELECT g FROM GuestEntity g WHERE g.fullName LIKE %:name% OR g.firstName LIKE %:name% OR g.lastName LIKE %:name%")
     List<GuestEntity> searchByName(@Param("name") String name);

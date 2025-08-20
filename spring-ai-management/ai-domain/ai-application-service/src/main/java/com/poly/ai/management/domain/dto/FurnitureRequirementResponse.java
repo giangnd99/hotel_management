@@ -1,5 +1,6 @@
 package com.poly.ai.management.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,9 +10,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FurnitureRequirementResponse {
-    private Integer furnitureId;
-    private String furnitureInventoryItemId; // Hiển thị ID của vật phẩm tồn kho
-    private Integer roomTypeId;
-    private int requiredQuantity;
+    private String furnitureName;
+    private String description;
+    private String material;
+    private String brand;
+    private String warrantyInfo;
+    private String maintenanceSchedule;
 }

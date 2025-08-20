@@ -1,9 +1,11 @@
 package com.poly.payment.management.data.access.mapper;
 
 import com.poly.payment.management.domain.dto.CheckoutResponseData;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PayOSMapper {
-    public static CheckoutResponseData toCheckoutResponseData(vn.payos.type.CheckoutResponseData checkoutPayos){
+    public CheckoutResponseData toCheckoutResponseData(vn.payos.type.CheckoutResponseData checkoutPayos){
         return CheckoutResponseData.builder()
                 .bin(checkoutPayos.getBin())
                 .accountNumber(checkoutPayos.getAccountNumber())

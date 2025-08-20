@@ -1,5 +1,6 @@
 package com.poly.room.management.dao.room.repository;
 
+import com.poly.domain.valueobject.RoomStatus;
 import com.poly.room.management.dao.room.entity.RoomEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -80,4 +81,9 @@ public interface RoomJpaRepository extends JpaRepository<RoomEntity, UUID> {
     
     @Query("SELECT r FROM RoomEntity r WHERE r.roomStatus = 'CLEANING'")
     Page<RoomEntity> findByStatusCleaning(Pageable pageable);
+
+    Page<RoomEntity> findAllByRoomStatus(RoomStatus roomStatus, Pageable pageable);
+
+    Long countAllByRoomStatus(RoomStatus roomStatus);
+
 }

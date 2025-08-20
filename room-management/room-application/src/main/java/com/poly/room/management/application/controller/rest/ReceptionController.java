@@ -1,6 +1,5 @@
 package com.poly.room.management.application.controller.rest;
 
-import com.poly.booking.management.domain.dto.RoomServiceDto;
 import com.poly.room.management.domain.dto.*;
 import com.poly.room.management.domain.dto.reception.*;
 import com.poly.room.management.domain.service.ReceptionService;
@@ -13,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -238,7 +238,7 @@ public class ReceptionController {
     @PostMapping("/guests/register")
     @Operation(summary = "Đăng ký khách mới")
     public ResponseEntity<GuestDto> registerGuest(@Valid @RequestBody GuestRegistrationRequest request) {
-        log.info("Registering new guest: {}", request.getName());
+        log.info("Registering new guest: {}", request.getFullName());
         GuestDto guest = receptionService.registerGuest(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(guest);
     }
@@ -277,19 +277,19 @@ public class ReceptionController {
 
     @GetMapping("/rooms/{roomNumber}/services")
     @Operation(summary = "Lấy danh sách dịch vụ của phòng")
-    public ResponseEntity<List<RoomServiceDto>> getRoomServices(@PathVariable String roomNumber) {
+    public ResponseEntity<List<com.poly.room.management.domain.dto.reception.RoomServiceDto>> getRoomServices(@PathVariable String roomNumber) {
         log.info("Getting services for room: {}", roomNumber);
-        List<RoomServiceDto> services = receptionService.getRoomServices(roomNumber);
+        List<com.poly.room.management.domain.dto.reception.RoomServiceDto> services = receptionService.getRoomServices(roomNumber);
         return ResponseEntity.ok(services);
     }
 
     @PostMapping("/rooms/{roomNumber}/services/request")
     @Operation(summary = "Yêu cầu dịch vụ cho phòng")
-    public ResponseEntity<RoomServiceDto> requestRoomService(
+    public ResponseEntity<com.poly.room.management.domain.dto.reception.RoomServiceDto> requestRoomService(
             @PathVariable String roomNumber,
             @Valid @RequestBody RoomServiceRequestDto request) {
         log.info("Requesting service for room: {}", roomNumber);
-        RoomServiceDto service = receptionService.requestRoomService(roomNumber, request);
+        com.poly.room.management.domain.dto.reception.RoomServiceDto service = receptionService.requestRoomService(roomNumber, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(service);
     }
 

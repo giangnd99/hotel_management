@@ -172,7 +172,7 @@ public class ReceptionServiceImpl implements ReceptionService {
                 .id(CheckInId.generate())
                 .bookingId(bookingId)
                 .guestId(GuestId.of(request.getGuestId()))
-                .roomId(new RoomId(room.getId().getValue()))
+                .roomId(RoomId.of(room.getId().getValue()))
                 .roomNumber(request.getRoomNumber())
                 .checkInDate(LocalDate.now())
                 .checkOutDate(LocalDate.now().plusDays(1)) // Default checkout date
@@ -210,7 +210,29 @@ public class ReceptionServiceImpl implements ReceptionService {
             throw new RuntimeException("Room is not available: " + request.getRoomNumber());
         }
 
-        Guest guest = guestRepository.searchByEmail(request.getEmail()).get(0);
+        // Find guest by email or create new one if not exists
+        List<Guest> existingGuests = guestRepository.searchByEmail(request.getEmail());
+        Guest guest;
+        if (!existingGuests.isEmpty()) {
+            guest = existingGuests.get(0);
+        } else {
+            // Create new guest for walk-in
+            guest = Guest.builder()
+                    .id(GuestId.generate())
+                    .firstName(request.getGuestName().split(" ")[0])
+                    .lastName(request.getGuestName().contains(" ") ? 
+                            request.getGuestName().substring(request.getGuestName().indexOf(" ") + 1) : "")
+                    .fullName(request.getGuestName())
+                    .phone(request.getPhone())
+                    .email(request.getEmail())
+                    .idNumber(request.getIdNumber())
+                    .address(request.getAddress())
+                    .status("ACTIVE")
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            guest = guestRepository.save(guest);
+        }
 
         // Create check-in record (without booking)
         CheckIn checkIn = CheckIn.builder()
@@ -224,7 +246,7 @@ public class ReceptionServiceImpl implements ReceptionService {
                 .numberOfGuests(request.getNumberOfGuests())
                 .specialRequests(request.getSpecialRequests())
                 .status("CHECKED_IN")
-                .checkedInBy(request.getCheckInDate().toString())
+                .checkedInBy(request.getCheckedInBy())
                 .notes(request.getNotes())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -416,7 +438,7 @@ public class ReceptionServiceImpl implements ReceptionService {
     public GuestDto registerGuest(GuestRegistrationRequest request) {
 
 
-        log.info("Registering new guest: {}", request.getEmail());
+        log.info("Registering new guest: {}", request.getFullName());
         
         // Check if guest already exists
         if (guestRepository.existsByEmail(request.getEmail())) {

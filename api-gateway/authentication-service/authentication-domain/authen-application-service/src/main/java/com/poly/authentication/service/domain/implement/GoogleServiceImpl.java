@@ -2,9 +2,9 @@ package com.poly.authentication.service.domain.implement;
 
 
 import com.poly.authentication.service.domain.constant.Google;
-import com.poly.authentication.service.domain.dto.reponse.OutboundUserResponse;
-import com.poly.authentication.service.domain.dto.reponse.UserGGResponse;
-import com.poly.authentication.service.domain.dto.request.ExchangeTokenRequest;
+import com.poly.authentication.service.domain.dto.reponse.user.OutboundUserResponse;
+import com.poly.authentication.service.domain.dto.reponse.user.UserGGResponse;
+import com.poly.authentication.service.domain.dto.request.auth.ExchangeTokenRequest;
 import com.poly.authentication.service.domain.port.in.service.AuthenticationService;
 import com.poly.authentication.service.domain.port.in.service.GoogleService;
 import com.poly.authentication.service.domain.port.out.httpclient.OutboundIdentityClient;

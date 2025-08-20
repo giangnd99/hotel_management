@@ -1,9 +1,9 @@
 package com.poly.customercontainer.controller;
 
-import com.poly.customerapplicationservice.command.EarnPointLoyaltyCommand;
-import com.poly.customerapplicationservice.command.RedeemPointLoyaltyCommand;
-import com.poly.customerapplicationservice.command.RetrieveLoyaltyProfileCommand;
-import com.poly.customerapplicationservice.command.RetrieveLoyaltyTransactionCommand;
+import com.poly.customerapplicationservice.dto.command.EarnPointLoyaltyCommand;
+import com.poly.customerapplicationservice.dto.command.RedeemPointLoyaltyCommand;
+import com.poly.customerapplicationservice.dto.command.RetrieveLoyaltyProfileCommand;
+import com.poly.customerapplicationservice.dto.command.RetrieveLoyaltyTransactionCommand;
 import com.poly.customerapplicationservice.dto.LoyaltyTransactionDto;
 import com.poly.customerapplicationservice.port.input.LoyaltyUsecase;
 import com.poly.customercontainer.shared.request.ApiResponse;

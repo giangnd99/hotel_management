@@ -1,6 +1,7 @@
 package com.poly.room.management.dao.room.entity;
 
 import com.poly.domain.valueobject.RoomStatus;
+import com.poly.room.management.dao.roommaintenance.entity.RoomMaintenanceEntity;
 import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;

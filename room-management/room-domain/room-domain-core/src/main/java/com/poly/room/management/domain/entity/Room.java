@@ -6,6 +6,7 @@ import com.poly.domain.valueobject.RoomStatus;
 import com.poly.domain.valueobject.RoomId;
 import com.poly.room.management.domain.exception.RoomDomainException;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,11 +46,9 @@ public class Room extends BaseEntity<RoomId> {
 
     public void setRoomCosts(List<RoomCost> roomCosts) {
         this.roomCosts = roomCosts;
-        updatedRoomPriceAfterAddRoomCost();
     }
 
     public List<RoomCost> getRoomCosts() {
-        updatedRoomPriceAfterAddRoomCost();
         return roomCosts;
     }
 
@@ -58,7 +57,11 @@ public class Room extends BaseEntity<RoomId> {
             roomCosts = new ArrayList<>();
         }
         roomCosts.add(roomCost);
-        updatedRoomPriceAfterAddRoomCost();
+
+    }
+
+    public void setRoomStatus(RoomStatus roomStatus) {
+        this.roomStatus = roomStatus;
     }
 
     public void addRoomMaintenance(RoomMaintenance roomMaintenance) {
@@ -68,24 +71,18 @@ public class Room extends BaseEntity<RoomId> {
     }
 
     public Money updateRoomPriceAfterAddRoomCost() {
-        Money totalRoomCost = this.roomCosts.stream().map(roomCost ->
-                roomCost.getCost().getPrice()).reduce(Money.ZERO, Money::add);
+        BigDecimal totalRoomCostAmount = this.roomCosts.stream()
+                .map(roomCost -> {
+                    if (roomCost.getCost().getName().contains("Deposit")) {
+                        return roomCost.getCost().getPrice().getAmount().negate();
+                    }
+                    return roomCost.getCost().getPrice().getAmount();
+                })
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        Money totalRoomCost = new Money(totalRoomCostAmount);
+
         return this.roomPrice.add(totalRoomCost);
-    }
-
-    public void updatedRoomPriceAfterAddRoomCost() {
-        Money totalRoomCost = this.roomCosts.stream().map(roomCost ->
-                roomCost.getCost().getPrice()).reduce(Money.ZERO, Money::add);
-        this.roomPrice.add(totalRoomCost);
-    }
-
-    public void setVacantRoomStatus() {
-        if (roomStatus == RoomStatus.CHECKED_IN) {
-            throw new RoomDomainException("Room is occupied");
-        } else if (roomStatus == RoomStatus.BOOKED) {
-            throw new RoomDomainException("Room is already booked");
-        }
-        this.roomStatus = RoomStatus.VACANT;
     }
 
     public void setBookedRoomStatus() {

@@ -1,4 +1,4 @@
-package com.poly.booking.management.domain.service;
+package com.poly.booking.management.domain.service.impl;
 
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.event.BookingCancelledEvent;

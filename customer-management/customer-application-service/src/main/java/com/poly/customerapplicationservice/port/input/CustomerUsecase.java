@@ -1,10 +1,12 @@
 package com.poly.customerapplicationservice.port.input;
 
-import com.poly.customerapplicationservice.command.CreateCustomerCommand;
-import com.poly.customerapplicationservice.command.RetrieveCustomerProfileCommand;
-import com.poly.customerapplicationservice.command.UpdateCustomerCommand;
+import com.poly.customerapplicationservice.dto.command.CreateCustomerCommand;
+import com.poly.customerapplicationservice.dto.command.RetrieveCustomerProfileCommand;
+import com.poly.customerapplicationservice.dto.command.UpdateCustomerCommand;
 import com.poly.customerapplicationservice.dto.CustomerDto;
 import com.poly.customerapplicationservice.dto.PageResult;
+
+import java.util.UUID;
 
 public interface CustomerUsecase {
     CustomerDto initializeCustomerProfile(CreateCustomerCommand command);
@@ -12,5 +14,6 @@ public interface CustomerUsecase {
     CustomerDto retrieveCustomerProfileById(RetrieveCustomerProfileCommand command);
     PageResult<CustomerDto> retrieveAllCustomers(int page, int size);
     CustomerDto ChangeCustomerInformation (UpdateCustomerCommand command);
+    CustomerDto findCustomerById(UUID customerId);
     CustomerDto updateCustomerAvatar(String customerId, String imageLink);
 }

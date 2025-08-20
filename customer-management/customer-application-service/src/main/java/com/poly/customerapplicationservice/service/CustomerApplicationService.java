@@ -1,11 +1,16 @@
 package com.poly.customerapplicationservice.service;
 
-import com.poly.customerapplicationservice.command.CreateCustomerCommand;
-import com.poly.customerapplicationservice.command.RetrieveCustomerProfileCommand;
-import com.poly.customerapplicationservice.command.UpdateCustomerCommand;
+import com.poly.customerapplicationservice.dto.command.CreateCustomerCommand;
+import com.poly.customerapplicationservice.dto.command.RetrieveCustomerProfileCommand;
+import com.poly.customerapplicationservice.dto.command.UpdateCustomerCommand;
 import com.poly.customerapplicationservice.dto.CustomerDto;
 import com.poly.customerapplicationservice.dto.PageResult;
+import com.poly.customerapplicationservice.dto.request.UserCreationRequest;
+import com.poly.customerapplicationservice.dto.response.UserResponse;
+import com.poly.customerapplicationservice.message.CustomerBookingMessage;
 import com.poly.customerapplicationservice.port.input.CustomerUsecase;
+import com.poly.customerapplicationservice.port.output.feign.AuthenticationClient;
+import com.poly.customerapplicationservice.port.output.publisher.CustomerCreationRequestPublisher;
 import com.poly.customerdomain.model.entity.Customer;
 import com.poly.customerdomain.model.entity.LoyaltyPoint;
 import com.poly.customerdomain.model.entity.valueobject.*;
@@ -15,31 +20,40 @@ import com.poly.customerdomain.model.exception.UserExistException;
 import com.poly.customerdomain.output.CustomerRepository;
 import com.poly.customerdomain.output.LoyaltyPointRepository;
 import com.poly.domain.valueobject.CustomerId;
-import com.poly.domain.valueobject.Money;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
+@Component
 public class CustomerApplicationService implements CustomerUsecase {
 
     private final CustomerRepository customerRepository;
 
     private final LoyaltyPointRepository loyaltyPointRepository;
 
-    public CustomerApplicationService(CustomerRepository customerRepo, LoyaltyPointRepository loyaltyRepo) {
+    private final CustomerCreationRequestPublisher customerCreationRequestPublisher;
+
+    private final AuthenticationClient authenticationClient;
+
+    public CustomerApplicationService(CustomerRepository customerRepo, LoyaltyPointRepository loyaltyRepo, CustomerCreationRequestPublisher customerCreationRequestPublisher, AuthenticationClient authenticationClient) {
         this.customerRepository = customerRepo;
         this.loyaltyPointRepository = loyaltyRepo;
+        this.customerCreationRequestPublisher = customerCreationRequestPublisher;
+        this.authenticationClient = authenticationClient;
     }
 
     @Override
     public CustomerDto initializeCustomerProfile(CreateCustomerCommand command) {
 
-//        validateUserId(command.getUserId(), Mode.RETRIEVE);
+        UserResponse response = authenticationClient.createUser(creationRequest(command)).getResult();
 
         Customer newCustomer = Customer.builder()
                 .customerId(CustomerId.generate())
-                .userId(UserId.from(command.getUserId() != null ?  command.getUserId() : null))
+                .userId(UserId.from(response.getId() != null ? command.getUserId() : null))
                 .name(Name.from(command.getFirstName().trim(), command.getLastName().trim()))
                 .address(Address.from(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity()))
                 .dateOfBirth(DateOfBirth.from(command.getDateOfBirth()))
@@ -57,8 +71,30 @@ public class CustomerApplicationService implements CustomerUsecase {
         LoyaltyPoint newLoyaltyPoint = LoyaltyPoint.createNew(newCustomer.getId());
 
         LoyaltyPoint savedLoyaltyPoint = loyaltyPointRepository.save(newLoyaltyPoint);
+        //send request to Booking service
+        log.info("User id created successfully: {} ", response.getId());
+        log.info("Customer with id: {} created successfully", savedCustomer.getId().getValue().toString());
+        customerCreationRequestPublisher.publish(creatMessage(savedCustomer, response));
 
         return CustomerDto.from(newCustomer);
+    }
+
+    private UserCreationRequest creationRequest(CreateCustomerCommand command) {
+        return UserCreationRequest.builder()
+                .email(command.getEmail())
+                .password(command.getPassword())
+                .phone(command.getPhone())
+                .build();
+    }
+
+    private CustomerBookingMessage creatMessage(Customer customer, UserResponse response) {
+        return CustomerBookingMessage.builder()
+                .customerId(customer.getId().getValue().toString())
+                .firstName(customer.getFullName().getFirstName())
+                .lastName(customer.getFullName().getLastName())
+                .username(response.getEmail())
+                .active(customer.isActive())
+                .build();
     }
 
     @Override
@@ -113,6 +149,15 @@ public class CustomerApplicationService implements CustomerUsecase {
     }
 
     @Override
+    public CustomerDto findCustomerById(UUID customerId) {
+        if (customerId == null) {
+            log.error("Customer id is null");
+            throw new RuntimeException("Customer id is null");
+        }
+        return customerRepository.findById(customerId).map(CustomerDto::from)
+                .orElseThrow(() -> new CustomerNotFoundException(customerId));
+    }
+
     public CustomerDto updateCustomerAvatar(String customerId, String imageLink) {
         UUID customerIdFinded = UUID.fromString(customerId);
 
@@ -123,6 +168,7 @@ public class CustomerApplicationService implements CustomerUsecase {
         customer.setImage(ImageUrl.from(imageLink));
         Customer savedCustomer = customerRepository.save(customer);
         return CustomerDto.from(savedCustomer);
+
     }
 
     private void validateUserId(UUID userId, Mode mode) {

@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 public class NotificationResponseKafkaPublisher extends
         AbstractKafkaPublisher<String, NotificationMessageAvro, NotificationMessage>
         implements BookingConfirmedEmailResponsePublisher {
-    private final String TOPIC_NAME = "notification-send-mail-response";
-    private final String MESSAGE_NAME = "NotificationResponse";
+    private final String TOPIC_NAME = "room-check-in-notification-topic";
+    private final String MESSAGE_NAME = "NotificationQrCodeScannedResponse";
     private final NotificationKafkaDataMapper notificationKafkaDataMapper;
 
     protected NotificationResponseKafkaPublisher(KafkaProducer<String, NotificationMessageAvro> kafkaProducer, NotificationKafkaDataMapper notificationKafkaDataMapper) {

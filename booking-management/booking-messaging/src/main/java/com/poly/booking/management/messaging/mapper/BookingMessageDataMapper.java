@@ -36,7 +36,7 @@ public class BookingMessageDataMapper {
     }
 
     public CustomerCreatedMessageResponse customerAvroToCustomerEntity(CustomerModelAvro customerModelAvro) {
-        return CustomerCreatedMessageResponse.builder().id(customerModelAvro.getId()).firstName(customerModelAvro.getFirstName()).lastName(customerModelAvro.getLastName()).username(customerModelAvro.getUsername()).build();
+        return CustomerCreatedMessageResponse.builder().customerId(customerModelAvro.getId()).firstName(customerModelAvro.getFirstName()).lastName(customerModelAvro.getLastName()).username(customerModelAvro.getUsername()).build();
     }
 
     public PaymentMessageResponse paymentResponseAvroToPayment(BookingPaymentResponseAvro bookingPaymentResponseAvro) {
@@ -45,7 +45,7 @@ public class BookingMessageDataMapper {
     }
 
     public RoomMessageResponse bookingRoomAvroToRoom(BookingRoomResponseAvro bookingRoomResponseAvro) {
-        return RoomMessageResponse.builder().id(bookingRoomResponseAvro.getId()).bookingId(bookingRoomResponseAvro.getBookingId()).reason(bookingRoomResponseAvro.getReason()).roomResponseStatus(RoomResponseStatus.valueOf(bookingRoomResponseAvro.getReservationStatus())).sagaId(bookingRoomResponseAvro.getSagaId()).totalPrice(bookingRoomResponseAvro.getTotalPrice()).rooms(roomsAvroToRooms(bookingRoomResponseAvro.getRooms())).build();
+        return RoomMessageResponse.builder().id(bookingRoomResponseAvro.getId()).bookingId(bookingRoomResponseAvro.getBookingId()).reason(bookingRoomResponseAvro.getReason()).roomResponseStatus(RoomStatus.valueOf(bookingRoomResponseAvro.getReservationStatus())).sagaId(bookingRoomResponseAvro.getSagaId()).totalPrice(bookingRoomResponseAvro.getTotalPrice()).rooms(roomsAvroToRooms(bookingRoomResponseAvro.getRooms())).build();
     }
 
     private List<Room> roomsAvroToRooms(List<com.poly.booking.management.domain.kafka.model.Room> roomsAvro) {

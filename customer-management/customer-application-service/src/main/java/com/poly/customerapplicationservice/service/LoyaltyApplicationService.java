@@ -1,8 +1,8 @@
 package com.poly.customerapplicationservice.service;
 
-import com.poly.customerapplicationservice.command.*;
 import com.poly.customerapplicationservice.dto.LoyaltyPointDto;
 import com.poly.customerapplicationservice.dto.LoyaltyTransactionDto;
+import com.poly.customerapplicationservice.dto.command.*;
 import com.poly.customerapplicationservice.exception.VoucherRedeemFailedException;
 import com.poly.customerapplicationservice.port.input.LoyaltyUsecase;
 import com.poly.customerapplicationservice.port.output.PromotionServicePort;

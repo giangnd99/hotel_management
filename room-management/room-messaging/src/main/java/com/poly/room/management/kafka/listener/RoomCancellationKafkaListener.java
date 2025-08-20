@@ -10,6 +10,7 @@ import com.poly.room.management.kafka.mapper.RoomKafkaDataMapper;
 import com.poly.kafka.consumer.KafkaConsumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -49,6 +50,7 @@ public class RoomCancellationKafkaListener implements KafkaConsumer<BookingRoomR
     private final RoomKafkaDataMapper roomKafkaDataMapper;
 
     @Override
+    @KafkaListener(topics = "room-cancellation-response", groupId = "room-cancellation-response")
     public void receive(@Payload List<BookingRoomResponseAvro> messages,
                         @Header(KafkaHeaders.KEY) List<String> keys,
                         @Header(KafkaHeaders.PARTITION) List<Integer> partitions,

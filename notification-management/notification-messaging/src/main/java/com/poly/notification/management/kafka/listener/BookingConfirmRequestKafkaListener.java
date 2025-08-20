@@ -24,7 +24,7 @@ public class BookingConfirmRequestKafkaListener implements KafkaConsumer<Notific
     private final String TOPIC_NAME = "notification-send-mail-request";
 
     @Override
-    @KafkaListener(topics = TOPIC_NAME, groupId = "notification-send-mail-request-group")
+    @KafkaListener(topics = TOPIC_NAME, groupId = "notification-send-mail-request")
     public void receive(
             @Payload List<NotificationMessageAvro> messages,
             @Header(KafkaHeaders.RECEIVED_KEY) List<String> keys,

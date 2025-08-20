@@ -17,10 +17,9 @@ public class DailyOccupancyDto {
     private Long totalRooms;
     private Long occupiedRooms;
     private Long availableRooms;
+    private Double occupancyRate;
     private Long checkIns;
     private Long checkOuts;
-    private Double occupancyRate;
     private BigDecimal revenue;
     private BigDecimal averageRoomRate;
-    private Long totalGuests;
 }

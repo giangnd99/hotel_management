@@ -368,12 +368,12 @@ public class RoomServiceImpl implements RoomService {
         
         // Return all possible room statuses
         return List.of(
-                RoomStatusDto.builder().roomNumber("").status(RoomStatus.VACANT).build(),
-                RoomStatusDto.builder().roomNumber("").status(RoomStatus.BOOKED).build(),
-                RoomStatusDto.builder().roomNumber("").status(RoomStatus.CHECKED_IN).build(),
-                RoomStatusDto.builder().roomNumber("").status(RoomStatus.CHECKED_OUT).build(),
-                RoomStatusDto.builder().roomNumber("").status(RoomStatus.MAINTENANCE).build(),
-                RoomStatusDto.builder().roomNumber("").status(RoomStatus.CLEANING).build()
+                RoomStatusDto.builder().roomNumber("").status(RoomStatus.VACANT.name()).build(),
+                RoomStatusDto.builder().roomNumber("").status(RoomStatus.BOOKED.name()).build(),
+                RoomStatusDto.builder().roomNumber("").status(RoomStatus.CHECKED_IN.name()).build(),
+                RoomStatusDto.builder().roomNumber("").status(RoomStatus.CHECKED_OUT.name()).build(),
+                RoomStatusDto.builder().roomNumber("").status(RoomStatus.MAINTENANCE.name()).build(),
+                RoomStatusDto.builder().roomNumber("").status(RoomStatus.CLEANING.name()).build()
         );
     }
 

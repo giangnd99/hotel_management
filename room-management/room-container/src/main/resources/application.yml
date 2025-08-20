@@ -21,10 +21,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        # hibernate.ddl-auto: update # Cần cẩn thận với cái này trong production.
-        # Nếu bạn chỉ muốn chạy init-schema.sql và data.sql,
-        # bạn có thể để ddl-auto là 'none' hoặc 'validate'
-        # để tránh Hibernate tạo/cập nhật schema.
   datasource:
     url: jdbc:postgresql://localhost:5433/postgres?currentSchema=room_management&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
     username: postgres
@@ -34,6 +30,7 @@ spring:
     init:
       mode: ALWAYS
       schema-locations: classpath:init-schema.sql
+      data-locations: classpath:init-data.sql
   data:
     redis:
       port: ${REDIS_PORT:6379} # Cổng Redis (mặc định 6379)

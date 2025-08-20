@@ -1,8 +1,10 @@
-package com.poly.room.management.domain.saga.cancellation;
+package com.poly.room.management.domain.command;
 
 import com.poly.room.management.domain.entity.Room;
+import com.poly.room.management.domain.event.RoomCancellationEvent;
 import com.poly.room.management.domain.message.RoomCancellationRequestMessage;
 import com.poly.room.management.domain.message.RoomCancellationResponseMessage;
+import com.poly.room.management.domain.port.out.publisher.request.BookingCancellationRequestPublisher;
 import com.poly.room.management.domain.port.out.repository.RoomRepository;
 import com.poly.room.management.domain.service.RoomCancellationService;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +30,11 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class RoomCancellation {
+public class RoomCancellationCommand {
 
     private final RoomRepository roomRepository;
     private final RoomCancellationService roomCancellationDomainService;
+    private final BookingCancellationRequestPublisher bookingCancellationRequestPublisher;
 
     public RoomCancellationResponseMessage cancelRoom(RoomCancellationRequestMessage requestMessage) {
         log.info("Executing room cancellation for room: {}", requestMessage.getRoomId());
@@ -41,11 +44,12 @@ public class RoomCancellation {
             Room room = findRoom(requestMessage.getRoomId());
 
             // Thực hiện business logic hủy phòng
-            roomCancellationDomainService.cancelRoom(room, requestMessage.getBookingId().toString(), requestMessage.getCancellationReason());
+            RoomCancellationEvent event = roomCancellationDomainService.cancelRoom(room, requestMessage.getBookingId().toString(), requestMessage.getCancellationReason());
 
             // Lưu trạng thái mới
-            roomRepository.save(room);
+            roomRepository.save(event.getRoom());
 
+            bookingCancellationRequestPublisher.publish(requestMessage);
             log.info("Room cancellation successful for room: {}", room.getRoomNumber());
 
             return RoomCancellationResponseMessage.builder()

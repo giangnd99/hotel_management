@@ -1,5 +1,7 @@
 package com.poly.room.management.domain.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,8 +14,9 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RoomMaintenanceResponse {
-    private Integer id;
+    private String id;
     private String roomId;
     private String staffId;
     private Timestamp scheduledDate;

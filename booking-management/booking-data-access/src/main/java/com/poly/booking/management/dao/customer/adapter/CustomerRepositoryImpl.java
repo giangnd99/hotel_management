@@ -1,5 +1,6 @@
 package com.poly.booking.management.dao.customer.adapter;
 
+import com.poly.booking.management.dao.customer.entity.CustomerEntity;
 import com.poly.booking.management.dao.customer.mapper.CustomerDataAccessMapper;
 import com.poly.booking.management.dao.customer.repository.CustomerJpaRepository;
 import com.poly.booking.management.domain.entity.Customer;
@@ -25,6 +26,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     public Optional<Customer> findById(UUID customerId) {
+        CustomerEntity
         return customerJpaRepository.findById(customerId)
                 .map(customerDataAccessMapper::customerEntityToCustomer);
     }

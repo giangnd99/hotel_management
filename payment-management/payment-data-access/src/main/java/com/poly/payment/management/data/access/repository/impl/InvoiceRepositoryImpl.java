@@ -7,31 +7,32 @@ import com.poly.payment.management.domain.model.Invoice;
 import com.poly.payment.management.domain.port.output.repository.InvoiceRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Repository
+@Component
 @RequiredArgsConstructor
 public class InvoiceRepositoryImpl implements InvoiceRepository {
 
     private final InvoiceJpaRepository invoiceJpaRepository;
+    private final InvoiceMapper invoiceMapper;
 
     @Override
     public Invoice save(Invoice object) {
-        InvoiceEntity entity = InvoiceMapper.toEntity(object);
+        InvoiceEntity entity = invoiceMapper.toEntity(object);
         invoiceJpaRepository.save(entity);
-        return InvoiceMapper.toDomain(entity);
+        return invoiceMapper.toDomain(entity);
     }
 
     @Override
     public Invoice update(Invoice object) {
-        InvoiceEntity entity = InvoiceMapper.toEntity(object);
+        InvoiceEntity entity = invoiceMapper.toEntity(object);
         invoiceJpaRepository.save(entity);
-        return InvoiceMapper.toDomain(entity);
+        return invoiceMapper.toDomain(entity);
     }
 
     @Override
@@ -43,26 +44,26 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
     public Optional<Invoice> findById(UUID uuid) {
         InvoiceEntity entity = invoiceJpaRepository.findById(uuid)
                 .orElseThrow(() -> new EntityNotFoundException("Invoice not found: " + uuid));
-        return Optional.ofNullable(InvoiceMapper.toDomain(entity));
+        return Optional.ofNullable(invoiceMapper.toDomain(entity));
     }
 
     @Override
     public List<Invoice> findAll() {
         List<InvoiceEntity> entities = invoiceJpaRepository.findAll();
-        List<Invoice> invoices = entities.stream().map(InvoiceMapper::toDomain).collect(Collectors.toList());
+        List<Invoice> invoices = entities.stream().map(invoiceMapper::toDomain).collect(Collectors.toList());
         return invoices;
     }
 
     @Override
     public List<Invoice> findAllById(UUID customerId) {
         List<InvoiceEntity> entities = invoiceJpaRepository.findAllByCustomerId(customerId);
-        List<Invoice> invoices = entities.stream().map(InvoiceMapper::toDomain).collect(Collectors.toList());
+        List<Invoice> invoices = entities.stream().map(invoiceMapper::toDomain).collect(Collectors.toList());
         return invoices;
     }
 
     @Override
     public Invoice remove(Invoice id) {
-        InvoiceEntity entity = InvoiceMapper.toEntity(id);
+        InvoiceEntity entity = invoiceMapper.toEntity(id);
         entity = invoiceJpaRepository.save(entity);
         return null;
     }

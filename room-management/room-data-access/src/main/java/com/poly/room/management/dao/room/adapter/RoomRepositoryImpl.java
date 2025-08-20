@@ -1,5 +1,6 @@
 package com.poly.room.management.dao.room.adapter;
 
+import com.poly.domain.valueobject.RoomStatus;
 import com.poly.room.management.dao.room.repository.RoomJpaRepository;
 import com.poly.room.management.domain.entity.*;
 import com.poly.room.management.domain.exception.RoomDomainException;
@@ -102,7 +103,7 @@ public class RoomRepositoryImpl implements RoomRepository {
     @Override
     public List<Room> findByRoomStatus(String status, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return jpaRepository.findByRoomStatus(status, pageable).getContent().stream()
+        return jpaRepository.findAllByRoomStatus(RoomStatus.valueOf(status), pageable).getContent().stream()
                 .map(roomMapper::toDomain)
                 .collect(Collectors.toList());
     }
@@ -133,10 +134,10 @@ public class RoomRepositoryImpl implements RoomRepository {
     // ========== ADVANCED SEARCH ==========
 
     @Override
-    public List<Room> searchRooms(String roomNumber, String roomType, String status, 
+    public List<Room> searchRooms(String roomNumber, String roomType, String status,
                                   Integer floor, Double minPrice, Double maxPrice, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        
+
         // Convert roomType string to Integer if possible
         Integer roomTypeId = null;
         if (roomType != null) {
@@ -146,7 +147,7 @@ public class RoomRepositoryImpl implements RoomRepository {
                 // If roomType is not a valid integer, we'll search by roomNumber only
             }
         }
-        
+
         return jpaRepository.searchRooms(roomNumber, roomTypeId, status, floor, pageable)
                 .getContent().stream()
                 .map(roomMapper::toDomain)
@@ -194,12 +195,12 @@ public class RoomRepositoryImpl implements RoomRepository {
         if (status == null) {
             return (long) jpaRepository.count();
         }
-        return jpaRepository.countByRoomStatus(status);
+        return jpaRepository.countAllByRoomStatus(RoomStatus.valueOf(status));
     }
 
     @Override
     public Long countByRoomTypeId(Integer roomTypeId) {
-        return jpaRepository.countByRoomTypeId(roomTypeId);
+        return jpaRepository.countByRoomType_RoomTypeId(roomTypeId);
     }
 
     @Override

@@ -16,40 +16,35 @@ import java.util.UUID;
 public interface RoomServiceJpaRepository extends JpaRepository<RoomServiceEntity, UUID> {
 
     // Basic CRUD operations
-    List<RoomServiceEntity> findAll();
-    Page<RoomServiceEntity> findAll(Pageable pageable);
-
     // Room-specific queries
     List<RoomServiceEntity> findByRoomNumber(String roomNumber);
-    List<RoomServiceEntity> findByRoomNumberAndStatus(String roomNumber, String status);
+    List<RoomServiceEntity> findByRoomNumberAndStatus(String roomNumber, RoomServiceEntity.ServiceStatus status);
     
     // Guest-specific queries
     List<RoomServiceEntity> findByGuestId(UUID guestId);
-    List<RoomServiceEntity> findByGuestIdAndStatus(UUID guestId, String status);
+    List<RoomServiceEntity> findByGuestIdAndStatus(UUID guestId, RoomServiceEntity.ServiceStatus status);
     
     // Service type queries
     List<RoomServiceEntity> findByServiceType(String serviceType);
-    List<RoomServiceEntity> findByServiceTypeAndStatus(String serviceType, String status);
+    List<RoomServiceEntity> findByServiceTypeAndStatus(String serviceType, RoomServiceEntity.ServiceStatus status);
     
     // Status-based queries
-    List<RoomServiceEntity> findByStatus(String status);
-    Page<RoomServiceEntity> findByStatus(String status, Pageable pageable);
+    List<RoomServiceEntity> findByStatus(RoomServiceEntity.ServiceStatus status);
+    Page<RoomServiceEntity> findByStatus(RoomServiceEntity.ServiceStatus status, Pageable pageable);
     
     // Date-based queries
-    List<RoomServiceEntity> findByRequestedDate(LocalDateTime requestedDate);
-    List<RoomServiceEntity> findByRequestedDateBetween(LocalDateTime fromDate, LocalDateTime toDate);
-    List<RoomServiceEntity> findByCompletedDate(LocalDateTime completedDate);
-    List<RoomServiceEntity> findByCompletedDateBetween(LocalDateTime fromDate, LocalDateTime toDate);
+    List<RoomServiceEntity> findAllByCreatedAt(LocalDateTime requestedDate);
+    List<RoomServiceEntity> findAllByRequestedAtBetween(LocalDateTime fromDate, LocalDateTime toDate);
+
+    List<RoomServiceEntity> findAllByCompletedAt(LocalDateTime completedAt);
+    List<RoomServiceEntity> findAllByCompletedAtBetween(LocalDateTime fromDate, LocalDateTime toDate);
     
     // Staff assignment queries
     List<RoomServiceEntity> findByRequestedBy(String staffId);
     List<RoomServiceEntity> findByCompletedBy(String staffId);
-    List<RoomServiceEntity> findByRequestedByAndStatus(String staffId, String status);
-    
-    // Pagination
-    @Override
-    Page<RoomServiceEntity> findAll(Pageable pageable);
-    
+
+    List<RoomServiceEntity> findAllByRequestedByAndStatus(String requestedBy, RoomServiceEntity.ServiceStatus status);
+
     // Statistics
     @Query("SELECT COUNT(rs) FROM RoomServiceEntity rs WHERE rs.status = :status")
     Long countByStatus(@Param("status") String status);
