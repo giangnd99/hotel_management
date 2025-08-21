@@ -2,6 +2,8 @@ package com.poly.booking.management.dao.booking.adapter;
 
 import com.poly.booking.management.dao.booking.entity.BookingEntity;
 import com.poly.booking.management.dao.booking.mapper.BookingDataAccessMapper;
+import com.poly.booking.management.dao.booking.mapper.domain.BookingEntityToDomainDataAccessMapper;
+import com.poly.booking.management.dao.booking.mapper.entity.BookingDomainToEntityDataAccessMapper;
 import com.poly.booking.management.dao.booking.repository.BookingJpaRepository;
 import com.poly.booking.management.domain.entity.Booking;
 
@@ -27,12 +29,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookingRepositoryImpl implements BookingRepository {
 
-    private final BookingDataAccessMapper bookingDataAccessMapper;
+//    private final BookingDataAccessMapper bookingDataAccessMapper;
+    private final BookingEntityToDomainDataAccessMapper bookingDataAccessMapper;
+    private final BookingDomainToEntityDataAccessMapper bookingDomainToEntityDataAccessMapper;
     private final BookingJpaRepository bookingJpaRepository;
 
     @Override
     public Booking save(Booking booking) {
-        BookingEntity entity = bookingDataAccessMapper.toEntity(booking);
+        BookingEntity entity = bookingDomainToEntityDataAccessMapper.toEntity(booking);
         BookingEntity bookingSaved = bookingJpaRepository.save(entity);
         return bookingDataAccessMapper.toDomainEntity(bookingSaved);
     }
@@ -40,10 +44,10 @@ public class BookingRepositoryImpl implements BookingRepository {
     @Override
     @Transactional
     public Optional<Booking> findById(UUID bookingId) {
-        BookingEntity bookingEntity = bookingJpaRepository.findById(bookingId)
-                .orElseThrow(() -> new EntityNotFoundException("Booking not found"));
-        Hibernate.initialize(bookingEntity.getBookingRooms());
-        return Optional.ofNullable(bookingDataAccessMapper.toDomainEntity(bookingEntity));
+//        BookingEntity bookingEntity = bookingJpaRepository.findById(bookingId)
+//                .orElseThrow(() -> new EntityNotFoundException("Booking not found"));
+//        Hibernate.initialize(bookingEntity.getBookingRooms());
+        return bookingJpaRepository.findById(bookingId).map(bookingDataAccessMapper::toDomainEntity);
     }
 
     @Override

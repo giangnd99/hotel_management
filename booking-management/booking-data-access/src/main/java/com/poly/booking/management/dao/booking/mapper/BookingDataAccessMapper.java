@@ -37,7 +37,7 @@ public class BookingDataAccessMapper {
                 .trackingId(new TrackingId(bookingEntity.getTrackingId()))
                 .build();
     }
-
+//lam mapper cho list bookingRoomEntity->> BookingRoom ngay tai day khong dung BookingRoomDataAccessMapper gay may du lie
     private Room roomEntityToRoom(com.poly.booking.management.dao.room.entity.RoomEntity roomEntity) {
         return Room.Builder.builder()
                 .id(new RoomId(roomEntity.getId()))

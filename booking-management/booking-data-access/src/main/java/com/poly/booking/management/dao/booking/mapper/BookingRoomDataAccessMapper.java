@@ -9,6 +9,7 @@ import com.poly.booking.management.domain.entity.BookingRoom;
 import com.poly.booking.management.domain.entity.Customer;
 import com.poly.booking.management.domain.entity.Room;
 import com.poly.booking.management.domain.valueobject.BookingRoomId;
+import com.poly.booking.management.domain.valueobject.TrackingId;
 import com.poly.domain.valueobject.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -67,6 +68,8 @@ public class BookingRoomDataAccessMapper {
                 .build();
     }
 
+    //Thu su dung booking Mapper de xem co khac khong
+    //Sai o day vo khong gan lai booking room cho booking nen mat du lieu
     public Booking toDomain(BookingEntity entity) {
         return Booking.Builder.builder()
                 .id(new BookingId(entity.getId()))
@@ -79,6 +82,7 @@ public class BookingRoomDataAccessMapper {
                         .id(new com.poly.domain.valueobject.CustomerId(entity.getCustomerId()))
                         .build())
                 .status(BookingStatus.valueOf(entity.getStatus()))
+                .trackingId(new TrackingId(entity.getTrackingId()))
                 .build();
     }
 }

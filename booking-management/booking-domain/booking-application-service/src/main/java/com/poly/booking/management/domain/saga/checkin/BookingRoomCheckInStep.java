@@ -30,7 +30,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class BookingCheckInStep {
+public class BookingRoomCheckInStep {
 
     private final BookingCheckInDomainService bookingCheckInDomainService;
     private final BookingRepository bookingRepository;

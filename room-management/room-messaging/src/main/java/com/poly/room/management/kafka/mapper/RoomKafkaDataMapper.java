@@ -12,6 +12,7 @@ import com.poly.room.management.domain.message.RoomCancellationRequestMessage;
 import com.poly.room.management.domain.message.RoomCancellationResponseMessage;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,7 +59,7 @@ public class RoomKafkaDataMapper {
                 .bookingStatus(bookingRoomRequestAvro.getBookingStatus())
                 .type(bookingRoomRequestAvro.getType())
                 .createdAt(bookingRoomRequestAvro.getCreatedAt())
-                .processedAt(bookingRoomRequestAvro.getProcessedAt())
+                .processedAt(bookingRoomRequestAvro.getProcessedAt() == null ? Instant.now() : bookingRoomRequestAvro.getProcessedAt() )
                 .price(bookingRoomRequestAvro.getPrice())
                 .SagaId(bookingRoomRequestAvro.getSagaId().toString())
                 .sagaStatus(bookingRoomRequestAvro.getSagaStatus())

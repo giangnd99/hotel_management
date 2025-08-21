@@ -55,13 +55,13 @@ public class DepositStep implements SagaStep<PaymentMessageResponse> {
 
 
         // Step 2: Execute business logic - complete payment
-        BookingDepositedEvent domainEvent = depositSagaHelper.executePaymentCompletion(UUID.fromString(paymentResponse.getBookingId()));
+        Booking domainEvent = depositSagaHelper.executePaymentCompletion(UUID.fromString(paymentResponse.getBookingId()));
 
         // Step 4: Trigger next step - room reservation
         depositSagaHelper.triggerRoomReservationStep(domainEvent, paymentResponse.getSagaId());
 
         log.info("Payment processing completed successfully for booking: {}",
-                domainEvent.getBooking().getId().getValue());
+                domainEvent.getId().getValue());
     }
 
     /**

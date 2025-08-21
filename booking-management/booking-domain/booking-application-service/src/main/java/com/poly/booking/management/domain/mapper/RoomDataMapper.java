@@ -1,11 +1,13 @@
 package com.poly.booking.management.domain.mapper;
 
+import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.entity.Room;
 import com.poly.booking.management.domain.event.BookingDepositedEvent;
 import com.poly.booking.management.domain.event.CheckInEvent;
 import com.poly.booking.management.domain.outbox.payload.ReservedEventPayload;
 import com.poly.booking.management.domain.outbox.payload.RoomEventPayload;
 import com.poly.domain.valueobject.RoomResponseStatus;
+import com.poly.domain.valueobject.RoomStatus;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -22,20 +24,21 @@ public class RoomDataMapper {
      * @param domainEvent BookingPaidEvent từ domain
      * @return BookingReservedEventPayload cho Kafka message
      */
-    public ReservedEventPayload bookingDepositedEventToBookingReservedEventPayload(BookingDepositedEvent domainEvent) {
+    public ReservedEventPayload bookingDepositedEventToBookingReservedEventPayload(Booking domainEvent) {
         return ReservedEventPayload.builder()
-                .bookingId(domainEvent.getBooking().getId().getValue().toString())
-                .customerId(domainEvent.getBooking().getCustomer().getId().getValue().toString())
-                .price(domainEvent.getBooking().getTotalPrice().getAmount())
-                .createdAt(domainEvent.getCreatedAt().getValue())
+                .bookingId(domainEvent.getId().getValue().toString())
+                .customerId(domainEvent.getCustomer().getId().getValue().toString())
+                .price(domainEvent.getTotalPrice().getAmount())
+                .createdAt(LocalDateTime.now())
                 .roomBookingStatus(RoomResponseStatus.PENDING.toString())
-                .rooms(domainEvent.getBooking().getBookingRooms().stream()
+                .rooms(domainEvent.getBookingRooms().stream()
                         .map(bookingRoom ->
-                                roomToBookingRoomEventPayload(bookingRoom.getRoom()))
+                                roomToRoomBookedEventPayload(bookingRoom.getRoom()))
                         .toList())
                 .build();
     }
 
+    /// Sai ở đây
     /**
      * Chuyển đổi Room entity thành BookingRoomEventPayload
      * <p>
@@ -45,28 +48,34 @@ public class RoomDataMapper {
      * @param room Room entity
      * @return BookingRoomEventPayload
      */
-    private RoomEventPayload roomToBookingRoomEventPayload(Room room) {
-        return new RoomEventPayload(
-                room.getId().getValue().toString(),
-                room.getRoomNumber(),
-                room.getBasePrice().getAmount(),
-                LocalDateTime.now()
-        );
+    private RoomEventPayload roomToRoomBookedEventPayload(Room room) {
+        return RoomEventPayload.builder()
+                .roomId(room.getId().getValue().toString())
+                .roomStatus(RoomStatus.BOOKED.name())
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 
-    public ReservedEventPayload bookingCheckInEventToRoomBookedEventPayload(CheckInEvent domainEvent) {
+    private RoomEventPayload roomToRoomCheckOutEventPayload(Room room) {
+        return RoomEventPayload.builder()
+                .roomId(room.getId().getValue().toString())
+                .createdAt(LocalDateTime.now())
+                .roomStatus(RoomStatus.CHECKED_OUT.name())
+                .build();
+    }
+
+    public ReservedEventPayload bookingCheckInEventToRoomBookedEventPayload(Booking domainEvent) {
         return ReservedEventPayload.builder()
-                .bookingId(domainEvent.getBooking().getId().getValue().toString())
+                .bookingId(domainEvent.getId().getValue().toString())
                 .roomBookingStatus(RoomResponseStatus.SUCCESS.name())
-                .rooms(domainEvent.getBooking()
-                        .getBookingRooms()
+                .rooms(domainEvent.getBookingRooms()
                         .stream()
                         .map(bookingRoom ->
-                                roomToBookingRoomEventPayload(bookingRoom.getRoom())
+                                roomToRoomCheckOutEventPayload(bookingRoom.getRoom())
                         ).toList())
-                .price(domainEvent.getBooking().getTotalPrice().getAmount())
-                .customerId(domainEvent.getBooking().getCustomer().getId().getValue().toString())
-                .createdAt(domainEvent.getCreatedAt().getValue())
+                .price(domainEvent.getTotalPrice().getAmount())
+                .customerId(domainEvent.getCustomer().getId().getValue().toString())
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 }

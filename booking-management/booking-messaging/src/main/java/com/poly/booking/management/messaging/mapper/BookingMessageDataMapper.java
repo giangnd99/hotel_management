@@ -21,20 +21,6 @@ import java.util.UUID;
 @Component
 public class BookingMessageDataMapper {
 
-    public BookingPaymentPendingResponseAvro toBookingPaymentPendingResponseAvro(BookingPaymentPendingResponse message) {
-        return BookingPaymentPendingResponseAvro.newBuilder()
-                .setBookingId(message.getBookingId())
-                .setCustomerId(message.getCustomerId())
-                .setPaymentBookingStatus(PaymentBookingStatus.valueOf(message.getPaymentBookingStatus().name()))
-                .setCreatedAt(message.getCreatedAt())
-                .setId(message.getId())
-                .setSagaId(message.getSagaId())
-                .setPrice(message.getPrice())
-                .setCreatedAt(message.getCreatedAt())
-                .setUrlPayment(message.getUrlPayment())
-                .build();
-    }
-
     public CustomerCreatedMessageResponse customerAvroToCustomerEntity(CustomerModelAvro customerModelAvro) {
         return CustomerCreatedMessageResponse.builder().customerId(customerModelAvro.getId()).firstName(customerModelAvro.getFirstName()).lastName(customerModelAvro.getLastName()).username(customerModelAvro.getUsername()).build();
     }
@@ -61,8 +47,17 @@ public class BookingMessageDataMapper {
         return roomsAvro.stream().map(roomAvro -> new Room(new RoomId(UUID.fromString(roomAvro.getId())), roomAvro.getRoomNumber(), Money.from(roomAvro.getBasePrice()), RoomStatus.valueOf(roomAvro.getStatus()))).toList();
     }
 
-    private List<com.poly.booking.management.domain.kafka.model.Room> roomsToRoomsAvro(List<RoomEventPayload> rooms) {
-        return rooms.stream().map(room -> com.poly.booking.management.domain.kafka.model.Room.newBuilder().setId(room.getRoomId()).setRoomNumber(room.getRoomNumber()).setStatus("VACANT").setBasePrice(room.getBasePrice().toString()).build()).toList();
+    private List<com.poly.booking.management.domain.kafka.model.Room> roomsToRoomsDepositAvro(List<RoomEventPayload> rooms) {
+        return rooms.stream().map(room -> com.poly.booking.management.domain.kafka.model.Room.newBuilder()
+                .setId(room.getRoomId())
+                .setStatus(RoomStatus.VACANT.name())
+                .build()).toList();
+    }
+    private List<com.poly.booking.management.domain.kafka.model.Room> roomsToRoomsCheckInAvro(List<RoomEventPayload> rooms) {
+        return rooms.stream().map(room -> com.poly.booking.management.domain.kafka.model.Room.newBuilder()
+                .setId(room.getRoomId())
+                .setStatus(RoomStatus.CHECKED_IN.name())
+                .build()).toList();
     }
 
     public BookingPaymentRequestAvro bookingPaymentEventToPaymentRequestAvroModel(String sagaId, PaymentEventPayload paymentEventPayload) {
@@ -87,8 +82,22 @@ public class BookingMessageDataMapper {
                 .setCreatedAt(Instant.now()).setProcessedAt(null)
                 .setType("ROOM_RESERVATION_REQUEST")
                 .setSagaStatus("STARTED")
-                .setRooms(roomsToRoomsAvro(reservedEventPayload.getRooms()))
+                .setRooms(roomsToRoomsDepositAvro(reservedEventPayload.getRooms()))
                 .setBookingStatus(BookingStatus.DEPOSITED.toString())
+                .setPrice(reservedEventPayload.getPrice())
+                .build();
+    }
+
+    public BookingRoomRequestAvro bookingRoomCheckInEventToRoomRequestAvroModel(String sagaId, ReservedEventPayload reservedEventPayload) {
+        return BookingRoomRequestAvro.newBuilder()
+                .setId(UUID.randomUUID())
+                .setSagaId(UUID.fromString(sagaId))
+                .setBookingId(reservedEventPayload.getBookingId())
+                .setCreatedAt(Instant.now()).setProcessedAt(null)
+                .setType("ROOM_CHECKING_REQUEST")
+                .setSagaStatus("STARTED")
+                .setRooms(roomsToRoomsCheckInAvro(reservedEventPayload.getRooms()))
+                .setBookingStatus(BookingStatus.CHECKED_IN.name())
                 .setPrice(reservedEventPayload.getPrice())
                 .build();
     }

@@ -4,7 +4,6 @@ import com.poly.booking.management.domain.kafka.model.BookingRoomRequestAvro;
 import com.poly.kafka.consumer.KafkaConsumer;
 import com.poly.room.management.domain.port.in.listener.request.BookingRoomReserveListener;
 import com.poly.room.management.kafka.mapper.RoomKafkaDataMapper;
-import com.poly.room.management.kafka.publisher.RoomBookedResponseKafkaPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -28,8 +27,8 @@ public class RoomBookedRequestKafkaListener implements KafkaConsumer<BookingRoom
     @KafkaListener(topics = "room-approval-request", groupId = "room-approval-request")
     public void receive(
             @Payload List<BookingRoomRequestAvro> messages,
-            @Header(KafkaHeaders.KEY) List<String> keys,
-            @Header(KafkaHeaders.PARTITION) List<Integer> partitions,
+            @Header(KafkaHeaders.RECEIVED_KEY) List<String> keys,
+            @Header(KafkaHeaders.RECEIVED_PARTITION) List<Integer> partitions,
             @Header(KafkaHeaders.OFFSET) List<Long> offsets) {
         log.info("Received {} room booked request messages from Kafka", messages.size());
 

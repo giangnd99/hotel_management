@@ -1,9 +1,6 @@
 package com.poly.room.management.kafka.listener;
 
-import com.poly.booking.management.domain.kafka.model.BookingRoomRequestAvro;
 import com.poly.booking.management.domain.kafka.model.BookingRoomResponseAvro;
-import com.poly.room.management.domain.message.BookingRoomRequestMessage;
-import com.poly.room.management.domain.message.RoomCancellationRequestMessage;
 import com.poly.room.management.domain.message.RoomCancellationResponseMessage;
 import com.poly.room.management.domain.port.in.message.listener.RoomCancellationListener;
 import com.poly.room.management.kafka.mapper.RoomKafkaDataMapper;
@@ -52,8 +49,8 @@ public class RoomCancellationKafkaListener implements KafkaConsumer<BookingRoomR
     @Override
     @KafkaListener(topics = "room-cancellation-response", groupId = "room-cancellation-response")
     public void receive(@Payload List<BookingRoomResponseAvro> messages,
-                        @Header(KafkaHeaders.KEY) List<String> keys,
-                        @Header(KafkaHeaders.PARTITION) List<Integer> partitions,
+                        @Header(KafkaHeaders.RECEIVED_KEY) List<String> keys,
+                        @Header(KafkaHeaders.RECEIVED_PARTITION) List<Integer> partitions,
                         @Header(KafkaHeaders.OFFSET) List<Long> offsets) {
         log.info("Received {} room cancellation messages from Kafka", messages.size());
 

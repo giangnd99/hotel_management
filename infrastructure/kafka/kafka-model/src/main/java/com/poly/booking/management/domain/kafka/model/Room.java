@@ -14,10 +14,10 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class Room extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -3164951994867238750L;
+  private static final long serialVersionUID = -6608094226593357041L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Room\",\"namespace\":\"com.poly.booking.management.domain.kafka.model\",\"fields\":[{\"name\":\"id\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"roomNumber\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"basePrice\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"status\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Room\",\"namespace\":\"com.poly.booking.management.domain.kafka.model\",\"fields\":[{\"name\":\"id\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"roomNumber\",\"type\":[\"null\",{\"type\":\"string\",\"avro.java.string\":\"String\"}],\"default\":null},{\"name\":\"basePrice\",\"type\":[\"null\",{\"type\":\"string\",\"avro.java.string\":\"String\"}],\"default\":null},{\"name\":\"status\",\"type\":[\"null\",{\"type\":\"string\",\"avro.java.string\":\"String\"}],\"default\":null}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -500,11 +500,29 @@ public class Room extends org.apache.avro.specific.SpecificRecordBase implements
   {
     out.writeString(this.id);
 
-    out.writeString(this.roomNumber);
+    if (this.roomNumber == null) {
+      out.writeIndex(0);
+      out.writeNull();
+    } else {
+      out.writeIndex(1);
+      out.writeString(this.roomNumber);
+    }
 
-    out.writeString(this.basePrice);
+    if (this.basePrice == null) {
+      out.writeIndex(0);
+      out.writeNull();
+    } else {
+      out.writeIndex(1);
+      out.writeString(this.basePrice);
+    }
 
-    out.writeString(this.status);
+    if (this.status == null) {
+      out.writeIndex(0);
+      out.writeNull();
+    } else {
+      out.writeIndex(1);
+      out.writeString(this.status);
+    }
 
   }
 
@@ -515,11 +533,26 @@ public class Room extends org.apache.avro.specific.SpecificRecordBase implements
     if (fieldOrder == null) {
       this.id = in.readString();
 
-      this.roomNumber = in.readString();
+      if (in.readIndex() != 1) {
+        in.readNull();
+        this.roomNumber = null;
+      } else {
+        this.roomNumber = in.readString();
+      }
 
-      this.basePrice = in.readString();
+      if (in.readIndex() != 1) {
+        in.readNull();
+        this.basePrice = null;
+      } else {
+        this.basePrice = in.readString();
+      }
 
-      this.status = in.readString();
+      if (in.readIndex() != 1) {
+        in.readNull();
+        this.status = null;
+      } else {
+        this.status = in.readString();
+      }
 
     } else {
       for (int i = 0; i < 4; i++) {
@@ -529,15 +562,30 @@ public class Room extends org.apache.avro.specific.SpecificRecordBase implements
           break;
 
         case 1:
-          this.roomNumber = in.readString();
+          if (in.readIndex() != 1) {
+            in.readNull();
+            this.roomNumber = null;
+          } else {
+            this.roomNumber = in.readString();
+          }
           break;
 
         case 2:
-          this.basePrice = in.readString();
+          if (in.readIndex() != 1) {
+            in.readNull();
+            this.basePrice = null;
+          } else {
+            this.basePrice = in.readString();
+          }
           break;
 
         case 3:
-          this.status = in.readString();
+          if (in.readIndex() != 1) {
+            in.readNull();
+            this.status = null;
+          } else {
+            this.status = in.readString();
+          }
           break;
 
         default:

@@ -2,7 +2,7 @@ package com.poly.booking.management.messaging.adapter.listener;
 
 import com.poly.booking.management.domain.port.in.message.listener.BookingCheckInListener;
 import com.poly.booking.management.domain.message.reponse.NotificationMessageResponse;
-import com.poly.booking.management.domain.saga.checkin.BookingCheckInStep;
+import com.poly.booking.management.domain.saga.checkin.BookingRoomCheckInStep;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class BookingCheckInListenerImpl implements BookingCheckInListener {
 
-    private final BookingCheckInStep bookingCheckInStep;
+    private final BookingRoomCheckInStep bookingRoomCheckInStep;
 
     /**
      * Xử lý check-in thành công
@@ -63,7 +63,7 @@ public class BookingCheckInListenerImpl implements BookingCheckInListener {
             validateCheckInRequest(notificationMessageResponse);
 
             // Trigger check-in saga step
-            bookingCheckInStep.process(notificationMessageResponse);
+            bookingRoomCheckInStep.process(notificationMessageResponse);
 
             log.info("Booking check-in processed successfully for booking: {}", 
                     notificationMessageResponse.getBookingId());
@@ -100,7 +100,7 @@ public class BookingCheckInListenerImpl implements BookingCheckInListener {
             validateCheckInRequest(notificationMessageResponse);
 
             // Trigger failed check-in saga step
-            bookingCheckInStep.processFailed(notificationMessageResponse);
+            bookingRoomCheckInStep.processFailed(notificationMessageResponse);
 
             log.info("Failed check-in processed successfully for booking: {}", 
                     notificationMessageResponse.getBookingId());
@@ -137,7 +137,7 @@ public class BookingCheckInListenerImpl implements BookingCheckInListener {
             validateCheckInRequest(notificationMessageResponse);
 
             // Trigger pending check-in saga step
-            bookingCheckInStep.processPending(notificationMessageResponse);
+            bookingRoomCheckInStep.processPending(notificationMessageResponse);
 
             log.info("Pending check-in processed successfully for booking: {}", 
                     notificationMessageResponse.getBookingId());

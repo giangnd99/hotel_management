@@ -2,11 +2,9 @@ package com.poly.booking.management.domain.saga.command;
 
 import com.poly.booking.management.domain.dto.request.CreateBookingRequest;
 import com.poly.booking.management.domain.entity.Booking;
-import com.poly.booking.management.domain.entity.BookingRoom;
 import com.poly.booking.management.domain.entity.Customer;
 import com.poly.booking.management.domain.entity.Room;
 import com.poly.booking.management.domain.exception.BookingDomainException;
-import com.poly.booking.management.domain.mapper.BookingDataMapper;
 import com.poly.booking.management.domain.mapper.RoomDataMapper;
 import com.poly.booking.management.domain.port.out.client.RoomClient;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -33,7 +30,6 @@ public class BookingCreateHelper {
     private final BookingRepository bookingRepository;
     private final RoomClient roomClient;
     private final RoomDataMapper roomDataMapper;
-    private final BookingDataMapper bookingDataMapper;
     private final RoomRepository roomRepository;
     private final BookingDomainService bookingDomainService;
 

@@ -173,7 +173,7 @@ public class NotificationSagaHelper {
         log.info("Triggering next saga step for booking id: {}", booking.getId().getValue());
         CheckInEvent domainEvent = bookingDomainService.checkInBooking(booking);
         roomOutboxService.saveRoomOutboxMessage(
-                roomDataMapper.bookingCheckInEventToRoomBookedEventPayload(domainEvent),
+                roomDataMapper.bookingCheckInEventToRoomBookedEventPayload(domainEvent.getBooking()),
                 domainEvent.getBooking().getStatus(),
                 bookingSagaHelper.bookingStatusToSagaStatus(domainEvent.getBooking().getStatus()),
                 OutboxStatus.STARTED,

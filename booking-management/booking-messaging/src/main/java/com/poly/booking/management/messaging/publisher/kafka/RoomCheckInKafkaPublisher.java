@@ -2,8 +2,11 @@ package com.poly.booking.management.messaging.publisher.kafka;
 
 import com.poly.booking.management.domain.config.BookingServiceConfigData;
 import com.poly.booking.management.domain.kafka.model.BookingRoomRequestAvro;
+import com.poly.booking.management.domain.mapper.RoomDataMapper;
 import com.poly.booking.management.domain.outbox.model.RoomOutboxMessage;
+import com.poly.booking.management.domain.outbox.payload.ReservedEventPayload;
 import com.poly.booking.management.domain.port.out.message.publisher.RoomCheckOutMessagePublisher;
+import com.poly.booking.management.messaging.mapper.BookingMessageDataMapper;
 import com.poly.kafka.producer.KafkaMessageHelper;
 import com.poly.kafka.producer.service.KafkaProducer;
 import com.poly.outbox.OutboxStatus;
@@ -41,11 +44,12 @@ import java.util.function.BiConsumer;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class RoomCheckOutKafkaPublisher implements RoomCheckOutMessagePublisher {
+public class RoomCheckInKafkaPublisher implements RoomCheckOutMessagePublisher {
 
     private final KafkaProducer<String, BookingRoomRequestAvro> kafkaProducer;
     private final BookingServiceConfigData bookingServiceConfigData;
     private final KafkaMessageHelper kafkaMessageHelper;
+    private final BookingMessageDataMapper bookingDataMapper;
 
     /**
      * Gửi room check out request đến Kafka topic
@@ -65,6 +69,7 @@ public class RoomCheckOutKafkaPublisher implements RoomCheckOutMessagePublisher 
         // Validate input parameters
         validateInputParameters(roomOutboxMessage, outboxCallback);
 
+        ReservedEventPayload eventPayload = kafkaMessageHelper.getEventPayload(roomOutboxMessage.getPayload(), ReservedEventPayload.class);
         // Extract thông tin cần thiết
         String sagaId = extractSagaId(roomOutboxMessage);
 
@@ -73,7 +78,7 @@ public class RoomCheckOutKafkaPublisher implements RoomCheckOutMessagePublisher 
 
         try {
             // Tạo Avro model từ room outbox message
-            BookingRoomRequestAvro roomCheckOutRequestAvro = createRoomCheckOutRequestAvro(roomOutboxMessage);
+            BookingRoomRequestAvro roomCheckOutRequestAvro = createRoomCheckOutRequestAvro(sagaId,eventPayload);
 
             // Gửi message đến Kafka
             sendMessageToKafka(roomCheckOutRequestAvro, sagaId, roomOutboxMessage, outboxCallback);
@@ -127,16 +132,8 @@ public class RoomCheckOutKafkaPublisher implements RoomCheckOutMessagePublisher 
      * <p>
      * Chuyển đổi domain event thành Avro model để gửi qua Kafka
      */
-    private BookingRoomRequestAvro createRoomCheckOutRequestAvro(RoomOutboxMessage roomOutboxMessage) {
-        // TODO: Implement proper mapping logic
-        // Cần tạo mapper method để chuyển đổi từ RoomOutboxMessage sang BookingRoomRequestAvro
-
-        // Temporary implementation - cần implement mapper method
-        return BookingRoomRequestAvro.newBuilder()
-                .setBookingId(roomOutboxMessage.getBookingId().toString())
-                .setSagaId(roomOutboxMessage.getSagaId())
-                .setType(roomOutboxMessage.getType())
-                .build();
+    private BookingRoomRequestAvro createRoomCheckOutRequestAvro(String sagaId, ReservedEventPayload eventPayload) {
+        return bookingDataMapper.bookingRoomCheckInEventToRoomRequestAvroModel(sagaId,eventPayload);
     }
 
     /**
