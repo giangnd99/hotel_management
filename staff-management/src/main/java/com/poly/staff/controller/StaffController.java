@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/staffs")
@@ -113,6 +114,14 @@ public class StaffController {
     public ResponseEntity<Boolean> checkEmailExists(@RequestParam String email) {
         log.info("Checking if email exists: {}", email);
         boolean exists = staffService.existsByEmail(email);
+        return ResponseEntity.ok(exists);
+    }
+
+    @GetMapping("/user-exists")
+    @Operation(summary = "Check if user ID exists")
+    public ResponseEntity<Boolean> checkUserIdExists(@RequestParam UUID userId) {
+        log.info("Checking if user ID exists: {}", userId);
+        boolean exists = staffService.existsByUserId(userId);
         return ResponseEntity.ok(exists);
     }
 }

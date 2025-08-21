@@ -2,28 +2,33 @@ spring:
   application:
     name: staff-management
   datasource:
-    url: jdbc:postgresql://localhost:5432/hotel_management
-    username: postgres
-    password: postgres
+    url: ${STAFF_DATASOURCE_URL:jdbc:postgresql://localhost:5432/staff_management}
+    username: ${STAFF_DATASOURCE_USERNAME:postgres}
+    password: ${STAFF_DATASOURCE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+  liquibase:
+    enabled: true
+    change-log: classpath:db/migration/changelog-master.yml
+    contexts: dev
   jackson:
     default-property-inclusion: NON_NULL
 
 server:
-  port: 8082
+  port: ${STAFF_MANAGEMENT_PORT:8085}
 
 logging:
   level:
     com.poly.staff: DEBUG
     org.springframework.web: DEBUG
+    org.springframework.liquibase: DEBUG
 
 springdoc:
   api-docs:

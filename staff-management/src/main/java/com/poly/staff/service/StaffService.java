@@ -6,6 +6,7 @@ import com.poly.staff.dto.request.UpdateStaffRequest;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface StaffService {
     
@@ -24,4 +25,5 @@ public interface StaffService {
     // Utility
     boolean existsByStaffId(String staffId);
     boolean existsByEmail(String email);
+    boolean existsByUserId(UUID userId);
 }

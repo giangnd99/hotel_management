@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: staff-postgres
+    environment:
+      POSTGRES_DB: staff_management
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - staff-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d hotel_management"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  # Staff Management Application
+  staff-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: staff-management-app
+    environment:
+      # Application port
+      STAFF_MANAGEMENT_PORT: 8085
+      
+      # Database configuration
+      STAFF_DATASOURCE_URL: jdbc:postgresql://postgres:5432/staff_management
+      STAFF_DATASOURCE_USERNAME: postgres
+      STAFF_DATASOURCE_PASSWORD: postgres
+      
+      # JPA configuration
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_JPA_SHOW_SQL: false
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      
+      # Liquibase configuration
+      SPRING_LIQUIBASE_ENABLED: true
+      SPRING_LIQUIBASE_CONTEXTS: docker
+      
+      # Logging configuration
+      LOGGING_LEVEL_COM_POLY_STAFF: INFO
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB: INFO
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_LIQUIBASE: INFO
+      
+      # Jackson configuration
+      SPRING_JACKSON_DEFAULT_PROPERTY_INCLUSION: NON_NULL
+      
+      # Swagger configuration
+      SPRINGDOC_API_DOCS_PATH: /api-docs
+      SPRINGDOC_SWAGGER_UI_PATH: /swagger-ui.html
+      
+      # JVM options
+      JAVA_OPTS: "-Xms512m -Xmx1024m -XX:+UseG1GC -XX:+UseContainerSupport"
+    ports:
+      - "8085:8085"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - staff-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8085/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # pgAdmin (Optional - for database management)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: staff-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@staff.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - staff-network
+    restart: unless-stopped
+    profiles:
+      - tools
+
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  staff-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

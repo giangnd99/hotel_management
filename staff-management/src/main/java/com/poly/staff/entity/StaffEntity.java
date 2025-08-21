@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "staffs")
@@ -21,6 +22,9 @@ public class StaffEntity {
     @Id
     @Column(name = "staff_id", nullable = false, unique = true)
     private String staffId;
+    
+    @Column(name = "user_id", nullable = false, unique = true)
+    private UUID userId;
     
     @Column(name = "name", nullable = false)
     private String name;
