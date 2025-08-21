@@ -97,6 +97,7 @@ CREATE TABLE rooms
     floor          INT,
     area           VARCHAR(255),
     room_status    room_status,
+    image_url      VARCHAR(255),
     CONSTRAINT fk_room_type FOREIGN KEY (room_type_id) REFERENCES room_types (room_type_id)
 );
 

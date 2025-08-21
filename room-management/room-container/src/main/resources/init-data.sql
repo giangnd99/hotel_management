@@ -34,31 +34,31 @@ INSERT INTO room_types (type_name, description, base_price, max_occupancy) VALUE
 -- ==========================================================
 -- INSERT dữ liệu Rooms (20 phòng)
 -- ==========================================================
-INSERT INTO rooms (room_id, room_type_id, room_number, floor, area, room_status) VALUES
-                                                                                     (gen_random_uuid(), 1, '101', 1, '28m2', 'VACANT'),
-                                                                                     (gen_random_uuid(), 1, '102', 1, '28m2', 'VACANT'),
-                                                                                     (gen_random_uuid(), 1, '103', 1, '30m2', 'VACANT'),
-                                                                                     (gen_random_uuid(), 1, '104', 1, '30m2', 'VACANT'),
+INSERT INTO rooms (room_id, room_type_id, room_number, floor, area, room_status, image_url) VALUES
+                                                                                     (gen_random_uuid(), 1, '101', 1, '28m2', 'VACANT', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 1, '102', 1, '28m2', 'VACANT', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 1, '103', 1, '30m2', 'VACANT', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 1, '104', 1, '30m2', 'VACANT', 'https://picsum.photos/200/300'),
 
-                                                                                     (gen_random_uuid(), 2, '201', 2, '35m2', 'VACANT'),
-                                                                                     (gen_random_uuid(), 2, '202', 2, '35m2', 'VACANT'),
-                                                                                     (gen_random_uuid(), 2, '203', 2, '38m2', 'VACANT'),
-                                                                                     (gen_random_uuid(), 2, '204', 2, '38m2', 'VACANT'),
+                                                                                     (gen_random_uuid(), 2, '201', 2, '35m2', 'VACANT', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 2, '202', 2, '35m2', 'VACANT', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 2, '203', 2, '38m2', 'VACANT', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 2, '204', 2, '38m2', 'VACANT', 'https://picsum.photos/200/300'),
 
-                                                                                     (gen_random_uuid(), 3, '301', 3, '50m2', 'VACANT'),
-                                                                                     (gen_random_uuid(), 3, '302', 3, '52m2', 'VACANT'),
-                                                                                     (gen_random_uuid(), 3, '303', 3, '55m2', 'VACANT'),
-                                                                                     (gen_random_uuid(), 3, '304', 3, '55m2', 'VACANT'),
+                                                                                     (gen_random_uuid(), 3, '301', 3, '50m2', 'VACANT', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 3, '302', 3, '52m2', 'VACANT', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 3, '303', 3, '55m2', 'VACANT', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 3, '304', 3, '55m2', 'VACANT', 'https://picsum.photos/200/300'),
 
-                                                                                     (gen_random_uuid(), 4, '401', 4, '65m2', 'VACANT'),
-                                                                                     (gen_random_uuid(), 4, '402', 4, '68m2', 'VACANT'),
-                                                                                     (gen_random_uuid(), 4, '403', 4, '70m2', 'VACANT'),
-                                                                                     (gen_random_uuid(), 4, '404', 4, '70m2', 'VACANT'),
+                                                                                     (gen_random_uuid(), 4, '401', 4, '65m2', 'VACANT', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 4, '402', 4, '68m2', 'VACANT', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 4, '403', 4, '70m2', 'VACANT', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 4, '404', 4, '70m2', 'VACANT', 'https://picsum.photos/200/300'),
 
-                                                                                     (gen_random_uuid(), 5, '501', 5, '120m2', 'VACANT'),
-                                                                                     (gen_random_uuid(), 5, '502', 5, '125m2', 'VACANT'),
-                                                                                     (gen_random_uuid(), 5, '503', 5, '130m2', 'VACANT'),
-                                                                                     (gen_random_uuid(), 5, '504', 5, '135m2', 'VACANT');
+                                                                                     (gen_random_uuid(), 5, '501', 5, '120m2', 'VACANT', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 5, '502', 5, '125m2', 'VACANT', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 5, '503', 5, '130m2', 'VACANT', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 5, '504', 5, '135m2', 'VACANT', 'https://picsum.photos/200/300');
 
 -- ==========================================================
 -- INSERT dữ liệu Room Type Furniture (gắn nội thất cho từng loại phòng)

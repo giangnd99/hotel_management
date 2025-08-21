@@ -40,4 +40,6 @@ public class RoomEntity implements Serializable {
     private int floor;
 
     private String area;
+
+    private String image_url;
 }

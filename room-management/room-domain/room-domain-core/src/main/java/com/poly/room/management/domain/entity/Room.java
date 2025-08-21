@@ -24,6 +24,8 @@ public class Room extends BaseEntity<RoomId> {
 
     private String area;
 
+    private String image_url;
+
     private List<RoomCost> roomCosts;
 
     private List<Furniture> furnitures;
@@ -160,6 +162,10 @@ public class Room extends BaseEntity<RoomId> {
         return roomStatus;
     }
 
+    public String getImage_url() {
+        return image_url;
+    }
+
     public void validateRoomNumber() {
         if (roomNumber == null || roomNumber.trim().isEmpty()) {
             throw new RoomDomainException("Room number cannot be empty.");
@@ -196,6 +202,7 @@ public class Room extends BaseEntity<RoomId> {
         private int floor;
         private RoomType roomType;
         private RoomStatus roomStatus;
+        private String image_url;
         private Money roomPrice;
         private String area;
         private List<Furniture> furnitures;
@@ -224,6 +231,11 @@ public class Room extends BaseEntity<RoomId> {
 
         public Builder furnitures(List<Furniture> val) {
             furnitures = val;
+            return this;
+        }
+
+        public Builder image_url(String val) {
+            image_url = val;
             return this;
         }
 
