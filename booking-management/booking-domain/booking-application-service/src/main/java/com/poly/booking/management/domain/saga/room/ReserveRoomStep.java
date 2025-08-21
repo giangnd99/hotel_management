@@ -3,6 +3,7 @@ package com.poly.booking.management.domain.saga.room;
 import com.poly.booking.management.domain.event.BookingConfirmedEvent;
 import com.poly.booking.management.domain.outbox.model.RoomOutboxMessage;
 import com.poly.booking.management.domain.message.reponse.RoomMessageResponse;
+import com.poly.booking.management.domain.port.out.repository.CustomerRepository;
 import com.poly.domain.valueobject.BookingStatus;
 import com.poly.saga.SagaStep;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ public class ReserveRoomStep implements SagaStep<RoomMessageResponse> {
 
 
     private final RoomSagaHelper roomSagaHelper;
+
 
     /**
      * PROCESS METHOD - Xử lý chính của Saga Step

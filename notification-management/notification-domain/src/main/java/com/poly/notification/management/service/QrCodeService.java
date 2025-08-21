@@ -12,24 +12,16 @@ import com.poly.notification.management.dto.QrCodeScanResponse;
 import com.poly.notification.management.entity.QrCode;
 import com.poly.notification.management.exception.QrCodeException;
 import com.poly.notification.management.repository.QrCodeRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,13 +31,11 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
+@RequiredArgsConstructor
 public class QrCodeService {
     
     @Autowired
     private QrCodeRepository qrCodeRepository;
-    
-    @Value("${qr.code.storage.path:./qr-codes}")
-    private String qrCodeStoragePath;
     
     @Value("${qr.code.image.format:PNG}")
     private String defaultImageFormat;
@@ -53,16 +43,19 @@ public class QrCodeService {
     private static final int DEFAULT_WIDTH = 300;
     private static final int DEFAULT_HEIGHT = 300;
     private static final String DEFAULT_FORMAT = "PNG";
+
+    private final EmailService emailService;
+    private final CloudinaryQrCodeService cloudinaryQrCodeService;
     
     /**
-     * Tạo QR code mới
+     * Tạo QR code mới và upload lên Cloudinary
      */
+    @Transactional
     public QrCodeResponse createQrCode(QrCodeRequest request) {
         try {
             // Validate input
             validateQrCodeRequest(request);
             
-            // Kiểm tra xem QR code với data này đã tồn tại chưa
             Optional<QrCode> existingQrCode = qrCodeRepository.findByDataAndIsActiveTrue(request.getData());
             if (existingQrCode.isPresent()) {
                 throw new QrCodeException("QR code với data này đã tồn tại");
@@ -76,24 +69,21 @@ public class QrCodeService {
             qrCode.setFormat(request.getFormat() != null ? request.getFormat() : DEFAULT_FORMAT);
             qrCode.setDescription(request.getDescription());
             
-            // Tạo QR code image
-            BufferedImage qrCodeImage = generateQrCodeImage(
-                request.getData(), 
+            // Tạo QR code và upload lên Cloudinary
+            String cloudinaryUrl = cloudinaryQrCodeService.createQrCodeAndUploadToCloudinary(
+                qrCode.getData(), 
                 qrCode.getWidth(), 
-                qrCode.getHeight()
+                qrCode.getHeight(),
+                qrCode.getFormat()
             );
             
-            // Lưu image vào file system
-            String imagePath = saveQrCodeImage(qrCodeImage, qrCode.getFormat());
-            qrCode.setQrCodeImagePath(imagePath);
+            qrCode.setQrCodeImagePath(cloudinaryUrl);
+            log.info("QR CODE CLOUDINARY URL: {}", cloudinaryUrl);
             
             // Lưu vào database
             QrCode savedQrCode = qrCodeRepository.save(qrCode);
             
-            // Convert image thành base64 để trả về
-            String base64Image = convertImageToBase64(qrCodeImage, qrCode.getFormat());
-            
-            return createQrCodeResponse(savedQrCode, base64Image);
+            return createQrCodeResponse(savedQrCode);
             
         } catch (Exception e) {
             throw new QrCodeException("Lỗi khi tạo QR code: " + e.getMessage(), e);
@@ -120,8 +110,7 @@ public class QrCodeService {
             throw new QrCodeException("QR code đã bị xóa");
         }
         
-        String base64Image = getQrCodeImageAsBase64(qrCode);
-        return createQrCodeResponse(qrCode, base64Image);
+        return createQrCodeResponse(qrCode);
     }
     
     /**
@@ -132,8 +121,7 @@ public class QrCodeService {
         QrCode qrCode = qrCodeRepository.findByDataAndIsActiveTrue(data)
             .orElseThrow(() -> new QrCodeException("Không tìm thấy QR code với data: " + data));
         
-        String base64Image = getQrCodeImageAsBase64(qrCode);
-        return createQrCodeResponse(qrCode, base64Image);
+        return createQrCodeResponse(qrCode);
     }
     
     /**
@@ -143,10 +131,7 @@ public class QrCodeService {
     public List<QrCodeResponse> getAllActiveQrCodes() {
         List<QrCode> qrCodes = qrCodeRepository.findByIsActiveTrue();
         return qrCodes.stream()
-            .map(qrCode -> {
-                String base64Image = getQrCodeImageAsBase64(qrCode);
-                return createQrCodeResponse(qrCode, base64Image);
-            })
+            .map(this::createQrCodeResponse)
             .collect(Collectors.toList());
     }
     
@@ -176,25 +161,25 @@ public class QrCodeService {
         if (request.getFormat() != null) qrCode.setFormat(request.getFormat());
         if (request.getDescription() != null) qrCode.setDescription(request.getDescription());
         
-        // Nếu thay đổi kích thước hoặc data, tạo lại image
+        // Nếu thay đổi kích thước hoặc data, tạo lại image và upload lên Cloudinary
         if ((request.getWidth() != null && !request.getWidth().equals(qrCode.getWidth())) ||
             (request.getHeight() != null && !request.getHeight().equals(qrCode.getHeight())) ||
             (request.getData() != null && !request.getData().equals(qrCode.getData()))) {
             
-            BufferedImage newImage = generateQrCodeImage(qrCode.getData(), qrCode.getWidth(), qrCode.getHeight());
-            String newImagePath = saveQrCodeImage(newImage, qrCode.getFormat());
+            String newCloudinaryUrl = cloudinaryQrCodeService.createQrCodeAndUploadToCloudinary(
+                qrCode.getData(), 
+                qrCode.getWidth(), 
+                qrCode.getHeight(),
+                qrCode.getFormat()
+            );
             
-            // Xóa file cũ
-            deleteQrCodeImage(qrCode.getQrCodeImagePath());
-            
-            qrCode.setQrCodeImagePath(newImagePath);
+            qrCode.setQrCodeImagePath(newCloudinaryUrl);
         }
         
         qrCode.setUpdatedAt(LocalDateTime.now());
         QrCode updatedQrCode = qrCodeRepository.save(qrCode);
         
-        String base64Image = getQrCodeImageAsBase64(updatedQrCode);
-        return createQrCodeResponse(updatedQrCode, base64Image);
+        return createQrCodeResponse(updatedQrCode);
     }
     
     /**
@@ -213,8 +198,8 @@ public class QrCodeService {
         qrCode.setUpdatedAt(LocalDateTime.now());
         qrCodeRepository.save(qrCode);
         
-        // Xóa file image
-        deleteQrCodeImage(qrCode.getQrCodeImagePath());
+        // TODO: Có thể xóa ảnh khỏi Cloudinary nếu cần
+        // cloudinaryService.deleteImage(qrCode.getQrCodeImagePath());
     }
     
     /**
@@ -224,10 +209,7 @@ public class QrCodeService {
     public List<QrCodeResponse> searchQrCodesByDescription(String keyword) {
         List<QrCode> qrCodes = qrCodeRepository.findByDescriptionContaining(keyword);
         return qrCodes.stream()
-            .map(qrCode -> {
-                String base64Image = getQrCodeImageAsBase64(qrCode);
-                return createQrCodeResponse(qrCode, base64Image);
-            })
+            .map(this::createQrCodeResponse)
             .collect(Collectors.toList());
     }
     
@@ -238,10 +220,7 @@ public class QrCodeService {
     public List<QrCodeResponse> getQrCodesByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
         List<QrCode> qrCodes = qrCodeRepository.findByCreatedAtBetween(startDate, endDate);
         return qrCodes.stream()
-            .map(qrCode -> {
-                String base64Image = getQrCodeImageAsBase64(qrCode);
-                return createQrCodeResponse(qrCode, base64Image);
-            })
+            .map(this::createQrCodeResponse)
             .collect(Collectors.toList());
     }
     
@@ -254,122 +233,9 @@ public class QrCodeService {
     }
     
     /**
-     * Tạo QR code image sử dụng ZXing
-     */
-    private BufferedImage generateQrCodeImage(String data, int width, int height) {
-        try {
-            QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            Map<EncodeHintType, Object> hints = new HashMap<>();
-            hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
-            hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
-            hints.put(EncodeHintType.MARGIN, 2);
-            
-            BitMatrix bitMatrix = qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, width, height, hints);
-            
-            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-            Graphics2D graphics = image.createGraphics();
-            graphics.setColor(Color.WHITE);
-            graphics.fillRect(0, 0, width, height);
-            graphics.setColor(Color.BLACK);
-            
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
-                    if (bitMatrix.get(x, y)) {
-                        graphics.fillRect(x, y, 1, 1);
-                    }
-                }
-            }
-            
-            graphics.dispose();
-            return image;
-            
-        } catch (WriterException e) {
-            throw new QrCodeException("Lỗi khi tạo QR code image: " + e.getMessage(), e);
-        }
-    }
-    
-    /**
-     * Lưu QR code image vào file system
-     */
-    private String saveQrCodeImage(BufferedImage image, String format) {
-        try {
-            // Tạo thư mục nếu chưa tồn tại
-            Path storagePath = Paths.get(qrCodeStoragePath);
-            if (!Files.exists(storagePath)) {
-                Files.createDirectories(storagePath);
-            }
-            
-            // Tạo tên file duy nhất
-            String fileName = "qr_" + System.currentTimeMillis() + "." + format.toLowerCase();
-            Path filePath = storagePath.resolve(fileName);
-            
-            // Lưu image
-            ImageIO.write(image, format, filePath.toFile());
-            
-            return filePath.toString();
-            
-        } catch (IOException e) {
-            throw new QrCodeException("Lỗi khi lưu QR code image: " + e.getMessage(), e);
-        }
-    }
-    
-    /**
-     * Xóa QR code image file
-     */
-    private void deleteQrCodeImage(String imagePath) {
-        if (imagePath != null && !imagePath.isEmpty()) {
-            try {
-                Path path = Paths.get(imagePath);
-                if (Files.exists(path)) {
-                    Files.delete(path);
-                }
-            } catch (IOException e) {
-                // Log lỗi nhưng không throw exception
-                System.err.println("Lỗi khi xóa file image: " + e.getMessage());
-            }
-        }
-    }
-    
-    /**
-     * Convert image thành base64 string
-     */
-    private String convertImageToBase64(BufferedImage image, String format) {
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(image, format, baos);
-            byte[] imageBytes = baos.toByteArray();
-            return Base64.getEncoder().encodeToString(imageBytes);
-        } catch (IOException e) {
-            throw new QrCodeException("Lỗi khi convert image thành base64: " + e.getMessage(), e);
-        }
-    }
-    
-    /**
-     * Lấy QR code image từ file system và convert thành base64
-     */
-    private String getQrCodeImageAsBase64(QrCode qrCode) {
-        if (qrCode.getQrCodeImagePath() == null || qrCode.getQrCodeImagePath().isEmpty()) {
-            return null;
-        }
-        
-        try {
-            Path imagePath = Paths.get(qrCode.getQrCodeImagePath());
-            if (!Files.exists(imagePath)) {
-                return null;
-            }
-            
-            BufferedImage image = ImageIO.read(imagePath.toFile());
-            return convertImageToBase64(image, qrCode.getFormat());
-            
-        } catch (IOException e) {
-            throw new QrCodeException("Lỗi khi đọc QR code image: " + e.getMessage(), e);
-        }
-    }
-    
-    /**
      * Tạo QrCodeResponse từ entity
      */
-    private QrCodeResponse createQrCodeResponse(QrCode qrCode, String base64Image) {
+    private QrCodeResponse createQrCodeResponse(QrCode qrCode) {
         QrCodeResponse response = new QrCodeResponse();
         response.setId(qrCode.getId());
         response.setData(qrCode.getData());
@@ -381,7 +247,8 @@ public class QrCodeService {
         response.setUpdatedAt(qrCode.getUpdatedAt());
         response.setIsActive(qrCode.getIsActive());
         response.setDescription(qrCode.getDescription());
-        response.setQrCodeBase64(base64Image);
+        // Không còn trả về base64 nữa
+        response.setQrCodeBase64(null);
         return response;
     }
     

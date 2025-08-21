@@ -1,6 +1,7 @@
 package com.poly.booking.management.domain.saga.room;
 
 import com.poly.booking.management.domain.entity.Booking;
+import com.poly.booking.management.domain.entity.Customer;
 import com.poly.booking.management.domain.event.BookingConfirmedEvent;
 import com.poly.booking.management.domain.mapper.NotificationDataMapper;
 import com.poly.booking.management.domain.outbox.model.NotifiOutboxMessage;
@@ -9,6 +10,7 @@ import com.poly.booking.management.domain.outbox.service.NotificationOutboxServi
 import com.poly.booking.management.domain.outbox.service.impl.RoomOutboxServiceImpl;
 import com.poly.booking.management.domain.port.out.message.publisher.NotificationRequestMessagePublisher;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
+import com.poly.booking.management.domain.port.out.repository.CustomerRepository;
 import com.poly.booking.management.domain.saga.BookingSagaHelper;
 import com.poly.booking.management.domain.saga.notification.NotificationSagaHelper;
 import com.poly.booking.management.domain.service.BookingDomainService;
@@ -38,7 +40,7 @@ public class RoomSagaHelper {
     private final NotificationDataMapper notificationDataMapper;
     private final BookingDomainService bookingDomainService;
     private final BookingRepository bookingRepository;
-
+    private final CustomerRepository customerRepository;
     // Saga orchestration helpers
     private final BookingSagaHelper bookingSagaHelper;
 
@@ -101,7 +103,9 @@ public class RoomSagaHelper {
     public void triggerSendQrCodeStep(BookingConfirmedEvent domainEvent, RoomMessageResponse data) {
         log.info("Triggering room reservation step for booking: {}",
                 domainEvent.getBooking().getId().getValue());
+        Customer customer = customerRepository.findById(domainEvent.getBooking().getCustomer().getId().getValue()).orElseThrow(() -> new RuntimeException("Customer not found in notification step !"));
 
+        domainEvent.getBooking().setCustomer(customer);
         String payload = notificationOutboxService.createPayload(notificationDataMapper.bookingRoomReservedEventToBookingNotifiEventPayload(domainEvent));
 
         NotifiOutboxMessage notifiOutboxMessage = NotifiOutboxMessage.builder()
@@ -117,13 +121,15 @@ public class RoomSagaHelper {
                 .build();
 
 
-        notificationRequestMessagePublisher.sendNotifi(notifiOutboxMessage,updateOutboxStatus(notifiOutboxMessage,OutboxStatus.COMPLETED) );
+        notificationRequestMessagePublisher.sendNotifi(notifiOutboxMessage, updateOutboxStatus());
     }
 
-    private BiConsumer<NotifiOutboxMessage, OutboxStatus> updateOutboxStatus(NotifiOutboxMessage notifiOutboxMessage, OutboxStatus outboxStatus) {
-        notifiOutboxMessage.setOutboxStatus(outboxStatus);
-        log.info("OrderApprovalOutboxMessage is updated with outbox status: {}", outboxStatus.name());
-        return null;
+    private BiConsumer<NotifiOutboxMessage, OutboxStatus> updateOutboxStatus() {
+        return (message, status) -> {
+            message.setOutboxStatus(status);
+            log.info("NotifiOutboxMessage {} is updated with outbox status: {}",
+                    message.getId(), status.name());
+        };
     }
 
     /**
