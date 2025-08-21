@@ -28,7 +28,7 @@ public interface BookingService {
     void deleteBooking(UUID bookingId);
 
     // Search & Filter
-    List<BookingDto> searchBookings(UUID customerId, String roomNumber,
+    List<BookingDto> searchBookings(UUID customerId, UUID roomId,
                                     LocalDate checkInDate, LocalDate checkOutDate, int page, int size);
     List<BookingDto> filterBookingsByStatus(String status, int page, int size);
     List<BookingDto> filterBookingsByDateRange(LocalDate fromDate, LocalDate toDate, int page, int size);

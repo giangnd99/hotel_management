@@ -1,23 +1,29 @@
 package com.poly.booking.management.dao.booking.mapper;
 
 import com.poly.booking.management.dao.booking.entity.BookingEntity;
-import com.poly.booking.management.dao.customer.entity.CustomerEntity;
-import com.poly.booking.management.domain.dto.BookingDto;
+import com.poly.booking.management.dao.booking.entity.BookingRoomEntity;
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.entity.Customer;
+import com.poly.booking.management.domain.entity.Room;
 import com.poly.booking.management.domain.valueobject.TrackingId;
 import com.poly.domain.valueobject.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 
 @Component
+@RequiredArgsConstructor
 public class BookingDataAccessMapper {
 
+    private final BookingRoomDataAccessMapper bookingRoomDataAccessMapper;
+
     public Booking toDomainEntity(BookingEntity bookingEntity) {
+
+        List<BookingRoomEntity> bookingRooms = bookingEntity.getBookingRooms();
+
         return Booking.Builder.builder()
                 .id(new BookingId(bookingEntity.getId()))
                 .customer(customerEntityToCustomer(bookingEntity.getCustomerId()))
@@ -25,33 +31,20 @@ public class BookingDataAccessMapper {
                 .checkOutDate(DateCustom.of(bookingEntity.getCheckOut()))
                 .totalPrice(new Money(bookingEntity.getTotalPrice()))
                 .status(BookingStatus.valueOf(bookingEntity.getStatus()))
+                .bookingRooms(bookingRooms.stream().map(bookingRoomDataAccessMapper::toDomainEntity).toList())
                 .actualCheckInDate(bookingEntity.getActualCheckIn() != null ? DateCustom.of(bookingEntity.getActualCheckIn()) : null)
                 .actualCheckOutDate(bookingEntity.getActualCheckOut() != null ? DateCustom.of(bookingEntity.getActualCheckOut()) : null)
                 .trackingId(new TrackingId(bookingEntity.getTrackingId()))
                 .build();
     }
 
-    public BookingDto toDto(Booking booking) {
-        BookingDto dto = new BookingDto();
-        dto.setBookingId(booking.getId().getValue());
-        dto.setCustomerId(booking.getCustomer().getId().getValue());
-        dto.setCustomerName(booking.getCustomer().getName());
-        dto.setCustomerEmail(booking.getCustomer().getEmail());
-        dto.setCheckInDate(LocalDate.from(booking.getCheckInDate().getValue()));
-        dto.setCheckOutDate(LocalDate.from(booking.getCheckOutDate().getValue()));
-        dto.setTotalAmount(booking.getTotalPrice().getAmount());
-        dto.setStatus(booking.getStatus().name());
-        dto.setCreatedAt(LocalDateTime.now()); // Có thể cần thêm trường này vào entity
-        dto.setUpdatedAt(LocalDateTime.now()); // Có thể cần thêm trường này vào entity
-
-        // Set room information if available
-        if (booking.getBookingRooms() != null && !booking.getBookingRooms().isEmpty()) {
-            dto.setRoomId(booking.getBookingRooms().get(0).getRoom().getId().getValue());
-            dto.setRoomNumber(booking.getBookingRooms().get(0).getRoom().getRoomNumber());
-            // Room type not available in current Room entity
-        }
-
-        return dto;
+    private Room roomEntityToRoom(com.poly.booking.management.dao.room.entity.RoomEntity roomEntity) {
+        return Room.Builder.builder()
+                .id(new RoomId(roomEntity.getId()))
+                .roomNumber(roomEntity.getRoomNumber())
+                .basePrice(new Money(roomEntity.getPrice()))
+                .status((roomEntity.getStatus()))
+                .build();
     }
 
     private Customer customerEntityToCustomer(UUID customerId) {
@@ -61,7 +54,7 @@ public class BookingDataAccessMapper {
     }
 
     public BookingEntity toEntity(Booking booking) {
-        return BookingEntity.builder()
+        BookingEntity bookingEntity = BookingEntity.builder()
                 .id(booking.getId().getValue())
                 .customerId(booking.getCustomer().getId().getValue())
                 .checkIn(booking.getCheckInDate().getValue())
@@ -71,16 +64,18 @@ public class BookingDataAccessMapper {
                 .totalPrice(booking.getTotalPrice().getAmount())
                 .status(booking.getStatus().name())
                 .trackingId(booking.getTrackingId().getValue())
+                .bookingRooms(booking.getBookingRooms().stream()
+                        .map(bookingRoomDataAccessMapper::toRoomEntity)
+                        .toList())
                 .build();
+
+        if (bookingEntity.getBookingRooms() != null) {
+            bookingEntity.getBookingRooms().forEach(bookingRoomEntity -> {
+                bookingRoomEntity.setBooking(bookingEntity);
+            });
+        }
+
+        return bookingEntity;
     }
 
-    private CustomerEntity customerToCustomerEntity(Customer customer) {
-        return CustomerEntity.builder()
-                .id(customer.getId().getValue())
-                .email(customer.getEmail())
-                .username(customer.getUsername())
-                .firstName(customer.getName().split(" ")[0])
-                .lastName(customer.getName().split(" ")[1])
-                .build();
-    }
 }

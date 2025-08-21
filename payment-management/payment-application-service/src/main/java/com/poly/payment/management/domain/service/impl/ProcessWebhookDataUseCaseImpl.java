@@ -31,13 +31,12 @@ public class ProcessWebhookDataUseCaseImpl implements ProcessWebhookDataUseCase 
 
     private final InvoicePaymentRepository invoicePaymentRepository;
 
-    private final BookingPaymentReplyPublisher bookingPaymentReplyPublisher;
 
-    public ProcessWebhookDataUseCaseImpl(PaymentRepository paymentRepository, InvoiceRepository invoiceRepository, InvoicePaymentRepository invoicePaymentRepository, BookingPaymentReplyPublisher bookingPaymentReplyPublisher) {
+
+    public ProcessWebhookDataUseCaseImpl(PaymentRepository paymentRepository, InvoiceRepository invoiceRepository, InvoicePaymentRepository invoicePaymentRepository) {
         this.paymentRepository = paymentRepository;
         this.invoiceRepository = invoiceRepository;
         this.invoicePaymentRepository = invoicePaymentRepository;
-        this.bookingPaymentReplyPublisher = bookingPaymentReplyPublisher;
     }
 
     @Override
@@ -85,33 +84,6 @@ public class ProcessWebhookDataUseCaseImpl implements ProcessWebhookDataUseCase 
         }
 
         paymentRepository.save(payment);
-        log.info("Payment {}: {} description {}", payment.getId().getValue(), payment.getStatus(), payment.getDescription().getValue());
-        if (payment.getDescription().getValue().contains("deposit")) {
-            BookingPaymentResponse message = createBookingPaymentResponse(payment);
-            log.info("Payment {}: {}", payment.getId().getValue(), message);
-            bookingPaymentReplyPublisher.publishBookingPaymentReply(message);
-            log.info("Payment {}: published", payment.getId().getValue());
-        }
-
-
-        //publish(message);
     }
 
-    private BookingPaymentResponse createBookingPaymentResponse(Payment payment) {
-        return BookingPaymentResponse.builder()
-                .paymentId(payment.getId().getValue().toString())
-                .price(payment.getAmount().getValue())
-                .bookingId(payment.getReferenceId().toString())
-                .id(UUID.randomUUID().toString())
-                .createdAt(Instant.ofEpochSecond(payment.getCreatedAt().getSecond()))
-                .failureMessages(List.of(payment.getStatus().name()))
-                .paymentStatus(exchangePaymentStatus(payment.getStatus()))
-                .build();
-    }
-
-    private com.poly.payment.management.domain.message.PaymentStatus exchangePaymentStatus(PaymentStatus paymentStatus) {
-        return paymentStatus == PaymentStatus.PAID ?
-                com.poly.payment.management.domain.message.PaymentStatus.COMPLETED :
-                com.poly.payment.management.domain.message.PaymentStatus.FAILED;
-    }
 }

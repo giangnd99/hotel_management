@@ -66,14 +66,14 @@ public class DepositSagaHelper {
     /**
      * Thực hiện business logic hoàn tất thanh toán
      *
-     * @param paymentResponse PaymentMessageResponse từ external service
+     * @param bookingId PaymentMessageResponse từ external service
      * @return BookingPaidEvent domain event
      */
-    public BookingDepositedEvent executePaymentCompletion(PaymentMessageResponse paymentResponse) {
-        log.info("Executing payment completion for booking: {}", paymentResponse.getBookingId());
+    public BookingDepositedEvent executePaymentCompletion(UUID bookingId) {
+        log.info("Executing payment completion for booking: {}", bookingId);
 
         // Thực hiện business logic thanh toán thông qua saga helper
-        return completePaymentForBooking(paymentResponse);
+        return completePaymentForBooking(bookingId);
     }
 
     /**
@@ -150,7 +150,7 @@ public class DepositSagaHelper {
         log.info("Executing payment rollback for booking: {}", paymentResponse.getBookingId());
 
         // Tìm booking entity
-        Booking booking = bookingSagaHelper.findBooking(paymentResponse.getBookingId());
+        Booking booking = bookingSagaHelper.findBooking(UUID.fromString(paymentResponse.getBookingId()));
 
         // Thực hiện cancel booking
         bookingDomainService.cancelBooking(booking);
@@ -281,12 +281,12 @@ public class DepositSagaHelper {
     /**
      * Thực hiện business logic hoàn tất thanh toán
      *
-     * @param data PaymentMessageResponse chứa thông tin thanh toán
+     * @param bookingId PaymentMessageResponse chứa thông tin thanh toán
      * @return BookingPaidEvent domain event
      */
-    public BookingDepositedEvent completePaymentForBooking(PaymentMessageResponse data) {
-        log.info("Completing payment for booking with id: {}", data.getBookingId());
-        Booking booking = bookingSagaHelper.findBooking(data.getBookingId());
+    public BookingDepositedEvent completePaymentForBooking(UUID bookingId) {
+        log.info("Completing payment for booking with id: {}", bookingId);
+        Booking booking = bookingSagaHelper.findBooking(bookingId);
         BookingDepositedEvent domainEvent = bookingDomainService.depositBooking(booking);
         bookingRepository.save(booking);
         return domainEvent;

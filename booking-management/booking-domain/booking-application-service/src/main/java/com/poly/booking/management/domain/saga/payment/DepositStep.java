@@ -3,14 +3,18 @@ package com.poly.booking.management.domain.saga.payment;
 
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.event.BookingDepositedEvent;
+import com.poly.booking.management.domain.exception.BookingDomainException;
 import com.poly.booking.management.domain.outbox.model.PaymentOutboxMessage;
 import com.poly.booking.management.domain.message.reponse.PaymentMessageResponse;
+import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.domain.valueobject.PaymentStatus;
 import com.poly.saga.SagaStep;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -21,6 +25,7 @@ public class DepositStep implements SagaStep<PaymentMessageResponse> {
 
     // Business logic services
     private final DepositSagaHelper depositSagaHelper;
+    private final BookingRepository bookingRepository;
 
     // ==================== SAGA STEP IMPLEMENTATION ====================
 
@@ -48,17 +53,9 @@ public class DepositStep implements SagaStep<PaymentMessageResponse> {
     public void process(PaymentMessageResponse paymentResponse) {
         log.info("Processing deposit payment for saga id: {}", paymentResponse.getSagaId());
 
-        // Step 1: Validate outbox message to prevent duplicate processing
-        PaymentOutboxMessage outboxMessage = depositSagaHelper.validateAndGetPaymentOutboxMessage(paymentResponse);
-        if (outboxMessage == null) {
-            return; // Already processed
-        }
 
         // Step 2: Execute business logic - complete payment
-        BookingDepositedEvent domainEvent = depositSagaHelper.executePaymentCompletion(paymentResponse);
-
-        // Step 3: Update saga status and save payment outbox message
-        depositSagaHelper.updatePaymentOutboxMessage(outboxMessage, domainEvent);
+        BookingDepositedEvent domainEvent = depositSagaHelper.executePaymentCompletion(UUID.fromString(paymentResponse.getBookingId()));
 
         // Step 4: Trigger next step - room reservation
         depositSagaHelper.triggerRoomReservationStep(domainEvent, paymentResponse.getSagaId());

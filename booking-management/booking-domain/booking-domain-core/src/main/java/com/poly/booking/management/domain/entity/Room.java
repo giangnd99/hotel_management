@@ -5,16 +5,17 @@ import com.poly.domain.entity.BaseEntity;
 import com.poly.domain.valueobject.RoomStatus;
 import com.poly.domain.valueobject.Money;
 import com.poly.domain.valueobject.RoomId;
-import lombok.*;
 
-@Getter
-@Setter
-@AllArgsConstructor
+import java.util.List;
+
+
 public class Room extends BaseEntity<RoomId> {
 
     private String roomNumber;
     private Money basePrice;
     private RoomStatus status;
+
+    private List<BookingRoom> bookingRooms;
 
     public Room(RoomId roomId, String roomNumber, Money basePrice, RoomStatus status) {
         super.setId(roomId);
@@ -25,9 +26,9 @@ public class Room extends BaseEntity<RoomId> {
 
     private Room(Builder builder) {
         super.setId(builder.id);
-        setRoomNumber(builder.roomNumber);
-        setBasePrice(builder.basePrice);
-        setStatus(builder.status);
+        roomNumber = (builder.roomNumber);
+        basePrice = (builder.basePrice);
+        status = (builder.status);
     }
 
     public boolean checkAvailableRoom() {
@@ -40,11 +41,9 @@ public class Room extends BaseEntity<RoomId> {
         this.status = RoomStatus.BOOKED;
     }
 
-    @Override
-    public String toString() {
-        return String.format("Phòng %s (%s)  - Giá: %.2f", roomNumber, basePrice);
+    public void setBookingRooms(List<BookingRoom> bookingRooms) {
+        this.bookingRooms = bookingRooms;
     }
-
     public void setRoomNumber(String roomNumber) {
         this.roomNumber = roomNumber;
     }
@@ -59,6 +58,14 @@ public class Room extends BaseEntity<RoomId> {
 
     public Money getBasePrice() {
         return basePrice;
+    }
+
+    public RoomStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(RoomStatus status) {
+        this.status = status;
     }
 
     public static final class Builder {

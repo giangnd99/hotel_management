@@ -6,11 +6,15 @@ import com.poly.booking.management.dao.booking.repository.BookingJpaRepository;
 import com.poly.booking.management.domain.entity.Booking;
 
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.Transient;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.time.LocalDate;
@@ -28,14 +32,18 @@ public class BookingRepositoryImpl implements BookingRepository {
 
     @Override
     public Booking save(Booking booking) {
-        BookingEntity entity = bookingJpaRepository.save(bookingDataAccessMapper.toEntity(booking));
-        return bookingDataAccessMapper.toDomainEntity(entity);
+        BookingEntity entity = bookingDataAccessMapper.toEntity(booking);
+        BookingEntity bookingSaved = bookingJpaRepository.save(entity);
+        return bookingDataAccessMapper.toDomainEntity(bookingSaved);
     }
 
     @Override
+    @Transactional
     public Optional<Booking> findById(UUID bookingId) {
-        return bookingJpaRepository.findById(bookingId)
-                .map(bookingDataAccessMapper::toDomainEntity);
+        BookingEntity bookingEntity = bookingJpaRepository.findById(bookingId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking not found"));
+        Hibernate.initialize(bookingEntity.getBookingRooms());
+        return Optional.ofNullable(bookingDataAccessMapper.toDomainEntity(bookingEntity));
     }
 
     @Override
@@ -73,11 +81,11 @@ public class BookingRepositoryImpl implements BookingRepository {
     }
 
     @Override
-    public List<Booking> searchBookings(UUID customerId, String roomNumber,
+    public List<Booking> searchBookings(UUID customerId, UUID roomId,
                                         LocalDate checkInDate, LocalDate checkOutDate, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<BookingEntity> bookingPage = bookingJpaRepository.searchBookings(
-                customerId, roomNumber, checkInDate, checkOutDate, pageable);
+                customerId, roomId, checkInDate, checkOutDate, pageable);
         return bookingPage.getContent().stream()
                 .map(bookingDataAccessMapper::toDomainEntity)
                 .collect(Collectors.toList());

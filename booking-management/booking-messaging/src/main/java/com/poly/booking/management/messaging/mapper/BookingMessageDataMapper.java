@@ -1,6 +1,7 @@
 package com.poly.booking.management.messaging.mapper;
 
 import com.poly.booking.management.domain.kafka.model.*;
+import com.poly.booking.management.domain.kafka.model.PaymentStatus;
 import com.poly.booking.management.domain.message.reponse.BookingPaymentPendingResponse;
 import com.poly.booking.management.domain.outbox.payload.ReservedEventPayload;
 import com.poly.booking.management.domain.message.reponse.CustomerCreatedMessageResponse;
@@ -11,7 +12,6 @@ import com.poly.booking.management.domain.outbox.payload.PaymentEventPayload;
 import com.poly.booking.management.domain.outbox.payload.RoomEventPayload;
 import com.poly.booking.management.domain.outbox.payload.NotifiEventPayload;
 import com.poly.domain.valueobject.*;
-import com.poly.domain.valueobject.PaymentStatus;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -41,7 +41,16 @@ public class BookingMessageDataMapper {
 
     public PaymentMessageResponse paymentResponseAvroToPayment(BookingPaymentResponseAvro bookingPaymentResponseAvro) {
 
-        return PaymentMessageResponse.builder().id(bookingPaymentResponseAvro.getId()).bookingId(bookingPaymentResponseAvro.getBookingId()).paymentId(bookingPaymentResponseAvro.getPaymentId()).price(bookingPaymentResponseAvro.getPrice()).createdAt(bookingPaymentResponseAvro.getCreatedAt()).customerId(bookingPaymentResponseAvro.getCustomerId()).sagaId(bookingPaymentResponseAvro.getSagaId()).paymentStatus(PaymentStatus.valueOf(bookingPaymentResponseAvro.getPaymentStatus().name())).failureMessages(bookingPaymentResponseAvro.getFailureMessages()).build();
+        return PaymentMessageResponse.builder()
+                .id(bookingPaymentResponseAvro.getId())
+                .bookingId(bookingPaymentResponseAvro.getBookingId())
+                .paymentId(bookingPaymentResponseAvro.getPaymentId())
+                .price(bookingPaymentResponseAvro.getPrice())
+                .createdAt(bookingPaymentResponseAvro.getCreatedAt())
+                .customerId(bookingPaymentResponseAvro.getCustomerId())
+                .sagaId(bookingPaymentResponseAvro.getSagaId())
+                .paymentStatus(bookingPaymentResponseAvro.getPaymentStatus().equals(PaymentStatus.COMPLETED) ? com.poly.domain.valueobject.PaymentStatus.PAID : com.poly.domain.valueobject.PaymentStatus.FAILED)
+                .failureMessages(bookingPaymentResponseAvro.getFailureMessages()).build();
     }
 
     public RoomMessageResponse bookingRoomAvroToRoom(BookingRoomResponseAvro bookingRoomResponseAvro) {

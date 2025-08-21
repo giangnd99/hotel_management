@@ -1,5 +1,6 @@
 package com.poly.booking.management.domain.entity;
 
+import com.poly.booking.management.domain.exception.BookingDomainException;
 import com.poly.domain.valueobject.Money;
 import com.poly.domain.valueobject.RoomId;
 
@@ -33,7 +34,14 @@ public class RoomManagement {
                     }
                 }
         );
-        return updatedRooms;
+        if (availableRooms.isEmpty()) {
+            throw new BookingDomainException("No room found");
+        }
+        if (availableRooms.size() == requestedRooms.size()) {
+            return updatedRooms;
+        }
+        throw new BookingDomainException("Not enough room available");
+
     }
 
     private HashMap<RoomId, Room> getRoomMapById() {

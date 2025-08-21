@@ -4,6 +4,7 @@ import com.poly.booking.management.domain.entity.*;
 import com.poly.booking.management.domain.event.*;
 import com.poly.booking.management.domain.service.BookingDomainService;
 import com.poly.booking.management.domain.valueobject.BookingRoomId;
+import com.poly.domain.valueobject.BookingId;
 import com.poly.domain.valueobject.DateCustom;
 import com.poly.domain.valueobject.RoomId;
 import lombok.extern.slf4j.Slf4j;
@@ -31,21 +32,18 @@ public class BookingDomainServiceImpl implements BookingDomainService {
         setBookingRoom(booking, roomUpdated);
         booking.updateAndValidateTotalPrice();
         booking.initiateBooking();
+
         log.info("Booking created with id: {}", booking.getId().getValue());
         return new BookingCreatedEvent(booking, DateCustom.now());
     }
 
     private void setBookingRoom(Booking booking, List<Room> roomUpdated) {
         List<BookingRoom> bookingRooms = roomUpdated.stream().map(
-                room -> {
-                    BookingRoom bookingRoom = BookingRoom.builder()
-                            .booking(booking)
-                            .room(room)
-                            .price(room.getBasePrice())
-                            .build();
-                    bookingRoom.setId(new BookingRoomId(UUID.randomUUID()));
-                    return bookingRoom;
-                }).toList();
+                room -> BookingRoom.Builder.builder()
+                        .room(room)
+                        .price(room.getBasePrice())
+                        .build()
+        ).toList();
         booking.setBookingRooms(bookingRooms);
     }
 

@@ -24,7 +24,7 @@ public interface BookingRepository {
     void deleteById(UUID bookingId);
     
     // Search & Filter
-    List<Booking> searchBookings(UUID customerName , String roomNumber,
+    List<Booking> searchBookings(UUID customerName , UUID roomId,
                                 LocalDate checkInDate, LocalDate checkOutDate, int page, int size);
     List<Booking> filterBookingsByStatus(String status, int page, int size);
     List<Booking> filterBookingsByDateRange(LocalDate fromDate, LocalDate toDate, int page, int size);

@@ -37,6 +37,7 @@ public class BookingCreateHelper {
     private final RoomRepository roomRepository;
     private final BookingDomainService bookingDomainService;
 
+
     public List<Room> getRooms() {
         List<RoomResponse> allRooms = roomClient.getAllRooms().getBody();
         if (allRooms == null) {
@@ -44,26 +45,14 @@ public class BookingCreateHelper {
             throw new BookingDomainException("Could not get all rooms! Please check the server status and try again later!");
         }
         return allRooms.stream().map(roomResponse ->
-                new Room(new RoomId(UUID.fromString(roomResponse.getId())), roomResponse.getRoomNumber(),
+                new Room(new RoomId(UUID.fromString(roomResponse.getId())),
+                        roomResponse.getRoomNumber(),
                         Money.from(roomResponse.getRoomType().getBasePrice()),
                         RoomStatus.valueOf(roomResponse.getRoomStatus()))).toList();
     }
 
-    public void checkCustomer(String customerId) {
-        if (customerId == null) {
-            log.error("Customer id is null!");
-            throw new BookingDomainException("Customer id is null! Please check the server status and try again later!");
-        }
-        if (customerId.isBlank()) {
-            log.error("Customer id is blank!");
-            throw new BookingDomainException("Customer id is blank! Please check the server status and try again later!");
-        }
-        if (!UUID.fromString(customerId).toString().equals(customerId)) {
-            log.error("Customer id is not a valid UUID!");
-        }
-    }
-
     public void saveBooking(Booking booking) {
+
         Booking savedBooking = bookingRepository.save(booking);
         if (savedBooking == null) {
             log.error("Could not save booking with id: {}! Please check the server status and try again later!", booking.getId().getValue());
@@ -75,13 +64,14 @@ public class BookingCreateHelper {
     public Booking initAndValidateBookingCreatedEvent(CreateBookingRequest request, Customer customer) {
         List<RoomId> roomsRequest = request.getListRoomId().stream().map(RoomId::new).toList();
         List<Room> allRooms = getRooms();
-
+        allRooms.forEach(roomRepository::save);
         Booking booking = Booking.Builder.builder()
                 .checkInDate(DateCustom.of(LocalDateTime.of(request.getCheckInDate(), LocalTime.now())))
                 .checkOutDate(DateCustom.of(LocalDateTime.of(request.getCheckOutDate(), LocalTime.now())))
                 .build();
-        bookingDomainService.validateAndInitiateBooking(booking, roomsRequest, allRooms);
         booking.setCustomer(customer);
+        bookingDomainService.validateAndInitiateBooking(booking, roomsRequest, allRooms);
+
         saveBooking(booking);
         return booking;
     }

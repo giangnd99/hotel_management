@@ -31,7 +31,7 @@ CREATE TABLE booking.bookings
     check_out TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     actual_check_in TIMESTAMP WITHOUT TIME ZONE,
     actual_check_out TIMESTAMP WITHOUT TIME ZONE,
-    tracking_id uuid NOT NULL,
+    tracking_id uuid ,
     total_price numeric(10,2) NOT NULL,
     status booking_status NOT NULL,
     CONSTRAINT bookings_pkey PRIMARY KEY (id),
@@ -49,10 +49,8 @@ CREATE TABLE booking.rooms
 (
     id uuid NOT NULL,
     room_number varchar NOT NULL,
-    description varchar NOT NULL,
     price numeric(10,2) NOT NULL,
     status varchar NOT NULL,
-    capacity integer NULL,
     CONSTRAINT rooms_pkey PRIMARY KEY (id)
 );
 
@@ -65,9 +63,8 @@ CREATE TABLE booking.booking_room
     booking_id uuid NOT NULL,
     room_id uuid NOT NULL,
     price numeric(10,2) NOT NULL,
-    CONSTRAINT booking_room_pkey PRIMARY KEY (id),
-    CONSTRAINT FK_BOOKING_ID FOREIGN KEY (booking_id) REFERENCES booking.bookings (id) ON DELETE CASCADE,
-    CONSTRAINT FK_ROOM_ID FOREIGN KEY (room_id) REFERENCES booking.rooms (id)
+    CONSTRAINT booking_room_pkey PRIMARY KEY (id,booking_id),
+    CONSTRAINT FK_BOOKING_ID FOREIGN KEY (booking_id) REFERENCES booking.bookings (id) MATCH SIMPLE ON DELETE CASCADE  ON UPDATE NO ACTION
 );
 
 CREATE INDEX booking_room_booking_id ON booking.booking_room (booking_id);

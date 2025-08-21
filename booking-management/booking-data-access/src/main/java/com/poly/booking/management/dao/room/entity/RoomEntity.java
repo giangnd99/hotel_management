@@ -1,9 +1,11 @@
 package com.poly.booking.management.dao.room.entity;
 
 import com.poly.booking.management.dao.booking.entity.BookingRoomEntity;
+import com.poly.domain.valueobject.RoomStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,14 +24,10 @@ public class RoomEntity {
 
     private String roomNumber;
 
-    private String description;
+    private BigDecimal price;
 
-    private int price;
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "room_status")
+    private RoomStatus status;
 
-    private String status;
-
-    @OneToMany(mappedBy = "room",cascade = jakarta.persistence.CascadeType.ALL)
-    List<BookingRoomEntity> bookingRooms;
-
-    private int capacity;
 }

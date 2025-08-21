@@ -19,6 +19,7 @@ import com.poly.domain.valueobject.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,6 +42,7 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public BookingStatisticsDto getTodayBookingStatistics() {
         Long totalBookings = bookingRepository.countTodayBookings();
         Long successfulBookings = bookingRepository.countTodayBookingsByStatus("CONFIRMED");
@@ -64,26 +66,31 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Integer getTodayBookingCount() {
         return bookingRepository.countTodayBookings().intValue();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Integer getTodayBookingSuccessCount() {
         return bookingRepository.countTodayBookingsByStatus("CONFIRMED").intValue();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Integer getTodayBookingPendingCount() {
         return bookingRepository.countTodayBookingsByStatus("PENDING").intValue();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Integer getTodayBookingCancelCount() {
         return bookingRepository.countTodayBookingsByStatus("CANCELLED").intValue();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingDto> getAllBookings(int page, int size) {
         List<Booking> bookings = bookingRepository.findAll(page, size);
         return bookings.stream()
@@ -92,28 +99,28 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<BookingDto> getBookingById(UUID bookingId) {
         return bookingRepository.findById(bookingId)
                 .map(this::mapToDto);
     }
 
     @Override
+    @Transactional
     public BookingDto createBooking(CreateBookingRequest request) {
-        Optional<Customer> customerOpt = customerRepository.findByEmail(request.getCustomerEmail());
-        Customer customer = null;
-        if (customerOpt.isEmpty()) {
-            CustomerDto response = customerClient.getCustomerById(request.getCustomerId());
-            if (response != null) {
-                customer = mapToCustomer(response);
-                customer.setEmail(request.getCustomerEmail());
-                customer.setUsername(request.getCustomerEmail());
-                customer = customerRepository.save(customer);
-            } else {
-                log.error("Customer not found!");
-                throw new RuntimeException("Customer not found!");
-            }
-        }
-        customer = customerOpt.orElse(customer);
+
+        Customer customer = customerRepository.findByEmail(request.getCustomerEmail())
+                .orElseGet(() -> {
+                    CustomerDto response = customerClient.getCustomerById(request.getCustomerId());
+                    if (response == null) {
+                        log.error("Customer not found!");
+                        throw new RuntimeException("Customer not found!");
+                    }
+                    Customer newCustomer = mapToCustomer(response);
+                    newCustomer.setEmail(request.getCustomerEmail());
+                    newCustomer.setUsername(request.getCustomerEmail());
+                    return customerRepository.save(newCustomer);
+                });
 
         Booking booking = bookingCreateHelper.initAndValidateBookingCreatedEvent(request, customer);
 
@@ -132,6 +139,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingDto updateBooking(UUID bookingId, UpdateBookingRequest request) {
         Booking existingBooking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
@@ -165,21 +173,24 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public void deleteBooking(UUID bookingId) {
         bookingRepository.deleteById(bookingId);
     }
 
     @Override
-    public List<BookingDto> searchBookings(UUID customerId, String roomNumber,
+    @Transactional(readOnly = true)
+    public List<BookingDto> searchBookings(UUID customerId, UUID roomId,
                                            LocalDate checkInDate, LocalDate checkOutDate, int page, int size) {
         List<Booking> bookings = bookingRepository.searchBookings(
-                customerId, roomNumber, checkInDate, checkOutDate, page, size);
+                customerId, roomId, checkInDate, checkOutDate, page, size);
         return bookings.stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingDto> filterBookingsByStatus(String status, int page, int size) {
         List<Booking> bookings = bookingRepository.filterBookingsByStatus(status, page, size);
         return bookings.stream()
@@ -188,6 +199,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingDto> filterBookingsByDateRange(LocalDate fromDate, LocalDate toDate, int page, int size) {
         List<Booking> bookings = bookingRepository.filterBookingsByDateRange(fromDate, toDate, page, size);
         return bookings.stream()
@@ -196,6 +208,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingDto> getBookingsByCustomerId(UUID customerId, int page, int size) {
         List<Booking> bookings = bookingRepository.findBookingsByCustomerId(customerId, page, size);
         return bookings.stream()
@@ -204,6 +217,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingDto> getCustomerBookingHistory(UUID customerId, int page, int size) {
         List<Booking> bookings = bookingRepository.findCustomerBookingHistory(customerId, page, size);
         return bookings.stream()
@@ -223,6 +237,7 @@ public class BookingServiceImpl implements BookingService {
 //    }
 
     @Override
+    @Transactional(readOnly = true)
     public BookingDto cancelBooking(UUID bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
@@ -233,6 +248,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BookingDto confirmBooking(UUID bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
@@ -243,6 +259,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BookingDto checkInBooking(UUID bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
@@ -253,6 +270,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BookingDto checkOutBooking(UUID bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
@@ -263,6 +281,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public String getBookingPaymentStatus(UUID bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
@@ -271,6 +290,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public DepositBookingResponse confirmBookingPayment(UUID bookingId) {
         log.info("Confirming booking payment for booking id: {}", bookingId);
         return depositBookingCommand.depositBooking(bookingId);

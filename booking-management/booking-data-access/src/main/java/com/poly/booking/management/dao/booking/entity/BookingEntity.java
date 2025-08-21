@@ -29,7 +29,7 @@ public class BookingEntity {
     private LocalDateTime checkOut;
     private LocalDateTime actualCheckIn;
     private LocalDateTime actualCheckOut;
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL,fetch = FetchType.LAZY,targetEntity = BookingRoomEntity.class, orphanRemoval = true)
     private List<BookingRoomEntity> bookingRooms;
     @Column(columnDefinition = "uuid",updatable = false)
     private UUID trackingId;

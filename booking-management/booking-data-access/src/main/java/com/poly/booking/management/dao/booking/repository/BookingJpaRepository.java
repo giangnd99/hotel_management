@@ -34,11 +34,11 @@ public interface BookingJpaRepository extends JpaRepository<BookingEntity, UUID>
     // Search & Filter
     @Query("SELECT b FROM BookingEntity b WHERE " +
             "(:customerId IS NULL OR b.customerId = :customerId) " +
-            "AND (:roomNumber IS NULL OR EXISTS (SELECT br FROM BookingRoomEntity br WHERE br.booking = b AND br.room.roomNumber LIKE CONCAT('%', :roomNumber, '%'))) " +
+            "AND (:roomId IS NULL OR EXISTS (SELECT br FROM BookingRoomEntity br WHERE br.booking = b AND br.roomId = :roomId)) " +
             "AND (:checkInDate IS NULL OR DATE(b.checkIn) = :checkInDate) " +
             "AND (:checkOutDate IS NULL OR DATE(b.checkOut) = :checkOutDate)")
     Page<BookingEntity> searchBookings(@Param("customerId") UUID customerId,
-                                       @Param("roomNumber") String roomNumber,
+                                       @Param("roomId") UUID roomId,
                                        @Param("checkInDate") LocalDate checkInDate,
                                        @Param("checkOutDate") LocalDate checkOutDate,
                                        Pageable pageable);

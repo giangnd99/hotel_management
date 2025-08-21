@@ -124,14 +124,14 @@ public class BookingController {
     @Operation(summary = "Tìm kiếm booking")
     public ResponseEntity<List<BookingDto>> searchBookings(
             @RequestParam(required = false) UUID customerId,
-            @RequestParam(required = false) String roomNumber,
+            @RequestParam(required = false) UUID roomId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         log.info("Searching bookings with filters");
         List<BookingDto> bookings = bookingService.searchBookings(
-                customerId, roomNumber, checkInDate, checkOutDate, page, size);
+                customerId, roomId, checkInDate, checkOutDate, page, size);
         return ResponseEntity.ok(bookings);
     }
 
