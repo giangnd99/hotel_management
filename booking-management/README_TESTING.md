@@ -8,7 +8,7 @@ Hệ thống quản lý đặt phòng khách sạn với đầy đủ các API e
 ### 1. Khởi động Database
 ```bash
 # Chạy script tạo schema
-psql -U your_username -d your_database -f init-schema.sql
+psql -U your_username -d your_database -f schema.sql
 
 # Chạy script insert data mẫu
 psql -U your_username -d your_database -f sample-data.sql

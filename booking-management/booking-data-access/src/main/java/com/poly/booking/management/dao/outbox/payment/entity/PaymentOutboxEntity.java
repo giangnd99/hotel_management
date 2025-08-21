@@ -18,7 +18,9 @@ import java.util.UUID;
 public class PaymentOutboxEntity {
 
     @Id
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID id;
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID sagaId;
     private LocalDateTime createdAt;
     private LocalDateTime processedAt;

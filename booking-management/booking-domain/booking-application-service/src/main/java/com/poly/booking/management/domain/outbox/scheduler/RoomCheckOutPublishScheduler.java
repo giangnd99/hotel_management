@@ -3,6 +3,7 @@ package com.poly.booking.management.domain.outbox.scheduler;
 import com.poly.booking.management.domain.outbox.model.RoomOutboxMessage;
 import com.poly.booking.management.domain.outbox.service.RoomOutboxService;
 import com.poly.booking.management.domain.port.out.message.publisher.RoomCheckOutMessagePublisher;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.outbox.OutboxScheduler;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;
@@ -65,20 +66,22 @@ public class RoomCheckOutPublishScheduler implements OutboxScheduler {
                 roomOutboxService.getRoomOutboxMessageByBookingIdAndStatus(
                         OutboxStatus.STARTED,
                         SagaStatus.PROCESSING);
-        
-        if (outboxMessagesResponse.isPresent() && outboxMessagesResponse.get().size() > 0) {
+
+        if (outboxMessagesResponse.isPresent() && !outboxMessagesResponse.get().isEmpty()) {
             List<RoomOutboxMessage> outboxMessages = outboxMessagesResponse.get();
-            
-            log.info("Received {} RoomCheckOutOutboxMessage with ids: {}, sending to message bus!",
-                    outboxMessages.size(),
-                    outboxMessages.stream().map(outboxMessage ->
-                            outboxMessage.getId().toString()).collect(Collectors.joining(",")));
-            
-            // Gửi từng message đến Kafka topic
-            outboxMessages.forEach(outboxMessage ->
-                    roomCheckOutMessagePublisher.sendRoomCheckOutRequest(outboxMessage, this::updateOutboxStatus));
-            
-            log.info("{} RoomCheckOutOutboxMessage sent to message bus!", outboxMessages.size());
+            outboxMessages.stream().filter(outboxMessage -> outboxMessage.getBookingStatus().equals(BookingStatus.CHECKED_OUT)).toList();
+            if (!outboxMessages.isEmpty()) {
+                log.info("Received {} RoomCheckOutOutboxMessage with ids: {}, sending to message bus!",
+                        outboxMessages.size(),
+                        outboxMessages.stream().map(outboxMessage ->
+                                outboxMessage.getId().toString()).collect(Collectors.joining(",")));
+
+                // Gửi từng message đến Kafka topic
+                outboxMessages.forEach(outboxMessage ->
+                        roomCheckOutMessagePublisher.sendRoomCheckOutRequest(outboxMessage, this::updateOutboxStatus));
+
+                log.info("{} RoomCheckOutOutboxMessage sent to message bus!", outboxMessages.size());
+            }
         }
     }
 
@@ -88,7 +91,7 @@ public class RoomCheckOutPublishScheduler implements OutboxScheduler {
      * Được gọi sau khi message được gửi thành công hoặc thất bại
      *
      * @param roomOutboxMessage Outbox message cần cập nhật
-     * @param outboxStatus     Trạng thái mới của outbox message
+     * @param outboxStatus      Trạng thái mới của outbox message
      */
     private void updateOutboxStatus(RoomOutboxMessage roomOutboxMessage, OutboxStatus outboxStatus) {
         roomOutboxMessage.setOutboxStatus(outboxStatus);

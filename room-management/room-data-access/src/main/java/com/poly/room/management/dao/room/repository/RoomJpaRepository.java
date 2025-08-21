@@ -15,7 +15,6 @@ import java.util.UUID;
 
 @Repository
 public interface RoomJpaRepository extends JpaRepository<RoomEntity, UUID> {
-
     // Basic CRUD operations
     Optional<RoomEntity> findByRoomNumber(String roomNumber);
     boolean existsByRoomNumber(String roomNumber);

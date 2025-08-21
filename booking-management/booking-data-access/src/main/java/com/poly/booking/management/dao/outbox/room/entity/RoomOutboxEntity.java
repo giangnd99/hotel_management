@@ -18,8 +18,10 @@ import java.util.UUID;
 @Entity
 public class RoomOutboxEntity {
     @Id
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID id;
     private UUID sagaId;
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID bookingId;
     private LocalDateTime createdAt;
     private LocalDateTime processedAt;

@@ -74,7 +74,7 @@ public class NotificationSagaHelper {
      * @throws RuntimeException nếu booking không tồn tại hoặc trạng thái không hợp lệ
      */
     public Booking findBookingAndValidateStatus(String bookingId) {
-        Booking booking = bookingRepository.findById(new BookingId(UUID.fromString(bookingId)))
+        Booking booking = bookingRepository.findById(UUID.fromString(bookingId))
                 .orElseThrow(() -> new RuntimeException("Booking not found: " + bookingId));
 
         // Validate booking status - chỉ cho phép check-in từ CONFIRMED status
@@ -173,7 +173,7 @@ public class NotificationSagaHelper {
         log.info("Triggering next saga step for booking id: {}", booking.getId().getValue());
         CheckInEvent domainEvent = bookingDomainService.checkInBooking(booking);
         roomOutboxService.saveRoomOutboxMessage(
-                roomDataMapper.bookingCheckInEventToRoomBookedEventPayload(domainEvent),
+                roomDataMapper.bookingCheckInEventToRoomBookedEventPayload(domainEvent.getBooking()),
                 domainEvent.getBooking().getStatus(),
                 bookingSagaHelper.bookingStatusToSagaStatus(domainEvent.getBooking().getStatus()),
                 OutboxStatus.STARTED,
@@ -193,7 +193,7 @@ public class NotificationSagaHelper {
         log.info("Performing rollback business logic for booking: {}", data.getBookingId());
 
         // Tìm booking và revert status
-        Booking booking = bookingRepository.findById(new BookingId(UUID.fromString(data.getBookingId())))
+        Booking booking = bookingRepository.findById(UUID.fromString(data.getBookingId()))
                 .orElseThrow(() -> new RuntimeException("Booking not found for rollback: " + data.getBookingId()));
 
         // Revert booking status từ CHECKED_IN về CONFIRMED

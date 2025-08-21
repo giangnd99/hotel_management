@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class NotificationPublishScheduler implements OutboxScheduler {
+public class
+NotificationPublishScheduler implements OutboxScheduler {
 
     private final NotificationOutboxService notificationOutboxService;
     private final NotificationRequestMessagePublisher publish;

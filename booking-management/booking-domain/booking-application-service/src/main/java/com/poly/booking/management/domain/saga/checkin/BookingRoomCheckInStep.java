@@ -30,7 +30,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class BookingCheckInStep {
+public class BookingRoomCheckInStep {
 
     private final BookingCheckInDomainService bookingCheckInDomainService;
     private final BookingRepository bookingRepository;
@@ -53,7 +53,7 @@ public class BookingCheckInStep {
             // Tìm booking entity
             BookingId bookingId = new BookingId(UUID.fromString(notificationMessageResponse.getBookingId()));
             Optional<com.poly.booking.management.domain.entity.Booking> bookingOpt = 
-                    bookingRepository.findById(bookingId);
+                    bookingRepository.findById(bookingId.getValue());
 
             if (bookingOpt.isEmpty()) {
                 log.error("Booking not found for check-in: {}", notificationMessageResponse.getBookingId());
@@ -127,7 +127,7 @@ public class BookingCheckInStep {
             // Tìm booking entity
             BookingId bookingId = new BookingId(UUID.fromString(notificationMessageResponse.getBookingId()));
             Optional<com.poly.booking.management.domain.entity.Booking> bookingOpt = 
-                    bookingRepository.findById(bookingId);
+                    bookingRepository.findById(bookingId.getValue());
 
             if (bookingOpt.isEmpty()) {
                 log.error("Booking not found for pending check-in: {}", notificationMessageResponse.getBookingId());

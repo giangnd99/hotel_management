@@ -70,7 +70,7 @@ public class RoomSagaHelper {
         log.info("Executing room reservation for booking: {}", outboxMessage.getBookingId());
 
         // Tìm booking entity
-        Booking booking = bookingSagaHelper.findBooking(outboxMessage.getBookingId().toString());
+        Booking booking = bookingSagaHelper.findBooking(outboxMessage.getBookingId());
 
         // Thực hiện business logic confirm deposit
         BookingConfirmedEvent domainEvent = bookingDomainService.confirmBooking(booking);
@@ -152,7 +152,7 @@ public class RoomSagaHelper {
      */
     public void executeRollback(RoomOutboxMessage outboxMessage) {
         // Tìm booking entity
-        Booking booking = bookingSagaHelper.findBooking(outboxMessage.getBookingId().toString());
+        Booking booking = bookingSagaHelper.findBooking(outboxMessage.getBookingId());
 
         // Thực hiện cancel booking
         bookingDomainService.cancelBooking(booking);

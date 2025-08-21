@@ -18,13 +18,15 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "rooms")
 public class RoomEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     private UUID roomId;
 
-    @OneToOne(mappedBy = "room",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_type_id")
     private RoomTypeEntity roomType;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

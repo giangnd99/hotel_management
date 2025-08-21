@@ -60,6 +60,7 @@ public class RoomRequestKafkaPublisher implements RoomRequestReserveMessagePubli
 
         // Extract và parse thông tin từ outbox message
         ReservedEventPayload roomEventPayload = extractRoomEventPayload(roomOutboxMessage);
+
         String sagaId = extractSagaId(roomOutboxMessage);
 
         // Log thông tin bắt đầu xử lý

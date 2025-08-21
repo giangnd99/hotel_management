@@ -16,11 +16,10 @@ import java.util.UUID;
 public class CustomerEntity {
 
     @Id
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID id;
     private String username;
     private String firstName;
     private String lastName;
     private String email;
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
-    private BookingEntity booking;
 }
