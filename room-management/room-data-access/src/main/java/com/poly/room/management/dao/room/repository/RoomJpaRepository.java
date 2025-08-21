@@ -20,8 +20,8 @@ public interface RoomJpaRepository extends JpaRepository<RoomEntity, UUID> {
     boolean existsByRoomNumber(String roomNumber);
 
     // Room type queries
-    List<RoomEntity> findByRoomType_RoomTypeId(Integer roomTypeId);
-    Long countByRoomType_RoomTypeId(Integer roomTypeId);
+    List<RoomEntity> findByRoomType_RoomTypeId(UUID roomTypeId);
+    Long countByRoomType_RoomTypeId(UUID roomTypeId);
     
     // Floor queries
     List<RoomEntity> findByFloor(Integer floor);
@@ -30,7 +30,7 @@ public interface RoomJpaRepository extends JpaRepository<RoomEntity, UUID> {
     List<Integer> findAllDistinctFloors();
     
     // Pagination queries
-    Page<RoomEntity> findByRoomType_RoomTypeId(Integer roomTypeId, Pageable pageable);
+    Page<RoomEntity> findByRoomType_RoomTypeId(String roomTypeId, Pageable pageable);
     Page<RoomEntity> findByFloor(Integer floor, Pageable pageable);
     
     // Advanced search with pagination

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -18,7 +19,7 @@ public class CreateRoomRequest {
     private String roomNumber;
 
     @NotNull(message = "Room type ID is required")
-    private Integer roomTypeId;
+    private UUID roomTypeId;
 
     @NotNull(message = "Floor is required")
     @Min(value = 1, message = "Floor must be at least 1")

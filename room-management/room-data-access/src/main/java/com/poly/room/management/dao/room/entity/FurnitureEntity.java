@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @AllArgsConstructor
@@ -18,7 +19,8 @@ import java.util.List;
 public class FurnitureEntity {
 
     @Id
-    private Integer furnitureId;
+    @Column(columnDefinition = "uuid",updatable = false)
+    private UUID furnitureId;
 
     private String name;
 

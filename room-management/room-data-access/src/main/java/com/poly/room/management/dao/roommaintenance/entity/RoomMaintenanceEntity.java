@@ -21,6 +21,7 @@ import java.util.UUID;
 public class RoomMaintenanceEntity {
 
     @Id
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID id;
 
     @Column(name = "room_number", nullable = false, length = 10)
