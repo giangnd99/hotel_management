@@ -18,9 +18,10 @@ import java.util.UUID;
 public class RoomCleaningEntity {
 
     @Id
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID id;
 
-    @Column(name = "room_id", nullable = false)
+    @Column(name = "room_id", nullable = false, columnDefinition = "uuid",updatable = false)
     private UUID roomId;
 
     @Column(name = "room_number", nullable = false, length = 10)

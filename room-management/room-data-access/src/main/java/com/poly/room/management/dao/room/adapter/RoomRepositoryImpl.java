@@ -1,6 +1,7 @@
 package com.poly.room.management.dao.room.adapter;
 
 import com.poly.domain.valueobject.RoomStatus;
+import com.poly.room.management.dao.room.entity.RoomEntity;
 import com.poly.room.management.dao.room.repository.RoomJpaRepository;
 import com.poly.room.management.domain.entity.*;
 import com.poly.room.management.domain.exception.RoomDomainException;
@@ -10,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,28 +29,24 @@ public class RoomRepositoryImpl implements RoomRepository {
     // ========== BASIC CRUD OPERATIONS ==========
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<Room> findById(UUID id) {
         return jpaRepository.findById(id)
                 .map(roomMapper::toDomain);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<Room> findById(Long id) {
         return jpaRepository.findById(UUID.fromString(id.toString()))
                 .map(roomMapper::toDomain);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<Room> findByRoomNumber(String roomNumber) {
         return jpaRepository.findByRoomNumber(roomNumber)
                 .map(roomMapper::toDomain);
     }
 
     @Override
-    @Transactional
     public Room save(Room room) {
         UUID roomId = room.getId().getValue();
         checkRoomNotExists(roomId);
@@ -58,7 +54,6 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    @Transactional
     public Room update(Room room) {
         UUID roomId = room.getId().getValue();
         checkRoomExists(roomId);
@@ -66,13 +61,11 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    @Transactional
     public void delete(Room room) {
         jpaRepository.delete(roomMapper.toEntity(room));
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Room> findAll() {
         return jpaRepository.findAll().stream()
                 .map(roomMapper::toDomain)
@@ -82,9 +75,10 @@ public class RoomRepositoryImpl implements RoomRepository {
     // ========== PAGINATION ==========
 
     @Override
-    @Transactional(readOnly = true)
     public List<Room> findAllWithPagination(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
+        List<RoomEntity> roomList = jpaRepository.findAll();
+        List<Room> domain = roomList.stream().map(roomMapper::toDomain).collect(Collectors.toList());
         return jpaRepository.findAll(pageable).getContent().stream()
                 .map(roomMapper::toDomain)
                 .collect(Collectors.toList());
@@ -93,7 +87,6 @@ public class RoomRepositoryImpl implements RoomRepository {
     // ========== SEARCH AND FILTER OPERATIONS ==========
 
     @Override
-    @Transactional(readOnly = true)
     public List<Room> findByRoomNumberContaining(String roomNumber, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return jpaRepository.searchRooms(roomNumber, null, null, null, pageable)
@@ -103,8 +96,7 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Room> findByRoomTypeId(Integer roomTypeId, int page, int size) {
+    public List<Room> findByRoomTypeId(String roomTypeId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return jpaRepository.findByRoomType_RoomTypeId(roomTypeId, pageable).getContent().stream()
                 .map(roomMapper::toDomain)
@@ -112,7 +104,6 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Room> findByRoomStatus(String status, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return jpaRepository.findAllByRoomStatus(RoomStatus.valueOf(status), pageable).getContent().stream()
@@ -121,7 +112,6 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Room> findByFloor(Integer floor, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return jpaRepository.findByFloor(floor, pageable).getContent().stream()
@@ -130,7 +120,6 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Room> findByFloor(Integer floor) {
         return jpaRepository.findByFloor(floor).stream()
                 .map(roomMapper::toDomain)
@@ -138,7 +127,6 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Room> findByPriceRange(Double minPrice, Double maxPrice, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return jpaRepository.findByPriceRange(minPrice, maxPrice, pageable).getContent().stream()
@@ -149,7 +137,6 @@ public class RoomRepositoryImpl implements RoomRepository {
     // ========== ADVANCED SEARCH ==========
 
     @Override
-    @Transactional(readOnly = true)
     public List<Room> searchRooms(String roomNumber, String roomType, String status,
                                   Integer floor, Double minPrice, Double maxPrice, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -173,7 +160,6 @@ public class RoomRepositoryImpl implements RoomRepository {
     // ========== STATUS-BASED QUERIES ==========
 
     @Override
-    @Transactional(readOnly = true)
     public List<Room> findByStatusAvailable(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return jpaRepository.findByStatusAvailable(pageable).getContent().stream()
@@ -182,7 +168,6 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Room> findByStatusOccupied(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return jpaRepository.findByStatusOccupied(pageable).getContent().stream()
@@ -191,7 +176,6 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Room> findByStatusMaintenance(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return jpaRepository.findByStatusMaintenance(pageable).getContent().stream()
@@ -200,7 +184,6 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Room> findByStatusCleaning(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return jpaRepository.findByStatusCleaning(pageable).getContent().stream()
@@ -211,7 +194,6 @@ public class RoomRepositoryImpl implements RoomRepository {
     // ========== STATISTICS QUERIES ==========
 
     @Override
-    @Transactional(readOnly = true)
     public Long countByStatus(String status) {
         if (status == null) {
             return (long) jpaRepository.count();
@@ -220,13 +202,11 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Long countByRoomTypeId(Integer roomTypeId) {
+    public Long countByRoomTypeId(UUID roomTypeId) {
         return jpaRepository.countByRoomType_RoomTypeId(roomTypeId);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Long countByFloor(Integer floor) {
         return jpaRepository.countByFloor(floor);
     }
@@ -234,7 +214,6 @@ public class RoomRepositoryImpl implements RoomRepository {
     // ========== FLOOR MANAGEMENT ==========
 
     @Override
-    @Transactional(readOnly = true)
     public List<Integer> findAllDistinctFloors() {
         return jpaRepository.findAllDistinctFloors();
     }
@@ -242,13 +221,11 @@ public class RoomRepositoryImpl implements RoomRepository {
     // ========== PRICE MANAGEMENT ==========
 
     @Override
-    @Transactional(readOnly = true)
     public Double findMinPrice() {
         return jpaRepository.findMinPrice();
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Double findMaxPrice() {
         return jpaRepository.findMaxPrice();
     }
@@ -256,13 +233,11 @@ public class RoomRepositoryImpl implements RoomRepository {
     // ========== AVAILABILITY CHECK ==========
 
     @Override
-    @Transactional(readOnly = true)
     public Boolean existsByRoomNumber(String roomNumber) {
         return jpaRepository.existsByRoomNumber(roomNumber);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Boolean isRoomAvailable(UUID roomId) {
         return jpaRepository.isRoomAvailable(roomId);
     }

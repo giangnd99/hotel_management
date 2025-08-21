@@ -4,16 +4,17 @@ import com.poly.room.management.domain.entity.RoomType;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface RoomTypeRepository {
 
     RoomType save(RoomType roomType);
 
-    Optional<RoomType> findById(Integer id);
+    Optional<RoomType> findById(UUID id);
 
     List<RoomType> findAll();
 
-    void deleteById(Integer id);
+    void deleteById(UUID id);
 
-    RoomType update(RoomType roomType, Integer id);
+    RoomType update(RoomType roomType, UUID id);
 }

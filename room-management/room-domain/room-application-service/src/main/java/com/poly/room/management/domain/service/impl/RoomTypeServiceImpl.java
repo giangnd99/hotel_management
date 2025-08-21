@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -84,7 +85,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public void deleteRoomType(Integer roomTypeId) throws RoomDomainException {
+    public void deleteRoomType(UUID roomTypeId) throws RoomDomainException {
         log.info("Deleting room type: {}", roomTypeId);
         
         try {
@@ -102,7 +103,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public RoomTypeResponse getRoomTypeById(Integer roomTypeId) throws RoomDomainException {
+    public RoomTypeResponse getRoomTypeById(UUID roomTypeId) throws RoomDomainException {
         log.info("Getting room type by ID: {}", roomTypeId);
         
         try {
@@ -135,7 +136,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public RoomTypeResponse addFurnitureToRoomType(Integer roomTypeId, FurnitureRequirementRequest request) throws RoomDomainException {
+    public RoomTypeResponse addFurnitureToRoomType(UUID roomTypeId, FurnitureRequirementRequest request) throws RoomDomainException {
         log.info("Adding furniture to room type: {}", roomTypeId);
         
         try {
@@ -153,7 +154,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public RoomTypeResponse removeFurnitureFromRoomType(Integer roomTypeId, Integer furnitureId) throws RoomDomainException {
+    public RoomTypeResponse removeFurnitureFromRoomType(UUID roomTypeId, Integer furnitureId) throws RoomDomainException {
         log.info("Removing furniture {} from room type: {}", furnitureId, roomTypeId);
         
         try {
@@ -171,7 +172,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public RoomTypeResponse updateFurnitureQuantityInRoomType(Integer roomTypeId, FurnitureRequirementRequest request) throws RoomDomainException {
+    public RoomTypeResponse updateFurnitureQuantityInRoomType(UUID roomTypeId, FurnitureRequirementRequest request) throws RoomDomainException {
         log.info("Updating furniture quantity in room type: {}", roomTypeId);
         
         try {

@@ -23,6 +23,7 @@ public class RoomEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID roomId;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -40,4 +41,6 @@ public class RoomEntity implements Serializable {
     private int floor;
 
     private String area;
+
+    private String image_url;
 }
