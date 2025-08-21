@@ -2,11 +2,14 @@ package com.poly.staff.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.UUID;
 
 @Data
 @Builder
@@ -17,6 +20,9 @@ public class CreateStaffRequest {
     @NotBlank(message = "Staff ID is required")
     @Pattern(regexp = "^[A-Z0-9]{3,10}$", message = "Staff ID must be 3-10 characters long and contain only uppercase letters and numbers")
     private String staffId;
+    
+    @NotNull(message = "User ID is required")
+    private UUID userId;
     
     @NotBlank(message = "Name is required")
     private String name;

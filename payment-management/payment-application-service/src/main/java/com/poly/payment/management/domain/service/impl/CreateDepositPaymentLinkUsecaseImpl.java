@@ -95,10 +95,10 @@ public class CreateDepositPaymentLinkUsecaseImpl implements CreateDepositPayment
 
         // Set lại link thanh toán payment
         payment.setPaymentLink(result.getPaymentLink());
+        paymentRepository.save(payment);
 
         // Lưu lại payment vào cuối để tránh lỗi từ PayOS
         invoicePaymentRepository.save(invoicePayment);
-        paymentRepository.save(payment);
 //publish(message)
         // Result trả về: id payment, mã orderCode, link thanh toán , trạng thái
         return result;

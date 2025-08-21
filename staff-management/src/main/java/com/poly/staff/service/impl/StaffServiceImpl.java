@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,8 +54,14 @@ public class StaffServiceImpl implements StaffService {
             throw new IllegalArgumentException("Email already exists: " + request.getEmail());
         }
         
+        // Check if userId already exists
+        if (staffRepository.existsByUserId(request.getUserId())) {
+            throw new IllegalArgumentException("User ID already exists: " + request.getUserId());
+        }
+        
         StaffEntity staffEntity = StaffEntity.builder()
                 .staffId(request.getStaffId())
+                .userId(request.getUserId())
                 .name(request.getName())
                 .email(request.getEmail())
                 .phone(request.getPhone())
@@ -82,7 +89,17 @@ public class StaffServiceImpl implements StaffService {
             }
         }
         
+        // Check if userId is being changed and if it already exists
+        if (request.getUserId() != null && !request.getUserId().equals(existingStaff.getUserId())) {
+            if (staffRepository.existsByUserId(request.getUserId())) {
+                throw new IllegalArgumentException("User ID already exists: " + request.getUserId());
+            }
+        }
+        
         // Update fields if provided
+        if (request.getUserId() != null) {
+            existingStaff.setUserId(request.getUserId());
+        }
         if (request.getName() != null) {
             existingStaff.setName(request.getName());
         }
@@ -166,9 +183,15 @@ public class StaffServiceImpl implements StaffService {
         return staffRepository.existsByEmail(email);
     }
     
+    @Override
+    public boolean existsByUserId(UUID userId) {
+        return staffRepository.existsByUserId(userId);
+    }
+    
     private StaffDto mapToDto(StaffEntity entity) {
         return StaffDto.builder()
                 .staffId(entity.getStaffId())
+                .userId(entity.getUserId())
                 .name(entity.getName())
                 .email(entity.getEmail())
                 .phone(entity.getPhone())

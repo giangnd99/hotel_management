@@ -8,11 +8,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface StaffRepository extends JpaRepository<StaffEntity, String> {
     
     Optional<StaffEntity> findByEmail(String email);
+    
+    Optional<StaffEntity> findByUserId(UUID userId);
     
     List<StaffEntity> findByDepartment(String department);
     
@@ -24,4 +27,6 @@ public interface StaffRepository extends JpaRepository<StaffEntity, String> {
     boolean existsByEmail(String email);
     
     boolean existsByStaffId(String staffId);
+    
+    boolean existsByUserId(UUID userId);
 }
