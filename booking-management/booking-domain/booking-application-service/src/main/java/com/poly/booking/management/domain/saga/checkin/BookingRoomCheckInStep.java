@@ -166,7 +166,7 @@ public class BookingRoomCheckInStep {
 
             if (outboxMessageOpt.isPresent()) {
                 RoomOutboxMessage outboxMessage = outboxMessageOpt.get();
-                outboxMessage.setSagaStatus(SagaStatus.FINISHED);
+                outboxMessage.setSagaStatus(SagaStatus.PROCESSING);
                 outboxMessage.setOutboxStatus(com.poly.outbox.OutboxStatus.COMPLETED);
                 roomOutboxService.save(outboxMessage);
                 

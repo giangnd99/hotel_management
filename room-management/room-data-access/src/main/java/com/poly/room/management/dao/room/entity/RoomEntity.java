@@ -25,7 +25,7 @@ public class RoomEntity implements Serializable {
     @Id
     private UUID roomId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "room_type_id")
     private RoomTypeEntity roomType;
 

@@ -1,10 +1,8 @@
 package com.poly.booking.management.domain.saga.room;
 
-import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.event.CheckOutEvent;
 import com.poly.booking.management.domain.message.reponse.RoomMessageResponse;
 import com.poly.booking.management.domain.outbox.model.RoomOutboxMessage;
-import com.poly.saga.SagaStatus;
 import com.poly.saga.SagaStep;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class RoomCheckOutStep implements SagaStep<RoomMessageResponse> {
+public class RoomCheckInStep implements SagaStep<RoomMessageResponse> {
 
-    private final RoomCheckOutSagaHelper roomCheckOutSagaHelper;
+    private final RoomCheckInSagaHelper roomCheckOutSagaHelper;
 
     /**
      * PROCESS METHOD - Xử lý chính của Saga Step

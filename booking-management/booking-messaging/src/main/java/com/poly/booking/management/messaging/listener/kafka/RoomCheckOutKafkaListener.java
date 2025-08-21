@@ -71,8 +71,8 @@ public class RoomCheckOutKafkaListener implements KafkaConsumer<BookingRoomRespo
     @KafkaListener(topics = "room-check-out-request",groupId = "room-check-out-group")
     public void receive(
             @Payload List<BookingRoomResponseAvro> messages,
-            @Header(KafkaHeaders.KEY) List<String> keys,
-            @Header(KafkaHeaders.PARTITION) List<Integer> partitions,
+            @Header(KafkaHeaders.RECEIVED_KEY) List<String> keys,
+            @Header(KafkaHeaders.RECEIVED_PARTITION) List<Integer> partitions,
             @Header(KafkaHeaders.OFFSET) List<Long> offsets) {
         log.info("Received {} room check out messages from Kafka topic", messages.size());
 

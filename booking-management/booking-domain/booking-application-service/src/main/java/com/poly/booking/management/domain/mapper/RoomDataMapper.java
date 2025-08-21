@@ -2,8 +2,6 @@ package com.poly.booking.management.domain.mapper;
 
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.entity.Room;
-import com.poly.booking.management.domain.event.BookingDepositedEvent;
-import com.poly.booking.management.domain.event.CheckInEvent;
 import com.poly.booking.management.domain.outbox.payload.ReservedEventPayload;
 import com.poly.booking.management.domain.outbox.payload.RoomEventPayload;
 import com.poly.domain.valueobject.RoomResponseStatus;
@@ -60,7 +58,7 @@ public class RoomDataMapper {
         return RoomEventPayload.builder()
                 .roomId(room.getId().getValue().toString())
                 .createdAt(LocalDateTime.now())
-                .roomStatus(RoomStatus.CHECKED_OUT.name())
+                .roomStatus(RoomStatus.CHECKED_IN.name())
                 .build();
     }
 

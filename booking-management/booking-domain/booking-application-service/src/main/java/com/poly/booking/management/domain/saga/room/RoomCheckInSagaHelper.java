@@ -32,7 +32,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class RoomCheckOutSagaHelper {
+public class RoomCheckInSagaHelper {
 
     private final RoomOutboxService roomOutboxService;
     private final BookingRepository bookingRepository;

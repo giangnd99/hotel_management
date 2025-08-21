@@ -63,8 +63,8 @@ public class RoomCheckInKafkaPublisher implements RoomCheckOutMessagePublisher {
      * @param outboxCallback    Callback function để cập nhật trạng thái outbox
      */
     @Override
-    public void sendRoomCheckOutRequest(RoomOutboxMessage roomOutboxMessage,
-                                        BiConsumer<RoomOutboxMessage, OutboxStatus> outboxCallback) {
+    public void sendRoomCheckInRequest(RoomOutboxMessage roomOutboxMessage,
+                                       BiConsumer<RoomOutboxMessage, OutboxStatus> outboxCallback) {
 
         // Validate input parameters
         validateInputParameters(roomOutboxMessage, outboxCallback);
@@ -147,7 +147,7 @@ public class RoomCheckInKafkaPublisher implements RoomCheckOutMessagePublisher {
                                     RoomOutboxMessage roomOutboxMessage,
                                     BiConsumer<RoomOutboxMessage, OutboxStatus> outboxCallback) {
 
-        String topicName = bookingServiceConfigData.getRoomCheckOutTopicName();
+        String topicName = bookingServiceConfigData.getRoomCheckInTopicName();
 
         kafkaProducer.send(
                 topicName,

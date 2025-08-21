@@ -7,25 +7,25 @@ import com.poly.room.management.domain.entity.Cost;
 import com.poly.room.management.domain.entity.Room;
 import com.poly.room.management.domain.entity.RoomCost;
 import com.poly.room.management.domain.event.RoomBookedEvent;
-import com.poly.room.management.domain.exception.RoomDomainException;
+import com.poly.room.management.domain.event.RoomCheckedInEvent;
+import com.poly.room.management.domain.message.BookingRoomRequestMessage;
+import com.poly.room.management.domain.message.BookingRoomResponseMessage;
 import com.poly.room.management.domain.port.out.publisher.reponse.BookingRoomReservePublisher;
 import com.poly.room.management.domain.port.out.repository.RoomRepository;
 import com.poly.room.management.domain.service.RoomDomainService;
 import com.poly.room.management.domain.service.RoomEventService;
-import com.poly.room.management.domain.message.BookingRoomRequestMessage;
-import com.poly.room.management.domain.message.BookingRoomResponseMessage;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
-public class RoomBookingCommand {
+@RequiredArgsConstructor
+public class RoomCheckInCommand {
 
     private final RoomRepository roomRepository;
     private final RoomEventService roomEventService;
@@ -36,25 +36,16 @@ public class RoomBookingCommand {
         log.info("Processing booking rooms request message: {}", bookingRoomRequestMessage);
         List<Room> rooms = validateRoomMessage(bookingRoomRequestMessage);
 
-        if (BookingStatus.DEPOSITED.name().equalsIgnoreCase(bookingRoomRequestMessage.getBookingStatus())) {
-            log.info("Processing DEPOSITED status for booking ID: {}", bookingRoomRequestMessage.getBookingId());
+        if (BookingStatus.CHECKED_IN.name().equalsIgnoreCase(bookingRoomRequestMessage.getBookingStatus())) {
+            log.info("Processing Check in status for booking ID: {}", bookingRoomRequestMessage.getBookingId());
 
             for (Room room : rooms) {
                 try {
+                    Room foundedRoom = roomRepository.findById(
+                            room.getId().getValue()).orElseThrow(() -> new RuntimeException("Room not found"));
+                    RoomCheckedInEvent bookedEvent = roomEventService.checkedInRoom(foundedRoom);
 
-                    room.addRoomCost(RoomCost.builder()
-                            .cost(Cost.builder()
-                                    .id(UUID.randomUUID().toString())
-                                    .name("Deposit")
-                                    .price(new Money(bookingRoomRequestMessage.getPrice()))
-                                    .referenceId(bookingRoomRequestMessage.getBookingId())
-                                    .build())
-                            .room(room)
-                            .id(UUID.randomUUID().toString())
-                            .build());
-                    RoomBookedEvent bookedEvent = roomEventService.bookedRoom(room);
-                    // Cập nhật trạng thái phòng trong database
-                    roomRepository.update(room);
+                    roomRepository.update(bookedEvent.getRoom());
 
                     log.info("Successfully updated room status to BOOKED for room: {}",
                             bookedEvent.getRoom().getRoomNumber());
@@ -64,11 +55,12 @@ public class RoomBookingCommand {
                     throw new RuntimeException("Failed to update room status: " + room.getRoomNumber(), e);
                 }
             }
-
-            // Tạo response message để gửi về booking service
+            bookingRoomRequestMessage.setBookingStatus(BookingStatus.CHECKED_IN.name());
+            bookingRoomRequestMessage.setRooms(rooms);
+            bookingRoomRequestMessage.setProcessedAt(Instant.now());
             BookingRoomResponseMessage responseMessage = createSuccessResponseMessage(bookingRoomRequestMessage);
 
-            // Gửi response về booking service
+
             roomBookedResponseKafkaPublisher.publish(responseMessage);
 
             log.info("Successfully processed all rooms for booking ID: {} and sent response",
@@ -83,16 +75,7 @@ public class RoomBookingCommand {
 
     private List<Room> validateRoomMessage(
             BookingRoomRequestMessage bookingRoomRequestMessage) {
-        List<Room> rooms =
-                bookingRoomRequestMessage.getRooms()
-                .stream()
-                .map(
-                room -> roomRepository.findById(
-                        room.getId().getValue())
-                        .orElseThrow(() -> new RoomDomainException
-                                ("Not found room with id " + room.getId().getValue().toString())))
-                .toList();
-
+        List<Room> rooms = bookingRoomRequestMessage.getRooms();
         if (rooms.isEmpty()) {
             throw new IllegalArgumentException("Room not found");
         }
@@ -109,7 +92,7 @@ public class RoomBookingCommand {
                 .reservationStatus(RoomResponseStatus.SUCCESS.name())
                 .id(UUID.randomUUID().toString())
                 .SagaId(bookingRoomRequestMessage.getSagaId())
-                .reason("All rooms have been successfully booked and updated")
+                .reason("All rooms have been successfully Checked In and updated")
                 .build();
     }
 }
