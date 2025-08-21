@@ -42,6 +42,6 @@ public interface RoomCheckOutMessagePublisher {
      * @param roomOutboxMessage Message chứa thông tin checkout phòng từ outbox
      * @param outboxCallback    Callback function để cập nhật trạng thái outbox
      */
-    void sendRoomCheckOutRequest(RoomOutboxMessage roomOutboxMessage,
+    void sendRoomCheckInRequest(RoomOutboxMessage roomOutboxMessage,
                                 BiConsumer<RoomOutboxMessage, OutboxStatus> outboxCallback);
 }

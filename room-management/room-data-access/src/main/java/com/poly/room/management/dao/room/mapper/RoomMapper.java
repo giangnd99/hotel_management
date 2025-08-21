@@ -29,6 +29,7 @@ public class RoomMapper {
                 .roomStatus(entity.getRoomStatus())
                 .roomNumber(entity.getRoomNumber())
                 .floor(entity.getFloor())
+                .image_url(entity.getImage_url())
                 .build();
     }
 
@@ -38,6 +39,7 @@ public class RoomMapper {
                 .roomType(roomTypeMapper.toEntity(domain.getRoomType()))
                 .roomStatus(domain.getRoomStatus())
                 .roomNumber(domain.getRoomNumber())
+                .image_url(domain.getImage_url())
                 .floor(domain.getFloor())
                 .build();
     }

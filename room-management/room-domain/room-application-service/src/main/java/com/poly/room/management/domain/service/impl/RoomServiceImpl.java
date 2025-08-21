@@ -111,7 +111,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Optional<RoomResponse> getRoomById(Long roomId) {
+    public Optional<RoomResponse> getRoomById(UUID roomId) {
         log.info("Getting room by ID: {}", roomId);
         
         Optional<Room> room = roomRepository.findById(roomId);

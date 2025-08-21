@@ -32,7 +32,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class RoomCheckOutSagaHelper {
+public class RoomCheckInSagaHelper {
 
     private final RoomOutboxService roomOutboxService;
     private final BookingRepository bookingRepository;
@@ -157,7 +157,7 @@ public class RoomCheckOutSagaHelper {
      * @return Booking entity
      */
     private Booking findBooking(String bookingId) {
-        return bookingRepository.findById(new BookingId(UUID.fromString(bookingId)))
+        return bookingRepository.findById(UUID.fromString(bookingId))
                 .orElseThrow(() -> new RuntimeException("Booking not found for check out: " + bookingId));
     }
 }

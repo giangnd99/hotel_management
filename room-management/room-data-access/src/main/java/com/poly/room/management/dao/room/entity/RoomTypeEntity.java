@@ -14,14 +14,14 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Builder
+@Table(name = "room_types")
 public class RoomTypeEntity {
 
     @Id
     private Integer roomTypeId;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "room_id")
-    private RoomEntity room;
+    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<RoomEntity> rooms;
 
     private String typeName;
 

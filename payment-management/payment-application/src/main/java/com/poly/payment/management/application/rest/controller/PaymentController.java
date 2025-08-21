@@ -17,7 +17,7 @@
 
     @Slf4j
     @RestController
-    @RequestMapping("/api/payment")
+    @RequestMapping("/payment")
     @RequiredArgsConstructor
     public class PaymentController {
 

@@ -5,7 +5,7 @@ booking-service:
   payment-response-topic-name: booking-payment-response
   room-reserve-request-topic-name: room-approval-request
   room-reserve-response-topic-name: room-approval-response
-  room-check-out-topic-name: room-check-out-topic
+  room-check-in-topic-name: room-check-in-request
   customer-topic-name: customer-booking-topic
   booking-notification-request-topic-name: notification-send-mail-request
   outbox-scheduler-fixed-rate: 10000

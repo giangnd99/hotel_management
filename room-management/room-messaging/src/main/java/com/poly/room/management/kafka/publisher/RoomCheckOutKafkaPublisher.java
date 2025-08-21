@@ -81,7 +81,6 @@ public class RoomCheckOutKafkaPublisher
 
     @Override
     protected BookingRoomRequestAvro toAvro(BookingRoomRequestMessage message) {
-        // Chuyển đổi domain message thành Avro model
         return roomKafkaDataMapper.toBookingRoomRequestAvro(message);
     }
 

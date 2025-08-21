@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.ExtendedModelMap;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,7 +52,7 @@ public class NotificationController {
 
     /**
      * Endpoint để gửi xác nhận đặt phòng qua email.
-     * http://localhost:8080/api/notifications/send-booking-confirmation?userId=1&userEmail=tai30799@gmail.com
+     * http://localhost:8190/notifications/send-booking-confirmation?userId=1&userEmail=tai30799@gmail.com
      *
      * @param userId    ID của người dùng đặt phòng.
      * @param userEmail Email của người dùng để gửi xác nhận.
@@ -418,4 +420,19 @@ public class NotificationController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+    @PostMapping("/send-account-info")
+    public ResponseEntity<Map<String, String>> sendAccountInfo(
+            @RequestParam String userEmail,
+            @RequestParam String password) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            String statusMessage = notificationService.sendAccountInfo( userEmail, password, null, null);
+            response.put("message", statusMessage);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("message", "Lỗi khi gửi email thông tin tài khoản: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
 }

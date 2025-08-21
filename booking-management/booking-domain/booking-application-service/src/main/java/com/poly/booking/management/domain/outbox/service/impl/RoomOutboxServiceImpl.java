@@ -92,6 +92,7 @@ public class RoomOutboxServiceImpl implements RoomOutboxService {
                 .id(UUID.randomUUID())
                 .sagaId(uuid)
                 .type(BOOKING_SAGA_NAME)
+                .bookingId(UUID.fromString(reservedEventPayload.getBookingId()))
                 .sagaStatus(sagaStatus)
                 .outboxStatus(outboxStatus)
                 .payload(createPayload(reservedEventPayload))

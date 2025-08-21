@@ -22,6 +22,8 @@ public class RoomEventPayload {
     @JsonProperty
     private BigDecimal basePrice;
     @JsonProperty
+    private String roomStatus;
+    @JsonProperty
     private LocalDateTime createdAt;
 
 }

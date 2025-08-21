@@ -11,9 +11,7 @@
     },
     {
       "name": "sagaId",
-      "type": {
-        "type": "string"
-      }
+      "type": ["null", "string"]
     },
     {
       "name": "paymentId",
@@ -23,9 +21,7 @@
     },
     {
       "name": "customerId",
-      "type": {
-        "type": "string"
-      }
+      "type": ["null", "string"]
     },
     {
       "name": "bookingId",

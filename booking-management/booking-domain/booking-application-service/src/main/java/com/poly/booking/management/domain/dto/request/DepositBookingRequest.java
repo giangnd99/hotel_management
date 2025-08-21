@@ -2,6 +2,8 @@ package com.poly.booking.management.domain.dto.request;
 
 import lombok.*;
 
+import java.util.UUID;
+
 @Setter
 @Getter
 @Builder
@@ -9,6 +11,5 @@ import lombok.*;
 @NoArgsConstructor
 public class DepositBookingRequest {
 
-    private String bookingId;
-    private String customerId;
+    private UUID bookingId;
 }

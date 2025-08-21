@@ -1,9 +1,9 @@
-package com.poly.restaurant.application.port.out.feign;
-
-import com.poly.restaurant.application.dto.OrderDTO;
-import com.poly.restaurant.application.dto.OrderStatusUpdateDTO;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.*;
+//package com.poly.restaurant.application.port.out.feign;
+//
+//import com.poly.restaurant.application.dto.OrderDTO;
+//import com.poly.restaurant.application.dto.OrderStatusUpdateDTO;
+//import org.springframework.cloud.openfeign.FeignClient;
+//import org.springframework.web.bind.annotation.*;
 //
 //@FeignClient(name = "restaurant-service", url = "${restaurant.service.url}")
 //public interface RestaurantFeignClient {

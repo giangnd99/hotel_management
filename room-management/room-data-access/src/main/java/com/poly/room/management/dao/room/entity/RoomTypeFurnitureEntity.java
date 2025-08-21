@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
+@Table(name = "room_type_furniture")
 public class RoomTypeFurnitureEntity {
 
     @Id

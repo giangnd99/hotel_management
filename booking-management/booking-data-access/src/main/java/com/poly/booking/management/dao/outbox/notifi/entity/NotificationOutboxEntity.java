@@ -19,9 +19,12 @@ import java.util.UUID;
 public class NotificationOutboxEntity {
 
     @Id
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID id;
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID sagaId;
     private String type;
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID bookingId;
     @Enumerated(EnumType.STRING)
     private SagaStatus sagaStatus;

@@ -1,6 +1,7 @@
 package com.poly.booking.management.domain.entity;
 
 import com.poly.booking.management.domain.exception.BookingDomainException;
+import com.poly.booking.management.domain.valueobject.BookingRoomId;
 import com.poly.booking.management.domain.valueobject.TrackingId;
 import com.poly.domain.entity.AggregateRoot;
 import com.poly.domain.valueobject.*;
@@ -31,16 +32,16 @@ public class Booking extends AggregateRoot<BookingId> {
     private List<String> failureMessages;
     public static final String FAILURE_MESSAGE_DELIMITER = ",";
 
-    private Booking(Builder builder) {
+    public Booking(Builder builder) {
         super.setId(builder.id);
         customer = builder.customer;
         checkInDate = builder.checkInDate;
         checkOutDate = builder.checkOutDate;
         status = builder.status;
         trackingId = builder.trackingId;
-        setActualCheckInDate(builder.actualCheckInDate);
-        setActualCheckOutDate(builder.actualCheckOutDate);
-        setTotalPrice(builder.totalPrice);
+        actualCheckInDate = builder.actualCheckInDate;
+        actualCheckOutDate = builder.actualCheckOutDate;
+        totalPrice = builder.totalPrice;
         upgradeSuggestion = builder.upgradeSuggestion;
         bookingRooms = builder.bookingRooms;
         failureMessages = builder.failureMessages;
@@ -61,6 +62,13 @@ public class Booking extends AggregateRoot<BookingId> {
         trackingId = new TrackingId(UUID.randomUUID());
         validateDateRange();
         status = BookingStatus.PENDING;
+        initializeBookingRooms();
+    }
+
+    public void initializeBookingRooms() {
+        for (BookingRoom bookingRoom : bookingRooms) {
+            bookingRoom.initialize(this, new BookingRoomId(UUID.randomUUID()));
+        }
     }
 
     /**
@@ -141,6 +149,10 @@ public class Booking extends AggregateRoot<BookingId> {
         if (checkInDate.isAfter(checkOutDate)) {
             throw new BookingDomainException("Check-in date must be before check-out date");
         }
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     private void validateTotalPrice() {
