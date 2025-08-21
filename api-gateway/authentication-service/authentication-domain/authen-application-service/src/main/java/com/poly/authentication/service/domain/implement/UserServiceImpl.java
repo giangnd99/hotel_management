@@ -14,6 +14,7 @@ import com.poly.authentication.service.domain.port.out.repository.UserRepository
 import com.poly.authentication.service.domain.valueobject.Password;
 import com.poly.dao.util.PageUtil;
 import com.poly.domain.valueobject.ERole;
+import com.poly.domain.valueobject.UserId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -87,12 +89,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @PostAuthorize("returnObject.email == authentication.name")
+    @Transactional
     public UserResponse updateUser(UUID userId, UserUpdatedRequest request) {
 
         User userUpdating = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         userMapper.fromUpdatePhoneRequestToDomainEntity(request, userUpdating);
 
+        userUpdating.setId(new UserId(userId));
         return userMapper.toUserResponse(userRepository.save(userUpdating));
     }
 

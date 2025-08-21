@@ -1,6 +1,5 @@
 package com.poly.notification.management.service;
 
-import com.poly.notification.management.dto.QrCodeResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,7 @@ import java.util.Map;
 @Slf4j
 public class BookingQrCodeService {
 
-    private final QrCodeService qrCodeService;
+    private final CloudinaryQrCodeService cloudinaryQrCodeService;
     private final EmailService emailService;
 
     /**
@@ -29,12 +28,13 @@ public class BookingQrCodeService {
         try {
             log.info("Bắt đầu tạo QR code cho booking: {}", bookingId);
 
-            // Tạo QR code với bookingId
-            QrCodeResponse qrCode = qrCodeService.createSimpleQrCode(bookingId);
-            log.info("Đã tạo QR code thành công cho booking: {}", bookingId);
+            // Tạo QR code và upload lên Cloudinary
+            String qrCodeImageUrl = cloudinaryQrCodeService.createSimpleQrCodeAndUpload(bookingId);
+            log.info("Đã tạo QR code thành công cho booking: {} và upload lên Cloudinary", bookingId);
 
-            // Gửi email với QR code
-            sendBookingQrCodeEmail(userEmail, bookingId, qrCode.getQrCodeBase64());
+            // Gửi email với QR code URL
+            sendBookingQrCodeEmail(userEmail, bookingId, qrCodeImageUrl);
+
             log.info("Đã gửi email thành công cho user: {} với booking: {}", userEmail, bookingId);
 
         } catch (Exception e) {
@@ -44,9 +44,9 @@ public class BookingQrCodeService {
     }
 
     /**
-     * Gửi email với QR code
+     * Gửi email với QR code URL từ Cloudinary
      */
-    private void sendBookingQrCodeEmail(String userEmail, String bookingId, String qrCodeBase64) {
+    private void sendBookingQrCodeEmail(String userEmail, String bookingId, String qrCodeImageUrl) {
         String subject = "Xác nhận đặt phòng - QR Code";
 
         try {
@@ -54,7 +54,7 @@ public class BookingQrCodeService {
             Map<String, Object> variables = new HashMap<>();
             variables.put("userEmail", userEmail);
             variables.put("bookingId", bookingId);
-            variables.put("qrCodeBase64", qrCodeBase64);
+            variables.put("qrCodeImageUrl", qrCodeImageUrl);
 
             // Gửi email HTML sử dụng EmailService
             emailService.sendHtmlEmail(userEmail, subject, "booking-qr-code", variables);
@@ -68,9 +68,9 @@ public class BookingQrCodeService {
     }
 
     /**
-     * Tạo template email HTML đẹp
+     * Tạo template email HTML đẹp với QR code từ Cloudinary
      */
-    private String createEmailTemplate(String userName, String bookingId, String qrCodeBase64) {
+    private String createEmailTemplate(String userName, String bookingId, String qrCodeImageUrl) {
         return """
                 <!DOCTYPE html>
                 <html>
@@ -196,7 +196,7 @@ public class BookingQrCodeService {
                             <h3 class="qr-title">📱 QR Code Check-in</h3>
                             <p class="qr-instruction">Quét mã QR bên dưới để nhanh chóng hoàn tất thủ tục check-in:</p>
                             <div class="qr-code">
-                                <img src="data:image/png;base64,%s" alt="QR Code" style="width: 200px; height: 200px;">
+                                <img src="%s" alt="QR Code" style="width: 200px; height: 200px;">
                             </div>
                             <p style="font-size: 12px; color: #999; margin-top: 10px;">
                                 Mã QR này chứa thông tin đặt phòng của bạn
@@ -231,6 +231,6 @@ public class BookingQrCodeService {
                     </div>
                 </body>
                 </html>
-                """.formatted(userName, bookingId, qrCodeBase64);
+                """.formatted(userName, bookingId, qrCodeImageUrl);
     }
 }

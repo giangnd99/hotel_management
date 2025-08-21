@@ -13,6 +13,10 @@ public interface RoomReserveOutBoxRepository {
 
     Optional<RoomOutboxMessage> findByTypeAndSagaIdAndSagaStatus(String bookingSagaName, UUID sagaId, SagaStatus... statuses);
 
+
+    Optional<List<RoomOutboxMessage>> findAllByTypeAndSagaIdAndSagaStatus(String bookingSagaName, UUID sagaId, SagaStatus... statuses);
+
+
     Optional<List<RoomOutboxMessage>> findByTypeAndOutboxStatusAndSagaStatus(String bookingSagaName, OutboxStatus outboxStatus, SagaStatus... sagaStatus);
 
     void deleteByTypeAndOutboxStatusAndSagaStatus(String bookingSagaName, OutboxStatus outboxStatus, SagaStatus... sagaStatus);

@@ -44,8 +44,8 @@ public class BookingCheckedInKafkaListener implements KafkaConsumer<Notification
     @Override
     @KafkaListener(topics = "room-check-in-notification-topic", groupId = "booking-check-in-group")
     public void receive(@Payload List<NotificationMessageAvro> messages,
-                        @Header(KafkaHeaders.KEY) List<String> keys,
-                        @Header(KafkaHeaders.PARTITION) List<Integer> partitions,
+                        @Header(KafkaHeaders.RECEIVED_KEY) List<String> keys,
+                        @Header(KafkaHeaders.RECEIVED_PARTITION) List<Integer> partitions,
                         @Header(KafkaHeaders.OFFSET) List<Long> offsets) {
         log.info("Received {} check-in notification messages from Kafka", messages.size());
 

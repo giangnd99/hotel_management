@@ -41,6 +41,13 @@ public class RoomOutboxRepositoryImpl implements RoomReserveOutBoxRepository {
     }
 
     @Override
+    public Optional<List<RoomOutboxMessage>> findAllByTypeAndSagaIdAndSagaStatus(String bookingSagaName, UUID sagaId, SagaStatus... statuses) {
+        return Optional.of(roomOutboxJpaRepository.findAllByTypeAndSagaIdAndSagaStatusIn(bookingSagaName, sagaId, Arrays.asList(statuses))
+                .orElseThrow(() -> new BookingDomainException("Not found list room outbox message"))
+                .stream().map(roomOutboxDataMapper::toModel).toList());
+    }
+
+    @Override
     public Optional<List<RoomOutboxMessage>> findByTypeAndOutboxStatusAndSagaStatus(String bookingSagaName, OutboxStatus outboxStatus, SagaStatus[] sagaStatus) {
         return Optional.of(roomOutboxJpaRepository.findByTypeAndOutboxStatusAndSagaStatusIn(
                         bookingSagaName,

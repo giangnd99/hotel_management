@@ -18,6 +18,7 @@ import com.poly.room.management.domain.message.BookingRoomResponseMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,6 +32,7 @@ public class RoomBookingCommand {
     private final RoomEventService roomEventService;
     private final BookingRoomReservePublisher roomBookedResponseKafkaPublisher;
 
+    @Transactional
     public void process(BookingRoomRequestMessage bookingRoomRequestMessage) {
 
         log.info("Processing booking rooms request message: {}", bookingRoomRequestMessage);
@@ -65,6 +67,7 @@ public class RoomBookingCommand {
                 }
             }
 
+            bookingRoomRequestMessage.setRooms(rooms);
             // Tạo response message để gửi về booking service
             BookingRoomResponseMessage responseMessage = createSuccessResponseMessage(bookingRoomRequestMessage);
 

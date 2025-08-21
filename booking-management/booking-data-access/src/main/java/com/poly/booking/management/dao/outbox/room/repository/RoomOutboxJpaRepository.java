@@ -11,13 +11,17 @@ import java.util.UUID;
 
 public interface RoomOutboxJpaRepository extends JpaRepository<RoomOutboxEntity, UUID> {
 
+    Optional<List<RoomOutboxEntity>> findAllByTypeAndSagaIdAndSagaStatusIn(String type,
+                                                                           UUID sagaId,
+                                                                           List<SagaStatus> sagaStatus);
+
     Optional<List<RoomOutboxEntity>> findByTypeAndOutboxStatusAndSagaStatusIn(String type,
-                                                                                 OutboxStatus outboxStatus,
-                                                                                 List<SagaStatus> sagaStatus);
+                                                                              OutboxStatus outboxStatus,
+                                                                              List<SagaStatus> sagaStatus);
 
     Optional<RoomOutboxEntity> findByTypeAndSagaIdAndSagaStatusIn(String type,
-                                                                     UUID sagaId,
-                                                                     List<SagaStatus> sagaStatus);
+                                                                  UUID sagaId,
+                                                                  List<SagaStatus> sagaStatus);
 
     void deleteByTypeAndOutboxStatusAndSagaStatusIn(String type,
                                                     OutboxStatus outboxStatus,
