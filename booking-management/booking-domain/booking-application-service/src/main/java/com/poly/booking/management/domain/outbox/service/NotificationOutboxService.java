@@ -24,12 +24,13 @@ public interface NotificationOutboxService {
                                    BookingStatus status,
                                    SagaStatus sagaStatus);
 
-    void saveWithPayloadAndBookingStatusAndSagaStatusAndOutboxStatusAndSagaId
-            (NotifiEventPayload payload,
+    void saveWithPayloadAndBookingStatusAndSagaStatusAndOutboxStatusAndSagaId(NotifiEventPayload payload,
              BookingStatus status,
              SagaStatus sagaStatus,
              OutboxStatus outboxStatus,
              UUID uuid);
+
+    String createPayload(NotifiEventPayload payload);
 
     void deleteByOutboxStatusAndSagaStatus(OutboxStatus outboxStatus,
                                            SagaStatus... sagaStatus);

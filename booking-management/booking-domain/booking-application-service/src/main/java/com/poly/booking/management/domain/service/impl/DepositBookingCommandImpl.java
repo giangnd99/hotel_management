@@ -53,6 +53,7 @@ public class DepositBookingCommandImpl implements DepositBookingCommand {
     private CreateDepositRequest createDepositRequest(Booking booking) {
         BigDecimal depositAmount = booking.calculateDepositAmount().getAmount();
         depositAmount = depositAmount.setScale(0, RoundingMode.HALF_UP);
+        log.info("Creating deposit request for booking id: {} with amount: {}", booking.getId().getValue(), depositAmount);
         return CreateDepositRequest.builder()
                 .description("Deposit for booking id: " + booking.getId().getValue())
                 .referenceId(booking.getId().getValue())

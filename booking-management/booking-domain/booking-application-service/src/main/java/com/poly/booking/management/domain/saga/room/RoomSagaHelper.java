@@ -3,12 +3,14 @@ package com.poly.booking.management.domain.saga.room;
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.event.BookingConfirmedEvent;
 import com.poly.booking.management.domain.mapper.NotificationDataMapper;
+import com.poly.booking.management.domain.outbox.model.NotifiOutboxMessage;
 import com.poly.booking.management.domain.outbox.model.RoomOutboxMessage;
 import com.poly.booking.management.domain.outbox.service.NotificationOutboxService;
-import com.poly.booking.management.domain.outbox.service.impl.PaymentOutboxImpl;
 import com.poly.booking.management.domain.outbox.service.impl.RoomOutboxServiceImpl;
+import com.poly.booking.management.domain.port.out.message.publisher.NotificationRequestMessagePublisher;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.saga.BookingSagaHelper;
+import com.poly.booking.management.domain.saga.notification.NotificationSagaHelper;
 import com.poly.booking.management.domain.service.BookingDomainService;
 import com.poly.booking.management.domain.message.reponse.RoomMessageResponse;
 import com.poly.domain.valueobject.RoomResponseStatus;
@@ -17,9 +19,15 @@ import com.poly.saga.SagaStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.BiConsumer;
+
+import static com.poly.saga.booking.SagaConstant.BOOKING_SAGA_NAME;
 
 @Component
 @RequiredArgsConstructor
@@ -37,7 +45,8 @@ public class RoomSagaHelper {
     // Outbox pattern helpers for reliable messaging
     private final RoomOutboxServiceImpl roomOutboxServiceImpl;
     private final NotificationOutboxService notificationOutboxService;
-    private final PaymentOutboxImpl paymentOutboxHelper;
+    private final NotificationSagaHelper notificationSagaHelper;
+    private final NotificationRequestMessagePublisher notificationRequestMessagePublisher;
     // ==================== PRIVATE HELPER METHODS ====================
 
     /**
@@ -46,9 +55,9 @@ public class RoomSagaHelper {
      * @param data RoomMessageResponse từ external service
      * @return BookingRoomOutboxMessage nếu hợp lệ, null nếu đã processed
      */
-    public RoomOutboxMessage validateAndGetOutboxMessage(RoomMessageResponse data) {
-        Optional<RoomOutboxMessage> outboxMessageOpt =
-                roomOutboxServiceImpl.getRoomOutboxMessageBySagaIdAndSagaStatus(
+    public List<RoomOutboxMessage> validateAndGetOutboxMessage(RoomMessageResponse data) {
+        Optional<List<RoomOutboxMessage>> outboxMessageOpt =
+                roomOutboxServiceImpl.getRoomOutboxMessagesBySagaIdAndSagaStatus(
                         UUID.fromString(data.getSagaId()),
                         SagaStatus.PROCESSING);
 
@@ -66,6 +75,7 @@ public class RoomSagaHelper {
      * @param outboxMessage Outbox message chứa thông tin booking
      * @return BookingDepositEvent domain event
      */
+    @Transactional
     public BookingConfirmedEvent executeRoomReservation(RoomOutboxMessage outboxMessage) {
         log.info("Executing room reservation for booking: {}", outboxMessage.getBookingId());
 
@@ -92,15 +102,29 @@ public class RoomSagaHelper {
         log.info("Triggering room reservation step for booking: {}",
                 domainEvent.getBooking().getId().getValue());
 
-        // Tạo notification outbox message để trigger notification send QR code step
-        notificationOutboxService.saveWithPayloadAndBookingStatusAndSagaStatusAndOutboxStatusAndSagaId(
-                notificationDataMapper.bookingRoomReservedEventToBookingNotifiEventPayload(domainEvent),
-                domainEvent.getBooking().getStatus(),
-                bookingSagaHelper.bookingStatusToSagaStatus(domainEvent.getBooking().getStatus()),
-                OutboxStatus.STARTED,
-                UUID.fromString(data.getSagaId()));
+        String payload = notificationOutboxService.createPayload(notificationDataMapper.bookingRoomReservedEventToBookingNotifiEventPayload(domainEvent));
+
+        NotifiOutboxMessage notifiOutboxMessage = NotifiOutboxMessage.builder()
+                .id(UUID.randomUUID())
+                .sagaId(UUID.fromString(data.getSagaId()))
+                .type(BOOKING_SAGA_NAME)
+                .sagaStatus(SagaStatus.PROCESSING)
+                .outboxStatus(OutboxStatus.STARTED)
+                .payload(payload)
+                .bookingStatus(domainEvent.getBooking().getStatus())
+                .createdAt(LocalDateTime.now())
+                .bookingId(domainEvent.getBooking().getId().getValue())
+                .build();
+
+
+        notificationRequestMessagePublisher.sendNotifi(notifiOutboxMessage,updateOutboxStatus(notifiOutboxMessage,OutboxStatus.COMPLETED) );
     }
 
+    private BiConsumer<NotifiOutboxMessage, OutboxStatus> updateOutboxStatus(NotifiOutboxMessage notifiOutboxMessage, OutboxStatus outboxStatus) {
+        notifiOutboxMessage.setOutboxStatus(outboxStatus);
+        log.info("OrderApprovalOutboxMessage is updated with outbox status: {}", outboxStatus.name());
+        return null;
+    }
 
     /**
      * Cập nhật saga status và lưu outbox message
@@ -115,6 +139,12 @@ public class RoomSagaHelper {
                 domainEvent.getBooking().getStatus());
 
         // Tạo outbox message mới với trạng thái đã cập nhật
+        log.info("Updating room reservation outbox message with bookingId: {}", domainEvent.getBooking().getId().getValue());
+        outboxMessage.setBookingId(domainEvent.getBooking().getId().getValue());
+        outboxMessage.setId(outboxMessage.getId());
+        outboxMessage.setCreatedAt(LocalDateTime.now());
+        outboxMessage.setType(RoomOutboxMessage.class.getSimpleName());
+
         RoomOutboxMessage updatedOutboxMessage =
                 roomOutboxServiceImpl.getUpdatedRoomOutBoxMessage(
                         outboxMessage,

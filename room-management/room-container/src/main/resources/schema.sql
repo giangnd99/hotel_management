@@ -1,24 +1,10 @@
--- Thiết lập schema
+DROP SCHEMA IF EXISTS room_management CASCADE;
 CREATE SCHEMA IF NOT EXISTS room_management;
-SET search_path TO room_management, public;
 
 -- Tạo extension để hỗ trợ UUID và tìm kiếm tương tự
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 
--- =====================================================================================================================
--- Bổ sung các lệnh DROP TABLE để đảm bảo tính idempotent
--- =====================================================================================================================
-DROP TABLE IF EXISTS room_type_furniture CASCADE;
-DROP TABLE IF EXISTS room_maintenance CASCADE;
-DROP TABLE IF EXISTS room_cleaning CASCADE;
-DROP TABLE IF EXISTS room_services CASCADE;
-DROP TABLE IF EXISTS check_ins CASCADE;
-DROP TABLE IF EXISTS rooms CASCADE;
-DROP TABLE IF EXISTS room_types CASCADE;
-DROP TABLE IF EXISTS maintenance_types CASCADE;
-DROP TABLE IF EXISTS furniture CASCADE;
-DROP TABLE IF EXISTS guests CASCADE;
 
 
 -- =====================================================================================================================

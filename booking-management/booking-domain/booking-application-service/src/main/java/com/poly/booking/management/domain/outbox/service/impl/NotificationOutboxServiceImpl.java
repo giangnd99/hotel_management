@@ -90,6 +90,7 @@ public class NotificationOutboxServiceImpl implements NotificationOutboxService 
      * @param outboxStatus             Trạng thái outbox
      * @param sagaId                   Saga identifier
      */
+    @Transactional
     public void saveWithPayloadAndBookingStatusAndSagaStatusAndOutboxStatusAndSagaId
     (NotifiEventPayload notificationEventPayload,
      BookingStatus bookingStatus,
@@ -105,6 +106,7 @@ public class NotificationOutboxServiceImpl implements NotificationOutboxService 
                 .payload(createPayload(notificationEventPayload))
                 .bookingStatus(bookingStatus)
                 .createdAt(notificationEventPayload.getCreatedAt())
+                .bookingId(notificationEventPayload.getBookingId())
                 .build());
         log.info("Notification outbox message has been created successfully!");
     }
@@ -141,7 +143,8 @@ public class NotificationOutboxServiceImpl implements NotificationOutboxService 
      * @param payload Notification event payload
      * @return JSON string representation
      */
-    private String createPayload(NotifiEventPayload payload) {
+    @Override
+    public String createPayload(NotifiEventPayload payload) {
         try {
             return objectMapper.writeValueAsString(payload);
         } catch (Exception e) {

@@ -3,10 +3,15 @@ package com.poly.booking.management.domain.saga.room;
 import com.poly.booking.management.domain.event.BookingConfirmedEvent;
 import com.poly.booking.management.domain.outbox.model.RoomOutboxMessage;
 import com.poly.booking.management.domain.message.reponse.RoomMessageResponse;
+import com.poly.domain.valueobject.BookingStatus;
 import com.poly.saga.SagaStep;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * BookingRoomSaga - Saga Step Implementation for Room Reservation Processing
@@ -31,7 +36,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ReserveRoomStep implements SagaStep<RoomMessageResponse> {
 
+
     private final RoomSagaHelper roomSagaHelper;
+
     /**
      * PROCESS METHOD - Xử lý chính của Saga Step
      * <p>
@@ -50,26 +57,46 @@ public class ReserveRoomStep implements SagaStep<RoomMessageResponse> {
      * - Cập nhật outbox message với trạng thái mới
      */
     @Override
+    @Transactional
     public void process(RoomMessageResponse data) {
         log.info("Processing room reservation for saga id: {}", data.getSagaId());
 
-        // Step 1: Validate outbox message to prevent duplicate processing
-        RoomOutboxMessage outboxMessage = roomSagaHelper.validateAndGetOutboxMessage(data);
-        if (outboxMessage == null) {
-            return; // Already processed
+        // Step 1: Validate & load outbox messages
+        List<RoomOutboxMessage> outboxMessages = roomSagaHelper.validateAndGetOutboxMessage(data);
+        if (outboxMessages.isEmpty()) {
+            log.warn("No outbox message found or already processed for saga id: {}", data.getSagaId());
+            return;
         }
 
-        // Step 2: Execute business logic - reserve room
-        BookingConfirmedEvent domainEvent = roomSagaHelper.executeRoomReservation(outboxMessage);
+        // Step 2: Lọc ra CONFIRMED messages
+        List<RoomOutboxMessage> confirmedMessages = outboxMessages.stream()
+                .filter(msg -> BookingStatus.DEPOSITED.equals(msg.getBookingStatus()))
+                .toList();
 
-        // Step 3: Update saga status and save outbox message
-        roomSagaHelper.updateSagaStatusAndSaveOutbox(outboxMessage, domainEvent);
+        if (confirmedMessages.isEmpty()) {
+            log.warn("No CONFIRMED outbox message found for booking: {}", data.getBookingId());
+            return;
+        }
 
-        // Step 4: Trigger next step - send QR code for check-ind reservation
+        if (confirmedMessages.size() > 1) {
+            log.error("Duplicate CONFIRMED room reservation detected for booking: {}", data.getBookingId());
+        }
+
+        // Lấy message đầu tiên
+        RoomOutboxMessage outboxMessageFinal = confirmedMessages.get(0);
+
+        // Step 3: Thực thi domain logic
+        BookingConfirmedEvent domainEvent = roomSagaHelper.executeRoomReservation(outboxMessageFinal);
+
+        // Step 4: Update saga state + outbox
+        roomSagaHelper.updateSagaStatusAndSaveOutbox(outboxMessageFinal, domainEvent);
+
+        // Step 5: Trigger bước tiếp theo (QR code check-in)
         roomSagaHelper.triggerSendQrCodeStep(domainEvent, data);
 
         log.info("Room reservation completed successfully for booking: {}",
                 domainEvent.getBooking().getId().getValue());
+
     }
 
     /**

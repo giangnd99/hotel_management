@@ -40,7 +40,15 @@ public class BookingMessageDataMapper {
     }
 
     public RoomMessageResponse bookingRoomAvroToRoom(BookingRoomResponseAvro bookingRoomResponseAvro) {
-        return RoomMessageResponse.builder().id(bookingRoomResponseAvro.getId()).bookingId(bookingRoomResponseAvro.getBookingId()).reason(bookingRoomResponseAvro.getReason()).roomResponseStatus(RoomStatus.valueOf(bookingRoomResponseAvro.getReservationStatus())).sagaId(bookingRoomResponseAvro.getSagaId()).totalPrice(bookingRoomResponseAvro.getTotalPrice()).rooms(roomsAvroToRooms(bookingRoomResponseAvro.getRooms())).build();
+        return RoomMessageResponse.builder()
+                .id(bookingRoomResponseAvro.getId())
+                .bookingId(bookingRoomResponseAvro.getBookingId())
+                .reason(bookingRoomResponseAvro.getReason())
+                .roomResponseStatus(bookingRoomResponseAvro.getReservationStatus().equals("SUCCESS")? RoomStatus.BOOKED: RoomStatus.VACANT)
+                .roomBookingStatus(RoomResponseStatus.SUCCESS)
+                .sagaId(bookingRoomResponseAvro.getSagaId())
+                .totalPrice(bookingRoomResponseAvro.getTotalPrice())
+                .rooms(roomsAvroToRooms(bookingRoomResponseAvro.getRooms())).build();
     }
 
     private List<Room> roomsAvroToRooms(List<com.poly.booking.management.domain.kafka.model.Room> roomsAvro) {
