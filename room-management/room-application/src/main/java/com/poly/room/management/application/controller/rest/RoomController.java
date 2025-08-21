@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/rooms")
@@ -91,7 +92,7 @@ public class RoomController {
 
     @GetMapping("/{roomId}")
     @Operation(summary = "Lấy thông tin phòng theo ID")
-    public ResponseEntity<RoomResponse> getRoomById(@PathVariable Long roomId) {
+    public ResponseEntity<RoomResponse> getRoomById(@PathVariable UUID roomId) {
         log.info("Getting room by id: {}", roomId);
         return roomService.getRoomById(roomId)
                 .map(ResponseEntity::ok)

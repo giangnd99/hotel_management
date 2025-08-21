@@ -35,9 +35,7 @@ public class RoomKafkaDataMapper {
         return roomsAvro.stream().map(roomAvro ->
                 Room.Builder.builder()
                         .id(new RoomId(UUID.fromString(roomAvro.getId())))
-                        .roomNumber(roomAvro.getRoomNumber())
                         .roomStatus(RoomStatus.valueOf(roomAvro.getStatus()))
-                        .roomPrice(Money.from(roomAvro.getBasePrice()))
                         .build()
         ).toList();
     }

@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class RoomCheckOutPublishScheduler implements OutboxScheduler {
+public class RoomCheckInPublishScheduler implements OutboxScheduler {
 
     private final RoomOutboxService roomOutboxService;
     private final RoomCheckOutMessagePublisher roomCheckOutMessagePublisher;
@@ -69,19 +69,20 @@ public class RoomCheckOutPublishScheduler implements OutboxScheduler {
 
         if (outboxMessagesResponse.isPresent() && !outboxMessagesResponse.get().isEmpty()) {
             List<RoomOutboxMessage> outboxMessages = outboxMessagesResponse.get();
-            outboxMessages.stream().filter(outboxMessage -> outboxMessage.getBookingStatus().equals(BookingStatus.CHECKED_OUT)).toList();
-            if (!outboxMessages.isEmpty()) {
-                log.info("Received {} RoomCheckOutOutboxMessage with ids: {}, sending to message bus!",
-                        outboxMessages.size(),
-                        outboxMessages.stream().map(outboxMessage ->
-                                outboxMessage.getId().toString()).collect(Collectors.joining(",")));
+            outboxMessages.forEach(outboxMessage -> {
 
-                // Gửi từng message đến Kafka topic
-                outboxMessages.forEach(outboxMessage ->
-                        roomCheckOutMessagePublisher.sendRoomCheckOutRequest(outboxMessage, this::updateOutboxStatus));
+                        if (outboxMessage.getBookingStatus().equals(BookingStatus.CHECKED_IN)) {
+                            log.info("Received {} RoomCheckOutOutboxMessage with ids: {}, sending to message bus!",
+                                    outboxMessages.size(),
+                                    outboxMessage.getId().toString());
 
-                log.info("{} RoomCheckOutOutboxMessage sent to message bus!", outboxMessages.size());
-            }
+                            roomCheckOutMessagePublisher.sendRoomCheckInRequest(outboxMessage, this::updateOutboxStatus);
+
+                            log.info("{} RoomCheckOutOutboxMessage sent to message bus!", outboxMessages.size());
+
+                        }
+                    }
+            );
         }
     }
 

@@ -9,6 +9,7 @@ import com.poly.room.management.domain.dto.response.RoomResponse;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface RoomService {
 
@@ -22,7 +23,7 @@ public interface RoomService {
 
     // CRUD Operations
     List<RoomResponse> getAllRooms(int page, int size);
-    Optional<RoomResponse> getRoomById(Long roomId);
+    Optional<RoomResponse> getRoomById(UUID roomId);
     Optional<RoomResponse> getRoomByNumber(String roomNumber);
     RoomResponse createRoom(CreateRoomRequest request);
     RoomResponse updateRoom(Long roomId, UpdateRoomRequest request);

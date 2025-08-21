@@ -2,7 +2,7 @@ package com.poly.booking.management.messaging.adapter.listener;
 
 import com.poly.booking.management.domain.port.in.message.listener.RoomCheckOutListener;
 import com.poly.booking.management.domain.message.reponse.RoomMessageResponse;
-import com.poly.booking.management.domain.saga.room.RoomCheckOutStep;
+import com.poly.booking.management.domain.saga.room.RoomCheckInStep;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class RoomCheckOutListenerImpl implements RoomCheckOutListener {
 
-    private final RoomCheckOutStep roomCheckOutStep;
+    private final RoomCheckInStep roomCheckInStep;
 
     /**
      * Xử lý room check out completed event
@@ -46,7 +46,7 @@ public class RoomCheckOutListenerImpl implements RoomCheckOutListener {
         
         try {
             // Thực hiện saga step để xử lý checkout
-            roomCheckOutStep.process(roomCheckOutResponseMessage);
+            roomCheckInStep.process(roomCheckOutResponseMessage);
             
             log.info("Room check out completed successfully for booking: {}", 
                     roomCheckOutResponseMessage.getBookingId());
@@ -72,7 +72,7 @@ public class RoomCheckOutListenerImpl implements RoomCheckOutListener {
         
         try {
             // Thực hiện rollback saga step
-            roomCheckOutStep.rollback(roomCheckOutResponseMessage);
+            roomCheckInStep.rollback(roomCheckOutResponseMessage);
             
             log.info("Room check out cancelled successfully for booking: {}", 
                     roomCheckOutResponseMessage.getBookingId());
