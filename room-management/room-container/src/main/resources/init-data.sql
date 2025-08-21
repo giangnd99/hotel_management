@@ -36,12 +36,12 @@ INSERT INTO room_types (type_name, description, base_price, max_occupancy) VALUE
 -- ==========================================================
 INSERT INTO rooms (room_id, room_type_id, room_number, floor, area, room_status, image_url) VALUES
                                                                                      (gen_random_uuid(), 1, '101', 1, '28m2', 'VACANT', 'https://picsum.photos/200/300'),
-                                                                                     (gen_random_uuid(), 1, '102', 1, '28m2', 'VACANT', 'https://picsum.photos/200/300'),
-                                                                                     (gen_random_uuid(), 1, '103', 1, '30m2', 'VACANT', 'https://picsum.photos/200/300'),
-                                                                                     (gen_random_uuid(), 1, '104', 1, '30m2', 'VACANT', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 1, '102', 1, '28m2', 'BOOKED', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 1, '103', 1, '30m2', 'CHECKED_IN', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 1, '104', 1, '30m2', 'MAINTENANCE', 'https://picsum.photos/200/300'),
 
-                                                                                     (gen_random_uuid(), 2, '201', 2, '35m2', 'VACANT', 'https://picsum.photos/200/300'),
-                                                                                     (gen_random_uuid(), 2, '202', 2, '35m2', 'VACANT', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 2, '201', 2, '35m2', 'CLEANING', 'https://picsum.photos/200/300'),
+                                                                                     (gen_random_uuid(), 2, '202', 2, '35m2', 'CHECKED_OUT', 'https://picsum.photos/200/300'),
                                                                                      (gen_random_uuid(), 2, '203', 2, '38m2', 'VACANT', 'https://picsum.photos/200/300'),
                                                                                      (gen_random_uuid(), 2, '204', 2, '38m2', 'VACANT', 'https://picsum.photos/200/300'),
 
