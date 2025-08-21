@@ -10,6 +10,7 @@ import com.poly.customerapplicationservice.dto.response.UserResponse;
 import com.poly.customerapplicationservice.message.CustomerBookingMessage;
 import com.poly.customerapplicationservice.port.input.CustomerUsecase;
 import com.poly.customerapplicationservice.port.output.feign.AuthenticationClient;
+import com.poly.customerapplicationservice.port.output.feign.NotificationClient;
 import com.poly.customerapplicationservice.port.output.publisher.CustomerCreationRequestPublisher;
 import com.poly.customerdomain.model.entity.Customer;
 import com.poly.customerdomain.model.entity.LoyaltyPoint;
@@ -39,11 +40,14 @@ public class CustomerApplicationService implements CustomerUsecase {
 
     private final AuthenticationClient authenticationClient;
 
-    public CustomerApplicationService(CustomerRepository customerRepo, LoyaltyPointRepository loyaltyRepo, CustomerCreationRequestPublisher customerCreationRequestPublisher, AuthenticationClient authenticationClient) {
+    private final NotificationClient notificationClient;
+
+    public CustomerApplicationService(CustomerRepository customerRepo, LoyaltyPointRepository loyaltyRepo, CustomerCreationRequestPublisher customerCreationRequestPublisher, AuthenticationClient authenticationClient, NotificationClient notificationClient) {
         this.customerRepository = customerRepo;
         this.loyaltyPointRepository = loyaltyRepo;
         this.customerCreationRequestPublisher = customerCreationRequestPublisher;
         this.authenticationClient = authenticationClient;
+        this.notificationClient = notificationClient;
     }
 
     @Override
@@ -75,7 +79,7 @@ public class CustomerApplicationService implements CustomerUsecase {
         log.info("User id created successfully: {} ", response.getId());
         log.info("Customer with id: {} created successfully", savedCustomer.getId().getValue().toString());
         customerCreationRequestPublisher.publish(creatMessage(savedCustomer, response));
-
+        notificationClient.sendAccountInfo(command.getEmail(), command.getPassword());
         return CustomerDto.from(newCustomer);
     }
 
