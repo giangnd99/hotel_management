@@ -15,7 +15,7 @@ public class CreateCustomerCommand {
     private String password;
     private String email;
     private String phone;
-    private UUID userId;
+//    private UUID userId;
     private String firstName;
     private String lastName;
     private AddressDto address;
