@@ -1,9 +1,8 @@
-<!-- /notification-management/src/main/resources/templates/email-template.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${subject}">Thông Báo</title>
+    <title th:text="${subject}">Thông Báo Tài Khoản</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; margin: 0; padding: 0; }
         .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden; }
@@ -19,24 +18,20 @@
 <body>
 <div class="container">
     <div class="header">
-        <span th:text="${subject}">Thông Báo Quan Trọng</span>
+        <span th:text="${subject}">Thông Báo Tài Khoản</span>
     </div>
     <div class="content">
         <p>Xin chào <span class="highlight" th:text="${userName}">Quý Khách</span>,</p>
-        <p th:text="${mainMessage}">Chúng tôi xin thông báo về dịch vụ của bạn.</p>
+        <p>Chúng tôi xin thông báo rằng tài khoản của bạn đã được tạo thành công.</p>
 
-        <div th:if="${bookingDetails}">
-            <p>Dưới đây là chi tiết đặt phòng của bạn:</p>
-            <ul>
-                <li>Mã đặt phòng: <span class="highlight" th:text="${bookingDetails['Mã đặt phòng']}">#BOOK123</span></li>
-                <li>Ngày đặt: <span th:text="${bookingDetails['Ngày đặt']}">2023-10-26</span></li>
-                <li>Loại phòng: <span th:text="${bookingDetails['Loại phòng']}">Phòng Đôi</span></li>
-                <li>Tổng tiền: <span th:text="${bookingDetails['Tổng tiền']}">1.500.000 VNĐ</span></li>
-            </ul>
-        </div>
+        <p>Dưới đây là thông tin tài khoản của bạn:</p>
+        <ul>
+            <li>Email: <span class="highlight" th:text="${email}">email@example.com</span></li>
+            <li>Mật khẩu: <span class="highlight" th:text="${password}">Mật khẩu của bạn</span></li>
+        </ul>
 
-        <div class="button-container" th:if="${actionLink}">
-            <a th:href="${actionLink}" class="button">Xem Chi Tiết</a>
+        <div class="button-container" th:if="${loginLink}">
+            <a th:href="${loginLink}" class="button">Đăng Nhập Ngay</a>
         </div>
 
         <p>Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi.</p>
@@ -45,7 +40,7 @@
     </div>
     <div class="footer">
         <p>&copy; <span th:text="${#dates.year(#dates.createNow())}">2023</span> [Nika Hotel/Dịch Vụ]. All rights reserved.</p>
-        <p>Địa chỉ: [Địa chỉ của bạn] | Điện thoại: [Số điện thoại]</p>
+        <p>Địa chỉ: [Địa chỉ của bạn] | Điện thoại: 0355157576</p>
     </div>
 </div>
 </body>
