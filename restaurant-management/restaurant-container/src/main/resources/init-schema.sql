@@ -87,3 +87,31 @@ INSERT IGNORE INTO menu_items (id, name, description, price, category_id, prepar
      (SELECT id FROM categories WHERE name = 'Desserts'), 5),
     (UUID(), 'Fresh Orange Juice', 'Freshly squeezed orange juice', 4.99,
      (SELECT id FROM categories WHERE name = 'Beverages'), 3);
+
+-- Tables table (for dine-in tables)
+CREATE TABLE IF NOT EXISTS tables (
+  id VARCHAR(36) PRIMARY KEY,
+  number INT NOT NULL,
+  status VARCHAR(50) NOT NULL DEFAULT 'AVAILABLE'
+);
+
+-- Seed sample tables
+INSERT IGNORE INTO tables (id, number, status) VALUES
+  (UUID(), 1, 'AVAILABLE'),
+  (UUID(), 2, 'AVAILABLE'),
+  (UUID(), 3, 'RESERVED'),
+  (UUID(), 4, 'OCCUPIED');
+
+-- Seed sample orders and order_items for API testing
+INSERT IGNORE INTO orders (id, order_number, customer_id, room_id, total_amount, status, payment_status, order_type, special_instructions)
+VALUES
+  ('order_001', 'R-1001', 'customer_001', 'ROOM-101', 30.98, 'COMPLETED', 'PAID', 'DINE_IN', 'No spice'),
+  ('order_002', 'R-1002', 'customer_001', 'ROOM-102', 28.99, 'IN_PROGRESS', 'PENDING', 'DINE_IN', 'Extra napkins'),
+  ('order_003', 'R-1003', 'customer_002', 'ROOM-201', 8.99, 'NEW', 'PENDING', 'TAKEAWAY', NULL);
+
+INSERT IGNORE INTO order_items (id, order_id, menu_item_id, quantity, unit_price, total_price, special_instructions)
+VALUES
+  (UUID(), 'order_001', (SELECT id FROM menu_items WHERE name='Caesar Salad' LIMIT 1), 1, 12.99, 12.99, NULL),
+  (UUID(), 'order_001', (SELECT id FROM menu_items WHERE name='Fresh Orange Juice' LIMIT 1), 2, 4.99, 9.98, NULL),
+  (UUID(), 'order_002', (SELECT id FROM menu_items WHERE name='Grilled Salmon' LIMIT 1), 1, 28.99, 28.99, 'Well done'),
+  (UUID(), 'order_003', (SELECT id FROM menu_items WHERE name='Chocolate Cake' LIMIT 1), 1, 8.99, 8.99, NULL);
