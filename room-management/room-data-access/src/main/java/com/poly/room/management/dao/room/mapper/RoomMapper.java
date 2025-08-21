@@ -29,7 +29,7 @@ public class RoomMapper {
                 .roomStatus(entity.getRoomStatus())
                 .roomNumber(entity.getRoomNumber())
                 .floor(entity.getFloor())
-                .roomNumber(entity.getImage_url())
+                .image_url(entity.getImage_url())
                 .build();
     }
 

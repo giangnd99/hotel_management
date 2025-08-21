@@ -38,6 +38,7 @@ public class Room extends BaseEntity<RoomId> {
         floor = builder.floor;
         roomType = builder.roomType;
         roomStatus = builder.roomStatus;
+        image_url = builder.image_url;
     }
 
     public void validate() {
