@@ -19,12 +19,13 @@ import java.util.UUID;
 public class RoomServiceEntity {
     
     @Id
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID serviceId;
     
     @Column(name = "room_number", nullable = false)
     private String roomNumber;
     
-    @Column(name = "guest_id")
+    @Column(name = "guest_id", columnDefinition = "uuid",updatable = false)
     private UUID guestId;
     
     @Column(name = "guest_name")

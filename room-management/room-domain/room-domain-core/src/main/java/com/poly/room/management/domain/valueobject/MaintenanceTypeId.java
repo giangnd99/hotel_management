@@ -2,9 +2,11 @@ package com.poly.room.management.domain.valueobject;
 
 import com.poly.domain.valueobject.BaseId;
 
-public class MaintenanceTypeId extends BaseId<Integer> {
+import java.util.UUID;
 
-    public MaintenanceTypeId(Integer value) {
+public class MaintenanceTypeId extends BaseId<UUID> {
+
+    public MaintenanceTypeId(UUID value) {
         super(value);
     }
 }

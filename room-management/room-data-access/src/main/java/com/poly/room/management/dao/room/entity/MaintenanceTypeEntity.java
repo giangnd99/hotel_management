@@ -1,16 +1,14 @@
 package com.poly.room.management.dao.room.entity;
 
 import com.poly.room.management.dao.roommaintenance.entity.RoomMaintenanceEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @AllArgsConstructor
@@ -21,7 +19,8 @@ import java.util.List;
 public class MaintenanceTypeEntity {
 
     @Id
-    private Integer maintenanceTypeId;
+    @Column(columnDefinition = "uuid",updatable = false)
+    private UUID maintenanceTypeId;
 
     private String name;
 

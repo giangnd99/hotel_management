@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class RoomTypeRepositoryImpl implements RoomTypeRepository {
     }
 
     @Override
-    public Optional<RoomType> findById(Integer id) {
+    public Optional<RoomType> findById(UUID id) {
         return jpaRepository.findById(id)
                 .map(this::mapToRoomType)
                 .or(() -> {
@@ -42,7 +43,7 @@ public class RoomTypeRepositoryImpl implements RoomTypeRepository {
     }
 
     @Override
-    public void deleteById(Integer id) {
+    public void deleteById(UUID id) {
         if (!jpaRepository.existsById(id)) {
             throw new RoomDomainException(String.format(ROOM_TYPE_NOT_FOUND, id));
         }
@@ -50,7 +51,7 @@ public class RoomTypeRepositoryImpl implements RoomTypeRepository {
     }
 
     @Override
-    public RoomType update(RoomType roomType, Integer id) {
+    public RoomType update(RoomType roomType, UUID id) {
         if (!jpaRepository.existsById(id)) {
             throw new RoomDomainException(String.format(ROOM_TYPE_NOT_FOUND, id));
         }
