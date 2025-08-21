@@ -53,7 +53,7 @@ public class CustomerApplicationService implements CustomerUsecase {
 
         Customer newCustomer = Customer.builder()
                 .customerId(CustomerId.generate())
-                .userId(UserId.from(response.getId() != null ? command.getUserId() : null))
+                .userId(UserId.from(UUID.fromString(response.getId())))
                 .name(Name.from(command.getFirstName().trim(), command.getLastName().trim()))
                 .address(Address.from(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity()))
                 .dateOfBirth(DateOfBirth.from(command.getDateOfBirth()))

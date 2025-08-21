@@ -1,5 +1,6 @@
 package com.poly.ai.management.domain.service.rag;
 
+import com.poly.ai.management.domain.dto.AIResponse;
 import com.poly.ai.management.domain.entity.ChatSession;
 import com.poly.ai.management.domain.port.input.service.HotelAiChatService;
 import com.poly.ai.management.domain.port.output.repository.ChatSessionRepository;
@@ -32,7 +33,7 @@ public class HotelAiChatServiceImpl implements HotelAiChatService {
     private final ChatSessionRepository chatSessionRepository; // Inject interface
 
     @Override
-    public String askLlama3WithRAG(String sessionId, String userQuery) {
+    public AIResponse askLlama3WithRAG(String sessionId, String userQuery) {
         log.info("Nhận truy vấn người dùng cho phiên {}: {}", sessionId, userQuery);
 
         // 1. Lấy lịch sử hội thoại hiện tại từ Redis hoặc khởi tạo mới nếu không tìm thấy
@@ -112,7 +113,10 @@ public class HotelAiChatServiceImpl implements HotelAiChatService {
         log.info("Đã lưu lịch sử hội thoại cho phiên {} vào Redis.", sessionId);
 
         log.info("Phản hồi từ Llama3: {}", responseContent);
-        return responseContent;
+        AIResponse response = new AIResponse();
+        response.setSessionId(sessionId);
+        response.setValue(responseContent);
+        return response;
     }
 
     public void clearChatHistory(String sessionId) {
