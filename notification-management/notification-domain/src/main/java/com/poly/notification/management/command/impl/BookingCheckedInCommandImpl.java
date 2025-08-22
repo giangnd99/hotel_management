@@ -25,12 +25,10 @@ public class BookingCheckedInCommandImpl implements BookingCheckedInCommand {
     private final QrCodeService qrCodeService;
     private final BookingConfirmedEmailResponsePublisher bookingConfirmedEmailResponsePublisher;
     private final ReceptionClient receptionClient;
-    //Dùng feign client yêu cầu phòng cập nhật trạng thái thành check-in
 
     @Override
     public void processCheckInByQrCodeWithBookingId(String bookingId, String staffId) {
         try {
-
 
             QrCodeScanResponse response = qrCodeService.scanQrCodeAndMarkAsScanned(bookingId);
             log.info("Response from scanning qr code: {}", response);

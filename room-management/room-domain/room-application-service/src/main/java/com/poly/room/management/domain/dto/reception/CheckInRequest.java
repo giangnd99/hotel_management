@@ -1,5 +1,6 @@
 package com.poly.room.management.domain.dto.reception;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,11 +15,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CheckInRequest {
-    @NotNull(message = "Guest ID is required")
-    private UUID guestId;
-
-    @NotNull(message = "Room number is required")
-    private String roomNumber;
+    @Nullable
+    private String bookingId;
 
     @NotNull(message = "Check-in date is required")
     private LocalDateTime checkInTime;
@@ -27,7 +25,10 @@ public class CheckInRequest {
     @Max(value = 10, message = "Number of guests cannot exceed 10")
     private Integer numberOfGuests;
 
+    @Nullable
     private String specialRequests;
+    @Nullable
     private String notes;
+    @Nullable
     private String checkedInBy;
 }

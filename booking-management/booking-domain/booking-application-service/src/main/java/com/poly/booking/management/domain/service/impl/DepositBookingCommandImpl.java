@@ -40,7 +40,7 @@ public class DepositBookingCommandImpl implements DepositBookingCommand {
 
 
             return DepositBookingResponse.builder()
-                    .booking(booking)
+                    .bookingId(booking.getId().getValue())
                     .urlPayment(responseClient.getPaymentLink())
                     .build();
         } catch (Exception e) {
