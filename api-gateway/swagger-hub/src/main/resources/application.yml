@@ -16,7 +16,6 @@ spring:
     instance:
       prefer-ip-address: true
 
-# Cấu hình các service endpoints
 services:
   swagger:
     inventory:

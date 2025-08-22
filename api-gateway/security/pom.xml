@@ -60,7 +60,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <image>
-                        <name>${project.groupId}/order.service:${project.version}</name>
+                        <name>${project.groupId}/security.service:${project.version}</name>
                     </image>
                 </configuration>
                 <executions>

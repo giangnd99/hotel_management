@@ -1,7 +1,10 @@
 package com.poly.authentication.service.domain.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.http.client.ClientHttpRequestFactorySettings;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.oauth2.client.*;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -23,6 +27,7 @@ import org.springframework.web.filter.CorsFilter;
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
 
     @Autowired
@@ -46,6 +51,9 @@ public class SecurityConfig {
             "/auth/callback"
     };
 
+    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
+    private String googleRedirectUri;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
@@ -55,11 +63,24 @@ public class SecurityConfig {
                         anyRequest().authenticated()
         );
 //
-        httpSecurity.oauth2Login(oauth2 -> oauth2
-                .successHandler((request, response, authentication) -> {
-                    response.sendRedirect("http://localhost:5173/login-success");
-                })
-        );
+        httpSecurity.oauth2Login(oauth2 ->
+                oauth2.successHandler((request, response, authentication) -> {
+                            response.sendRedirect(googleRedirectUri);
+                log.info("Authentication success: {}", authentication);
+                log.info("User: {}", authentication.getPrincipal());
+                log.info("Authorities: {}", authentication.getAuthorities());
+                log.info("Details: {}", authentication.getDetails());
+                log.info("Authenticated: {}", authentication.isAuthenticated());
+                log.info("Credentials: {}", authentication.getCredentials());
+                log.info("Name: {}", authentication.getName());
+                log.info("Principal: {}", authentication.getPrincipal());
+                log.info("Details: {}", authentication.getDetails());
+                log.info("Authenticated: {}", authentication.isAuthenticated());
+                log.info("Credentials: {}", authentication.getCredentials());
+                log.info("Name: {}", authentication.getName());
+                }
+
+                ));
 
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder)
