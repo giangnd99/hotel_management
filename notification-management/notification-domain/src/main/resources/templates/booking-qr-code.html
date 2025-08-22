@@ -146,8 +146,7 @@
         <div class="qr-section">
             <h3>📱 QR Code Check-in</h3>
             <div class="qr-code">
-                <img th:src="'data:image/png;base64,' + ${qrCodeBase64}" alt="QR Code" style="width: 300px; height: 300px;">
-            </div>
+                <img th:src="${qrCodeImageUrl}" alt="QR Code" style="width: 300px; height: 300px;">            </div>
             <p>Mã QR chứa thông tin đặt phòng của bạn</p>
         </div>
 
