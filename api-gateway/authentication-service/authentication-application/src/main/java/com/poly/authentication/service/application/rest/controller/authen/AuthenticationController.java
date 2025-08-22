@@ -13,6 +13,7 @@ import com.poly.authentication.service.domain.port.in.service.AuthenticationServ
 import com.poly.authentication.service.domain.port.in.service.GoogleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,17 +34,17 @@ public class AuthenticationController {
     @PostMapping("/token")
     public ApiResponse<AuthenticationResponse> authenticationResponseApiResponse(@RequestBody AuthenticationRequest request) {
 
-        var result = authenticationService.authenticate(request);
+         AuthenticationResponse response = authenticationService.authenticate(request);
 
         return ApiResponse.<AuthenticationResponse>builder().
-                result(result).
+                result(response).
                 build();
     }
 
     @PostMapping("/introspect")
     ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request) throws ParseException, JOSEException {
 
-        var result = authenticationService.introspect(request);
+        IntrospectResponse result = authenticationService.introspect(request);
 
         return ApiResponse.<IntrospectResponse>builder().result(result).build();
     }

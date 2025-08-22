@@ -8,8 +8,8 @@ booking-service:
   room-check-in-topic-name: room-check-in-request
   customer-topic-name: customer-booking-topic
   booking-notification-request-topic-name: notification-send-mail-request
-  outbox-scheduler-fixed-rate: 10000
-  outbox-scheduler-initial-delay: 10000
+  outbox-scheduler-fixed-rate: 1000
+  outbox-scheduler-initial-delay: 1000
 spring:
   application:
     name: booking-management

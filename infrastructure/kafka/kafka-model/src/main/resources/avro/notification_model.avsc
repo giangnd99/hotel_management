@@ -20,7 +20,7 @@
     },
     {
       "name": "customerEmail",
-      "type": "string",
+      "type": ["null", "string"],
       "doc": "Email address for sending the notification"
     },
     {

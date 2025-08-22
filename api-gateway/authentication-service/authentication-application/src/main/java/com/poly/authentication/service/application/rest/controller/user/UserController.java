@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UserUpdatedRequest request) {
+    ApiResponse<UserResponse> updateUser(@PathVariable String userId,@Valid @RequestBody UserUpdatedRequest request) {
         return ApiResponse.<UserResponse>builder().
                 result(userService.updateUser(UUID.fromString(userId), request)).
                 build();

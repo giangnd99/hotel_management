@@ -52,14 +52,16 @@ public class QrCodeService {
     @Transactional
     public String createQrCode(String data) {
         try {
-
+            // Validate input
+            if (data == null || data.trim().isEmpty()) {
+                throw new QrCodeException("Data không được để trống");
+            }
 
             Optional<QrCode> existingQrCode = qrCodeRepository.findByDataAndIsActiveTrue(data);
             if (existingQrCode.isPresent()) {
                 throw new QrCodeException("QR code với data này đã tồn tại");
             }
 
-            // Tạo QR code entity
             QrCode qrCode = new QrCode();
             qrCode.setData(data);
             qrCode.setWidth(DEFAULT_WIDTH);
@@ -67,13 +69,13 @@ public class QrCodeService {
             qrCode.setFormat(DEFAULT_FORMAT);
             qrCode.setDescription("Deposit for payment with booking ID: " + data);
 
+            BufferedImage qrCodeImage = generateQrCodeImage(data, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
             String cloudinaryUrl = cloudinaryQrCodeService.createQrCodeAndUploadToCloudinary(
-                    qrCode.getData(),
+                    qrCodeImage,
                     qrCode.getWidth(),
                     qrCode.getHeight(),
-                    qrCode.getFormat()
-            );
+                    qrCode.getFormat());
 
             qrCode.setQrCodeImagePath(cloudinaryUrl);
             log.info("QR CODE CLOUDINARY URL: {}", cloudinaryUrl);
@@ -131,53 +133,6 @@ public class QrCodeService {
         return qrCodes.stream()
                 .map(this::createQrCodeResponse)
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * Cập nhật QR code
-     */
-    public QrCodeResponse updateQrCode(Long id, QrCodeRequest request) {
-        QrCode qrCode = qrCodeRepository.findById(id)
-                .orElseThrow(() -> new QrCodeException("Không tìm thấy QR code với ID: " + id));
-
-        if (!qrCode.getIsActive()) {
-            throw new QrCodeException("Không thể cập nhật QR code đã bị xóa");
-        }
-
-        // Cập nhật thông tin
-        if (request.getData() != null && !request.getData().equals(qrCode.getData())) {
-            // Kiểm tra xem data mới có trùng với QR code khác không
-            Optional<QrCode> existingQrCode = qrCodeRepository.findByDataAndIsActiveTrue(request.getData());
-            if (existingQrCode.isPresent() && !existingQrCode.get().getId().equals(id)) {
-                throw new QrCodeException("QR code với data này đã tồn tại");
-            }
-            qrCode.setData(request.getData());
-        }
-
-        if (request.getWidth() != null) qrCode.setWidth(request.getWidth());
-        if (request.getHeight() != null) qrCode.setHeight(request.getHeight());
-        if (request.getFormat() != null) qrCode.setFormat(request.getFormat());
-        if (request.getDescription() != null) qrCode.setDescription(request.getDescription());
-
-        // Nếu thay đổi kích thước hoặc data, tạo lại image và upload lên Cloudinary
-        if ((request.getWidth() != null && !request.getWidth().equals(qrCode.getWidth())) ||
-                (request.getHeight() != null && !request.getHeight().equals(qrCode.getHeight())) ||
-                (request.getData() != null && !request.getData().equals(qrCode.getData()))) {
-
-            String newCloudinaryUrl = cloudinaryQrCodeService.createQrCodeAndUploadToCloudinary(
-                    qrCode.getData(),
-                    qrCode.getWidth(),
-                    qrCode.getHeight(),
-                    qrCode.getFormat()
-            );
-
-            qrCode.setQrCodeImagePath(newCloudinaryUrl);
-        }
-
-        qrCode.setUpdatedAt(LocalDateTime.now());
-        QrCode updatedQrCode = qrCodeRepository.save(qrCode);
-
-        return createQrCodeResponse(updatedQrCode);
     }
 
     /**
@@ -283,10 +238,47 @@ public class QrCodeService {
      * Kiểm tra format image có hợp lệ không
      */
     private boolean isValidImageFormat(String format) {
-        if (format == null) return false;
+        if (format == null)
+            return false;
         String upperFormat = format.toUpperCase();
         return upperFormat.equals("PNG") || upperFormat.equals("JPG") ||
                 upperFormat.equals("JPEG") || upperFormat.equals("GIF");
+    }
+
+    /**
+     * Tạo QR code image từ thư viện ZXing
+     */
+    private BufferedImage generateQrCodeImage(String data, int width, int height) throws WriterException {
+        try {
+            // Cấu hình hints cho QR code
+            Map<EncodeHintType, Object> hints = new HashMap<>();
+            hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+            hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+            hints.put(EncodeHintType.MARGIN, 2);
+
+            // Tạo QR code writer
+            QRCodeWriter qrCodeWriter = new QRCodeWriter();
+
+            // Encode data thành bit matrix
+            BitMatrix bitMatrix = qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, width, height, hints);
+
+            // Tạo BufferedImage từ bit matrix
+            BufferedImage qrCodeImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+            // Vẽ QR code lên image
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    qrCodeImage.setRGB(x, y, bitMatrix.get(x, y) ? Color.BLACK.getRGB() : Color.WHITE.getRGB());
+                }
+            }
+
+            log.info("Đã tạo QR code image thành công với kích thước {}x{}", width, height);
+            return qrCodeImage;
+
+        } catch (WriterException e) {
+            log.error("Lỗi khi tạo QR code image: {}", e.getMessage());
+            throw new QrCodeException("Không thể tạo QR code image: " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -343,7 +335,8 @@ public class QrCodeService {
 
     /**
      * Tạo QrCodeScanResponse từ QrCode entity
-     * Trong thực tế, bạn sẽ cần gọi các service khác để lấy thông tin booking và customer
+     * Trong thực tế, bạn sẽ cần gọi các service khác để lấy thông tin booking và
+     * customer
      */
     private QrCodeScanResponse createQrCodeScanResponse(QrCode qrCode, String bookingId) {
         // TODO: Trong thực tế, bạn sẽ cần gọi:

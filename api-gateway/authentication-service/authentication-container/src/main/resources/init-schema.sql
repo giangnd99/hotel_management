@@ -23,6 +23,6 @@ CREATE TABLE users (
 -- Table: token_entity
 -- Assuming token_entity is the table name for TokenEntity
 CREATE TABLE token_entity (
-                              id VARCHAR(255) PRIMARY KEY,
-                              expiry_time TIMESTAMP
+    id VARCHAR(255) PRIMARY KEY,
+    expiry_time TIMESTAMP
 );

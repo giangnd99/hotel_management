@@ -3,17 +3,17 @@ package com.poly.booking.management.domain.service.impl;
 import com.poly.booking.management.domain.dto.BookingDto;
 import com.poly.booking.management.domain.dto.BookingStatisticsDto;
 import com.poly.booking.management.domain.dto.request.CreateBookingRequest;
+import com.poly.booking.management.domain.dto.request.CreateCustomerCommand;
 import com.poly.booking.management.domain.dto.request.UpdateBookingRequest;
 import com.poly.booking.management.domain.dto.response.CustomerDto;
 import com.poly.booking.management.domain.dto.response.DepositBookingResponse;
 import com.poly.booking.management.domain.entity.Booking;
-import com.poly.booking.management.domain.entity.BookingRoom;
 import com.poly.booking.management.domain.entity.Customer;
 import com.poly.booking.management.domain.port.out.client.CustomerClient;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.port.out.repository.CustomerRepository;
 
-import com.poly.booking.management.domain.saga.command.BookingCreateHelper;
+import com.poly.booking.management.domain.saga.create.BookingCreateHelper;
 import com.poly.booking.management.domain.service.BookingService;
 import com.poly.booking.management.domain.service.DepositBookingCommand;
 import com.poly.domain.valueobject.*;
@@ -115,7 +115,20 @@ public class BookingServiceImpl implements BookingService {
                     CustomerDto response = customerClient.getCustomerById(request.getCustomerId());
                     if (response == null) {
                         log.error("Customer not found!");
-                        throw new RuntimeException("Customer not found!");
+                        log.info("Creating new customer with id: {}", request.getCustomerId());
+                        CreateCustomerCommand requestCustomer =
+                                CreateCustomerCommand.builder()
+                                        .phone(request.getCustomerPhone())
+                                        .email(request.getCustomerEmail())
+                                        .firstName("Update")
+                                        .lastName("Need to be")
+                                        .password("NikkaHotelAdmin")
+                                        .dateOfBirth(LocalDate.now())
+                                        .sex("MALE")
+                                        .build();
+                        log.info("Creating new customer with request: {}", requestCustomer);
+                        customerClient.createCustomer(requestCustomer);
+                        log.info("Customer creation request sent to customer service!");
                     }
                     Customer newCustomer = mapToCustomer(response);
                     newCustomer.setEmail(request.getCustomerEmail());

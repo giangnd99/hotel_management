@@ -1,4 +1,4 @@
-package com.poly.customerapplicationservice.port.output.feign;
+package com.poly.authentication.service.domain.port.out.httpclient;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
