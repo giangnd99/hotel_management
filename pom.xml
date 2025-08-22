@@ -9,13 +9,13 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.poly</groupId>
-    <artifactId>hotel_management</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>pom</packaging>
+        <groupId>com.poly</groupId>
+        <artifactId>hotel_management</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <packaging>pom</packaging>
 
-    <name>hotel_management</name>
-    <description>hotel_management</description>
+        <name>hotel_management</name>
+        <description>hotel_management</description>
 
     <url/>
 
@@ -289,7 +289,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>java-dotenv</artifactId>
+            <version>5.2.2</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

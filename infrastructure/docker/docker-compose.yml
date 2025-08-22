@@ -1,5 +1,22 @@
 version: '3.8'
 services:
+  eureka-service:
+    image: com.poly/eureka.service:0.0.1-SNAPSHOT
+    container_name: eureka-service
+    ports:
+      - "8761:8761"
+    networks:
+      - hotel_network
+
+  swagger-hub:
+    image: com.poly/swagger-hub.service:0.0.1-SNAPSHOT
+    container_name: swagger-hub-service
+    ports:
+      - "8800:8800"
+    networks:
+      - hotel_network
+
+
   ollama:
     build: ./ollama
     container_name: ollama
@@ -208,4 +225,6 @@ volumes:
   ollama_models:
 networks:
   kafka-net:
+    driver: bridge
+  hotel_network:
     driver: bridge
