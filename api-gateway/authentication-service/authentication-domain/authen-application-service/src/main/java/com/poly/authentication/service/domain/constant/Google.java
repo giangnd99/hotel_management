@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class Google {
 
-    @Value("${google.client.id}")
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
     public static String CLIENT_ID;
 
-    @Value("${google.client.secret}")
+    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
     public static String CLIENT_SECRET;
     public static final String REDIRECT_URI = "http://localhost:5173/login-success";
     public static final String TOKEN_URL = "https://oauth2.googleapis.com/token";

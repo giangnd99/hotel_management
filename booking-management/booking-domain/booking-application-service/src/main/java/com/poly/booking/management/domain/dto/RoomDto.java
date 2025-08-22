@@ -14,10 +14,10 @@ public class RoomDto {
     private String roomId;
     private String roomNumber;
     private Long roomTypeId;
-    private String roomTypeName; // Added for convenience in DTO
-    private String roomDescription; // Added for convenience
+    private String roomTypeName;
+    private String roomDescription;
     private RoomStatus status;
     private int floor;
-    private int capacity; // Added for convenience
-    private java.math.BigDecimal basePrice; // Added for convenience
+    private int capacity;
+    private java.math.BigDecimal basePrice;
 }

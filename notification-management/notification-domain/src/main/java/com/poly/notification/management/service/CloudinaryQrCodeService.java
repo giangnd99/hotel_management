@@ -62,7 +62,6 @@ public class CloudinaryQrCodeService {
             // Convert image thành MultipartFile
             MultipartFile multipartFile = convertImageToMultipartFile(qrCodeImage, qrFormat, data);
 
-            // Upload lên Cloudinary
             log.info("Uploading QR code lên Cloudinary...");
             UploadResponseDto uploadResponse = cloudinaryClient.uploadImage(multipartFile);
 
