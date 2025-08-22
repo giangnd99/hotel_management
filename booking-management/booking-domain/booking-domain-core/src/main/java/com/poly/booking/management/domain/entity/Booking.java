@@ -83,7 +83,7 @@ public class Booking extends AggregateRoot<BookingId> {
      * Xác nhận đặt cọc, chuyển sang trạng thái CONFIRMED.
      */
     public void confirmBooking() {
-        validateStatusForConfirmDeposit();
+//        validateStatusForConfirmDeposit();
         status = BookingStatus.CONFIRMED;
     }
 
@@ -168,7 +168,7 @@ public class Booking extends AggregateRoot<BookingId> {
     }
 
     private void validateStatusForConfirmDeposit() {
-        if (!BookingStatus.PENDING.equals(status)) {
+        if (!BookingStatus.DEPOSITED.equals(status)) {
             throw new BookingDomainException("Booking is not pending for confirmation");
         }
     }

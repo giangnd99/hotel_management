@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -16,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UpdateRoomTypeRequest {
     @NotNull(message = "Room type ID is required for update")
-    private Integer roomTypeId;
+    private UUID roomTypeId;
 
     @NotBlank(message = "New type name is required")
     private String typeName;

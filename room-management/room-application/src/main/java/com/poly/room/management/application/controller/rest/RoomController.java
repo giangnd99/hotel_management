@@ -119,7 +119,7 @@ public class RoomController {
     @PutMapping("/{roomId}")
     @Operation(summary = "Cập nhật thông tin phòng")
     public ResponseEntity<RoomResponse> updateRoom(
-            @PathVariable Long roomId,
+            @PathVariable UUID roomId,
             @Valid @RequestBody UpdateRoomRequest request) {
         log.info("Updating room: {}", roomId);
         RoomResponse updatedRoom = roomService.updateRoom(roomId, request);
@@ -128,7 +128,7 @@ public class RoomController {
 
     @DeleteMapping("/{roomId}")
     @Operation(summary = "Xóa phòng")
-    public ResponseEntity<Void> deleteRoom(@PathVariable Long roomId) {
+    public ResponseEntity<Void> deleteRoom(@PathVariable UUID roomId) {
         log.info("Deleting room: {}", roomId);
         roomService.deleteRoom(roomId);
         return ResponseEntity.noContent().build();
@@ -203,7 +203,7 @@ public class RoomController {
     @PutMapping("/{roomId}/status")
     @Operation(summary = "Cập nhật trạng thái phòng")
     public ResponseEntity<RoomResponse> updateRoomStatus(
-            @PathVariable Long roomId,
+            @PathVariable UUID roomId,
             @RequestParam String status) {
         log.info("Updating room status: {} to {}", roomId, status);
         RoomResponse updatedRoom = roomService.updateRoomStatus(roomId, status);
@@ -212,7 +212,7 @@ public class RoomController {
 
     @PutMapping("/{roomId}/available")
     @Operation(summary = "Đặt phòng thành khả dụng")
-    public ResponseEntity<RoomResponse> setRoomAvailable(@PathVariable Long roomId) {
+    public ResponseEntity<RoomResponse> setRoomAvailable(@PathVariable UUID roomId) {
         log.info("Setting room available: {}", roomId);
         RoomResponse updatedRoom = roomService.setRoomAvailable(roomId);
         return ResponseEntity.ok(updatedRoom);
@@ -220,7 +220,7 @@ public class RoomController {
 
     @PutMapping("/{roomId}/occupied")
     @Operation(summary = "Đặt phòng thành đang sử dụng")
-    public ResponseEntity<RoomResponse> setRoomOccupied(@PathVariable Long roomId) {
+    public ResponseEntity<RoomResponse> setRoomOccupied(@PathVariable UUID roomId) {
         log.info("Setting room occupied: {}", roomId);
         RoomResponse updatedRoom = roomService.setRoomOccupied(roomId);
         return ResponseEntity.ok(updatedRoom);
@@ -228,7 +228,7 @@ public class RoomController {
 
     @PutMapping("/{roomId}/maintenance")
     @Operation(summary = "Đặt phòng vào bảo trì")
-    public ResponseEntity<RoomResponse> setRoomMaintenance(@PathVariable Long roomId) {
+    public ResponseEntity<RoomResponse> setRoomMaintenance(@PathVariable UUID roomId) {
         log.info("Setting room maintenance: {}", roomId);
         RoomResponse updatedRoom = roomService.setRoomMaintenance(roomId);
         return ResponseEntity.ok(updatedRoom);
@@ -236,7 +236,7 @@ public class RoomController {
 
     @PutMapping("/{roomId}/cleaning")
     @Operation(summary = "Đặt phòng vào dọn dẹp")
-    public ResponseEntity<RoomResponse> setRoomCleaning(@PathVariable Long roomId) {
+    public ResponseEntity<RoomResponse> setRoomCleaning(@PathVariable UUID roomId) {
         log.info("Setting room cleaning: {}", roomId);
         RoomResponse updatedRoom = roomService.setRoomCleaning(roomId);
         return ResponseEntity.ok(updatedRoom);
@@ -254,7 +254,7 @@ public class RoomController {
 
     @GetMapping("/types/{typeId}")
     @Operation(summary = "Lấy thông tin loại phòng theo ID")
-    public ResponseEntity<RoomTypeDto> getRoomTypeById(@PathVariable Long typeId) {
+    public ResponseEntity<RoomTypeDto> getRoomTypeById(@PathVariable UUID typeId) {
         log.info("Getting room type by id: {}", typeId);
         return roomService.getRoomTypeById(typeId)
                 .map(ResponseEntity::ok)
@@ -272,7 +272,7 @@ public class RoomController {
     @PutMapping("/types/{typeId}")
     @Operation(summary = "Cập nhật loại phòng")
     public ResponseEntity<RoomTypeDto> updateRoomType(
-            @PathVariable Long typeId,
+            @PathVariable UUID typeId,
             @Valid @RequestBody RoomTypeDto request) {
         log.info("Updating room type: {}", typeId);
         RoomTypeDto updatedRoomType = roomService.updateRoomType(typeId, request);
@@ -281,7 +281,7 @@ public class RoomController {
 
     @DeleteMapping("/types/{typeId}")
     @Operation(summary = "Xóa loại phòng")
-    public ResponseEntity<Void> deleteRoomType(@PathVariable Long typeId) {
+    public ResponseEntity<Void> deleteRoomType(@PathVariable UUID typeId) {
         log.info("Deleting room type: {}", typeId);
         roomService.deleteRoomType(typeId);
         return ResponseEntity.noContent().build();
@@ -316,7 +316,7 @@ public class RoomController {
 
     @GetMapping("/{roomId}/availability")
     @Operation(summary = "Kiểm tra khả dụng của phòng")
-    public ResponseEntity<Boolean> checkRoomAvailability(@PathVariable Long roomId) {
+    public ResponseEntity<Boolean> checkRoomAvailability(@PathVariable UUID roomId) {
         log.info("Checking availability for room: {}", roomId);
         Boolean isAvailable = roomService.checkRoomAvailability(roomId);
         return ResponseEntity.ok(isAvailable);
@@ -337,7 +337,7 @@ public class RoomController {
     @PostMapping("/{roomId}/maintenance/schedule")
     @Operation(summary = "Lên lịch bảo trì phòng")
     public ResponseEntity<Void> scheduleRoomMaintenance(
-            @PathVariable Long roomId,
+            @PathVariable UUID roomId,
             @RequestParam String maintenanceType,
             @RequestParam String description,
             @RequestParam String scheduledDate) {
@@ -348,7 +348,7 @@ public class RoomController {
 
     @PutMapping("/{roomId}/maintenance/complete")
     @Operation(summary = "Hoàn thành bảo trì phòng")
-    public ResponseEntity<RoomResponse> completeRoomMaintenance(@PathVariable Long roomId) {
+    public ResponseEntity<RoomResponse> completeRoomMaintenance(@PathVariable UUID roomId) {
         log.info("Completing maintenance for room: {}", roomId);
         RoomResponse updatedRoom = roomService.completeRoomMaintenance(roomId);
         return ResponseEntity.ok(updatedRoom);
@@ -368,7 +368,7 @@ public class RoomController {
 
     @PutMapping("/{roomId}/cleaning/complete")
     @Operation(summary = "Hoàn thành dọn dẹp phòng")
-    public ResponseEntity<RoomResponse> completeRoomCleaning(@PathVariable Long roomId) {
+    public ResponseEntity<RoomResponse> completeRoomCleaning(@PathVariable UUID roomId) {
         log.info("Completing cleaning for room: {}", roomId);
         RoomResponse updatedRoom = roomService.completeRoomCleaning(roomId);
         return ResponseEntity.ok(updatedRoom);
@@ -397,7 +397,7 @@ public class RoomController {
     @PutMapping("/{roomId}/price")
     @Operation(summary = "Cập nhật giá phòng")
     public ResponseEntity<RoomResponse> updateRoomPrice(
-            @PathVariable Long roomId,
+            @PathVariable UUID roomId,
             @RequestParam Double newPrice) {
         log.info("Updating room price: {} to {}", roomId, newPrice);
         RoomResponse updatedRoom = roomService.updateRoomPrice(roomId, newPrice);

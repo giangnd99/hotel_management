@@ -23,8 +23,8 @@ public class SendConfirmEmailCommandImpl implements SendBookingConfirmCommand {
             log.info("Bắt đầu xử lý xác nhận đặt phòng cho booking id: {}", message.getBookingId());
 
             // Lấy thông tin từ notification
-            String bookingId = message.getBookingId(); // Giả sử message chứa bookingId
-            String userEmail = message.getCustomerEmail(); // Giả sử userId chứa email
+            String bookingId = message.getBookingId(); 
+            String userEmail = message.getCustomerEmail();
 
             // Tạo QR code và gửi email
             bookingQrCodeService.createQrCodeAndSendEmail(bookingId, userEmail);

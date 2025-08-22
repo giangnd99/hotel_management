@@ -19,6 +19,7 @@ import java.util.UUID;
 public class CheckInEntity {
     
     @Id
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID id;
     
     private UUID bookingId;

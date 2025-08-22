@@ -21,15 +21,18 @@ public class GoogleServiceImpl implements GoogleService {
     private final OutboundIdentityClient outboundIdentityClient;
     private final OutboundUserClient outboundUserClient;
     private final AuthenticationService authenticationService;
+    private final Google google;
 
     public String getAccessToken(String code) {
-        var response = outboundIdentityClient.exchangeToken(ExchangeTokenRequest.builder()
-                .clientId(Google.CLIENT_ID)
-                .clientSecret(Google.CLIENT_SECRET)
-                .redirectUri(Google.REDIRECT_URI)
+        ExchangeTokenRequest request = ExchangeTokenRequest.builder()
+                .clientId(google.CLIENT_ID)
+                .clientSecret(google.CLIENT_SECRET)
+                .redirectUri(google.REDIRECT_URI)
                 .grantType(Google.GRANT_TYPE)
                 .code(code)
-                .build());
+                .build();
+
+        var response = outboundIdentityClient.exchangeToken(request);
 
         log.info("Access token: {}", response.getAccessToken());
         return response.getAccessToken();

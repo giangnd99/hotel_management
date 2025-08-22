@@ -106,3 +106,49 @@ Caused by: org.springframework.util.PlaceholderResolutionException: Could not re
 	at org.springframework.boot.actuate.autoconfigure.web.server.OnManagementPortCondition.getMatchOutcome(OnManagementPortCondition.java:49)
 	at org.springframework.boot.autoconfigure.condition.SpringBootCondition.matches(SpringBootCondition.java:47)
 	... 24 common frames omitted
+2025-08-21 22:29:23 [main] INFO  c.p.p.c.PromotionManagementApplication - Starting PromotionManagementApplication using Java 17.0.12 with PID 11684 (D:\fpoly\hotel_management\promotion-management\promotion-container\target\classes started by Admin in D:\fpoly\hotel_management)
+2025-08-21 22:29:23 [main] DEBUG c.p.p.c.PromotionManagementApplication - Running with Spring Boot v3.4.5, Spring v6.2.6
+2025-08-21 22:29:23 [main] INFO  c.p.p.c.PromotionManagementApplication - The following 1 profile is active: "dev"
+2025-08-21 22:29:25 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-21 22:29:25 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 7 ms. Found 0 JPA repository interfaces.
+2025-08-21 22:29:25 [main] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.support.BeanDefinitionOverrideException: Invalid bean definition with name 'expirationManagementStep' defined in class path resource [com/poly/promotion/application/batch/BatchConfig.class]: Cannot register bean definition [Root bean: class=null; scope=; abstract=false; lazyInit=null; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; fallback=false; factoryBeanName=batchConfig; factoryMethodName=expirationManagementStep; initMethodNames=null; destroyMethodNames=[(inferred)]; defined in class path resource [com/poly/promotion/application/batch/BatchConfig.class]] for bean 'expirationManagementStep' since there is already [Generic bean: class=com.poly.promotion.application.batch.step.ExpirationManagementStep; scope=singleton; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; fallback=false; factoryBeanName=null; factoryMethodName=null; initMethodNames=null; destroyMethodNames=null; defined in file [D:\fpoly\hotel_management\promotion-management\promotion-application\target\classes\com\poly\promotion\application\batch\step\ExpirationManagementStep.class]] bound.
+2025-08-21 22:29:25 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-08-21 22:29:25 [main] ERROR o.s.b.d.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The bean 'expirationManagementStep', defined in class path resource [com/poly/promotion/application/batch/BatchConfig.class], could not be registered. A bean with that name has already been defined in file [D:\fpoly\hotel_management\promotion-management\promotion-application\target\classes\com\poly\promotion\application\batch\step\ExpirationManagementStep.class] and overriding is disabled.
+
+Action:
+
+Consider renaming one of the beans or enabling overriding by setting spring.main.allow-bean-definition-overriding=true
+
+2025-08-21 22:50:03 [main] INFO  c.p.p.c.PromotionManagementApplication - Starting PromotionManagementApplication using Java 17.0.12 with PID 13964 (D:\fpoly\hotel_management\promotion-management\promotion-container\target\classes started by Admin in D:\fpoly\hotel_management)
+2025-08-21 22:50:03 [main] DEBUG c.p.p.c.PromotionManagementApplication - Running with Spring Boot v3.4.5, Spring v6.2.6
+2025-08-21 22:50:03 [main] INFO  c.p.p.c.PromotionManagementApplication - The following 1 profile is active: "dev"
+2025-08-21 22:50:04 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-21 22:50:04 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 5 ms. Found 0 JPA repository interfaces.
+2025-08-21 22:50:04 [main] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.support.BeanDefinitionOverrideException: Invalid bean definition with name 'expirationManagementStep' defined in class path resource [com/poly/promotion/application/batch/BatchConfig.class]: Cannot register bean definition [Root bean: class=null; scope=; abstract=false; lazyInit=null; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; fallback=false; factoryBeanName=batchConfig; factoryMethodName=expirationManagementStep; initMethodNames=null; destroyMethodNames=[(inferred)]; defined in class path resource [com/poly/promotion/application/batch/BatchConfig.class]] for bean 'expirationManagementStep' since there is already [Generic bean: class=com.poly.promotion.application.batch.step.ExpirationManagementStep; scope=singleton; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; fallback=false; factoryBeanName=null; factoryMethodName=null; initMethodNames=null; destroyMethodNames=null; defined in file [D:\fpoly\hotel_management\promotion-management\promotion-application\target\classes\com\poly\promotion\application\batch\step\ExpirationManagementStep.class]] bound.
+2025-08-21 22:50:04 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-08-21 22:50:04 [main] ERROR o.s.b.d.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The bean 'expirationManagementStep', defined in class path resource [com/poly/promotion/application/batch/BatchConfig.class], could not be registered. A bean with that name has already been defined in file [D:\fpoly\hotel_management\promotion-management\promotion-application\target\classes\com\poly\promotion\application\batch\step\ExpirationManagementStep.class] and overriding is disabled.
+
+Action:
+
+Consider renaming one of the beans or enabling overriding by setting spring.main.allow-bean-definition-overriding=true
+

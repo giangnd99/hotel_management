@@ -12,11 +12,30 @@
     <artifactId>restaurant-messaging</artifactId>
 
     <dependencies>
-        <!-- Messaging module disabled for now → keep module compilable with minimal deps -->
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>kafka-json-message</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.poly</groupId>
             <artifactId>restaurant-application-service</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>kafka-consumer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>kafka-producer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>kafka-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>kafka-config-data</artifactId>
         </dependency>
     </dependencies>
 

@@ -246,9 +246,9 @@ public class BookingController {
 
     @PutMapping("/{bookingId}/payment/confirm")
     @Operation(summary = "Xác nhận thanh toán booking")
-    public ResponseEntity<DepositBookingResponse> confirmBookingPayment(@PathVariable String bookingId) {
+    public ResponseEntity<DepositBookingResponse> confirmBookingPayment(@PathVariable UUID bookingId) {
         log.info("Confirming payment for booking: {}", bookingId);
-        DepositBookingResponse updatedBooking = bookingService.confirmBookingPayment(UUID.fromString(bookingId));
+        DepositBookingResponse updatedBooking = bookingService.confirmBookingPayment(bookingId);
         return ResponseEntity.ok(updatedBooking);
     }
 

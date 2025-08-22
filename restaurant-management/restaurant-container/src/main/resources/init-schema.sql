@@ -1,4 +1,5 @@
 -- Create database for restaurant service
+DROP DATABASE IF EXISTS restaurant;
 CREATE DATABASE IF NOT EXISTS restaurant;
 
 -- Use the restaurant database

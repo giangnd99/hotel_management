@@ -96,7 +96,7 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    public List<Room> findByRoomTypeId(Integer roomTypeId, int page, int size) {
+    public List<Room> findByRoomTypeId(String roomTypeId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return jpaRepository.findByRoomType_RoomTypeId(roomTypeId, pageable).getContent().stream()
                 .map(roomMapper::toDomain)
@@ -202,7 +202,7 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    public Long countByRoomTypeId(Integer roomTypeId) {
+    public Long countByRoomTypeId(UUID roomTypeId) {
         return jpaRepository.countByRoomType_RoomTypeId(roomTypeId);
     }
 

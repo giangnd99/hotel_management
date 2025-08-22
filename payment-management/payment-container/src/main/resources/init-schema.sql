@@ -1,18 +1,10 @@
+DROP SCHEMA IF EXISTS payment_db CASCADE;
 -- Đảm bảo schema tồn tại
 CREATE SCHEMA IF NOT EXISTS payment_db;
 
 -- Đặt đường dẫn tìm kiếm để làm cho các câu lệnh ngắn gọn hơn
 SET search_path TO payment_db;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
--- Xóa các bảng nếu chúng đã tồn tại để tránh lỗi
-DROP TABLE IF EXISTS invoice_payment CASCADE;
-DROP TABLE IF EXISTS invoice_restaurant CASCADE;
-DROP TABLE IF EXISTS invoice_service CASCADE;
-DROP TABLE IF EXISTS invoice_voucher CASCADE;
-DROP TABLE IF EXISTS invoice_booking CASCADE;
-DROP TABLE IF EXISTS payment CASCADE;
-DROP TABLE IF EXISTS invoice CASCADE;
 
 -- Tạo bảng `invoice`
 CREATE TABLE invoice (

@@ -17,7 +17,7 @@ public class UpdateRoomRequest {
 
     private String roomId;
 
-    private Integer roomTypeId;
+    private UUID roomTypeId;
 
     @Min(value = 1, message = "Floor must be at least 1")
     @Max(value = 50, message = "Floor cannot exceed 50")

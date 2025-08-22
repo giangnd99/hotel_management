@@ -4,9 +4,11 @@ import com.poly.domain.valueobject.BaseId;
 import com.poly.domain.valueobject.CompositeId;
 import com.poly.domain.valueobject.CompositeKey;
 
-public class FurnitureRequirementId extends BaseId<Integer> {
+import java.util.UUID;
 
-    public FurnitureRequirementId(Integer value) {
+public class FurnitureRequirementId extends BaseId<UUID> {
+
+    public FurnitureRequirementId(UUID value) {
         super(value);
     }
 }

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -15,7 +16,7 @@ import java.math.BigDecimal;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
 public class RoomTypeDto {
-    private Long typeId;
+    private UUID typeId;
     private String typeName;
     private String description;
     private BigDecimal basePrice;
