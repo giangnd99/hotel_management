@@ -15,7 +15,7 @@
     },
     {
       "name": "customerId",
-      "type": "string",
+      "type": ["null", "string"],
       "doc": "ID of the customer"
     },
     {

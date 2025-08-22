@@ -7,6 +7,7 @@ import com.poly.booking.management.domain.dto.request.UpdateBookingRequest;
 import com.poly.booking.management.domain.dto.response.CustomerDto;
 import com.poly.booking.management.domain.dto.response.DepositBookingResponse;
 import com.poly.booking.management.domain.entity.Booking;
+import com.poly.booking.management.domain.entity.BookingRoom;
 import com.poly.booking.management.domain.entity.Customer;
 import com.poly.booking.management.domain.port.out.client.CustomerClient;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
@@ -260,24 +261,27 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public BookingDto checkInBooking(UUID bookingId) {
+    public List<UUID> checkInBooking(UUID bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         booking.checkIn();
+        booking.setActualCheckInDate(DateCustom.now());
         Booking checkedInBooking = bookingRepository.save(booking);
-        return mapToDto(checkedInBooking);
+
+        return checkedInBooking.getBookingRooms().stream().map(
+                bookingRoom -> bookingRoom.getRoom().getId().getValue()).toList();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public BookingDto checkOutBooking(UUID bookingId) {
+    public List<UUID> checkOutBooking(UUID bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
-
         booking.checkOut();
         Booking checkedOutBooking = bookingRepository.save(booking);
-        return mapToDto(checkedOutBooking);
+        return checkedOutBooking.getBookingRooms().stream().map(bookingRoom ->
+                bookingRoom.getRoom().getId().getValue()).toList();
     }
 
     @Override

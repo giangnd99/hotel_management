@@ -14,10 +14,10 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class NotificationMessageAvro extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -1800596602416332346L;
+  private static final long serialVersionUID = -6775223824507488060L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"NotificationMessageAvro\",\"namespace\":\"com.poly.booking.management.domain.kafka.model\",\"fields\":[{\"name\":\"id\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Unique ID for the message, acting as correlationId\"},{\"name\":\"bookingId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"ID of the booking this notification is for\"},{\"name\":\"customerId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"ID of the customer\"},{\"name\":\"customerEmail\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Email address for sending the notification\"},{\"name\":\"qrCode\",\"type\":[\"null\",{\"type\":\"string\",\"avro.java.string\":\"String\"}],\"doc\":\"QR code data, can be null for requests\",\"default\":null},{\"name\":\"notificationType\",\"type\":{\"type\":\"enum\",\"name\":\"NotificationType\",\"symbols\":[\"BOOKING_CONFIRMATION\",\"CHECK_IN\"]},\"doc\":\"Type of notification message\"},{\"name\":\"messageStatus\",\"type\":{\"type\":\"enum\",\"name\":\"MessageStatus\",\"symbols\":[\"SUCCESS\",\"FAILED\",\"PENDING\"]},\"doc\":\"Status of the message processing\"}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"NotificationMessageAvro\",\"namespace\":\"com.poly.booking.management.domain.kafka.model\",\"fields\":[{\"name\":\"id\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Unique ID for the message, acting as correlationId\"},{\"name\":\"bookingId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"ID of the booking this notification is for\"},{\"name\":\"customerId\",\"type\":[\"null\",{\"type\":\"string\",\"avro.java.string\":\"String\"}],\"doc\":\"ID of the customer\"},{\"name\":\"customerEmail\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Email address for sending the notification\"},{\"name\":\"qrCode\",\"type\":[\"null\",{\"type\":\"string\",\"avro.java.string\":\"String\"}],\"doc\":\"QR code data, can be null for requests\",\"default\":null},{\"name\":\"notificationType\",\"type\":{\"type\":\"enum\",\"name\":\"NotificationType\",\"symbols\":[\"BOOKING_CONFIRMATION\",\"CHECK_IN\"]},\"doc\":\"Type of notification message\"},{\"name\":\"messageStatus\",\"type\":{\"type\":\"enum\",\"name\":\"MessageStatus\",\"symbols\":[\"SUCCESS\",\"FAILED\",\"PENDING\"]},\"doc\":\"Status of the message processing\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -767,7 +767,13 @@ public class NotificationMessageAvro extends org.apache.avro.specific.SpecificRe
 
     out.writeString(this.bookingId);
 
-    out.writeString(this.customerId);
+    if (this.customerId == null) {
+      out.writeIndex(0);
+      out.writeNull();
+    } else {
+      out.writeIndex(1);
+      out.writeString(this.customerId);
+    }
 
     out.writeString(this.customerEmail);
 
@@ -794,7 +800,12 @@ public class NotificationMessageAvro extends org.apache.avro.specific.SpecificRe
 
       this.bookingId = in.readString();
 
-      this.customerId = in.readString();
+      if (in.readIndex() != 1) {
+        in.readNull();
+        this.customerId = null;
+      } else {
+        this.customerId = in.readString();
+      }
 
       this.customerEmail = in.readString();
 
@@ -821,7 +832,12 @@ public class NotificationMessageAvro extends org.apache.avro.specific.SpecificRe
           break;
 
         case 2:
-          this.customerId = in.readString();
+          if (in.readIndex() != 1) {
+            in.readNull();
+            this.customerId = null;
+          } else {
+            this.customerId = in.readString();
+          }
           break;
 
         case 3:

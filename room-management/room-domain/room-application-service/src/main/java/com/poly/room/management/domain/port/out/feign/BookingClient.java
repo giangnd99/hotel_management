@@ -10,7 +10,7 @@ import java.util.UUID;
 @FeignClient(name = "booking-service", url = "localhost:8083/api/bookings")
 public interface BookingClient {
 
-    @GetMapping(value = "/{bookingId}")
+    @GetMapping(value = "/{bookingId}/check-in")
     FindRoomIdBookingWhenCheckInResponse findRoomIdBookingWhenCheckIn(@PathVariable UUID bookingId);
 
 }
