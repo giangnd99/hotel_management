@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.util.Map;
@@ -26,7 +27,6 @@ import java.util.Map;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
-
     private final AuthenticationService authenticationService;
     private final GoogleService googleService;
 
@@ -78,7 +78,7 @@ public class AuthenticationController {
 
         try {
             UserGGResponse user = googleService.getUserResponse(code);
-
+            //redirect ở đây được ko
             return ApiResponse.<String>builder()
                     .result(user.getToken())
                     .build();
