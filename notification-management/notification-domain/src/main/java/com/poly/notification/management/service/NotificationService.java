@@ -219,8 +219,6 @@ public class NotificationService {
      *
      * @param userEmail Email của tài khoản mới.
      * @param password Mật khẩu của tài khoản mới.
-     * @param userName Tên người dùng (tùy chọn).
-     * @param loginLink Liên kết đến trang đăng nhập (tùy chọn).
      * @return Trạng thái gửi thông báo Email.
      */
     public String sendAccountInfo( String userEmail, String password, String userName, String loginLink) {
