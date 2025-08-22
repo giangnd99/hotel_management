@@ -67,8 +67,8 @@ public class BookingCancellationKafkaListener implements KafkaConsumer<BookingRo
     @Override
     @KafkaListener(topics = "room-cancel-response-topic",groupId = "booking-cancellation-group")
     public void receive(@Payload List<BookingRoomResponseAvro> messages,
-                        @Header(KafkaHeaders.KEY) List<String> keys,
-                        @Header(KafkaHeaders.PARTITION) List<Integer> partitions,
+                        @Header(KafkaHeaders.RECEIVED_KEY) List<String> keys,
+                        @Header(KafkaHeaders.RECEIVED_PARTITION) List<Integer> partitions,
                         @Header(KafkaHeaders.OFFSET) List<Long> offsets) {
         log.info("Received {} booking cancellation messages from Kafka", messages.size());
 

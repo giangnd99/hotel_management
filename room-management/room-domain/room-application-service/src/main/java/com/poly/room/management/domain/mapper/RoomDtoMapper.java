@@ -46,6 +46,7 @@ public class RoomDtoMapper {
                 .floor(room.getFloor())
                 .roomType(roomTypeMapper.toResponse(room.getRoomType()))
                 .roomStatus(room.getRoomStatus().name())
+                .image_url(room.getImage_url())
                 .build();
     }
 }

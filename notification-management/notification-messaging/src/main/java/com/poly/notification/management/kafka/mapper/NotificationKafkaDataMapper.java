@@ -24,6 +24,12 @@ public class NotificationKafkaDataMapper {
 
     public NotificationMessage toEntity(NotificationMessageAvro notificationModelAvro) {
         return NotificationMessage.builder()
+                .id(notificationModelAvro.getId())
+                .bookingId(notificationModelAvro.getBookingId())
+                .customerId(notificationModelAvro.getCustomerId())
+                .customerEmail(notificationModelAvro.getCustomerEmail())
+                .notificationType(com.poly.notification.management.message.NotificationType.valueOf(notificationModelAvro.getNotificationType().name()))
+                .messageStatus(com.poly.notification.management.message.MessageStatus.valueOf(notificationModelAvro.getMessageStatus().name()))
                 .build();
     }
 }

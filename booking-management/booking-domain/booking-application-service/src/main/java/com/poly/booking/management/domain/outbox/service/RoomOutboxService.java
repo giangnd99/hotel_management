@@ -5,10 +5,13 @@ import com.poly.booking.management.domain.outbox.payload.ReservedEventPayload;
 import com.poly.domain.valueobject.BookingStatus;
 import com.poly.outbox.OutboxStatus;
 import com.poly.saga.SagaStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.poly.saga.booking.SagaConstant.BOOKING_SAGA_NAME;
 
 public interface RoomOutboxService {
 
@@ -33,4 +36,6 @@ public interface RoomOutboxService {
 
     void deleteRoomOutboxMessageByOutboxStatusAndSagaStatus(OutboxStatus outboxStatus,
                                                             SagaStatus... sagaStatus);
+
+    Optional<List<RoomOutboxMessage>> getRoomOutboxMessagesBySagaIdAndSagaStatus(UUID sagaId, SagaStatus... statuses);
 }

@@ -178,7 +178,7 @@ public class BookingCancellationSagaHelper {
      * @return Booking entity
      */
     private Booking findBooking(String bookingId) {
-        return bookingRepository.findById(new BookingId(UUID.fromString(bookingId)))
+        return bookingRepository.findById((UUID.fromString(bookingId)))
                 .orElseThrow(() -> new RuntimeException("Booking not found for cancellation: " + bookingId));
     }
 

@@ -7,6 +7,7 @@ import com.poly.room.management.domain.entity.Cost;
 import com.poly.room.management.domain.entity.Room;
 import com.poly.room.management.domain.entity.RoomCost;
 import com.poly.room.management.domain.event.RoomBookedEvent;
+import com.poly.room.management.domain.exception.RoomDomainException;
 import com.poly.room.management.domain.port.out.publisher.reponse.BookingRoomReservePublisher;
 import com.poly.room.management.domain.port.out.repository.RoomRepository;
 import com.poly.room.management.domain.service.RoomDomainService;
@@ -17,6 +18,7 @@ import com.poly.room.management.domain.message.BookingRoomResponseMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -28,23 +30,19 @@ public class RoomBookingCommand {
 
     private final RoomRepository roomRepository;
     private final RoomEventService roomEventService;
-    private final RoomDomainService roomDomainService;
     private final BookingRoomReservePublisher roomBookedResponseKafkaPublisher;
 
+    @Transactional
     public void process(BookingRoomRequestMessage bookingRoomRequestMessage) {
 
         log.info("Processing booking rooms request message: {}", bookingRoomRequestMessage);
         List<Room> rooms = validateRoomMessage(bookingRoomRequestMessage);
 
-        // Kiểm tra nếu trạng thái là DEPOSITED (đã đặt cọc)
         if (BookingStatus.DEPOSITED.name().equalsIgnoreCase(bookingRoomRequestMessage.getBookingStatus())) {
             log.info("Processing DEPOSITED status for booking ID: {}", bookingRoomRequestMessage.getBookingId());
 
-            // Cập nhật trạng thái tất cả các phòng trong danh sách
             for (Room room : rooms) {
                 try {
-                    // Tạo event đặt phòng
-
 
                     room.addRoomCost(RoomCost.builder()
                             .cost(Cost.builder()
@@ -56,9 +54,10 @@ public class RoomBookingCommand {
                             .room(room)
                             .id(UUID.randomUUID().toString())
                             .build());
+                    RoomBookedEvent bookedEvent = roomEventService.bookedRoom(room);
                     // Cập nhật trạng thái phòng trong database
                     roomRepository.update(room);
-                    RoomBookedEvent bookedEvent = roomEventService.bookedRoom(room);
+
                     log.info("Successfully updated room status to BOOKED for room: {}",
                             bookedEvent.getRoom().getRoomNumber());
 
@@ -68,6 +67,7 @@ public class RoomBookingCommand {
                 }
             }
 
+            bookingRoomRequestMessage.setRooms(rooms);
             // Tạo response message để gửi về booking service
             BookingRoomResponseMessage responseMessage = createSuccessResponseMessage(bookingRoomRequestMessage);
 
@@ -86,7 +86,16 @@ public class RoomBookingCommand {
 
     private List<Room> validateRoomMessage(
             BookingRoomRequestMessage bookingRoomRequestMessage) {
-        List<Room> rooms = bookingRoomRequestMessage.getRooms();
+        List<Room> rooms =
+                bookingRoomRequestMessage.getRooms()
+                .stream()
+                .map(
+                room -> roomRepository.findById(
+                        room.getId().getValue())
+                        .orElseThrow(() -> new RoomDomainException
+                                ("Not found room with id " + room.getId().getValue().toString())))
+                .toList();
+
         if (rooms.isEmpty()) {
             throw new IllegalArgumentException("Room not found");
         }

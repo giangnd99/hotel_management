@@ -44,6 +44,7 @@
         <module>restaurant-management</module>
         <module>promotion-management</module>
         <module>service-management</module>
+        <module>cloudinary-service</module>
     </modules>
 
     <scm>

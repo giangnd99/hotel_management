@@ -2,6 +2,7 @@ package com.poly.booking.management.domain.saga.payment;
 
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.event.BookingDepositedEvent;
+import com.poly.booking.management.domain.event.BookingEvent;
 import com.poly.booking.management.domain.exception.BookingDomainException;
 import com.poly.booking.management.domain.mapper.RoomDataMapper;
 import com.poly.booking.management.domain.outbox.model.PaymentOutboxMessage;
@@ -66,14 +67,14 @@ public class DepositSagaHelper {
     /**
      * Thực hiện business logic hoàn tất thanh toán
      *
-     * @param paymentResponse PaymentMessageResponse từ external service
+     * @param bookingId PaymentMessageResponse từ external service
      * @return BookingPaidEvent domain event
      */
-    public BookingDepositedEvent executePaymentCompletion(PaymentMessageResponse paymentResponse) {
-        log.info("Executing payment completion for booking: {}", paymentResponse.getBookingId());
+    public Booking executePaymentCompletion(UUID bookingId) {
+        log.info("Executing payment completion for booking: {}", bookingId);
 
         // Thực hiện business logic thanh toán thông qua saga helper
-        return completePaymentForBooking(paymentResponse);
+        return completePaymentForBooking(bookingId);
     }
 
     /**
@@ -104,15 +105,15 @@ public class DepositSagaHelper {
      * @param domainEvent Domain event chứa thông tin booking
      * @param sagaId      ID của saga
      */
-    public void triggerRoomReservationStep(BookingDepositedEvent domainEvent, String sagaId) {
+    public void triggerRoomReservationStep(Booking domainEvent, String sagaId) {
         log.info("Triggering room reservation step for booking: {}",
-                domainEvent.getBooking().getId().getValue());
+                domainEvent.getId().getValue());
 
         // Tạo room outbox message để trigger room reservation step
         roomOutboxServiceImpl.saveRoomOutboxMessage(
                 roomDataMapper.bookingDepositedEventToBookingReservedEventPayload(domainEvent),
-                domainEvent.getBooking().getStatus(),
-                bookingSagaHelper.bookingStatusToSagaStatus(domainEvent.getBooking().getStatus()),
+                domainEvent.getStatus(),
+                bookingSagaHelper.bookingStatusToSagaStatus(domainEvent.getStatus()),
                 OutboxStatus.STARTED,
                 UUID.fromString(sagaId));
     }
@@ -150,7 +151,7 @@ public class DepositSagaHelper {
         log.info("Executing payment rollback for booking: {}", paymentResponse.getBookingId());
 
         // Tìm booking entity
-        Booking booking = bookingSagaHelper.findBooking(paymentResponse.getBookingId());
+        Booking booking = bookingSagaHelper.findBooking(UUID.fromString(paymentResponse.getBookingId()));
 
         // Thực hiện cancel booking
         bookingDomainService.cancelBooking(booking);
@@ -281,14 +282,13 @@ public class DepositSagaHelper {
     /**
      * Thực hiện business logic hoàn tất thanh toán
      *
-     * @param data PaymentMessageResponse chứa thông tin thanh toán
+     * @param bookingId PaymentMessageResponse chứa thông tin thanh toán
      * @return BookingPaidEvent domain event
      */
-    public BookingDepositedEvent completePaymentForBooking(PaymentMessageResponse data) {
-        log.info("Completing payment for booking with id: {}", data.getBookingId());
-        Booking booking = bookingSagaHelper.findBooking(data.getBookingId());
+    public Booking completePaymentForBooking(UUID bookingId) {
+        log.info("Completing payment for booking with id: {}", bookingId);
+        Booking booking = bookingSagaHelper.findBooking(bookingId);
         BookingDepositedEvent domainEvent = bookingDomainService.depositBooking(booking);
-        bookingRepository.save(booking);
-        return domainEvent;
+        return bookingRepository.save(domainEvent.getBooking());
     }
 }

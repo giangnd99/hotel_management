@@ -38,6 +38,12 @@ public class RoomOutboxServiceImpl implements RoomOutboxService {
 
     @Override
     @Transactional(readOnly = true)
+    public Optional<List<RoomOutboxMessage>> getRoomOutboxMessagesBySagaIdAndSagaStatus(UUID sagaId, SagaStatus... statuses) {
+        return roomReserveOutBoxRepository.findAllByTypeAndSagaIdAndSagaStatus(BOOKING_SAGA_NAME, sagaId, statuses);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Optional<List<RoomOutboxMessage>> getRoomOutboxMessageByBookingIdAndStatus(OutboxStatus outboxStatus, SagaStatus... sagaStatus) {
         return roomReserveOutBoxRepository.findByTypeAndOutboxStatusAndSagaStatus(BOOKING_SAGA_NAME, outboxStatus, sagaStatus);
     }
@@ -55,6 +61,7 @@ public class RoomOutboxServiceImpl implements RoomOutboxService {
     }
 
     @Override
+    @Transactional
     public RoomOutboxMessage getUpdatedRoomOutBoxMessage(RoomOutboxMessage roomOutboxMessage,
                                                          BookingStatus status,
                                                          SagaStatus sagaStatus) {
@@ -63,6 +70,7 @@ public class RoomOutboxServiceImpl implements RoomOutboxService {
         roomOutboxMessage.setProcessedAt(LocalDateTime.now());
 
         roomOutboxMessage = roomReserveOutBoxRepository.save(roomOutboxMessage);
+        log.info("Updated booking approval outbox message with payload: {}", roomOutboxMessage.getPayload());
         log.info("Updated booking approval outbox message with id: {}", roomOutboxMessage.getId());
         return roomOutboxMessage;
     }
@@ -92,6 +100,7 @@ public class RoomOutboxServiceImpl implements RoomOutboxService {
                 .id(UUID.randomUUID())
                 .sagaId(uuid)
                 .type(BOOKING_SAGA_NAME)
+                .bookingId(UUID.fromString(reservedEventPayload.getBookingId()))
                 .sagaStatus(sagaStatus)
                 .outboxStatus(outboxStatus)
                 .payload(createPayload(reservedEventPayload))

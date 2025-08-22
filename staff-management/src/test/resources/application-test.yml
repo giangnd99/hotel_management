@@ -1,8 +1,10 @@
 spring:
+  application:
+    name: staff-management-test
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    username: sa
-    password: 
+    url: ${STAFF_TEST_DATASOURCE_URL:jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
+    username: ${STAFF_TEST_DATASOURCE_USERNAME:sa}
+    password: ${STAFF_TEST_DATASOURCE_PASSWORD:}
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
@@ -12,6 +14,19 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
+  liquibase:
+    enabled: false
   h2:
     console:
       enabled: true
+      path: /h2-console
+
+server:
+  port: ${STAFF_MANAGEMENT_PORT:0}
+
+logging:
+  level:
+    com.poly.staff: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

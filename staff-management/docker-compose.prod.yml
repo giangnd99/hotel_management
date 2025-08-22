@@ -1,0 +1,172 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (Production)
+  postgres:
+    image: postgres:15-alpine
+    container_name: staff-postgres-prod
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-hotel_management}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - staff-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-hotel_management}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    security_opt:
+      - no-new-privileges:true
+    read_only: false
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+
+  # Staff Management Application (Production)
+  staff-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_VERSION: ${BUILD_VERSION:-latest}
+    container_name: staff-management-app-prod
+    environment:
+      # Application port
+      STAFF_MANAGEMENT_PORT: ${STAFF_MANAGEMENT_PORT:-8085}
+      
+      # Database configuration
+      STAFF_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-hotel_management}
+      STAFF_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      STAFF_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      
+      # JPA configuration
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_JPA_SHOW_SQL: false
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_PROPERTIES_HIBERNATE_CONNECTION_POOL_SIZE: 10
+      SPRING_JPA_PROPERTIES_HIBERNATE_CONNECTION_TIMEOUT: 30000
+      
+      # Liquibase configuration
+      SPRING_LIQUIBASE_ENABLED: true
+      SPRING_LIQUIBASE_CONTEXTS: production
+      
+      # Logging configuration
+      LOGGING_LEVEL_COM_POLY_STAFF: ${LOG_LEVEL:-INFO}
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB: ${LOG_LEVEL:-INFO}
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_LIQUIBASE: ${LOG_LEVEL:-INFO}
+      LOGGING_LEVEL_ROOT: ${LOG_LEVEL:-WARN}
+      
+      # Jackson configuration
+      SPRING_JACKSON_DEFAULT_PROPERTY_INCLUSION: NON_NULL
+      SPRING_JACKSON_SERIALIZATION_WRITE_DATES_AS_TIMESTAMPS: false
+      
+      # Swagger configuration
+      SPRINGDOC_API_DOCS_PATH: /api-docs
+      SPRINGDOC_SWAGGER_UI_PATH: /swagger-ui.html
+      SPRINGDOC_SWAGGER_UI_ENABLED: ${SWAGGER_ENABLED:-false}
+      
+      # JVM options for production
+      JAVA_OPTS: "-Xms${JVM_XMS:-1g} -Xmx${JVM_XMX:-2g} -XX:+UseG1GC -XX:+UseContainerSupport -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp -Djava.security.egd=file:/dev/./urandom"
+      
+      # Security
+      SERVER_TOMCAT_ACCESS_LOG_ENABLED: true
+      SERVER_TOMCAT_ACCESS_LOG_PATTERN: '%t %a "%r" %s (%D ms)'
+      
+      # Management endpoints
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,metrics,prometheus
+      MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS: when-authorized
+      MANAGEMENT_ENDPOINT_HEALTH_SHOW_COMPONENTS: always
+      
+      # Prometheus metrics
+      MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED: true
+      MANAGEMENT_METRICS_TAGS_APPLICATION: staff-management
+      
+    ports:
+      - "${STAFF_MANAGEMENT_PORT:-8085}:8085"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - staff-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8085/actuator/health"]
+      interval: 60s
+      timeout: 15s
+      retries: 3
+      start_period: 120s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '2.0'
+        reservations:
+          memory: 1G
+          cpus: '1.0'
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/cache
+    volumes:
+      - app_logs:/app/logs
+      - /tmp
+
+  # Redis (Optional - for caching)
+  redis:
+    image: redis:7-alpine
+    container_name: staff-redis-prod
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis123}
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - staff-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+    profiles:
+      - cache
+
+volumes:
+  postgres_data:
+    driver: local
+  app_logs:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  staff-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+    driver_opts:
+      com.docker.network.bridge.name: staff-br0

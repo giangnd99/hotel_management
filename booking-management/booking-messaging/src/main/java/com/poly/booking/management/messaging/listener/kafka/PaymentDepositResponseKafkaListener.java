@@ -158,11 +158,11 @@ public class PaymentDepositResponseKafkaListener implements KafkaConsumer<Bookin
     private void processPaymentByStatus(BookingPaymentResponseAvro bookingPaymentResponseAvro) {
         PaymentStatus paymentStatus = bookingPaymentResponseAvro.getPaymentStatus();
 
-        if (PaymentStatus.COMPLETED.equals(paymentStatus)) {
+        if (paymentStatus.compareTo(PaymentStatus.COMPLETED) == 0) {
             // Xử lý payment thành công
             processCompletedPayment(bookingPaymentResponseAvro);
-        } else if (PaymentStatus.FAILED.equals(paymentStatus) ||
-                PaymentStatus.CANCELLED.equals(paymentStatus)) {
+        } else if (paymentStatus.compareTo(PaymentStatus.FAILED) == 0 ||
+                paymentStatus.compareTo(PaymentStatus.CANCELLED) == 0) {
             // Xử lý payment thất bại hoặc bị hủy
             processFailedPayment(bookingPaymentResponseAvro);
         } else {

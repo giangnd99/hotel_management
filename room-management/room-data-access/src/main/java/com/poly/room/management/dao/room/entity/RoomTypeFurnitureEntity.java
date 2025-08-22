@@ -6,15 +6,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
+@Table(name = "room_type_furniture")
 public class RoomTypeFurnitureEntity {
 
     @Id
-    private Integer roomTypeFurnitureId;
+    @Column(columnDefinition = "uuid",updatable = false)
+    private UUID roomTypeFurnitureId;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "room_type_id")

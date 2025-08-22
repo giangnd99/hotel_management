@@ -1,18 +1,10 @@
+DROP SCHEMA IF EXISTS payment_db CASCADE;
 -- Đảm bảo schema tồn tại
 CREATE SCHEMA IF NOT EXISTS payment_db;
 
 -- Đặt đường dẫn tìm kiếm để làm cho các câu lệnh ngắn gọn hơn
 SET search_path TO payment_db;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
--- Xóa các bảng nếu chúng đã tồn tại để tránh lỗi
-DROP TABLE IF EXISTS invoice_payment CASCADE;
-DROP TABLE IF EXISTS invoice_restaurant CASCADE;
-DROP TABLE IF EXISTS invoice_service CASCADE;
-DROP TABLE IF EXISTS invoice_voucher CASCADE;
-DROP TABLE IF EXISTS invoice_booking CASCADE;
-DROP TABLE IF EXISTS payment CASCADE;
-DROP TABLE IF EXISTS invoice CASCADE;
 
 -- Tạo bảng `invoice`
 CREATE TABLE invoice (
@@ -109,10 +101,8 @@ CREATE INDEX idx_invoice_restaurant_booking_id ON invoice_restaurant(invoice_boo
 -- Tạo bảng `invoice_payment`
 CREATE TABLE invoice_payment (
                                  id UUID PRIMARY KEY,
-                                 invoice_id UUID,
-                                 payment_id UUID NOT NULL,
-                                 FOREIGN KEY (invoice_id) REFERENCES invoice (id) ON DELETE CASCADE,
-                                 FOREIGN KEY (payment_id) REFERENCES payment (id) ON DELETE CASCADE
+                                 invoice_id UUID ,
+                                 payment_id UUID
 );
 
 -- Thêm ràng buộc UNIQUE để ngăn chặn việc liên kết thanh toán trùng lặp

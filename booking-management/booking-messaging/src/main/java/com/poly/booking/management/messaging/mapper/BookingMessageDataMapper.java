@@ -1,6 +1,7 @@
 package com.poly.booking.management.messaging.mapper;
 
 import com.poly.booking.management.domain.kafka.model.*;
+import com.poly.booking.management.domain.kafka.model.PaymentStatus;
 import com.poly.booking.management.domain.message.reponse.BookingPaymentPendingResponse;
 import com.poly.booking.management.domain.outbox.payload.ReservedEventPayload;
 import com.poly.booking.management.domain.message.reponse.CustomerCreatedMessageResponse;
@@ -11,7 +12,6 @@ import com.poly.booking.management.domain.outbox.payload.PaymentEventPayload;
 import com.poly.booking.management.domain.outbox.payload.RoomEventPayload;
 import com.poly.booking.management.domain.outbox.payload.NotifiEventPayload;
 import com.poly.domain.valueobject.*;
-import com.poly.domain.valueobject.PaymentStatus;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -21,39 +21,51 @@ import java.util.UUID;
 @Component
 public class BookingMessageDataMapper {
 
-    public BookingPaymentPendingResponseAvro toBookingPaymentPendingResponseAvro(BookingPaymentPendingResponse message) {
-        return BookingPaymentPendingResponseAvro.newBuilder()
-                .setBookingId(message.getBookingId())
-                .setCustomerId(message.getCustomerId())
-                .setPaymentBookingStatus(PaymentBookingStatus.valueOf(message.getPaymentBookingStatus().name()))
-                .setCreatedAt(message.getCreatedAt())
-                .setId(message.getId())
-                .setSagaId(message.getSagaId())
-                .setPrice(message.getPrice())
-                .setCreatedAt(message.getCreatedAt())
-                .setUrlPayment(message.getUrlPayment())
-                .build();
-    }
-
     public CustomerCreatedMessageResponse customerAvroToCustomerEntity(CustomerModelAvro customerModelAvro) {
         return CustomerCreatedMessageResponse.builder().customerId(customerModelAvro.getId()).firstName(customerModelAvro.getFirstName()).lastName(customerModelAvro.getLastName()).username(customerModelAvro.getUsername()).build();
     }
 
     public PaymentMessageResponse paymentResponseAvroToPayment(BookingPaymentResponseAvro bookingPaymentResponseAvro) {
 
-        return PaymentMessageResponse.builder().id(bookingPaymentResponseAvro.getId()).bookingId(bookingPaymentResponseAvro.getBookingId()).paymentId(bookingPaymentResponseAvro.getPaymentId()).price(bookingPaymentResponseAvro.getPrice()).createdAt(bookingPaymentResponseAvro.getCreatedAt()).customerId(bookingPaymentResponseAvro.getCustomerId()).sagaId(bookingPaymentResponseAvro.getSagaId()).paymentStatus(PaymentStatus.valueOf(bookingPaymentResponseAvro.getPaymentStatus().name())).failureMessages(bookingPaymentResponseAvro.getFailureMessages()).build();
+        return PaymentMessageResponse.builder()
+                .id(bookingPaymentResponseAvro.getId())
+                .bookingId(bookingPaymentResponseAvro.getBookingId())
+                .paymentId(bookingPaymentResponseAvro.getPaymentId())
+                .price(bookingPaymentResponseAvro.getPrice())
+                .createdAt(bookingPaymentResponseAvro.getCreatedAt())
+                .customerId(bookingPaymentResponseAvro.getCustomerId())
+                .sagaId(bookingPaymentResponseAvro.getSagaId())
+                .paymentStatus(bookingPaymentResponseAvro.getPaymentStatus().equals(PaymentStatus.COMPLETED) ? com.poly.domain.valueobject.PaymentStatus.PAID : com.poly.domain.valueobject.PaymentStatus.FAILED)
+                .failureMessages(bookingPaymentResponseAvro.getFailureMessages()).build();
     }
 
     public RoomMessageResponse bookingRoomAvroToRoom(BookingRoomResponseAvro bookingRoomResponseAvro) {
-        return RoomMessageResponse.builder().id(bookingRoomResponseAvro.getId()).bookingId(bookingRoomResponseAvro.getBookingId()).reason(bookingRoomResponseAvro.getReason()).roomResponseStatus(RoomStatus.valueOf(bookingRoomResponseAvro.getReservationStatus())).sagaId(bookingRoomResponseAvro.getSagaId()).totalPrice(bookingRoomResponseAvro.getTotalPrice()).rooms(roomsAvroToRooms(bookingRoomResponseAvro.getRooms())).build();
+        return RoomMessageResponse.builder()
+                .id(bookingRoomResponseAvro.getId())
+                .bookingId(bookingRoomResponseAvro.getBookingId())
+                .reason(bookingRoomResponseAvro.getReason())
+                .roomResponseStatus(bookingRoomResponseAvro.getReservationStatus().equals("SUCCESS")? RoomStatus.BOOKED: RoomStatus.VACANT)
+                .roomBookingStatus(RoomResponseStatus.SUCCESS)
+                .sagaId(bookingRoomResponseAvro.getSagaId())
+                .totalPrice(bookingRoomResponseAvro.getTotalPrice())
+                .rooms(roomsAvroToRooms(bookingRoomResponseAvro.getRooms())).build();
     }
 
     private List<Room> roomsAvroToRooms(List<com.poly.booking.management.domain.kafka.model.Room> roomsAvro) {
         return roomsAvro.stream().map(roomAvro -> new Room(new RoomId(UUID.fromString(roomAvro.getId())), roomAvro.getRoomNumber(), Money.from(roomAvro.getBasePrice()), RoomStatus.valueOf(roomAvro.getStatus()))).toList();
     }
 
-    private List<com.poly.booking.management.domain.kafka.model.Room> roomsToRoomsAvro(List<RoomEventPayload> rooms) {
-        return rooms.stream().map(room -> com.poly.booking.management.domain.kafka.model.Room.newBuilder().setId(room.getRoomId()).setRoomNumber(room.getRoomNumber()).setStatus("VACANT").setBasePrice(room.getBasePrice().toString()).build()).toList();
+    private List<com.poly.booking.management.domain.kafka.model.Room> roomsToRoomsDepositAvro(List<RoomEventPayload> rooms) {
+        return rooms.stream().map(room -> com.poly.booking.management.domain.kafka.model.Room.newBuilder()
+                .setId(room.getRoomId())
+                .setStatus(RoomStatus.VACANT.name())
+                .build()).toList();
+    }
+    private List<com.poly.booking.management.domain.kafka.model.Room> roomsToRoomsCheckInAvro(List<RoomEventPayload> rooms) {
+        return rooms.stream().map(room -> com.poly.booking.management.domain.kafka.model.Room.newBuilder()
+                .setId(room.getRoomId())
+                .setStatus(RoomStatus.CHECKED_IN.name())
+                .build()).toList();
     }
 
     public BookingPaymentRequestAvro bookingPaymentEventToPaymentRequestAvroModel(String sagaId, PaymentEventPayload paymentEventPayload) {
@@ -78,8 +90,22 @@ public class BookingMessageDataMapper {
                 .setCreatedAt(Instant.now()).setProcessedAt(null)
                 .setType("ROOM_RESERVATION_REQUEST")
                 .setSagaStatus("STARTED")
-                .setRooms(roomsToRoomsAvro(reservedEventPayload.getRooms()))
+                .setRooms(roomsToRoomsDepositAvro(reservedEventPayload.getRooms()))
                 .setBookingStatus(BookingStatus.DEPOSITED.toString())
+                .setPrice(reservedEventPayload.getPrice())
+                .build();
+    }
+
+    public BookingRoomRequestAvro bookingRoomCheckInEventToRoomRequestAvroModel(String sagaId, ReservedEventPayload reservedEventPayload) {
+        return BookingRoomRequestAvro.newBuilder()
+                .setId(UUID.randomUUID())
+                .setSagaId(UUID.fromString(sagaId))
+                .setBookingId(reservedEventPayload.getBookingId())
+                .setCreatedAt(Instant.now()).setProcessedAt(null)
+                .setType("ROOM_CHECKING_REQUEST")
+                .setSagaStatus("STARTED")
+                .setRooms(roomsToRoomsCheckInAvro(reservedEventPayload.getRooms()))
+                .setBookingStatus(BookingStatus.CHECKED_IN.name())
                 .setPrice(reservedEventPayload.getPrice())
                 .build();
     }

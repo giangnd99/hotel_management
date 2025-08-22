@@ -18,13 +18,16 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "rooms")
 public class RoomEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID roomId;
 
-    @OneToOne(mappedBy = "room",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "room_type_id")
     private RoomTypeEntity roomType;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -38,4 +41,6 @@ public class RoomEntity implements Serializable {
     private int floor;
 
     private String area;
+
+    private String image_url;
 }

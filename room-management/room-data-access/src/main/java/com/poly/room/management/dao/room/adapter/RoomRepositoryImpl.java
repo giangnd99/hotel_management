@@ -1,6 +1,7 @@
 package com.poly.room.management.dao.room.adapter;
 
 import com.poly.domain.valueobject.RoomStatus;
+import com.poly.room.management.dao.room.entity.RoomEntity;
 import com.poly.room.management.dao.room.repository.RoomJpaRepository;
 import com.poly.room.management.domain.entity.*;
 import com.poly.room.management.domain.exception.RoomDomainException;
@@ -76,6 +77,8 @@ public class RoomRepositoryImpl implements RoomRepository {
     @Override
     public List<Room> findAllWithPagination(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
+        List<RoomEntity> roomList = jpaRepository.findAll();
+        List<Room> domain = roomList.stream().map(roomMapper::toDomain).collect(Collectors.toList());
         return jpaRepository.findAll(pageable).getContent().stream()
                 .map(roomMapper::toDomain)
                 .collect(Collectors.toList());
@@ -93,7 +96,7 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    public List<Room> findByRoomTypeId(Integer roomTypeId, int page, int size) {
+    public List<Room> findByRoomTypeId(String roomTypeId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return jpaRepository.findByRoomType_RoomTypeId(roomTypeId, pageable).getContent().stream()
                 .map(roomMapper::toDomain)
@@ -199,7 +202,7 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    public Long countByRoomTypeId(Integer roomTypeId) {
+    public Long countByRoomTypeId(UUID roomTypeId) {
         return jpaRepository.countByRoomType_RoomTypeId(roomTypeId);
     }
 
