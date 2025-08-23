@@ -41,7 +41,7 @@ public class CustomerDto {
         dto.setUpdatedDate(customer.getUpdatedAt());
         dto.setSex(customer.getSex().name());
         dto.setActive(customer.isActive());
-        dto.setUserId(customer.getId().getValue());
+        dto.setUserId(customer.getUserId().getValue());
         return dto;
     }
 }
