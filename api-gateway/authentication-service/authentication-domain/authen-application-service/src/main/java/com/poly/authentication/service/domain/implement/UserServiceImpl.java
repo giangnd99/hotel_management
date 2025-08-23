@@ -83,7 +83,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @PostAuthorize("returnObject.email == authentication.name")
     public UserResponse getUserById(UUID id) {
 
         return userMapper.toUserResponse(userRepository.findById(id)
