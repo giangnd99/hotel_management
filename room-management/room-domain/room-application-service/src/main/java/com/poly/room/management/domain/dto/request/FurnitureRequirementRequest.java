@@ -14,12 +14,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FurnitureRequirementRequest {
-    @NotNull(message = "Furniture ID is required")
     private UUID furnitureId;
 
-    @NotNull(message = "Room type ID is required")
     private UUID roomTypeId;
 
-    @Min(value = 1, message = "Quantity must be at least 1")
     private int quantity;
 }

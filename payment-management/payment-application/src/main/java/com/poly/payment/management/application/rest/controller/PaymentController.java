@@ -23,7 +23,6 @@
         private final ProcessWebhookDataUseCase processWebhookDataUseCase;
 
         private final CreateInvoicePaymentLinkUsecase createInvoicePaymentLinkUsecase;
-
         private final CreateDirectPaymentLinkUsecase createDirectPaymentLinkUsecase;
 
         private final RetrieveAllPayment retrieveAllPaymentLinkUsecase;

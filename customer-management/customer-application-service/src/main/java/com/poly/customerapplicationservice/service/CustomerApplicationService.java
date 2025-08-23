@@ -55,12 +55,16 @@ public class CustomerApplicationService implements CustomerUsecase {
 
         UserResponse response = authenticationClient.createUser(creationRequest(command)).getResult();
 
+        Address address = command.getAddress() == null ? Address.empty() : Address.from(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity());
+        DateOfBirth dateOfBirth = command.getDateOfBirth() == null ? DateOfBirth.empty() : DateOfBirth.from(command.getDateOfBirth());
+        Name name = command.getFirstName() == null || command.getLastName() == null ? Name.empty() : Name.from(command.getFirstName().trim(), command.getLastName().trim());
+
         Customer newCustomer = Customer.builder()
                 .customerId(CustomerId.generate())
                 .userId(UserId.from(UUID.fromString(response.getId())))
-                .name(Name.from(command.getFirstName().trim(), command.getLastName().trim()))
-                .address(Address.from(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity()))
-                .dateOfBirth(DateOfBirth.from(command.getDateOfBirth()))
+                .name(name)
+                .address(address)
+                .dateOfBirth(dateOfBirth)
                 .image(ImageUrl.empty())
                 .level(Level.NONE)
                 .behaviorData(BehaviorData.empty())
@@ -75,7 +79,7 @@ public class CustomerApplicationService implements CustomerUsecase {
         LoyaltyPoint newLoyaltyPoint = LoyaltyPoint.createNew(newCustomer.getId());
 
         LoyaltyPoint savedLoyaltyPoint = loyaltyPointRepository.save(newLoyaltyPoint);
-        //send request to Booking service
+
         log.info("User id created successfully: {} ", response.getId());
         log.info("Customer with id: {} created successfully", savedCustomer.getId().getValue().toString());
         customerCreationRequestPublisher.publish(creatMessage(savedCustomer, response));

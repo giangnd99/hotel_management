@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -46,6 +47,7 @@ public class PaymentSchedule implements PaymentExpiredSchedule {
     }
 
     @Scheduled(fixedRate = 500, initialDelay = 10000)
+    @Transactional
     public void paymentDepositExpiredSchedule() throws Exception {
         List<Payment> depositedPayment = paymentRepository.findAll();
         depositedPayment.forEach(payment -> {

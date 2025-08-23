@@ -11,6 +11,7 @@ import java.util.UUID;
 @Getter
 public class CustomerDto {
     private UUID customerId;
+    private UUID userId;
     private String firstName;
     private String lastName;
     private String address;

@@ -1,6 +1,8 @@
 package com.poly.notification.management.controller;
 
 import com.poly.notification.management.command.BookingCheckedInCommand;
+import com.poly.notification.management.dto.checkin.CheckInRequest;
+import com.poly.notification.management.dto.checkin.CheckInRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,8 +17,8 @@ public class ScanQrCodeCheckInController {
     private final BookingCheckedInCommand bookingCheckedInCommand;
 
     @PostMapping("/check-in")
-    public void checkIn(@RequestBody String bookingId, @RequestBody String staffId) {
-        bookingCheckedInCommand.processCheckInByQrCodeWithBookingId(bookingId, staffId);
+    public void checkIn(@RequestBody CheckInRequestDto request) {
+        bookingCheckedInCommand.processCheckInByQrCodeWithBookingId(request.getBookingId());
     }
 
 }

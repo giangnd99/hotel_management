@@ -170,11 +170,6 @@ public class BookingCheckInListenerImpl implements BookingCheckInListener {
             throw new IllegalArgumentException("Booking ID cannot be null or empty");
         }
 
-        if (notificationMessageResponse.getCustomerId() == null || 
-            notificationMessageResponse.getCustomerId().trim().isEmpty()) {
-            throw new IllegalArgumentException("Customer ID cannot be null or empty");
-        }
-
         if (notificationMessageResponse.getNotificationStatus() == null) {
             throw new IllegalArgumentException("Notification status cannot be null");
         }

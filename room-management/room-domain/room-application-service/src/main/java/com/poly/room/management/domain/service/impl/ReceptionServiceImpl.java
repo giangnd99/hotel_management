@@ -1,5 +1,6 @@
 package com.poly.room.management.domain.service.impl;
 
+import com.poly.domain.valueobject.Money;
 import com.poly.room.management.domain.dto.RoomStatusDto;
 import com.poly.room.management.domain.dto.reception.*;
 import com.poly.room.management.domain.dto.response.FindRoomIdBookingWhenCheckInResponse;
@@ -161,42 +162,25 @@ public class ReceptionServiceImpl implements ReceptionService {
 
     @Override
     @Transactional
-    public CheckInDto performCheckIn(UUID bookingId, CheckInRequest request) {
-        log.info("Performing check-in for booking: {} and room: {}", bookingId, request.getBookingId());
+    public String performCheckIn(UUID bookingId) {
+        String message = "Check-in completed successfully for booking: " + bookingId;
+        try {
+        log.info("Performing check-in for booking: {}", bookingId);
         FindRoomIdBookingWhenCheckInResponse response = bookingClient.findRoomIdBookingWhenCheckIn(bookingId);
 
-        Room room = roomRepository.findByRoomNumber(response.getRoomId())
-                .orElseThrow(() -> new RuntimeException("Room not found with: " + bookingId));
-
-        if (!"CONFIRMED".equals(room.getRoomStatus().toString())) {
-            throw new RuntimeException("Room is not available: ");
-        }
-
-        CheckIn checkIn = CheckIn.builder()
-                .id(CheckInId.generate())
-                .bookingId(bookingId)
-                .guestId(new GuestId(UUID.randomUUID()))
-                .roomId(RoomId.of(room.getId().getValue()))
-                .roomNumber(room.getRoomNumber())
-                .checkInDate(LocalDate.now())
-                .checkOutDate(LocalDate.now().plusDays(1)) // Default checkout date
-                .checkInTime(request.getCheckInTime())
-                .numberOfGuests(request.getNumberOfGuests())
-                .specialRequests(request.getSpecialRequests())
-                .status("CHECKED_IN")
-                .checkedInBy(request.getCheckedInBy())
-                .notes(request.getNotes())
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
-
-        CheckIn savedCheckIn = checkInRepository.save(checkIn);
-
+        List<Room> rooms = response.getRoomId().stream().map(
+                roomId -> roomRepository.findById(UUID.fromString(roomId)).orElseThrow(
+                        () -> new RuntimeException("Room not found with: " + bookingId)
+                )).toList();
+        rooms.forEach(room -> {
         roomRepository.update(room);
-
         log.info("Check-in completed successfully for room: {}", room.getRoomNumber());
-
-        return mapToCheckInDto(savedCheckIn);
+        });
+        }catch (Exception e) {
+            message = "Check-in failed for booking: " + bookingId;
+            log.error(message, e);
+        }
+        return message;
     }
 
     @Override
@@ -348,29 +332,22 @@ public class ReceptionServiceImpl implements ReceptionService {
     }
 
     @Override
-    public CheckOutDto performCheckOut(UUID checkInId, CheckOutRequest request) {
-        log.info("Performing check-out for check-in: {}", checkInId);
+    public UUID performCheckOut(UUID bookingID) {
+        log.info("Performing check-out for check-in: {}", bookingID);
 
-        CheckIn checkIn = checkInRepository.findById(checkInId)
-                .orElseThrow(() -> new RuntimeException("Check-in not found: " + checkInId));
+        FindRoomIdBookingWhenCheckInResponse response = bookingClient.findRoomIdBookingWhenCheckIn(bookingID);
 
-        if (checkIn.isCheckedOut()) {
-            throw new RuntimeException("Check-in is already checked out");
-        }
+        response.getRoomId().forEach(roomId -> {
+            Room room = roomRepository.findById(UUID.fromString(roomId)).orElseThrow(
+                    () -> new RuntimeException("Room not found with: " + bookingID)
+            );
+            room.setCheckOutRoomStatus();
+            roomRepository.update(room);
+        });
 
-        // Perform check-out
-        checkIn.checkOut();
-        CheckIn updatedCheckIn = checkInRepository.update(checkIn);
+        log.info("Check-out completed successfully for check-in: {}", bookingID);
 
-        // Update room status
-        Room room = roomRepository.findById(checkIn.getRoomId().getValue())
-                .orElseThrow(() -> new RuntimeException("Room not found"));
-        // This would need to be implemented in Room entity
-        roomRepository.update(room);
-
-        log.info("Check-out completed successfully for check-in: {}", checkInId);
-
-        return mapToCheckOutDto(updatedCheckIn);
+        return bookingID;
     }
 
     @Override

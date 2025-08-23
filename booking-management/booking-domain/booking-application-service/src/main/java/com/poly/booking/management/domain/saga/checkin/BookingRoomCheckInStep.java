@@ -138,7 +138,7 @@ public class BookingRoomCheckInStep {
 
             // Cập nhật trạng thái thành PENDING_CHECKIN
             bookingCheckInDomainService.setPendingCheckIn(booking, notificationMessageResponse);
-
+            booking.checkIn();
             // Lưu trạng thái mới
             bookingRepository.save(booking);
 

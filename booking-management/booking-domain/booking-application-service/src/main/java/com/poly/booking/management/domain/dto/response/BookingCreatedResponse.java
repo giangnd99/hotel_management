@@ -1,6 +1,7 @@
 package com.poly.booking.management.domain.dto.response;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.poly.booking.management.domain.entity.Room;
 import com.poly.domain.valueobject.BookingStatus;
 import lombok.*;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookingCreatedResponse {
 
     private UUID bookingId;

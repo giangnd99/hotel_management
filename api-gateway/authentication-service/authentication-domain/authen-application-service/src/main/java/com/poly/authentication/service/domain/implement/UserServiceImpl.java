@@ -10,6 +10,7 @@ import com.poly.authentication.service.domain.exception.ErrorCode;
 import com.poly.authentication.service.domain.handler.authentication.GenerateTokenHandler;
 import com.poly.authentication.service.domain.mapper.UserMapper;
 import com.poly.authentication.service.domain.port.in.service.UserService;
+import com.poly.authentication.service.domain.port.out.httpclient.NotificationClient;
 import com.poly.authentication.service.domain.port.out.repository.UserRepository;
 import com.poly.authentication.service.domain.valueobject.Password;
 import com.poly.dao.util.PageUtil;
@@ -21,10 +22,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -36,6 +40,8 @@ public class UserServiceImpl implements UserService {
     private final GenerateTokenHandler generateTokenHandler;
     private final UserMapper userMapper;
     private final PageUtil pageUtil;
+    private final PasswordEncoder passwordEncoder;
+    private final NotificationClient notificationClient;
 
     @Override
     public UserResponse createUser(UserCreationRequest request) {
@@ -46,6 +52,7 @@ public class UserServiceImpl implements UserService {
 
         }
         User user = userMapper.toDomainEntity(request);
+        user.changePassword(new Password(passwordEncoder.encode(request.getPassword())));
         user.addRole(Role.Builder.builder()
                 .name(ERole.ROLE_CUSTOMER)
                 .build());
@@ -67,7 +74,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getMyInfo() {
 
-        var context = SecurityContextHolder.getContext();
+        SecurityContext context = SecurityContextHolder.getContext();
 
         String email = context.getAuthentication().getName();
 
@@ -94,9 +101,14 @@ public class UserServiceImpl implements UserService {
 
         User userUpdating = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
+        if (userUpdating.getGmail().equals(request.getEmail()) || Objects.equals(request.getPhone(), userUpdating.getPhone())) {
+            log.info("Email or phone is same as current user");
+            return userMapper.toUserResponse(userUpdating);
+        }
         userMapper.fromUpdatePhoneRequestToDomainEntity(request, userUpdating);
 
         userUpdating.setId(new UserId(userId));
+
         return userMapper.toUserResponse(userRepository.save(userUpdating));
     }
 
@@ -118,9 +130,15 @@ public class UserServiceImpl implements UserService {
 
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        userResetPassword.changePassword(new Password(newPassword));
+        String oldPassword = userResetPassword.getPassword().getValue();
 
-        userRepository.save(userResetPassword);
+        if (!passwordEncoder.matches(oldPassword, newPassword)) {
+
+            userResetPassword.changePassword(new Password(passwordEncoder.encode(newPassword)));
+
+            userRepository.save(userResetPassword);
+            notificationClient.sendAccountInfo(email, newPassword);
+        } else throw new AppException(ErrorCode.PASSWORD_INVALID);
     }
 
 

@@ -220,17 +220,17 @@ public class BookingController {
 
     @PutMapping("/{bookingId}/check-in")
     @Operation(summary = "Check-in booking")
-    public ResponseEntity<BookingDto> checkInBooking(@PathVariable UUID bookingId) {
+    public ResponseEntity<List<UUID>> checkInBooking(@PathVariable UUID bookingId) {
         log.info("Checking in booking: {}", bookingId);
-        BookingDto checkedInBooking = bookingService.checkInBooking(bookingId);
+        List<UUID> checkedInBooking = bookingService.checkInBooking(bookingId);
         return ResponseEntity.ok(checkedInBooking);
     }
 
     @PutMapping("/{bookingId}/check-out")
     @Operation(summary = "Check-out booking")
-    public ResponseEntity<BookingDto> checkOutBooking(@PathVariable UUID bookingId) {
+    public ResponseEntity<List<UUID>> checkOutBooking(@PathVariable UUID bookingId) {
         log.info("Checking out booking: {}", bookingId);
-        BookingDto checkedOutBooking = bookingService.checkOutBooking(bookingId);
+        List<UUID> checkedOutBooking = bookingService.checkOutBooking(bookingId);
         return ResponseEntity.ok(checkedOutBooking);
     }
 

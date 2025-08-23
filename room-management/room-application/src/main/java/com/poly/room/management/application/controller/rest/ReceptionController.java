@@ -132,16 +132,6 @@ public class ReceptionController {
         return ResponseEntity.ok(todayCheckIns);
     }
 
-    @PostMapping("/checkin/{bookingId}")
-    @Operation(summary = "Thực hiện check-in")
-    public ResponseEntity<CheckInDto> performCheckIn(
-            @PathVariable UUID bookingId,
-            @Valid @RequestBody CheckInRequest request) {
-        log.info("Performing check-in for booking: {}", bookingId);
-        CheckInDto checkIn = receptionService.performCheckIn(bookingId, request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(checkIn);
-    }
-
     @PostMapping("/checkin/walk-in")
     @Operation(summary = "Check-in khách vãng lai")
     public ResponseEntity<CheckInDto> performWalkInCheckIn(@Valid @RequestBody WalkInCheckInRequest request) {
@@ -189,14 +179,13 @@ public class ReceptionController {
         return ResponseEntity.ok(todayCheckOuts);
     }
 
-    @PostMapping("/checkout/{checkInId}")
+    @PostMapping("/checkout/{bookingId}")
     @Operation(summary = "Thực hiện check-out")
-    public ResponseEntity<CheckOutDto> performCheckOut(
-            @PathVariable UUID checkInId,
-            @Valid @RequestBody CheckOutRequest request) {
-        log.info("Performing check-out for check-in: {}", checkInId);
-        CheckOutDto checkOut = receptionService.performCheckOut(checkInId, request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(checkOut);
+    public ResponseEntity<UUID> performCheckOut(
+            @PathVariable UUID bookingId) {
+        log.info("Performing check-out with booking id : {}", bookingId);
+        UUID bookingCheckedOut = receptionService.performCheckOut(bookingId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookingCheckedOut);
     }
 
     @PostMapping("/checkout/{checkInId}/early")

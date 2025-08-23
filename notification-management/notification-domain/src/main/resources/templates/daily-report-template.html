@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo Hàng Ngày - Luxury Hotel</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f6f7fb;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #0061ff, #60efff);
+            color: #fff;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .header p {
+            margin: 5px 0 0;
+            font-size: 16px;
+        }
+        .content {
+            padding: 30px;
+        }
+        .report-date {
+            background: #f1faff;
+            border-left: 6px solid #0061ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        .report-date h2 {
+            margin: 0;
+            color: #0061ff;
+            font-size: 24px;
+        }
+        .section {
+            margin: 30px 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .section-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .section-header h3 {
+            margin: 0;
+            color: #333;
+            font-size: 18px;
+        }
+        .section-content {
+            padding: 20px;
+        }
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0061ff;
+            margin-bottom: 5px;
+        }
+        .metric-label {
+            font-size: 14px;
+            color: #666;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .summary-table th,
+        .summary-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .summary-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+        .highlight {
+            color: #0061ff;
+            font-weight: bold;
+        }
+        .success {
+            color: #28a745;
+        }
+        .warning {
+            color: #ffc107;
+        }
+        .danger {
+            color: #dc3545;
+        }
+        .footer {
+            background: #f1f3f9;
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
+            color: #666;
+        }
+        .footer strong {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <h1>🏨 Luxury Hotel</h1>
+        <p>Báo Cáo Hàng Ngày - Hệ Thống Quản Lý</p>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <div class="report-date">
+            <h2>📊 Báo Cáo Ngày: <span th:text="${reportDate}">2024-01-01</span></h2>
+            <p>Báo cáo được tạo tự động bởi AI vào lúc <span th:text="${generatedAt}">00:00</span></p>
+        </div>
+
+        <!-- Booking Section -->
+        <div class="section">
+            <div class="section-header">
+                <h3>📋 Thống Kê Đặt Phòng</h3>
+            </div>
+            <div class="section-content">
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${bookingStats.totalBookings}">0</div>
+                        <div class="metric-label">Tổng Đặt Phòng</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value success" th:text="${bookingStats.successfulBookings}">0</div>
+                        <div class="metric-label">Thành Công</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value warning" th:text="${bookingStats.pendingBookings}">0</div>
+                        <div class="metric-label">Đang Chờ</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value danger" th:text="${bookingStats.cancelledBookings}">0</div>
+                        <div class="metric-label">Đã Hủy</div>
+                    </div>
+                </div>
+                
+                <h4>📈 Chi Tiết Theo Thời Gian:</h4>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Thời Gian</th>
+                            <th>Số Lượng</th>
+                            <th>Trạng Thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="timeSlot : ${bookingStats.timeSlots}">
+                            <td th:text="${timeSlot.time}">00:00-06:00</td>
+                            <td th:text="${timeSlot.count}">0</td>
+                            <td th:text="${timeSlot.status}">Thành công</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Payment Section -->
+        <div class="section">
+            <div class="section-header">
+                <h3>💳 Thống Kê Thanh Toán</h3>
+            </div>
+            <div class="section-content">
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${paymentStats.totalTransactions}">0</div>
+                        <div class="metric-label">Tổng Giao Dịch</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value success" th:text="${paymentStats.successfulPayments}">0</div>
+                        <div class="metric-label">Thành Công</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value warning" th:text="${paymentStats.pendingPayments}">0</div>
+                        <div class="metric-label">Đang Xử Lý</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${paymentStats.totalAmount}">0 VNĐ</div>
+                        <div class="metric-label">Tổng Số Tiền</div>
+                    </div>
+                </div>
+                
+                <h4>💰 Phân Tích Theo Phương Thức:</h4>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Phương Thức</th>
+                            <th>Số Lượng</th>
+                            <th>Tổng Tiền</th>
+                            <th>Tỷ Lệ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="method : ${paymentStats.paymentMethods}">
+                            <td th:text="${method.name}">PayOS</td>
+                            <td th:text="${method.count}">0</td>
+                            <td th:text="${method.amount}">0 VNĐ</td>
+                            <td th:text="${method.percentage}">0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Invoice Section -->
+        <div class="section">
+            <div class="section-header">
+                <h3>🧾 Thống Kê Hóa Đơn</h3>
+            </div>
+            <div class="section-content">
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${invoiceStats.totalInvoices}">0</div>
+                        <div class="metric-label">Tổng Hóa Đơn</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value success" th:text="${invoiceStats.paidInvoices}">0</div>
+                        <div class="metric-label">Đã Thanh Toán</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value warning" th:text="${invoiceStats.pendingInvoices}">0</div>
+                        <div class="metric-label">Chờ Thanh Toán</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${invoiceStats.totalRevenue}">0 VNĐ</div>
+                        <div class="metric-label">Tổng Doanh Thu</div>
+                    </div>
+                </div>
+                
+                <h4>📊 Top Hóa Đơn Cao Nhất:</h4>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Mã Hóa Đơn</th>
+                            <th>Khách Hàng</th>
+                            <th>Số Tiền</th>
+                            <th>Trạng Thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="invoice : ${invoiceStats.topInvoices}">
+                            <td th:text="${invoice.invoiceId}">INV001</td>
+                            <td th:text="${invoice.customerName}">Nguyễn Văn A</td>
+                            <td th:text="${invoice.amount}">1,000,000 VNĐ</td>
+                            <td th:text="${invoice.status}">Đã thanh toán</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- AI Insights -->
+        <div class="section">
+            <div class="section-header">
+                <h3>🤖 Phân Tích AI</h3>
+            </div>
+            <div class="section-content">
+                <h4>💡 Nhận Xét:</h4>
+                <p th:text="${aiInsights.overview}">Phân tích tổng quan về hoạt động trong ngày...</p>
+                
+                <h4>⚠️ Cảnh Báo:</h4>
+                <ul>
+                    <li th:each="warning : ${aiInsights.warnings}" th:text="${warning}">Cảnh báo...</li>
+                </ul>
+                
+                <h4>📈 Khuyến Nghị:</h4>
+                <ul>
+                    <li th:each="recommendation : ${aiInsights.recommendations}" th:text="${recommendation}">Khuyến nghị...</li>
+                </ul>
+            </div>
+        </div>
+
+        <p><strong>Lưu ý:</strong> Báo cáo này được tạo tự động bởi hệ thống AI. Vui lòng kiểm tra lại các số liệu quan trọng.</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Trân trọng,<br><strong>Hệ Thống AI - Luxury Hotel</strong></p>
+        <p>Báo cáo được gửi tự động vào lúc <span th:text="${generatedAt}">00:00</span><br>
+            Nếu có thắc mắc, vui lòng liên hệ với đội ngũ IT.</p>
+    </div>
+</div>
+</body>
+</html>

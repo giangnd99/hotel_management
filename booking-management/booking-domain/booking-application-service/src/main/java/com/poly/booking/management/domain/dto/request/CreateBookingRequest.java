@@ -1,5 +1,6 @@
 package com.poly.booking.management.domain.dto.request;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,6 +35,7 @@ public class CreateBookingRequest {
     @Max(value = 10, message = "Number of guests cannot exceed 10")
     private Integer numberOfGuests;
 
+    @Nullable
     private String specialRequests;
 
     @Email(message = "Invalid email format")

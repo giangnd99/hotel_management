@@ -91,7 +91,7 @@ public class Booking extends AggregateRoot<BookingId> {
      * Check-in thành công, chuyển sang trạng thái CHECKED_IN.
      */
     public void checkIn() {
-        validateStatusForCheckIn();
+//        validateStatusForCheckIn();
         status = BookingStatus.CHECKED_IN;
     }
 

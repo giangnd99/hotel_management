@@ -16,8 +16,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class FurnitureCreationRequest {
 
-    @NotNull(message = "Name of Furniture can not null")
     private String name;
-    @NotNull(message = "Price can't null")
     private String price;
 }

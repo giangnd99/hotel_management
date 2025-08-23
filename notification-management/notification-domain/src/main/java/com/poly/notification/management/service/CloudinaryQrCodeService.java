@@ -31,18 +31,13 @@ public class CloudinaryQrCodeService {
 
     /**
      * Tạo QR code và upload lên Cloudinary
-     * @param data Dữ liệu để tạo QR code
      * @param width Chiều rộng (mặc định 300)
      * @param height Chiều cao (mặc định 300)
      * @param format Format ảnh (mặc định PNG)
      * @return URL của ảnh trên Cloudinary
      */
-    public String createQrCodeAndUploadToCloudinary(String data, Integer width, Integer height, String format) {
+    public String createQrCodeAndUploadToCloudinary(BufferedImage qrCodeImage, Integer width, Integer height, String format) {
         try {
-            // Validate input
-            if (data == null || data.trim().isEmpty()) {
-                throw new IllegalArgumentException("Data không được để trống");
-            }
 
             // Set default values
             int qrWidth = width != null ? width : 300;
@@ -54,14 +49,10 @@ public class CloudinaryQrCodeService {
                 throw new IllegalArgumentException("Kích thước phải từ 100 đến 1000 pixels");
             }
 
-            log.info("Tạo QR code với data: {}, kích thước: {}x{}, format: {}", data, qrWidth, qrHeight, qrFormat);
-
-            // Tạo QR code image
-            BufferedImage qrCodeImage = generateQrCodeImage(data, qrWidth, qrHeight);
-
             // Convert image thành MultipartFile
-            MultipartFile multipartFile = convertImageToMultipartFile(qrCodeImage, qrFormat, data);
+            MultipartFile multipartFile = convertImageToMultipartFile(qrCodeImage, qrFormat);
 
+            // Upload lên Cloudinary
             log.info("Uploading QR code lên Cloudinary...");
             UploadResponseDto uploadResponse = cloudinaryClient.uploadImage(multipartFile);
 
@@ -76,15 +67,6 @@ public class CloudinaryQrCodeService {
             log.error("Lỗi khi tạo QR code và upload lên Cloudinary", e);
             throw new RuntimeException("Không thể tạo QR code: " + e.getMessage(), e);
         }
-    }
-
-    /**
-     * Tạo QR code đơn giản và upload lên Cloudinary
-     * @param data Dữ liệu để tạo QR code
-     * @return URL của ảnh trên Cloudinary
-     */
-    public String createSimpleQrCodeAndUpload(String data) {
-        return createQrCodeAndUploadToCloudinary(data, null, null, null);
     }
 
     /**
@@ -125,7 +107,7 @@ public class CloudinaryQrCodeService {
     /**
      * Convert BufferedImage thành MultipartFile
      */
-    private MultipartFile convertImageToMultipartFile(BufferedImage image, String format, String data) throws IOException {
+    private MultipartFile convertImageToMultipartFile(BufferedImage image, String format) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         javax.imageio.ImageIO.write(image, format, baos);
         byte[] imageBytes = baos.toByteArray();

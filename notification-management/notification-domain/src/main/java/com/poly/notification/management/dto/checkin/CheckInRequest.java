@@ -16,13 +16,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CheckInRequest {
-    @NotNull(message = "Guest ID is required")
     private UUID guestId;
 
-    @NotNull(message = "Room number is required")
     private String roomNumber;
 
-    @NotNull(message = "Check-in date is required")
     private LocalDateTime checkInTime;
 
     @Min(value = 1, message = "Number of guests must be at least 1")

@@ -36,7 +36,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public UserGGResponse processGoogleAccount(OutboundUserResponse googleAccount) {
-
         return processGoogleAccountHandler.processGoogleAccount(googleAccount);
     }
 

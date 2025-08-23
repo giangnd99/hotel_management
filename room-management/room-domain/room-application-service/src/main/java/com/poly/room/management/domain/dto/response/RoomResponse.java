@@ -15,7 +15,7 @@ public class RoomResponse {
     private String id;
     private String roomNumber;
     private int floor;
-    private RoomTypeResponse roomType; // Sẽ là DTO của RoomType
-    private String roomStatus; // Chuyển enum sang String
+    private RoomTypeResponse roomType;
+    private String roomStatus;
     private String image_url;
 }

@@ -26,7 +26,7 @@ public class CheckInDto {
     private LocalDateTime checkInTime;
     private Integer numberOfGuests;
     private String specialRequests;
-    private String status; // CHECKED_IN, EXTENDED, CHANGED_ROOM
+    private String status;
     private String checkedInBy;
     private String notes;
 }

@@ -18,6 +18,10 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 @EnableFeignClients(basePackages = {"com.poly.authentication.service.domain.port"})
 public class AuthenticationApplication {
     public static void main(String[] args) {
+        System.out.println("Welcome to Authentication Service " +
+                "\n Your account is ready \n" +
+                "\n username: admin@gmail.com \n" +
+                "\n password: admin123\n this email is for test only");
         org.springframework.boot.SpringApplication.run(AuthenticationApplication.class, args);
     }
 }
