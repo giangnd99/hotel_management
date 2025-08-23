@@ -17,17 +17,6 @@
         <name>hotel_management</name>
         <description>hotel_management</description>
 
-    <url/>
-
-    <licenses>
-        <license/>
-    </licenses>
-
-    <developers>
-        <developer/>
-    </developers>
-
-
     <modules>
         <module>common</module>
         <module>infrastructure</module>
@@ -46,13 +35,6 @@
         <module>service-management</module>
         <module>cloudinary-service</module>
     </modules>
-
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
 
 
     <properties>
@@ -301,10 +283,11 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${maven-antrun-plugin.version}</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
+                    <release>17</release>
                 </configuration>
             </plugin>
         </plugins>
