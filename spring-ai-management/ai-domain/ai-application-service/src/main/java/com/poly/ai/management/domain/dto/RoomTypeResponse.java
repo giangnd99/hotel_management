@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RoomTypeResponse {
-    private Long typeId;
+    private String typeId;
     private String typeName;
     private String description;
     private BigDecimal basePrice;

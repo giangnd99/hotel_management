@@ -105,18 +105,17 @@ INSERT INTO room_services (service_id, room_number, guest_id, guest_name, servic
 VALUES
     ('24daa207-72d1-4dd9-a62c-0a22cc8de70d', '301', '9e22cea5-0d86-4da8-8a67-32e89401e211', 'Nguyễn Văn A', 'Spa', 'Massage toàn thân', 'Dịch vụ spa cao cấp 60 phút với tinh dầu thiên nhiên', 1, 2000000, 2000000, 'PENDING', NOW(), NOW()),
     ('1467984f-9600-45fa-859d-fb3c46321700', '201', '9251a049-1f01-430d-8802-ff9b930415b1', 'Trần Thị B', 'Dining', 'Buffet tối', 'Buffet quốc tế tại nhà hàng khách sạn với hải sản tươi', 2, 1000000, 2000000, 'PENDING', NOW(), NOW());
-
 -- ============================================================================
 -- ROOM MAINTENANCE (thêm dữ liệu mẫu sát thực tế)
 -- ============================================================================
 INSERT INTO room_maintenance (id, room_id, maintenance_type_id, room_number, issue_type, priority, status, description, notes, requested_by, assigned_to, requested_at, scheduled_at, started_at, completed_at, estimated_cost, actual_cost, is_urgent, special_instructions, created_at, updated_at)
 VALUES
-    ('a1b2c3d4-e5f6-47g8-h9i0-j1k2l3m4n5o6',
+    ('a1b2c3d4-e5f6-4a78-9b10-c1d2e3f4a5b6',
      'fe0dc28a-654a-449c-84bd-f843d0544047', -- room_id của phòng 101 (Deluxe Room)
      'f68f4a3a-5f0a-4e67-81ad-f81172d1c6b7', -- maintenance_type_id 'Điện'
      '101', 'ELECTRICAL', 'MEDIUM', 'REQUESTED', 'Đèn phòng khách bị chập chờn', 'Kiểm tra hệ thống dây điện', 'Khách hàng A', 'Nhân viên kỹ thuật 1',
      '2025-08-20 10:00:00', '2025-08-21 09:00:00', NULL, NULL, 500000, NULL, FALSE, 'Mang theo dụng cụ an toàn', NOW(), NOW()),
-    ('p7q8r9s0-t1u2v3w4-x5y6z7a8b9c0d1e2',
+    ('b1c2d3e4-f5a6-4b78-9c10-d1e2f3a4b5c6',
      '5894fe26-1199-4124-a8f4-d87467cbc73a', -- room_id của phòng 104 (Deluxe Room, đang MAINTENANCE)
      '2b09a793-cb0a-42ba-9e6e-dab39f759ba3', -- maintenance_type_id 'Nước'
      '104', 'PLUMBING', 'HIGH', 'IN_PROGRESS', 'Vòi sen bị rò rỉ nước', 'Thay thế linh kiện', 'Quản lý tầng', 'Nhân viên kỹ thuật 2',
@@ -126,12 +125,12 @@ VALUES
 -- ============================================================================
 INSERT INTO check_ins (id, booking_id, guest_id, room_id, room_number, check_in_date, check_out_date, check_in_time, check_out_time, number_of_guests, special_requests, status, checked_in_by, checked_out_by, notes, created_at, updated_at)
 VALUES
-    ('f3g4h5i6-j7k8l9m0-n1o2p3q4r5s6t7u8',
+    ('c1d2e3f4-a5b6-4c78-9d10-e1f2a3b4c5d6',
      NULL, -- booking_id có thể NULL nếu không có
      '9e22cea5-0d86-4da8-8a67-32e89401e211', -- guest_id của Nguyễn Văn A
      '7afb950f-c05b-4f5b-9fa2-30fe701e7f9f', -- room_id của phòng 103 (CHECKED_IN)
      '103', '2025-08-20', '2025-08-25', '2025-08-20 14:00:00', NULL, 2, 'Yêu cầu giường phụ', 'ACTIVE', 'Lễ tân 1', NULL, 'Khách VIP', NOW(), NOW()),
-    ('v9w0x1y2-z3a4b5c6-d7e8f9g0h1i2j3k4',
+    ('d1e2f3a4-b5c6-4d78-9e10-f1a2b3c4d5e6',
      NULL,
      '9251a049-1f01-430d-8802-ff9b930415b1', -- guest_id của Trần Thị B
      'c63b64e0-c59e-4958-aef2-da05702427a1', -- room_id của phòng 202 (CHECKED_OUT)
@@ -141,11 +140,11 @@ VALUES
 -- ============================================================================
 INSERT INTO room_cleaning (id, room_id, room_number, cleaning_type, priority, status, description, notes, requested_by, assigned_to, requested_at, scheduled_at, started_at, completed_at, is_urgent, special_instructions, created_at, updated_at)
 VALUES
-    ('l5m6n7o8-p9q0r1s2-t3u4v5w6x7y8z9a0',
+    ('e1f2a3b4-c5d6-4e78-9f10-a1b2c3d4e5f6',
      '4ce4e84b-06a1-4712-ab51-050dbbecfba5', -- room_id của phòng 201 (CLEANING)
      '201', 'DAILY', 'MEDIUM', 'IN_PROGRESS', 'Dọn dẹp hàng ngày, thay khăn', 'Bụi nhiều ở bàn làm việc', 'Khách hàng B', 'Nhân viên dọn phòng 1',
      '2025-08-22 08:00:00', '2025-08-22 09:00:00', '2025-08-22 09:30:00', NULL, FALSE, 'Sử dụng chất tẩy tự nhiên', NOW(), NOW()),
-    ('b1c2d3e4-f5g6h7i8-j9k0l1m2n3o4p5q6',
+    ('f1a2b3c4-d5e6-4f78-9a10-b1c2d3e4f5a6',
      'c63b64e0-c59e-4958-aef2-da05702427a1', -- room_id của phòng 202 (CHECKED_OUT)
      '202', 'POST_CHECK_OUT', 'HIGH', 'PENDING', 'Dọn sâu sau check-out', 'Kiểm tra đồ đạc bỏ quên', 'Quản lý tầng', 'Nhân viên dọn phòng 2',
      '2025-08-20 12:00:00', '2025-08-20 13:00:00', NULL, NULL, TRUE, 'Khử trùng toàn bộ phòng', NOW(), NOW());

@@ -531,6 +531,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     private RoomTypeDto convertToRoomTypeDto(RoomType roomType) {
+
         return RoomTypeDto.builder()
                 .typeId(roomType.getId().getValue())
                 .typeName(roomType.getTypeName())

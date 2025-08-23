@@ -392,8 +392,6 @@ public class RoomController {
         return ResponseEntity.ok(rooms);
     }
 
-    // ========== PRICING MANAGEMENT ==========
-
     @PutMapping("/{roomId}/price")
     @Operation(summary = "Cập nhật giá phòng")
     public ResponseEntity<RoomResponse> updateRoomPrice(

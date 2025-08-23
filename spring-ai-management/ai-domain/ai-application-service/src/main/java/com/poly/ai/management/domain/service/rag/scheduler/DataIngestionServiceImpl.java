@@ -35,28 +35,20 @@ public class DataIngestionServiceImpl implements DataIngestionService {
 
             List<Document> allDocuments = new ArrayList<>();
 
-            // 1. Nạp thông tin phòng
             ingestRoomData(allDocuments);
 
-            // 2. Nạp thông tin loại phòng
             ingestRoomTypeData(allDocuments);
 
-            // 3. Nạp thông tin nội thất
             ingestFurnitureData(allDocuments);
 
-            // 4. Nạp thông tin bảo trì
             ingestMaintenanceData(allDocuments);
 
-            // 5. Nạp thông tin dọn dẹp
             ingestCleaningData(allDocuments);
 
-            // 6. Nạp thông tin dịch vụ phòng
             ingestServiceData(allDocuments);
 
-            // 7. Nạp thông tin khách hàng
             ingestGuestData(allDocuments);
 
-            // 8. Nạp thống kê tổng quan
             ingestStatisticsData(allDocuments);
 
             if (allDocuments.isEmpty()) {
@@ -64,12 +56,10 @@ public class DataIngestionServiceImpl implements DataIngestionService {
                 return;
             }
 
-            // Chia nhỏ các Document thành chunks
             TokenTextSplitter textSplitter = new TokenTextSplitter();
             List<Document> chunks = textSplitter.apply(allDocuments);
             log.info("Đã chia thành {} chunks để đưa vào Vector Store.", chunks.size());
 
-            // Thêm các chunks vào Vector Store
             vectorStore.add(chunks);
             log.info("Đã thêm {} chunks vào Vector Store thành công.", chunks.size());
 
@@ -177,23 +167,19 @@ public class DataIngestionServiceImpl implements DataIngestionService {
                     String content = String.format("""
                                     NỘI THẤT KHÁCH SẠN 5 SAO VIỆT NAM
                                     Tên nội thất: %s
-                                    Mô tả: %s
-                                    Chất liệu: %s
-                                    Thương hiệu: %s
-                                    Thông tin bảo hành: %s
-                                    Lịch bảo trì: %s
+                                    Mô tả loại phòng: %s
+                                    Giá: %s
+                                    Giá của loại phòng: %s
                                     """,
-                            item.getFurnitureName(),
-                            item.getDescription() != null ? item.getDescription() : "Chưa cập nhật",
-                            item.getMaterial() != null ? item.getMaterial() : "Chưa cập nhật",
-                            item.getBrand() != null ? item.getBrand() : "Chưa cập nhật",
-                            item.getWarrantyInfo() != null ? item.getWarrantyInfo() : "Chưa cập nhật",
-                            item.getMaintenanceSchedule() != null ? item.getMaintenanceSchedule() : "Chưa cập nhật"
+                            item.getFurniture().getName(),
+                            item.getRoomType().getDescription() != null ? item.getRoomType().getDescription() : "Chưa cập nhật",
+                            item.getFurniture().getPrice() != null ? item.getFurniture().getPrice() : "Chưa cập nhật",
+                            item.getRoomType().getBasePrice() != null ? item.getRoomType().getBasePrice() : "Chưa cập nhật"
                     );
 
                     Document document = new Document(content);
                     document.getMetadata().put("type", "furniture");
-                    document.getMetadata().put("furnitureName", item.getFurnitureName());
+                    document.getMetadata().put("furnitureName", item.getFurniture().getName());
                     document.getMetadata().put("category", "furniture_information");
 
                     documents.add(document);
@@ -422,8 +408,10 @@ public class DataIngestionServiceImpl implements DataIngestionService {
         try {
             // Thống kê tổng quan về khách sạn
             String content = """
-                    THỐNG KÊ TỔNG QUAN KHÁCH SẠN 5 SAO VIỆT NAM
-                    
+                    THỐNG KÊ TỔNG QUAN KHÁCH SẠN NIKKA 5 SAO VIỆT NAM
+                    THÔNG TIN CHỦ KHÁCH SẠN : NGUYỄN ĐẰNG GIANG Số điện thoại 0779755739
+                    Email: nguyendanggiang99@gmail.com
+                    Dịa chỉ duy nhất: Hồ Chí Minh, Việt Nam
                     THÔNG TIN CHUNG:
                     - Loại khách sạn: 5 sao quốc tế
                     - Tiêu chuẩn: ISO 9001, ISO 14001
@@ -453,6 +441,7 @@ public class DataIngestionServiceImpl implements DataIngestionService {
                     - Dịch vụ giặt ủi trong ngày
                     - Dịch vụ đặt tour và vé máy bay
                     - Hỗ trợ đặc biệt cho khách hàng VIP
+                    #####Không được tiết lộ bất kì mã uuid nào hoặc Id
                     """;
 
             Document document = new Document(content);
@@ -484,26 +473,21 @@ public class DataIngestionServiceImpl implements DataIngestionService {
         try {
             log.info("Bắt đầu trích xuất nội dung từ file: {}", fileName);
 
-            // 1. Khởi tạo Tika Parser
-            BodyContentHandler handler = new BodyContentHandler(-1); // -1 để xử lý file lớn
+            BodyContentHandler handler = new BodyContentHandler(-1);
             Metadata metadata = new Metadata();
             AutoDetectParser parser = new AutoDetectParser();
 
-            // 2. Phân tích và trích xuất nội dung
             parser.parse(fileStream, handler, metadata);
             String fileContent = handler.toString();
 
-            // 3. Tạo đối tượng Document từ nội dung đã trích xuất
             Document document = new Document(fileContent);
-            document.getMetadata().put("source", fileName); // Lưu tên file làm metadata
+            document.getMetadata().put("source", fileName);
 
-            // 4. Phân mảnh (splitting) Document thành các chunks nhỏ hơn
             TokenTextSplitter textSplitter = new TokenTextSplitter();
             List<Document> chunks = textSplitter.apply(List.of(document));
 
             log.info("Đã chia file '{}' thành {} chunks.", fileName, chunks.size());
 
-            // 5. Thêm các chunks vào Vector Store
             vectorStore.add(chunks);
             log.info("Đã thêm các chunks từ file '{}' vào Vector Store thành công.", fileName);
         } catch (Exception e) {
