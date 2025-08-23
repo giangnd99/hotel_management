@@ -1,8 +1,6 @@
-package com.poly.ai.management.domain.controller;
+package com.poly.ai.management.application.web.rest;
 
 import com.poly.ai.management.domain.service.AIReportService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +15,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/ai/reports")
 @RequiredArgsConstructor
-@Tag(name = "AI Report Controller", description = "Tạo báo cáo tự động thông qua AI")
 @Slf4j
 public class AIReportController {
 
@@ -28,7 +25,6 @@ public class AIReportController {
      * POST /api/ai/reports/daily
      */
     @PostMapping("/daily")
-    @Operation(summary = "Tạo báo cáo hàng ngày", description = "Tạo báo cáo hàng ngày với dữ liệu từ Booking, Payment và Invoice")
     public ResponseEntity<Map<String, Object>> generateDailyReport(
             @RequestBody(required = false) Map<String, Object> requestData) {
         
@@ -57,7 +53,6 @@ public class AIReportController {
      * POST /api/ai/reports/monthly
      */
     @PostMapping("/monthly")
-    @Operation(summary = "Tạo báo cáo hàng tháng", description = "Tạo báo cáo hàng tháng với dữ liệu từ Booking, Payment và Invoice")
     public ResponseEntity<Map<String, Object>> generateMonthlyReport(
             @RequestBody(required = false) Map<String, Object> requestData,
             @RequestParam(defaultValue = "1") int month,
@@ -82,7 +77,7 @@ public class AIReportController {
             Object paymentData = requestData != null ? requestData.get("paymentData") : null;
             Object invoiceData = requestData != null ? requestData.get("invoiceData") : null;
             
-            Map<String, Object> report = aiReportService.generateMonthlyReport(bookingData, paymentData, invoiceData, month, year);
+            Map<String, Object> report = aiReportService.generateMonthlyReport(month, year);
             
             log.info("Monthly report for {}/{} generated successfully", month, year);
             return ResponseEntity.ok(report);
@@ -99,7 +94,6 @@ public class AIReportController {
      * POST /api/ai/reports/yearly
      */
     @PostMapping("/yearly")
-    @Operation(summary = "Tạo báo cáo hàng năm", description = "Tạo báo cáo hàng năm với dữ liệu từ Booking, Payment và Invoice")
     public ResponseEntity<Map<String, Object>> generateYearlyReport(
             @RequestBody(required = false) Map<String, Object> requestData,
             @RequestParam(defaultValue = "2024") int year) {
@@ -118,7 +112,7 @@ public class AIReportController {
             Object paymentData = requestData != null ? requestData.get("paymentData") : null;
             Object invoiceData = requestData != null ? requestData.get("invoiceData") : null;
             
-            Map<String, Object> report = aiReportService.generateYearlyReport(bookingData, paymentData, invoiceData, year);
+            Map<String, Object> report = aiReportService.generateYearlyReport( year);
             
             log.info("Yearly report for {} generated successfully", year);
             return ResponseEntity.ok(report);
@@ -135,7 +129,6 @@ public class AIReportController {
      * POST /api/ai/reports/custom
      */
     @PostMapping("/custom")
-    @Operation(summary = "Tạo báo cáo tùy chỉnh", description = "Tạo báo cáo tùy chỉnh với khoảng thời gian và dữ liệu được chỉ định")
     public ResponseEntity<Map<String, Object>> generateCustomReport(
             @RequestBody Map<String, Object> requestData) {
         
@@ -188,7 +181,6 @@ public class AIReportController {
      * GET /api/ai/reports/types
      */
     @GetMapping("/types")
-    @Operation(summary = "Lấy danh sách loại báo cáo", description = "Lấy thông tin về các loại báo cáo có thể tạo")
     public ResponseEntity<Map<String, Object>> getAvailableReportTypes() {
         
         log.info("Getting available report types...");
@@ -256,12 +248,7 @@ public class AIReportController {
         return ResponseEntity.ok(reportTypes);
     }
 
-    /**
-     * Kiểm tra trạng thái AI service
-     * GET /api/ai/reports/health
-     */
     @GetMapping("/health")
-    @Operation(summary = "Kiểm tra trạng thái AI", description = "Kiểm tra trạng thái hoạt động của AI service")
     public ResponseEntity<Map<String, Object>> checkAIHealth() {
         
         log.info("Checking AI service health...");

@@ -16,10 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Service để tích hợp với Notification Management
- * Gửi email báo cáo tự động thông qua AI
- */
+
 @Service
 @RequiredArgsConstructor
 @Slf4j

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -15,11 +16,10 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RoomTypeResponse {
-    private String typeId;
+    private UUID id;
     private String typeName;
     private String description;
-    private BigDecimal basePrice;
-    private Integer maxOccupancy;
-    private String amenities;
-    private Boolean isActive;
+    private String basePrice;
+    private int maxOccupancy;
+    private List<FurnitureRequirementResponse> furnitureRequirements;
 }

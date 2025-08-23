@@ -5,9 +5,6 @@ import com.poly.ai.management.domain.port.input.service.DataIngestionService;
 import com.poly.ai.management.domain.port.output.feign.RoomFeign;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.AutoDetectParser;
-import org.apache.tika.sax.BodyContentHandler;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -15,10 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Component
 @Slf4j
@@ -36,10 +32,6 @@ public class DataIngestionServiceImpl implements DataIngestionService {
             List<Document> allDocuments = new ArrayList<>();
 
             ingestRoomData(allDocuments);
-
-            ingestRoomTypeData(allDocuments);
-
-            ingestFurnitureData(allDocuments);
 
             ingestMaintenanceData(allDocuments);
 
@@ -80,26 +72,15 @@ public class DataIngestionServiceImpl implements DataIngestionService {
                                     THÔNG TIN PHÒNG KHÁCH SẠN 5 SAO VIỆT NAM
                                     Số phòng: %s
                                     Tầng: %d
-                                    Diện tích: %s
                                     Loại phòng: %s
                                     Trạng thái: %s
-                                    Đặc điểm: %s
-                                    View: %s
-                                    Tiện nghi đặc biệt: %s
-                                    Lần dọn dẹp cuối: %s
-                                    Lần bảo trì cuối: %s
                                     """,
                             room.getRoomNumber(),
                             room.getFloor(),
-                            room.getArea() != null ? room.getArea() : "Chưa cập nhật",
                             room.getRoomType() != null ? room.getRoomType().getTypeName() : "Chưa xác định",
-                            room.getRoomStatus(),
-                            room.getSpecialFeatures() != null ? room.getSpecialFeatures() : "Không có",
-                            room.getViewDescription() != null ? room.getViewDescription() : "Chưa cập nhật",
-                            room.getAccessibilityFeatures() != null ? room.getAccessibilityFeatures() : "Không có",
-                            room.getLastCleanedAt() != null ? room.getLastCleanedAt() : "Chưa cập nhật",
-                            room.getLastMaintenanceAt() != null ? room.getLastMaintenanceAt() : "Chưa cập nhật"
+                            room.getRoomStatus()
                     );
+
 
                     Document document = new Document(content);
                     document.getMetadata().put("type", "room");
@@ -107,6 +88,13 @@ public class DataIngestionServiceImpl implements DataIngestionService {
                     document.getMetadata().put("floor", String.valueOf(room.getFloor()));
                     document.getMetadata().put("roomStatus", room.getRoomStatus());
                     document.getMetadata().put("category", "room_information");
+
+                    ingestRoomTypeData(documents, room.getRoomType());
+                    rooms.forEach(
+                            roomResponse -> roomResponse.getRoomType().getFurnitureRequirements().forEach(
+                                    furnitureRequirementResponse -> {
+                                        ingestFurnitureData(documents, furnitureRequirementResponse.getFurniture());
+                                    }));
 
                     documents.add(document);
                 }
@@ -116,75 +104,60 @@ public class DataIngestionServiceImpl implements DataIngestionService {
         }
     }
 
-    private void ingestRoomTypeData(List<Document> documents) {
+    private void ingestRoomTypeData(List<Document> documents, RoomTypeResponse roomType) {
         try {
-            ResponseEntity<List<RoomTypeResponse>> response = roomFeign.getAllRoomTypes();
-            if (response.getBody() != null && !response.getBody().isEmpty()) {
-                List<RoomTypeResponse> roomTypes = response.getBody();
-                log.info("Đã tìm thấy {} loại phòng", roomTypes.size());
+            if (roomType != null) {
+
                 String cancellationRegular = "Chính sách hủy phòng: Khách hàng hủy trước 24 giờ sẽ được hoàn lại 100% tiền. Hủy trong vòng 24 giờ sẽ mất phí 30%";
                 String extension = "";
-                for (RoomTypeResponse roomType : roomTypes) {
-                    String content = String.format("""
-                                    LOẠI PHÒNG KHÁCH SẠN 5 SAO VIỆT NAM
-                                    Tên loại: %s
-                                    Mô tả: %s
-                                    Giá cơ bản: %s VND/đêm
-                                    Sức chứa tối đa: %d người
-                                    Diện tích: %s
-                                    Chính sách hủy: %s
-                                    """,
-                            roomType.getTypeName(),
-                            roomType.getDescription(),
-                            roomType.getBasePrice(),
-                            roomType.getMaxOccupancy(),
-                            roomType.getAmenities() != null ? roomType.getAmenities() : "Không có",
-                            cancellationRegular
-                    );
 
-                    Document document = new Document(content);
-                    document.getMetadata().put("type", "room_type");
-                    document.getMetadata().put("typeName", roomType.getTypeName());
-                    document.getMetadata().put("maxOccupancy", String.valueOf(roomType.getMaxOccupancy()));
-                    document.getMetadata().put("category", "room_type_information");
+                String content = String.format("""
+                                LOẠI PHÒNG KHÁCH SẠN 5 SAO VIỆT NAM
+                                Tên loại: %s
+                                Mô tả: %s
+                                Giá cơ bản: %s VND/đêm
+                                Sức chứa tối đa: %d người
+                                Chính sách hủy: %s
+                                """,
+                        roomType.getTypeName(),
+                        roomType.getDescription(),
+                        roomType.getBasePrice(),
+                        roomType.getMaxOccupancy(),
+                        cancellationRegular
+                );
 
-                    documents.add(document);
-                }
+                Document document = new Document(content);
+                document.getMetadata().put("type", "room_type");
+                document.getMetadata().put("typeName", roomType.getTypeName());
+                document.getMetadata().put("maxOccupancy", String.valueOf(roomType.getMaxOccupancy()));
+                document.getMetadata().put("category", "room_type_information");
+
+                documents.add(document);
             }
+
         } catch (Exception e) {
             log.error("Lỗi khi nạp dữ liệu loại phòng: {}", e.getMessage());
         }
     }
 
-    private void ingestFurnitureData(List<Document> documents) {
+    private void ingestFurnitureData(List<Document> documents, FurnitureResponse furniture) {
         try {
-            ResponseEntity<List<FurnitureRequirementResponse>> response = roomFeign.getAllFurniture();
-            if (response.getBody() != null && !response.getBody().isEmpty()) {
-                List<FurnitureRequirementResponse> furniture = response.getBody();
-                log.info("Đã tìm thấy {} loại nội thất", furniture.size());
+            String content = String.format("""
+                            NỘI THẤT KHÁCH SẠN 5 SAO VIỆT NAM
+                            Tên nội thất: %s
+                            Giá: %s
+                            """,
+                    furniture.getName(),
+                    furniture.getPrice() != null ? furniture.getPrice() : "Chưa cập nhật"
+            );
 
-                for (FurnitureRequirementResponse item : furniture) {
-                    String content = String.format("""
-                                    NỘI THẤT KHÁCH SẠN 5 SAO VIỆT NAM
-                                    Tên nội thất: %s
-                                    Mô tả loại phòng: %s
-                                    Giá: %s
-                                    Giá của loại phòng: %s
-                                    """,
-                            item.getFurniture().getName(),
-                            item.getRoomType().getDescription() != null ? item.getRoomType().getDescription() : "Chưa cập nhật",
-                            item.getFurniture().getPrice() != null ? item.getFurniture().getPrice() : "Chưa cập nhật",
-                            item.getRoomType().getBasePrice() != null ? item.getRoomType().getBasePrice() : "Chưa cập nhật"
-                    );
+            Document document = new Document(content);
+            document.getMetadata().put("type", "furniture");
+            document.getMetadata().put("furnitureName", furniture.getName());
+            document.getMetadata().put("category", "furniture_information");
 
-                    Document document = new Document(content);
-                    document.getMetadata().put("type", "furniture");
-                    document.getMetadata().put("furnitureName", item.getFurniture().getName());
-                    document.getMetadata().put("category", "furniture_information");
+            documents.add(document);
 
-                    documents.add(document);
-                }
-            }
         } catch (Exception e) {
             log.error("Lỗi khi nạp dữ liệu nội thất: {}", e.getMessage());
         }
@@ -406,7 +379,6 @@ public class DataIngestionServiceImpl implements DataIngestionService {
 
     private void ingestStatisticsData(List<Document> documents) {
         try {
-            // Thống kê tổng quan về khách sạn
             String content = """
                     THỐNG KÊ TỔNG QUAN KHÁCH SẠN NIKKA 5 SAO VIỆT NAM
                     THÔNG TIN CHỦ KHÁCH SẠN : NGUYỄN ĐẰNG GIANG Số điện thoại 0779755739
@@ -468,30 +440,4 @@ public class DataIngestionServiceImpl implements DataIngestionService {
         log.info("Quá trình nạp dữ liệu vào Vector Store hoàn tất.");
     }
 
-    @Override
-    public void ingestFile(InputStream fileStream, String fileName) {
-        try {
-            log.info("Bắt đầu trích xuất nội dung từ file: {}", fileName);
-
-            BodyContentHandler handler = new BodyContentHandler(-1);
-            Metadata metadata = new Metadata();
-            AutoDetectParser parser = new AutoDetectParser();
-
-            parser.parse(fileStream, handler, metadata);
-            String fileContent = handler.toString();
-
-            Document document = new Document(fileContent);
-            document.getMetadata().put("source", fileName);
-
-            TokenTextSplitter textSplitter = new TokenTextSplitter();
-            List<Document> chunks = textSplitter.apply(List.of(document));
-
-            log.info("Đã chia file '{}' thành {} chunks.", fileName, chunks.size());
-
-            vectorStore.add(chunks);
-            log.info("Đã thêm các chunks từ file '{}' vào Vector Store thành công.", fileName);
-        } catch (Exception e) {
-            log.error("Lỗi trong quá trình nạp dữ liệu từ file '{}'", fileName, e);
-        }
-    }
 }

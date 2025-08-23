@@ -23,10 +23,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Service AI để tạo báo cáo tự động với tích hợp DL4J và xử lý dữ liệu chuẩn cấu trúc
- * Xử lý dữ liệu từ Booking, Payment và Invoice để tạo báo cáo thông minh
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -53,7 +49,7 @@ public class AIReportService {
     /**
      * Tạo báo cáo hàng ngày với phân tích nâng cao
      */
-    public Map<String, Object> generateDailyReport() {
+    public Map<String, Object> generateDailyReport(Object payment, Object booking, Object invoice) {
         log.info("Generating daily report with AI and advanced data processing...");
 
         try {
@@ -558,15 +554,14 @@ public class AIReportService {
             String response = chatClient.prompt(aiPrompt).call().content();
             
             AIResponse aiResponse = new AIResponse();
-            aiResponse.setContent(response);
-            aiResponse.setTimestamp(LocalDateTime.now());
+            aiResponse.setValue(response);
+            aiResponse.setSessionId(UUID.randomUUID().toString());
             
             return aiResponse;
         } catch (Exception e) {
             log.error("Error processing with AI: ", e);
             AIResponse fallbackResponse = new AIResponse();
-            fallbackResponse.setContent("Không thể xử lý với AI. Vui lòng thử lại sau.");
-            fallbackResponse.setTimestamp(LocalDateTime.now());
+            fallbackResponse.setValue("Không thể xử lý với AI. Vui lòng thử lại sau.");
             return fallbackResponse;
         }
     }
@@ -650,7 +645,7 @@ public class AIReportService {
         Map<String, Object> report = new LinkedHashMap<>();
         report.put("reportType", "DAILY");
         report.put("date", date);
-        report.put("aiContent", aiResponse.getContent());
+        report.put("aiContent", aiResponse.getValue());
         report.put("processedData", processedData);
         report.put("generatedAt", LocalDateTime.now());
         report.put("version", "2.0-Enhanced");
@@ -662,7 +657,7 @@ public class AIReportService {
         report.put("reportType", "MONTHLY");
         report.put("month", month);
         report.put("year", year);
-        report.put("aiContent", aiResponse.getContent());
+        report.put("aiContent", aiResponse.getValue());
         report.put("processedData", processedData);
         report.put("generatedAt", LocalDateTime.now());
         report.put("version", "2.0-Enhanced");
@@ -673,7 +668,7 @@ public class AIReportService {
         Map<String, Object> report = new LinkedHashMap<>();
         report.put("reportType", "YEARLY");
         report.put("year", year);
-        report.put("aiContent", aiResponse.getContent());
+        report.put("aiContent", aiResponse.getValue());
         report.put("processedData", processedData);
         report.put("generatedAt", LocalDateTime.now());
         report.put("version", "2.0-Enhanced");
