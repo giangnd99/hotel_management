@@ -101,6 +101,12 @@ public class BookingDomainToEntityDataAccessMapper {
             setFieldIfExists(be, "setCustomerId", cid);
         }
 
+        // number of guests -> set number of Guests id if possible
+        if (booking.getNumberOfGuests() != null) {
+            Object cid = tryExtractNumberOfGuests(booking.getNumberOfGuests());
+            setFieldIfExists(be, "setNumberOfGuest", cid);
+        }
+
         return be;
     }
 
@@ -209,6 +215,15 @@ public class BookingDomainToEntityDataAccessMapper {
         return trackingIdObj.toString();
     }
 
+    private Object tryExtractNumberOfGuests(Integer numberOfGuests) {
+        if (numberOfGuests == null) return null;
+        try {
+            Method m = numberOfGuests.getClass().getMethod("getNumberOfGuests");
+            Object idObj = m.invoke(m);
+            return extractIdValue(idObj);
+        } catch (Exception ignored) {}
+        return null;
+    }
     private Object tryExtractCustomerIdValue(Customer customer) {
         if (customer == null) return null;
         try {
@@ -286,12 +301,10 @@ public class BookingDomainToEntityDataAccessMapper {
                 if (!m.getName().equals(setterName)) continue;
                 Class<?>[] params = m.getParameterTypes();
                 if (params.length != 1) continue;
-                // try to invoke - rely on reflection to perform primitive boxing if possible
                 try {
                     m.invoke(target, value);
                     return;
                 } catch (IllegalArgumentException iae) {
-                    // type mismatch: try to convert simple types (Number -> correct numeric type)
                     Class<?> pType = params[0];
                     Object converted = tryConvertSimple(value, pType);
                     if (converted != null) {

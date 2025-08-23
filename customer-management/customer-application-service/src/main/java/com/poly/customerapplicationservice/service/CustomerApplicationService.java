@@ -53,7 +53,8 @@ public class CustomerApplicationService implements CustomerUsecase {
     @Override
     public CustomerDto initializeCustomerProfile(CreateCustomerCommand command) {
 
-        UserResponse response = authenticationClient.createUser(creationRequest(command)).getResult();
+        UserCreationRequest creationRequest = creationRequest(command);
+        UserResponse response = authenticationClient.createUser(creationRequest).getResult();
 
         Address address = command.getAddress() == null ? Address.empty() : Address.from(command.getAddress().getStreet(), command.getAddress().getWard(), command.getAddress().getDistrict(), command.getAddress().getCity());
         DateOfBirth dateOfBirth = command.getDateOfBirth() == null ? DateOfBirth.empty() : DateOfBirth.from(command.getDateOfBirth());
@@ -83,15 +84,18 @@ public class CustomerApplicationService implements CustomerUsecase {
         log.info("User id created successfully: {} ", response.getId());
         log.info("Customer with id: {} created successfully", savedCustomer.getId().getValue().toString());
         customerCreationRequestPublisher.publish(creatMessage(savedCustomer, response));
-        notificationClient.sendAccountInfo(command.getEmail(), command.getPassword());
+        notificationClient.sendAccountInfo(creationRequest.getEmail(), creationRequest.getPassword());
         return CustomerDto.from(newCustomer);
     }
 
     private UserCreationRequest creationRequest(CreateCustomerCommand command) {
+        String email = command.getEmail() == null ? "needToChange@gmail.com" : command.getEmail().trim();
+        String phone = command.getPhone() == null ? "0123456789" : command.getPhone().trim();
+        String password = command.getPassword() == null ? "admin123" : command.getPassword().trim();
         return UserCreationRequest.builder()
-                .email(command.getEmail())
-                .password(command.getPassword())
-                .phone(command.getPhone())
+                .email(email)
+                .password(email)
+                .phone(phone)
                 .build();
     }
 

@@ -45,21 +45,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse createUser(UserCreationRequest request) {
-
-        if (userRepository.existsByEmail(request.getEmail())) {
-
-            throw new AppException(ErrorCode.USER_EXISTED);
-
-        }
-        User user = userMapper.toDomainEntity(request);
-        user.changePassword(new Password(passwordEncoder.encode(request.getPassword())));
-        user.addRole(Role.Builder.builder()
-                .name(ERole.ROLE_CUSTOMER)
-                .build());
-        User savedUser = userRepository.save(user);
-        String token = generateTokenHandler.generateToken(savedUser);
-        savedUser.setToken(token);
-        return userMapper.toUserResponse(savedUser);
+        User userRequest = userRepository.findByEmail(request.getEmail()).orElseGet(() -> {
+            User user = userMapper.toDomainEntity(request);
+            user.changePassword(new Password(passwordEncoder.encode(request.getPassword())));
+            user.addRole(Role.Builder.builder()
+                    .name(ERole.ROLE_CUSTOMER)
+                    .build());
+            return userRepository.save(user);
+        });
+        String token = generateTokenHandler.generateToken(userRequest);
+        userRequest.setToken(token);
+        log.info("Token: {}", userRequest.getToken());
+        return userMapper.toUserResponse(userRequest);
     }
 
     @Override

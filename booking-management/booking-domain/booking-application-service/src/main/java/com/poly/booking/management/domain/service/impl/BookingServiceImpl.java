@@ -110,34 +110,36 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingDto createBooking(CreateBookingRequest request) {
 
-        Customer customer = customerRepository.findByEmail(request.getCustomerEmail())
-                .orElseGet(() -> {
-                    CustomerDto response = customerClient.getCustomerById(request.getCustomerId());
-                    if (response == null) {
-                        log.error("Customer not found!");
-                        log.info("Creating new customer with id: {}", request.getCustomerId());
-                        CreateCustomerCommand requestCustomer =
-                                CreateCustomerCommand.builder()
-                                        .phone(request.getCustomerPhone())
-                                        .email(request.getCustomerEmail())
-                                        .firstName("Update")
-                                        .lastName("Need to be")
-                                        .password("NikkaHotelAdmin")
-                                        .dateOfBirth(LocalDate.now())
-                                        .sex("MALE")
-                                        .build();
-                        log.info("Creating new customer with request: {}", requestCustomer);
-                        customerClient.createCustomer(requestCustomer);
-                        log.info("Customer creation request sent to customer service!");
-                    }
-                    Customer newCustomer = mapToCustomer(response);
-                    newCustomer.setEmail(request.getCustomerEmail());
-                    newCustomer.setUsername(request.getCustomerEmail());
-                    return customerRepository.save(newCustomer);
-                });
+        Optional<Customer> existingCustomer = customerRepository.findByEmail(request.getCustomerEmail());
+
+        Customer customer;
+        if (existingCustomer.isPresent()) {
+            customer = existingCustomer.get();
+        } else {
+            try {
+                CustomerDto response = customerClient.getCustomerById(request.getCustomerId());
+                customer = mapToCustomer(response);
+                customer.setEmail(request.getCustomerEmail());
+                customer.setUsername(request.getCustomerEmail());
+                customer = customerRepository.save(customer);
+                log.info("Found and synchronized customer with id: {}", request.getCustomerId());
+            } catch (Exception e) {
+                log.warn("Customer with ID {} not found in customer service, creating new profile.", request.getCustomerId());
+                CreateCustomerCommand requestCustomer =
+                        CreateCustomerCommand.builder()
+                                .phone(request.getCustomerPhone())
+                                .email(request.getCustomerEmail())
+                                .sex("MALE")
+                                .build();
+
+                CustomerDto response = customerClient.createCustomer(requestCustomer);
+                customer = mapToCustomer(response);
+                customerRepository.save(customer);
+                log.info("New customer profile created successfully with id: {}", customer.getId().getValue());
+            }
+        }
 
         Booking booking = bookingCreateHelper.initAndValidateBookingCreatedEvent(request, customer);
-
         return mapToDto(booking);
     }
 
@@ -362,7 +364,7 @@ public class BookingServiceImpl implements BookingService {
 
         dto.setCreatedAt(LocalDateTime.now());
         dto.setUpdatedAt(LocalDateTime.now());
-
+        dto.setNumberOfGuests(booking.getNumberOfGuests() != null ? booking.getNumberOfGuests() : 1);
         // Set room information if available
         if (booking.getBookingRooms() != null && !booking.getBookingRooms().isEmpty()) {
             var firstRoom = booking.getBookingRooms().get(0);
