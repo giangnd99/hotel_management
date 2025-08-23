@@ -8,29 +8,6 @@ services:
     networks:
       - hotel_network
 
-  swagger-hub:
-    image: com.poly/swagger-hub.service:0.0.1-SNAPSHOT
-    container_name: swagger-hub-service
-    ports:
-      - "8800:8800"
-    networks:
-      - hotel_network
-
-
-  ollama:
-    build: ./ollama
-    container_name: ollama
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama_models:/root/.ollama
-    restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:11434/api/tags" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
   postgres:
     image: ankane/pgvector:latest
     container_name: pgvector-db

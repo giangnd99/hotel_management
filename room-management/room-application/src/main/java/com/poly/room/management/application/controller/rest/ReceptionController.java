@@ -132,15 +132,6 @@ public class ReceptionController {
         return ResponseEntity.ok(todayCheckIns);
     }
 
-    @PostMapping("/checkin/{bookingId}")
-    @Operation(summary = "Thực hiện check-in")
-    public ResponseEntity<String> performCheckIn(
-            @PathVariable UUID bookingId) {
-        log.info("Performing check-in for booking: {}", bookingId);
-        String checkIn = receptionService.performCheckIn(bookingId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(checkIn);
-    }
-
     @PostMapping("/checkin/walk-in")
     @Operation(summary = "Check-in khách vãng lai")
     public ResponseEntity<CheckInDto> performWalkInCheckIn(@Valid @RequestBody WalkInCheckInRequest request) {
