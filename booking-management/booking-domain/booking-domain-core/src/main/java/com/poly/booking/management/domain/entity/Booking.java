@@ -133,7 +133,6 @@ public class Booking extends AggregateRoot<BookingId> {
      * Check-out thành công, chuyển sang trạng thái CHECKED_OUT.
      */
     public void checkOut() {
-        validateStatusForCheckOut();
         status = BookingStatus.CHECKED_OUT;
     }
 

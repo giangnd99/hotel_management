@@ -179,14 +179,7 @@ public class ReceptionController {
         return ResponseEntity.ok(todayCheckOuts);
     }
 
-    @PostMapping("/checkout/{bookingId}")
-    @Operation(summary = "Thực hiện check-out")
-    public ResponseEntity<UUID> performCheckOut(
-            @PathVariable UUID bookingId) {
-        log.info("Performing check-out with booking id : {}", bookingId);
-        UUID bookingCheckedOut = receptionService.performCheckOut(bookingId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(bookingCheckedOut);
-    }
+
 
     @PostMapping("/checkout/{checkInId}/early")
     @Operation(summary = "Check-out sớm")

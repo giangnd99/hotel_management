@@ -1,6 +1,7 @@
 package com.poly.room.management.domain.service.impl;
 
 import com.poly.domain.valueobject.Money;
+import com.poly.domain.valueobject.RoomStatus;
 import com.poly.room.management.domain.dto.RoomStatusDto;
 import com.poly.room.management.domain.dto.reception.*;
 import com.poly.room.management.domain.dto.response.FindRoomIdBookingWhenCheckInResponse;
@@ -165,18 +166,19 @@ public class ReceptionServiceImpl implements ReceptionService {
     public String performCheckIn(UUID bookingId) {
         String message = "Check-in completed successfully for booking: " + bookingId;
         try {
-        log.info("Performing check-in for booking: {}", bookingId);
-        FindRoomIdBookingWhenCheckInResponse response = bookingClient.findRoomIdBookingWhenCheckIn(bookingId);
+            log.info("Performing check-in for booking: {}", bookingId);
+            List<UUID> response = bookingClient.findRoomIdBookingWhenCheckIn(bookingId);
 
-        List<Room> rooms = response.getRoomId().stream().map(
-                roomId -> roomRepository.findById(UUID.fromString(roomId)).orElseThrow(
-                        () -> new RuntimeException("Room not found with: " + bookingId)
-                )).toList();
-        rooms.forEach(room -> {
-        roomRepository.update(room);
-        log.info("Check-in completed successfully for room: {}", room.getRoomNumber());
-        });
-        }catch (Exception e) {
+            List<Room> rooms = response.stream().map(
+                    roomId -> roomRepository.findById(roomId).orElseThrow(
+                            () -> new RuntimeException("Room not found with: " + bookingId)
+                    )).toList();
+            rooms.forEach(room -> {
+                room.setRoomStatus(RoomStatus.CHECKED_IN);
+                roomRepository.update(room);
+                log.info("Check-in completed successfully for room: {}", room.getRoomNumber());
+            });
+        } catch (Exception e) {
             message = "Check-in failed for booking: " + bookingId;
             log.error(message, e);
         }
@@ -335,10 +337,10 @@ public class ReceptionServiceImpl implements ReceptionService {
     public UUID performCheckOut(UUID bookingID) {
         log.info("Performing check-out for check-in: {}", bookingID);
 
-        FindRoomIdBookingWhenCheckInResponse response = bookingClient.findRoomIdBookingWhenCheckIn(bookingID);
+        List<UUID> response = bookingClient.findRoomIdBookingWhenCheckIn(bookingID);
 
-        response.getRoomId().forEach(roomId -> {
-            Room room = roomRepository.findById(UUID.fromString(roomId)).orElseThrow(
+        response.forEach(roomId -> {
+            Room room = roomRepository.findById(roomId).orElseThrow(
                     () -> new RuntimeException("Room not found with: " + bookingID)
             );
             room.setCheckOutRoomStatus();

@@ -133,8 +133,8 @@ public class BookingServiceImpl implements BookingService {
                                 .build();
 
                 CustomerDto response = customerClient.createCustomer(requestCustomer);
-                customer = mapToCustomer(response);
-                customerRepository.save(customer);
+                customer = customerRepository.findByEmail(request.getCustomerEmail()).orElseThrow(() ->
+                        new RuntimeException("Customer not found after creating!"));
                 log.info("New customer profile created successfully with id: {}", customer.getId().getValue());
             }
         }
@@ -145,10 +145,13 @@ public class BookingServiceImpl implements BookingService {
 
     private Customer mapToCustomer(CustomerDto customerDto) {
 
+        String lastName = customerDto.getLastName() == null ? "Need to" : customerDto.getLastName();
+        String firstName = customerDto.getFirstName() == null ? "Change" : customerDto.getFirstName();
+        String name = lastName.concat(firstName);
         return Customer.Builder.builder()
                 .lastName(customerDto.getLastName())
                 .firstName(customerDto.getFirstName())
-                .name(customerDto.getLastName().concat(" ").concat(customerDto.getFirstName()))
+                .name(name)
                 .status(customerDto.isActive() ? Customer.CustomerStatus.ACTIVE : Customer.CustomerStatus.INACTIVE)
                 .id(new CustomerId(customerDto.getCustomerId()))
                 .build();
@@ -280,7 +283,6 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        booking.checkIn();
         booking.setActualCheckInDate(DateCustom.now());
         Booking checkedInBooking = bookingRepository.save(booking);
 
