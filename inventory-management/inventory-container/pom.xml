@@ -25,9 +25,13 @@
         </dependency>
         <dependency>
             <groupId>com.poly</groupId>
-            <artifactId>inventory-domain</artifactId>
+            <artifactId>inventory-domain-core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>inventory-application-service</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.poly</groupId>
@@ -37,4 +41,5 @@
         </dependency>
 
     </dependencies>
+
 </project>

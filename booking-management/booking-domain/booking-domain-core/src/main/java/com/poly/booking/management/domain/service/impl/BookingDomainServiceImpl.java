@@ -16,7 +16,6 @@ import java.util.UUID;
  * Triển khai các nghiệp vụ domain cho Booking.
  * Đảm bảo các bước nghiệp vụ đặt phòng, xác nhận, check-in, thanh toán, hủy, v.v. đúng logic và clean code.
  */
-@Slf4j
 public class BookingDomainServiceImpl implements BookingDomainService {
 
     /**
@@ -33,7 +32,6 @@ public class BookingDomainServiceImpl implements BookingDomainService {
         booking.updateAndValidateTotalPrice();
         booking.initiateBooking();
 
-        log.info("Booking created with id: {}", booking.getId().getValue());
         return new BookingCreatedEvent(booking, DateCustom.now());
     }
 
@@ -56,7 +54,7 @@ public class BookingDomainServiceImpl implements BookingDomainService {
     @Override
     public BookingCancelledEvent cancelDepositBooking(Booking booking) {
         booking.cancelConfirmedBooking();
-        log.info("Deposit of booking cancelled with id: {}", booking.getId().getValue());
+
         return new BookingCancelledEvent(booking, DateCustom.now());
     }
 
@@ -69,7 +67,6 @@ public class BookingDomainServiceImpl implements BookingDomainService {
     @Override
     public BookingDepositedEvent depositBooking(Booking booking) {
         booking.depositBooking();
-        log.info("Booking deposit confirmed with id: {}", booking.getId().getValue());
         return new BookingDepositedEvent(booking, DateCustom.now());
     }
 
@@ -94,7 +91,6 @@ public class BookingDomainServiceImpl implements BookingDomainService {
     @Override
     public CheckInEvent checkInBooking(Booking booking) {
         booking.checkIn();
-        log.info("Booking checked in with id: {}", booking.getId().getValue());
         return new CheckInEvent(booking, DateCustom.now());
     }
 
@@ -117,7 +113,7 @@ public class BookingDomainServiceImpl implements BookingDomainService {
     @Override
     public BookingPaidEvent payBooking(Booking booking) {
         booking.paidBooking();
-        log.info("Booking paid with id: {}", booking.getId().getValue());
+
         return new BookingPaidEvent(booking, DateCustom.now());
     }
 
@@ -130,7 +126,6 @@ public class BookingDomainServiceImpl implements BookingDomainService {
     @Override
     public CheckOutEvent checkOutBooking(Booking booking) {
         booking.checkOut();
-        log.info("Booking checked out with id: {}", booking.getId().getValue());
         return new CheckOutEvent(booking, DateCustom.now());
     }
 
@@ -143,7 +138,7 @@ public class BookingDomainServiceImpl implements BookingDomainService {
     @Override
     public BookingCancelledEvent cancelBooking(Booking booking) {
         booking.cancelBooking();
-        log.info("Booking cancelled with id: {}", booking.getId().getValue());
+
         return new BookingCancelledEvent(booking, DateCustom.now());
     }
 

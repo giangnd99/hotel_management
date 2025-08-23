@@ -1,7 +1,7 @@
 package com.poly.booking.management.domain.dto.request;
 
 import jakarta.annotation.Nullable;
-import lombok.AllArgsConstructor;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

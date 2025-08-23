@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/room/")
+@RequestMapping("/api/rooms/")
 @Slf4j
 @RequiredArgsConstructor
 public class RoomCheckInController {
