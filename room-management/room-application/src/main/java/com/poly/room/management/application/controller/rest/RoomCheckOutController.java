@@ -16,7 +16,7 @@ import java.util.UUID;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/room/")
+@RequestMapping("/api/rooms/")
 public class RoomCheckOutController {
 
     private final ReceptionService receptionService;

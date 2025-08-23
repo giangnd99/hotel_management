@@ -17,5 +17,5 @@ public interface RoomClient {
     ResponseEntity<List<RoomResponse>> getAllRooms();
 
     @PostMapping("/checkout/{bookingId}")
-    ResponseEntity<UUID> performCheckOut(@PathVariable UUID bookingId);
+    ResponseEntity<UUID> performCheckOut(@PathVariable("bookingId") UUID bookingId);
 }

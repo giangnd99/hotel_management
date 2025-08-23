@@ -24,8 +24,6 @@ public class PaymentResponseCheckOutKafkaListener implements KafkaConsumer<Booki
     private final PaymentCheckOutListener paymentCheckOutListener;
     private final BookingMessageDataMapper bookingDataMapper;
 
-
-
     @Override
     @KafkaListener(topics = "booking-payment-checkout-response",groupId = "room-check-out-group")
     public void receive(

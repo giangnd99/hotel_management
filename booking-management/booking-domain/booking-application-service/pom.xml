@@ -18,10 +18,6 @@
         </dependency>
         <dependency>
             <groupId>com.poly</groupId>
-            <artifactId>common-application</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.poly</groupId>
             <artifactId>saga</artifactId>
         </dependency>
         <dependency>

@@ -132,7 +132,7 @@ public class BookingServiceImpl implements BookingService {
                                 .sex("MALE")
                                 .build();
 
-                CustomerDto response = customerClient.createCustomer(requestCustomer);
+                customerClient.createCustomer(requestCustomer);
                 customer = customerRepository.findByEmail(request.getCustomerEmail()).orElseThrow(() ->
                         new RuntimeException("Customer not found after creating!"));
                 log.info("New customer profile created successfully with id: {}", customer.getId().getValue());
