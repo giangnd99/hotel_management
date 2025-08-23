@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface NotificationClient {
 
     @PostMapping("/send-account-info")
-    void sendAccountInfo(            @RequestParam("userEmail") String userEmail,
-                                     @RequestParam("password") String password);
+    void sendAccountInfo(@RequestParam("userEmail") String userEmail,
+                         @RequestParam("password") String password);
 }

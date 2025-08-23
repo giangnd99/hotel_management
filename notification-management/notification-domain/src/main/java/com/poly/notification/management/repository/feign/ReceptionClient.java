@@ -8,9 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.UUID;
 
-@FeignClient(name = "room-service", url = "http://localhost:8087/api/reception/")
+@FeignClient(name = "room-service", url = "http://localhost:8087/api/room/")
 public interface ReceptionClient {
-    /// checkin/{bookingId}
     @PostMapping("/checkin/{bookingId}")
     String performCheckIn(@PathVariable("bookingId") UUID bookingId);
 }
