@@ -34,6 +34,7 @@ CREATE TABLE booking.bookings
     tracking_id uuid ,
     total_price numeric(10,2) NOT NULL,
     status booking_status NOT NULL,
+    number_of_guests integer,
     CONSTRAINT bookings_pkey PRIMARY KEY (id),
     CONSTRAINT fk_customer FOREIGN KEY (customer_id) REFERENCES booking.customers (id) ON DELETE CASCADE
 

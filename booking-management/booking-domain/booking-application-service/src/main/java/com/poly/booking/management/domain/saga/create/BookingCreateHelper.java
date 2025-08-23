@@ -65,6 +65,7 @@ public class BookingCreateHelper {
                 .checkInDate(DateCustom.of(LocalDateTime.of(request.getCheckInDate(), LocalTime.now())))
                 .checkOutDate(DateCustom.of(LocalDateTime.of(request.getCheckOutDate(), LocalTime.now())))
                 .build();
+        booking.setNumberOfGuests(request.getNumberOfGuests());
         booking.setCustomer(customer);
         bookingDomainService.validateAndInitiateBooking(booking, roomsRequest, allRooms);
 

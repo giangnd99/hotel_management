@@ -30,6 +30,7 @@ public class Booking extends AggregateRoot<BookingId> {
     private String upgradeSuggestion;
     private List<BookingRoom> bookingRooms;
     private List<String> failureMessages;
+    private Integer numberOfGuests;
     public static final String FAILURE_MESSAGE_DELIMITER = ",";
 
     public Booking(Builder builder) {
@@ -45,8 +46,17 @@ public class Booking extends AggregateRoot<BookingId> {
         upgradeSuggestion = builder.upgradeSuggestion;
         bookingRooms = builder.bookingRooms;
         failureMessages = builder.failureMessages;
+        numberOfGuests = builder.numberOfGuests;
     }
 
+
+    public void setNumberOfGuests(Integer numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public Integer getNumberOfGuests() {
+        return numberOfGuests;
+    }
 
     public Money calculateDepositAmount() {
         Money depositAmount = totalPrice.multiply(new BigDecimal("0.3"));
@@ -289,16 +299,23 @@ public class Booking extends AggregateRoot<BookingId> {
         private String upgradeSuggestion;
         private List<BookingRoom> bookingRooms;
         private List<String> failureMessages;
+        private Integer numberOfGuests;
 
         private Builder() {
         }
+
 
         public static Builder builder() {
             return new Builder();
         }
 
+
         public Builder id(BookingId val) {
             id = val;
+            return this;
+        }
+        public Builder numberOfGuest(Integer val) {
+            numberOfGuests = val;
             return this;
         }
 
