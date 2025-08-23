@@ -1,6 +1,7 @@
 package com.poly.room.management.domain.service.impl;
 
 import com.poly.domain.valueobject.Money;
+import com.poly.domain.valueobject.RoomStatus;
 import com.poly.room.management.domain.dto.RoomStatusDto;
 import com.poly.room.management.domain.dto.reception.*;
 import com.poly.room.management.domain.dto.response.FindRoomIdBookingWhenCheckInResponse;
@@ -173,6 +174,7 @@ public class ReceptionServiceImpl implements ReceptionService {
                             () -> new RuntimeException("Room not found with: " + bookingId)
                     )).toList();
             rooms.forEach(room -> {
+                room.setRoomStatus(RoomStatus.CHECKED_IN);
                 roomRepository.update(room);
                 log.info("Check-in completed successfully for room: {}", room.getRoomNumber());
             });
