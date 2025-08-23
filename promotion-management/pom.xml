@@ -11,14 +11,29 @@
 
     <artifactId>promotion-management</artifactId>
     <packaging>pom</packaging>
+    
+    <properties>
+        <springdoc-openapi.version>2.4.0</springdoc-openapi.version>
+    </properties>
+    
     <modules>
         <module>promotion-domain-model</module>
-        <module>promotion-container</module>
-        <module>promotion-application</module>
         <module>promotion-data-access</module>
+        <module>promotion-application</module>
+        <module>promotion-container</module>
     </modules>
 
     <dependencies>
 
     </dependencies>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc-openapi.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

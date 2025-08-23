@@ -46,7 +46,7 @@ public class BatchConfig {
     public Job expirationManagementJob() {
         return new JobBuilder("expirationManagementJob", jobRepository)
                 .listener(jobCompletionNotificationListener)
-                .start(expirationManagementStep())
+                .start(expirationManagementStepBean())
                 .build();
     }
 
@@ -60,29 +60,29 @@ public class BatchConfig {
     public Job monitoringDataSyncJob() {
         return new JobBuilder("monitoringDataSyncJob", jobRepository)
                 .listener(jobCompletionNotificationListener)
-                .start(monitoringDataSyncStep())
+                .start(monitoringDataSyncStepBean())
                 .build();
     }
 
     /**
-     * Configures the expiration management step.
+     * Creates a Step from the ExpirationManagementStep tasklet.
      *
      * @return the configured step
      */
     @Bean
-    public Step expirationManagementStep() {
+    public Step expirationManagementStepBean() {
         return new StepBuilder("expirationManagementStep", jobRepository)
                 .tasklet(expirationManagementStep, transactionManager)
                 .build();
     }
 
     /**
-     * Configures the monitoring data sync step.
+     * Creates a Step from the MonitoringDataSyncStep tasklet.
      *
      * @return the configured step
      */
     @Bean
-    public Step monitoringDataSyncStep() {
+    public Step monitoringDataSyncStepBean() {
         return new StepBuilder("monitoringDataSyncStep", jobRepository)
                 .tasklet(monitoringDataSyncStep, transactionManager)
                 .build();

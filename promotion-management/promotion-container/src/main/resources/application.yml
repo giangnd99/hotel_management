@@ -3,7 +3,7 @@
 
 # Server Configuration
 server:
-  port: ${PROMOTION_MANAGEMENT_PORT}
+  port: ${PROMOTION_MANAGEMENT_PORT:9999}
   servlet:
     context-path: /promotion-management
   compression:
@@ -24,9 +24,9 @@ spring:
   
   # Database Configuration
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/hotel_management}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5433/postgres?currentSchema=promotion_management}
     username: ${DATABASE_USERNAME:postgres}
-    password: ${DATABASE_PASSWORD:password}
+    password: ${DATABASE_PASSWORD:admin}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 20
@@ -41,6 +41,8 @@ spring:
       ddl-auto: ${JPA_DDL_AUTO:none}
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      transaction:
+        jta-platform: org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -62,8 +64,8 @@ spring:
     database-change-log-table: DATABASECHANGELOG
     database-change-log-lock-table: DATABASECHANGELOGLOCK
     drop-first: ${LIQUIBASE_DROP_FIRST:false}
-    rollback-file: ${LIQUIBASE_ROLLBACK_FILE:}
-    test-rollback-on-update: ${LIQUIBASE_TEST_ROLLBACK:false}
+    rollback-file: /dev/null
+    test-rollback-on-update: false
   
   # Jackson Configuration
   jackson:
@@ -85,7 +87,7 @@ spring:
       enabled: ${BATCH_JOB_ENABLED:true}
       name: ${BATCH_JOB_NAME:promotion-management-batch}
     jdbc:
-      initialize-schema: ${BATCH_JDBC_INITIALIZE_SCHEMA:always}
+      initialize-schema: always
     job-repository:
       table-prefix: ${BATCH_TABLE_PREFIX:BATCH_}
   
@@ -132,15 +134,11 @@ spring:
 # Swagger/OpenAPI Configuration
 springdoc:
   api-docs:
-    path: /api-docs
+    path: /v3/api-docs
     enabled: true
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
-    tags-sorter: alpha
-    operations-sorter: alpha
-    doc-expansion: none
-    disable-swagger-default-url: true
   packages-to-scan: com.poly.promotion.application.controller
 
 # Logging Configuration
@@ -148,7 +146,8 @@ logging:
   level:
     com.poly.promotion: ${LOG_LEVEL:INFO}
     org.springframework.web: ${SPRING_WEB_LOG_LEVEL:INFO}
-    org.hibernate.SQL: ${HIBERNATE_SQL_LOG:WARN}
+    org.hibernate.SQL: ${HIBERNATE_SQL_LOG:DEBUG}
+    org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.type.descriptor.sql.BasicBinder: ${HIBERNATE_BINDER_LOG:WARN}
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
@@ -229,7 +228,7 @@ management:
 # External Monitoring Service Configuration
 monitoring:
   service:
-    url: ${MONITORING_SERVICE_URL:http://localhost:8081}
+    url: ${MONITORING_SERVICE_URL:http://localhost:9998}
   data:
     retention:
       days: ${MONITORING_DATA_RETENTION_DAYS:30}
@@ -264,7 +263,7 @@ spring:
       on-profile: dev
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     show-sql: true
   h2:
     console:
@@ -282,7 +281,7 @@ spring:
       on-profile: prod
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     show-sql: false
 logging:
   level:
@@ -299,7 +298,7 @@ spring:
       on-profile: test
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     show-sql: true
   datasource:
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE

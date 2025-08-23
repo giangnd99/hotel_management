@@ -69,7 +69,7 @@
         <eureka-server.version>4.1.0</eureka-server.version>
         <spring-cloud.version>2024.0.1</spring-cloud.version>
         <openfeign.version>4.2.0</openfeign.version>
-        <springdoc-openapi.version>2.2.0</springdoc-openapi.version>
+        <springdoc-openapi.version>2.4.0</springdoc-openapi.version>
         <junitt.version>5.10.3</junitt.version>
     </properties>
 
@@ -284,10 +284,7 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
+        <!-- Spring Boot starter removed - should only be in modules that need it -->
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -304,13 +301,7 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${maven-antrun-plugin.version}</version>
-                <configuration>
-                </configuration>
-            </plugin>
+            <!-- Spring Boot plugin removed - should only be in container modules -->
         </plugins>
     </build>
 

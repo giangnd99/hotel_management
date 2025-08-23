@@ -10,6 +10,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
@@ -32,8 +33,9 @@ import java.util.stream.Collectors;
  * @author System
  * @since 1.0.0
  */
-@Aspect
-@Component
+// Temporarily disabled to fix StackOverflowError
+// @Aspect
+// @Component
 @Slf4j
 public class CentralizedLoggingAspect {
 
@@ -44,7 +46,7 @@ public class CentralizedLoggingAspect {
      *
      * @param joinPoint the join point representing the method execution
      */
-    @Before("@annotation(com.poly.promotion.application.annotation.LogMethodEntry)")
+    @Before("@annotation(com.poly.promotion.application.annotation.LogMethodEntry) && !within(com.poly.promotion.application.service.impl.MonitoringServiceImpl) && !within(com.poly.promotion.application.service.impl.MonitoringDataServiceImpl)")
     public void logMethodEntry(JoinPoint joinPoint) {
         try {
             MethodSignature signature = (MethodSignature) joinPoint.getSignature();
@@ -87,7 +89,7 @@ public class CentralizedLoggingAspect {
      * @return the result of the method execution
      * @throws Throwable if the method execution fails
      */
-    @Around("@annotation(com.poly.promotion.application.annotation.LogMethodExit)")
+    @Around("@annotation(com.poly.promotion.application.annotation.LogMethodExit) && !within(com.poly.promotion.application.service.impl.MonitoringServiceImpl) && !within(com.poly.promotion.application.service.impl.MonitoringDataServiceImpl)")
     public Object logMethodExit(ProceedingJoinPoint joinPoint) throws Throwable {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -113,7 +115,7 @@ public class CentralizedLoggingAspect {
      * @param throwable the exception that occurred
      */
     @AfterThrowing(
-        pointcut = "@annotation(com.poly.promotion.application.annotation.LogMethodError)",
+        pointcut = "@annotation(com.poly.promotion.application.annotation.LogMethodError) && !within(com.poly.promotion.application.service.impl.MonitoringServiceImpl) && !within(com.poly.promotion.application.service.impl.MonitoringDataServiceImpl)",
         throwing = "throwable"
     )
     public void logMethodError(JoinPoint joinPoint, Throwable throwable) {
@@ -166,7 +168,7 @@ public class CentralizedLoggingAspect {
      * @return the result of the method execution
      * @throws Throwable if the method execution fails
      */
-    @Around("@annotation(com.poly.promotion.application.annotation.LogBusinessOperation)")
+    @Around("@annotation(com.poly.promotion.application.annotation.LogBusinessOperation) && !within(com.poly.promotion.application.service.impl.MonitoringServiceImpl) && !within(com.poly.promotion.application.service.impl.MonitoringDataServiceImpl)")
     public Object logBusinessOperation(ProceedingJoinPoint joinPoint) throws Throwable {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -302,6 +304,11 @@ public class CentralizedLoggingAspect {
             return "null";
         }
         
+        // Detect AOP proxies to prevent recursive serialization
+        if (AopUtils.isAopProxy(param)) {
+            return "AOP_PROXY[" + param.getClass().getSimpleName() + "]";
+        }
+        
         try {
             if (param instanceof String || param instanceof Number || param instanceof Boolean) {
                 return param.toString();
@@ -324,6 +331,11 @@ public class CentralizedLoggingAspect {
     private String formatResult(Object result) {
         if (result == null) {
             return "null";
+        }
+        
+        // Detect AOP proxies to prevent recursive serialization
+        if (AopUtils.isAopProxy(result)) {
+            return "AOP_PROXY[" + result.getClass().getSimpleName() + "]";
         }
         
         try {

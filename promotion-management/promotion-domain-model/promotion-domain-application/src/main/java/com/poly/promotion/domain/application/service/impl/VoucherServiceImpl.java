@@ -7,18 +7,15 @@ import com.poly.promotion.domain.core.entity.Voucher;
 import com.poly.promotion.domain.core.entity.VoucherPack;
 import com.poly.promotion.domain.core.exception.VoucherDomainException;
 import com.poly.promotion.domain.core.valueobject.VoucherStatus;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VoucherServiceImpl implements VoucherService {
 
-    VoucherPackService voucherPackService;
-    VoucherRepository voucherRepository;
+    private final VoucherPackService voucherPackService;
+    private final VoucherRepository voucherRepository;
 
     public VoucherServiceImpl(VoucherPackService voucherPackService, VoucherRepository voucherRepository) {
         this.voucherPackService = voucherPackService;

@@ -1,0 +1,125 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003
+      author: system
+      comment: Insert initial data for voucher management system
+      changes:
+        - insert:
+            tableName: voucher_packs
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: "Welcome Bonus Pack"
+              - column:
+                  name: description
+                  value: "Get started with our hotel rewards program"
+              - column:
+                  name: quantity
+                  value: 100
+              - column:
+                  name: required_points
+                  value: 0
+              - column:
+                  name: valid_from
+                  valueDate: 2024-01-01T00:00:00
+              - column:
+                  name: valid_to
+                  valueDate: 2024-12-31T23:59:59
+              - column:
+                  name: status
+                  value: "PUBLISHED"
+              - column:
+                  name: created_at
+                  valueDate: 2024-01-01T00:00:00
+              - column:
+                  name: updated_at
+                  valueDate: 2024-01-01T00:00:00
+              - column:
+                  name: version
+                  value: 0
+            rollback:
+              - delete:
+                  tableName: voucher_packs
+                  where: id = 1
+
+        - insert:
+            tableName: voucher_packs
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: "Premium Rewards Pack"
+              - column:
+                  name: description
+                  value: "Exclusive benefits for loyal customers"
+              - column:
+                  name: quantity
+                  value: 50
+              - column:
+                  name: required_points
+                  value: 1000
+              - column:
+                  name: valid_from
+                  valueDate: 2024-01-01T00:00:00
+              - column:
+                  name: valid_to
+                  valueDate: 2024-12-31T23:59:59
+              - column:
+                  name: status
+                  value: "PUBLISHED"
+              - column:
+                  name: created_at
+                  valueDate: 2024-01-01T00:00:00
+              - column:
+                  name: updated_at
+                  valueDate: 2024-01-01T00:00:00
+              - column:
+                  name: version
+                  value: 0
+            rollback:
+              - delete:
+                  tableName: voucher_packs
+                  where: id = 2
+
+        - insert:
+            tableName: vouchers
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: voucher_pack_id
+                  value: 1
+              - column:
+                  name: customer_id
+                  value: "CUST001"
+              - column:
+                  name: discount_amount
+                  value: 25.00
+              - column:
+                  name: valid_from
+                  valueDate: 2024-01-01T00:00:00
+              - column:
+                  name: valid_to
+                  valueDate: 2024-12-31T23:59:59
+              - column:
+                  name: status
+                  value: "PENDING"
+              - column:
+                  name: created_at
+                  valueDate: 2024-01-01T00:00:00
+              - column:
+                  name: updated_at
+                  valueDate: 2024-01-01T00:00:00
+              - column:
+                  name: version
+                  value: 0
+            rollback:
+              - delete:
+                  tableName: vouchers
+                  where: id = 1

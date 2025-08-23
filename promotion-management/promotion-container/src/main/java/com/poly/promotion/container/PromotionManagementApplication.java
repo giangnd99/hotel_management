@@ -83,10 +83,10 @@ public class PromotionManagementApplication {
      * 
      * <p><strong>Access URLs:</strong></p>
      * <ul>
-     *   <li>Application: http://localhost:8080/promotion-management</li>
-     *   <li>Swagger UI: http://localhost:8080/promotion-management/swagger-ui.html</li>
-     *   <li>API Docs: http://localhost:8080/promotion-management/api-docs</li>
-     *   <li>Health Check: http://localhost:8080/promotion-management/actuator/health</li>
+     *   <li>Application: http://localhost:9999/promotion-management</li>
+     *   <li>Swagger UI: http://localhost:9999/promotion-management/swagger-ui.html</li>
+     *   <li>API Docs: http://localhost:9999/promotion-management/api-docs</li>
+     *   <li>Health Check: http://localhost:9999/promotion-management/actuator/health</li>
      * </ul>
      * 
      * @param args command line arguments passed to the application
