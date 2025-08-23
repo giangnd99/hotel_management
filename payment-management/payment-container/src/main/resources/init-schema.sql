@@ -1,84 +1,109 @@
-DROP DATABASE IF EXISTS payment_management;
-CREATE DATABASE IF NOT EXISTS payment_management;
-USE payment_management;
+DROP SCHEMA IF EXISTS payment_db CASCADE;
+-- Đảm bảo schema tồn tại
+CREATE SCHEMA IF NOT EXISTS payment_db;
 
-CREATE TABLE invoice
-(
-    id     BINARY(16)  PRIMARY KEY,
-    customer_id    BINARY(16),
-    created_by     BINARY(16),
-    sub_total      DECIMAL(15, 2),
-    tax_rate     DECIMAL(15, 2),
-    total_amount   DECIMAL(15, 2),
-    invoice_status ENUM ('DRAFT', 'PENDING', 'PAID', 'CANCELED', 'FAILED') NOT NULL,
-    create_at      DATETIME,
-    update_at      DATETIME,
-    note           TEXT
+-- Đặt đường dẫn tìm kiếm để làm cho các câu lệnh ngắn gọn hơn
+SET search_path TO payment_db;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Tạo bảng `invoice`
+CREATE TABLE invoice (
+                         id UUID PRIMARY KEY,
+                         customer_id UUID,
+                         staff_id UUID,
+                         tax_rate DECIMAL(15, 2) NOT NULL,
+                         sub_total DECIMAL(15, 2) NOT NULL,
+                         total_amount DECIMAL(15, 2) NOT NULL,
+                         status VARCHAR(50) NOT NULL,
+                         created_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+                         updated_date TIMESTAMP WITHOUT TIME ZONE,
+                         note TEXT
 );
 
-CREATE TABLE invoice_booking
-(
-    id         BINARY(16) PRIMARY KEY,
-    invoice_id BINARY(16),
-    booking_id BINARY(16),
-    room_name NVARCHAR(100),
-    quantity   INT,
-    unit_price DECIMAL(15, 2),
-    FOREIGN KEY (invoice_id) REFERENCES invoice(id) ON DELETE CASCADE
+-- Thêm chỉ mục cho các cột thường được dùng để tìm kiếm
+CREATE INDEX idx_invoice_customer_id ON invoice(customer_id);
+CREATE INDEX idx_invoice_status ON invoice(status);
+CREATE INDEX idx_invoice_created_at ON invoice(created_date);
+
+-- Tạo bảng `payment`
+CREATE TABLE payment (
+                         id UUID PRIMARY KEY,
+                         reference_id UUID,
+                         status VARCHAR(50) NOT NULL,
+                         amount DECIMAL(15, 2) NOT NULL,
+                         method VARCHAR(50),
+                         paid_at TIMESTAMP WITHOUT TIME ZONE,
+                         created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+                         updated_at TIMESTAMP WITHOUT TIME ZONE,
+                         order_code BIGINT UNIQUE,
+                         link VARCHAR(255),
+                         description TEXT
 );
 
-CREATE TABLE invoice_voucher
-(
-    id         BINARY(16) PRIMARY KEY,
-    invoice_id BINARY(16),
-    voucher_id BINARY(16),
-    amount     DECIMAL(15, 2),
-    FOREIGN KEY (invoice_id) REFERENCES invoice (id) ON DELETE CASCADE
+-- Thêm các chỉ mục cần thiết
+CREATE INDEX idx_payment_reference_id ON payment(reference_id);
+CREATE INDEX idx_payment_status ON payment(status);
+
+-- Tạo bảng `invoice_booking`
+CREATE TABLE invoice_booking (
+                                 id UUID PRIMARY KEY,
+                                 invoice_id UUID NOT NULL,
+                                 booking_id UUID NOT NULL,
+                                 room_name VARCHAR(100),
+                                 quantity INT NOT NULL,
+                                 unit_price DECIMAL(15, 2) NOT NULL,
+                                 FOREIGN KEY (invoice_id) REFERENCES invoice (id) ON DELETE CASCADE
 );
 
-CREATE TABLE invoice_service
-(
-    id         BINARY(16) PRIMARY KEY,
-    service_id BINARY(16),
-    invoice_booking_id BINARY(16),
-    service_name NVARCHAR(255),
-    quantity   INT,
-    unit_price DECIMAL(15, 2),
-    FOREIGN KEY (invoice_booking_id) REFERENCES invoice_booking (id) ON DELETE CASCADE
+-- Thêm các chỉ mục và ràng buộc UNIQUE
+CREATE UNIQUE INDEX idx_unique_invoice_booking ON invoice_booking(invoice_id, booking_id);
+
+-- Tạo bảng `invoice_voucher`
+CREATE TABLE invoice_voucher (
+                                 id UUID PRIMARY KEY,
+                                 invoice_id UUID NOT NULL,
+                                 voucher_id UUID NOT NULL,
+                                 amount DECIMAL(15, 2) NOT NULL,
+                                 FOREIGN KEY (invoice_id) REFERENCES invoice (id) ON DELETE CASCADE
 );
 
-CREATE TABLE invoice_restaurant
-(
-    id            BINARY(16) PRIMARY KEY,
-    invoice_booking_id    BINARY(16),
-    restaurant_id BINARY(16),
-    restaurant_name NVARCHAR(255),
-    quantity      INT,
-    unit_price    DECIMAL(15, 2),
-    FOREIGN KEY (invoice_booking_id) REFERENCES invoice_booking (id) ON DELETE CASCADE
+-- Thêm các chỉ mục và ràng buộc UNIQUE
+CREATE UNIQUE INDEX idx_unique_invoice_voucher ON invoice_voucher(invoice_id, voucher_id);
+
+-- Tạo bảng `invoice_service`
+CREATE TABLE invoice_service (
+                                 id UUID PRIMARY KEY,
+                                 service_id UUID NOT NULL,
+                                 invoice_booking_id UUID NOT NULL,
+                                 service_name VARCHAR(255),
+                                 quantity INT NOT NULL,
+                                 unit_price DECIMAL(15, 2) NOT NULL,
+                                 FOREIGN KEY (invoice_booking_id) REFERENCES invoice_booking (id) ON DELETE CASCADE
 );
 
-CREATE TABLE payment
-(
-    id     BINARY(16) NOT NULL PRIMARY KEY,
-    booking_id     BINARY(16),
-    payment_status ENUM ('PENDING', 'COMPLETED', 'CANCELLED', 'FAILED', 'EXPIRED'), -- PENDING, COMPLETED, CANCELLED, FAILED
-    amount         DECIMAL(15, 2),
-    payment_method ENUM('CASH', 'PAYOS'),                                                    -- CASH, PAYOS
-    paid_at        DATETIME,
-    created_at     DATETIME,
-    reference_code VARCHAR(100),
-    payment_link    VARCHAR(255),
-    payment_transaction_type   ENUM('DEPOSIT', 'INVOICE', 'REFUND', 'SERVICE', 'OTHER')
+-- Thêm chỉ mục
+CREATE INDEX idx_invoice_service_booking_id ON invoice_service(invoice_booking_id);
+
+-- Tạo bảng `invoice_restaurant`
+CREATE TABLE invoice_restaurant (
+                                    id UUID PRIMARY KEY,
+                                    invoice_booking_id UUID NOT NULL,
+                                    restaurant_id UUID NOT NULL,
+                                    restaurant_name VARCHAR(255),
+                                    quantity INT NOT NULL,
+                                    unit_price DECIMAL(15, 2) NOT NULL,
+                                    FOREIGN KEY (invoice_booking_id) REFERENCES invoice_booking (id) ON DELETE CASCADE
 );
 
-CREATE TABLE invoice_payment
-(
-    id                       BINARY(16) PRIMARY KEY,
-    invoice_id               BINARY(16),
-    payment_id               BINARY(16),
-    FOREIGN KEY (invoice_id) REFERENCES invoice (id) ON DELETE CASCADE,
-    FOREIGN KEY (payment_id) REFERENCES payment (id) ON DELETE CASCADE
+-- Thêm chỉ mục
+CREATE INDEX idx_invoice_restaurant_booking_id ON invoice_restaurant(invoice_booking_id);
+
+-- Tạo bảng `invoice_payment`
+CREATE TABLE invoice_payment (
+                                 id UUID PRIMARY KEY,
+                                 invoice_id UUID ,
+                                 payment_id UUID
 );
 
-
+-- Thêm ràng buộc UNIQUE để ngăn chặn việc liên kết thanh toán trùng lặp
+CREATE UNIQUE INDEX idx_unique_invoice_payment ON invoice_payment(invoice_id, payment_id);

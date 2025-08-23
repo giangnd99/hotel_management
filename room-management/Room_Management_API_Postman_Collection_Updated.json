@@ -1,0 +1,656 @@
+{
+	"info": {
+		"_postman_id": "room-management-api-collection-secure",
+		"name": "Room Management API - Secure Version",
+		"description": "Collection cập nhật để test Room Management API với dữ liệu mẫu thực tế - Khách sạn 5 sao Việt Nam (Không tiết lộ ID)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8087",
+			"type": "string"
+		},
+		{
+			"key": "room_number",
+			"value": "101",
+			"type": "string"
+		},
+		{
+			"key": "guest_name",
+			"value": "Nguyễn Văn An",
+			"type": "string"
+		},
+		{
+			"key": "current_date",
+			"value": "{{$timestamp}}",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Dashboard & Statistics",
+			"item": [
+				{
+					"name": "Get Room Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/statistics",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "statistics"]
+						}
+					}
+				},
+				{
+					"name": "Get Room Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/count",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "count"]
+						}
+					}
+				},
+				{
+					"name": "Get Available Room Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/count/available",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "count", "available"]
+						}
+					}
+				},
+				{
+					"name": "Get Occupied Room Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/count/occupied",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "count", "occupied"]
+						}
+					}
+				},
+				{
+					"name": "Get Maintenance Room Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/count/maintenance",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "count", "maintenance"]
+						}
+					}
+				},
+				{
+					"name": "Get Occupancy Ratio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/occupancy-ratio",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "occupancy-ratio"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Room Management",
+			"item": [
+				{
+					"name": "Get All Rooms",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms?page=0&size=20",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms"],
+							"query": [
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "20"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Room By Number",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/{{room_number}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "{{room_number}}"]
+						}
+					}
+				},
+				{
+					"name": "Create Room",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"roomNumber\": \"106\",\n  \"roomTypeName\": \"Standard\",\n  \"floor\": 1,\n  \"area\": \"25m²\",\n  \"specialFeatures\": \"View sông, ban công riêng\",\n  \"viewDescription\": \"View sông Sài Gòn\",\n  \"accessibilityFeatures\": \"Không có\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/rooms",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms"]
+						}
+					}
+				},
+				{
+					"name": "Update Room",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"roomNumber\": \"106\",\n  \"roomTypeName\": \"Deluxe\",\n  \"floor\": 2,\n  \"area\": \"35m²\",\n  \"specialFeatures\": \"View sông, ban công riêng, phòng tắm cao cấp\",\n  \"viewDescription\": \"View sông Sài Gòn và thành phố\",\n  \"accessibilityFeatures\": \"Không có\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/rooms/{{room_number}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "{{room_number}}"]
+						}
+					}
+				},
+				{
+					"name": "Delete Room",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/{{room_number}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "{{room_number}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Search & Filter",
+			"item": [
+				{
+					"name": "Search Rooms",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/search?roomNumber=101&roomType=Standard&status=VACANT&floor=1&minPrice=1000000&maxPrice=2000000&page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "search"],
+							"query": [
+								{"key": "roomNumber", "value": "101"},
+								{"key": "roomType", "value": "Standard"},
+								{"key": "status", "value": "VACANT"},
+								{"key": "floor", "value": "1"},
+								{"key": "minPrice", "value": "1000000"},
+								{"key": "maxPrice", "value": "2000000"},
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Filter Rooms By Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/filter/status?status=VACANT&page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "filter", "status"],
+							"query": [
+								{"key": "status", "value": "VACANT"},
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Filter Rooms By Floor",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/filter/floor?floor=1&page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "filter", "floor"],
+							"query": [
+								{"key": "floor", "value": "1"},
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Filter Rooms By Type",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/filter/type?roomTypeName=Standard&page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "filter", "type"],
+							"query": [
+								{"key": "roomTypeName", "value": "Standard"},
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Status Management",
+			"item": [
+				{
+					"name": "Update Room Status",
+					"request": {
+						"method": "PATCH",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"VACANT\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/rooms/{{room_number}}/status",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "{{room_number}}", "status"]
+						}
+					}
+				},
+				{
+					"name": "Set Room Available",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/{{room_number}}/available",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "{{room_number}}", "available"]
+						}
+					}
+				},
+				{
+					"name": "Set Room Occupied",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/{{room_number}}/occupied",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "{{room_number}}", "occupied"]
+						}
+					}
+				},
+				{
+					"name": "Set Room Maintenance",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/{{room_number}}/maintenance",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "{{room_number}}", "maintenance"]
+						}
+					}
+				},
+				{
+					"name": "Set Room Cleaning",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/{{room_number}}/cleaning",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "{{room_number}}", "cleaning"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Room Type Management",
+			"item": [
+				{
+					"name": "Get All Room Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/types",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "types"]
+						}
+					}
+				},
+				{
+					"name": "Get Room Type By Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/types/Standard",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "types", "Standard"]
+						}
+					}
+				},
+				{
+					"name": "Create Room Type",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"typeName\": \"Executive Suite\",\n  \"description\": \"Phòng suite điều hành với không gian làm việc riêng biệt\",\n  \"basePrice\": \"3500000\",\n  \"maxOccupancy\": 3,\n  \"amenities\": \"Bàn làm việc, sofa, minibar, phòng tắm riêng biệt\",\n  \"roomSize\": \"45m²\",\n  \"bedConfiguration\": \"1 giường King + 1 sofa bed\",\n  \"bathroomType\": \"Phòng tắm riêng biệt với bồn tắm\",\n  \"viewType\": \"View thành phố\",\n  \"cancellationPolicy\": \"Hủy miễn phí trước 24h\",\n  \"breakfastIncluded\": \"Có\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/rooms/types",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "types"]
+						}
+					}
+				},
+				{
+					"name": "Update Room Type",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"typeName\": \"Executive Suite\",\n  \"description\": \"Phòng suite điều hành với không gian làm việc riêng biệt và view thành phố\",\n  \"basePrice\": \"3800000\",\n  \"maxOccupancy\": 3,\n  \"amenities\": \"Bàn làm việc, sofa, minibar, phòng tắm riêng biệt, ban công\",\n  \"roomSize\": \"45m²\",\n  \"bedConfiguration\": \"1 giường King + 1 sofa bed\",\n  \"bathroomType\": \"Phòng tắm riêng biệt với bồn tắm\",\n  \"viewType\": \"View thành phố và sông\",\n  \"cancellationPolicy\": \"Hủy miễn phí trước 24h\",\n  \"breakfastIncluded\": \"Có\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/rooms/types/Executive Suite",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "types", "Executive Suite"]
+						}
+					}
+				},
+				{
+					"name": "Delete Room Type",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/rooms/types/Executive Suite",
+							"host": ["{{base_url}}"],
+							"path": ["api", "rooms", "types", "Executive Suite"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Furniture Management",
+			"item": [
+				{
+					"name": "Get All Furniture",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/furniture",
+							"host": ["{{base_url}}"],
+							"path": ["api", "furniture"]
+						}
+					}
+				},
+				{
+					"name": "Get Furniture By Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/furniture/Giường King",
+							"host": ["{{base_url}}"],
+							"path": ["api", "furniture", "Giường King"]
+						}
+					}
+				},
+				{
+					"name": "Create Furniture",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"furnitureName\": \"Bàn làm việc cao cấp\",\n  \"description\": \"Bàn làm việc gỗ cao cấp với ngăn kéo\",\n  \"material\": \"Gỗ sồi tự nhiên\",\n  \"brand\": \"IKEA Premium\",\n  \"warrantyInfo\": \"Bảo hành 5 năm\",\n  \"maintenanceSchedule\": \"Lau chùi hàng tuần, đánh bóng hàng tháng\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/furniture",
+							"host": ["{{base_url}}"],
+							"path": ["api", "furniture"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Maintenance Management",
+			"item": [
+				{
+					"name": "Get All Maintenance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/maintenance",
+							"host": ["{{base_url}}"],
+							"path": ["api", "maintenance"]
+						}
+					}
+				},
+				{
+					"name": "Get Maintenance By Room",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/maintenance/room/{{room_number}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "maintenance", "room", "{{room_number}}"]
+						}
+					}
+				},
+				{
+					"name": "Create Maintenance Request",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"roomNumber\": \"{{room_number}}\",\n  \"issueType\": \"ELECTRICAL\",\n  \"priority\": \"HIGH\",\n  \"description\": \"Ổ cắm điện bị cháy\",\n  \"notes\": \"Cần thay ổ cắm mới\",\n  \"requestedBy\": \"Khách hàng\",\n  \"estimatedCost\": \"300000\",\n  \"scheduledDate\": \"{{current_date}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/maintenance",
+							"host": ["{{base_url}}"],
+							"path": ["api", "maintenance"]
+						}
+					}
+				},
+				{
+					"name": "Update Maintenance Status",
+					"request": {
+						"method": "PATCH",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"IN_PROGRESS\",\n  \"assignedTo\": \"Thợ điện\",\n  \"startedAt\": \"{{current_date}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/maintenance/{{room_number}}/status",
+							"host": ["{{base_url}}"],
+							"path": ["api", "maintenance", "{{room_number}}", "status"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Cleaning Management",
+			"item": [
+				{
+					"name": "Get All Cleaning Requests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cleaning",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cleaning"]
+						}
+					}
+				},
+				{
+					"name": "Get Cleaning By Room",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cleaning/room/{{room_number}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cleaning", "room", "{{room_number}}"]
+						}
+					}
+				},
+				{
+					"name": "Create Cleaning Request",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"roomNumber\": \"{{room_number}}\",\n  \"cleaningType\": \"POST_CHECKOUT\",\n  \"priority\": \"HIGH\",\n  \"description\": \"Dọn dẹp sau khi khách check-out\",\n  \"notes\": \"Khách check-out lúc 11:00\",\n  \"requestedBy\": \"Nhân viên lễ tân\",\n  \"scheduledDate\": \"{{current_date}}\",\n  \"cleaningProducts\": \"Chất tẩy rửa thân thiện môi trường\",\n  \"specialInstructions\": \"Chú ý vệ sinh ban công và cửa sổ\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/cleaning",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cleaning"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Guest Management",
+			"item": [
+				{
+					"name": "Get All Guests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/guests?page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "guests"],
+							"query": [
+								{"key": "page", "value": "0"},
+								{"key": "size", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Search Guests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/guests/search?name=Nguyễn&phone=0901234567&email=nguyenvanan@email.com",
+							"host": ["{{base_url}}"],
+							"path": ["api", "guests", "search"],
+							"query": [
+								{"key": "name", "value": "Nguyễn"},
+								{"key": "phone", "value": "0901234567"},
+								{"key": "email", "value": "nguyenvanan@email.com"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Guest",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Lê\",\n  \"lastName\": \"Thị Phương\",\n  \"fullName\": \"Lê Thị Phương\",\n  \"phone\": \"0901234577\",\n  \"email\": \"lethiphuong@email.com\",\n  \"nationality\": \"Việt Nam\",\n  \"address\": \"789 Đường MNO, Quận 2, TP.HCM\",\n  \"dateOfBirth\": \"1995-01-20\",\n  \"gender\": \"Nữ\",\n  \"specialRequests\": \"Phòng có view sông\",\n  \"loyaltyLevel\": \"Gold\",\n  \"preferredLanguage\": \"Tiếng Việt\",\n  \"dietaryRestrictions\": \"Không có\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/guests",
+							"host": ["{{base_url}}"],
+							"path": ["api", "guests"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Room Services",
+			"item": [
+				{
+					"name": "Get All Room Services",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/services",
+							"host": ["{{base_url}}"],
+							"path": ["api", "services"]
+						}
+					}
+				},
+				{
+					"name": "Get Services By Room",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/services/room/{{room_number}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "services", "room", "{{room_number}}"]
+						}
+					}
+				},
+				{
+					"name": "Create Room Service",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"roomNumber\": \"{{room_number}}\",\n  \"guestName\": \"{{guest_name}}\",\n  \"serviceType\": \"FOOD\",\n  \"serviceName\": \"Bữa sáng tại phòng\",\n  \"description\": \"Bữa sáng kiểu Việt Nam với phở bò\",\n  \"quantity\": 2,\n  \"unitPrice\": \"150000\",\n  \"totalPrice\": \"300000\",\n  \"requestedBy\": \"Khách hàng\",\n  \"specialInstructions\": \"Phở bò tái, không rau sống\",\n  \"dietaryNotes\": \"Không có\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/services",
+							"host": ["{{base_url}}"],
+							"path": ["api", "services"]
+						}
+					}
+				}
+			]
+		}
+	]
+}

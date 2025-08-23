@@ -6,7 +6,7 @@ import com.poly.booking.management.domain.message.reponse.RoomMessageResponse;
 import com.poly.booking.management.domain.outbox.model.RoomOutboxMessage;
 import com.poly.booking.management.domain.outbox.service.RoomOutboxService;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
-import com.poly.booking.management.domain.service.BookingCancellationDomainService;
+import com.poly.booking.management.domain.service.impl.BookingCancellationDomainService;
 import com.poly.domain.valueobject.BookingId;
 import com.poly.saga.SagaStatus;
 import lombok.RequiredArgsConstructor;
@@ -79,7 +79,7 @@ public class BookingCancellationSagaHelper {
      * Thực hiện business logic hủy booking
      *
      * @param outboxMessage Outbox message chứa thông tin booking
-     * @param data Room message response
+     * @param data          Room message response
      * @return BookingCancelledEvent domain event
      */
     public BookingCancelledEvent executeBookingCancellation(RoomOutboxMessage outboxMessage, RoomMessageResponse data) {
@@ -104,7 +104,7 @@ public class BookingCancellationSagaHelper {
      * Cập nhật saga status và lưu outbox message
      *
      * @param outboxMessage Outbox message cần cập nhật
-     * @param domainEvent  Domain event chứa trạng thái mới
+     * @param domainEvent   Domain event chứa trạng thái mới
      */
     public void updateSagaStatusAndSaveOutbox(RoomOutboxMessage outboxMessage, BookingCancelledEvent domainEvent) {
         log.info("Updating saga status and outbox message for booking: {}", outboxMessage.getBookingId());
@@ -123,7 +123,7 @@ public class BookingCancellationSagaHelper {
      * Trigger refund step nếu cần hoàn tiền
      *
      * @param domainEvent Domain event chứa thông tin cancellation
-     * @param data Room message response
+     * @param data        Room message response
      */
     public void triggerRefundStep(BookingCancelledEvent domainEvent, RoomMessageResponse data) {
         log.info("Triggering refund step for booking: {}", domainEvent.getBooking().getId().getValue());
@@ -145,10 +145,10 @@ public class BookingCancellationSagaHelper {
 
         // Tìm booking và revert status nếu cần
         Booking booking = findBooking(data.getBookingId());
-        
+
         // TODO: Implement rollback logic based on business requirements
         // Có thể cần revert booking status từ CANCELLED về trạng thái trước đó
-        
+
         log.info("Rollback business logic completed for booking: {}", data.getBookingId());
     }
 
@@ -178,7 +178,7 @@ public class BookingCancellationSagaHelper {
      * @return Booking entity
      */
     private Booking findBooking(String bookingId) {
-        return bookingRepository.findById(new BookingId(UUID.fromString(bookingId)))
+        return bookingRepository.findById((UUID.fromString(bookingId)))
                 .orElseThrow(() -> new RuntimeException("Booking not found for cancellation: " + bookingId));
     }
 
@@ -191,22 +191,17 @@ public class BookingCancellationSagaHelper {
     private String determineCancellationReason(RoomMessageResponse data) {
         // TODO: Implement logic để xác định lý do hủy từ room message
         // Có thể dựa vào room status, error message, hoặc business rules
-        
+
         if (data.getRoomResponseStatus() != null) {
-            switch (data.getRoomResponseStatus()) {
-                case FAILED:
-                    return "Room reservation failed";
-                case CANCELLED:
-                    return "Room reservation cancelled by hotel";
-                case PENDING:
-                    return "Room reservation pending";
-                case SUCCESS:
-                    return "Room reservation successful but cancelled";
-                default:
-                    return "Booking cancelled due to room service response";
-            }
+            return switch (data.getRoomResponseStatus()) {
+                case BOOKED -> "Room reservation failed";
+                case MAINTENANCE -> "Room reservation cancelled by hotel";
+                case CLEANING -> "Room reservation pending";
+                case VACANT -> "Room reservation successful but cancelled";
+                default -> "Booking cancelled due to room service response";
+            };
         }
-        
+
         return "Booking cancelled due to room service issue";
     }
 }

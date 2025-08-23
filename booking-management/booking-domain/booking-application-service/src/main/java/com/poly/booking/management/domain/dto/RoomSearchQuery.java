@@ -1,5 +1,6 @@
 package com.poly.booking.management.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RoomSearchQuery {
     private LocalDate checkInDate;
     private LocalDate checkOutDate;

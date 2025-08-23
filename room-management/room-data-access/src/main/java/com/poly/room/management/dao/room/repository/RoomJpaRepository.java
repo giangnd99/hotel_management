@@ -1,5 +1,6 @@
 package com.poly.room.management.dao.room.repository;
 
+import com.poly.domain.valueobject.RoomStatus;
 import com.poly.room.management.dao.room.entity.RoomEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,14 +15,13 @@ import java.util.UUID;
 
 @Repository
 public interface RoomJpaRepository extends JpaRepository<RoomEntity, UUID> {
-
     // Basic CRUD operations
     Optional<RoomEntity> findByRoomNumber(String roomNumber);
     boolean existsByRoomNumber(String roomNumber);
 
     // Room type queries
-    List<RoomEntity> findByRoomType_RoomTypeId(Integer roomTypeId);
-    Long countByRoomType_RoomTypeId(Integer roomTypeId);
+    List<RoomEntity> findByRoomType_RoomTypeId(UUID roomTypeId);
+    Long countByRoomType_RoomTypeId(UUID roomTypeId);
     
     // Floor queries
     List<RoomEntity> findByFloor(Integer floor);
@@ -30,7 +30,7 @@ public interface RoomJpaRepository extends JpaRepository<RoomEntity, UUID> {
     List<Integer> findAllDistinctFloors();
     
     // Pagination queries
-    Page<RoomEntity> findByRoomType_RoomTypeId(Integer roomTypeId, Pageable pageable);
+    Page<RoomEntity> findByRoomType_RoomTypeId(String roomTypeId, Pageable pageable);
     Page<RoomEntity> findByFloor(Integer floor, Pageable pageable);
     
     // Advanced search with pagination
@@ -80,4 +80,9 @@ public interface RoomJpaRepository extends JpaRepository<RoomEntity, UUID> {
     
     @Query("SELECT r FROM RoomEntity r WHERE r.roomStatus = 'CLEANING'")
     Page<RoomEntity> findByStatusCleaning(Pageable pageable);
+
+    Page<RoomEntity> findAllByRoomStatus(RoomStatus roomStatus, Pageable pageable);
+
+    Long countAllByRoomStatus(RoomStatus roomStatus);
+
 }

@@ -2,12 +2,8 @@ package com.poly.payment.management.domain.model;
 
 import com.poly.domain.entity.AggregateRoot;
 import com.poly.domain.valueobject.ReferenceId;
-import com.poly.domain.valueobject.PaymentMethod;
-import com.poly.domain.valueobject.PaymentStatus;
-import com.poly.payment.management.domain.value_object.Description;
-import com.poly.payment.management.domain.value_object.Money;
-import com.poly.payment.management.domain.value_object.OrderCode;
-import com.poly.payment.management.domain.value_object.PaymentId;
+
+import com.poly.payment.management.domain.value_object.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

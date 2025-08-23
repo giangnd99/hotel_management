@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoomTypeResponse {
-    private Integer id;
+    private String id;
     private String typeName;
     private String description;
     private String basePrice;

@@ -24,7 +24,7 @@ public class BookingPaymentReplyKafkaPublisher
 
     @Override
     protected String getTopicName() {
-        return "payment-request";
+        return "booking-payment-response";
     }
 
     @Override

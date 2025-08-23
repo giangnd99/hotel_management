@@ -47,6 +47,10 @@
             <groupId>com.poly</groupId>
             <artifactId>booking-messaging</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>common-domain</artifactId>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>

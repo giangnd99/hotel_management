@@ -14,10 +14,10 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class BookingRoomRequestAvro extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -8809066191601176846L;
+  private static final long serialVersionUID = 3108803280471496500L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"BookingRoomRequestAvro\",\"namespace\":\"com.poly.booking.management.domain.kafka.model\",\"fields\":[{\"name\":\"id\",\"type\":{\"type\":\"string\",\"logicalType\":\"uuid\"}},{\"name\":\"sagaId\",\"type\":{\"type\":\"string\",\"logicalType\":\"uuid\"}},{\"name\":\"bookingId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"createdAt\",\"type\":{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}},{\"name\":\"processedAt\",\"type\":[\"null\",{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}],\"default\":null},{\"name\":\"type\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"sagaStatus\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"bookingStatus\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"price\",\"type\":{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":10,\"scale\":2}},{\"name\":\"rooms\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Room\",\"fields\":[{\"name\":\"id\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"roomNumber\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"basePrice\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"status\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}}]}}}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"BookingRoomRequestAvro\",\"namespace\":\"com.poly.booking.management.domain.kafka.model\",\"fields\":[{\"name\":\"id\",\"type\":{\"type\":\"string\",\"logicalType\":\"uuid\"}},{\"name\":\"sagaId\",\"type\":{\"type\":\"string\",\"logicalType\":\"uuid\"}},{\"name\":\"bookingId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"createdAt\",\"type\":[\"null\",{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}]},{\"name\":\"processedAt\",\"type\":[\"null\",{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}],\"default\":null},{\"name\":\"type\",\"type\":[\"null\",{\"type\":\"string\",\"avro.java.string\":\"String\"}]},{\"name\":\"sagaStatus\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"bookingStatus\",\"type\":[\"null\",{\"type\":\"string\",\"avro.java.string\":\"String\"}]},{\"name\":\"price\",\"type\":[\"null\",{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":10,\"scale\":2}]},{\"name\":\"rooms\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Room\",\"fields\":[{\"name\":\"id\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"roomNumber\",\"type\":[\"null\",{\"type\":\"string\",\"avro.java.string\":\"String\"}],\"default\":null},{\"name\":\"basePrice\",\"type\":[\"null\",{\"type\":\"string\",\"avro.java.string\":\"String\"}],\"default\":null},{\"name\":\"status\",\"type\":[\"null\",{\"type\":\"string\",\"avro.java.string\":\"String\"}],\"default\":null}]}}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -113,7 +113,7 @@ public class BookingRoomRequestAvro extends org.apache.avro.specific.SpecificRec
     this.id = id;
     this.sagaId = sagaId;
     this.bookingId = bookingId;
-    this.createdAt = createdAt.truncatedTo(java.time.temporal.ChronoUnit.MILLIS);
+    this.createdAt = createdAt;
     this.processedAt = processedAt;
     this.type = type;
     this.sagaStatus = sagaStatus;
@@ -151,12 +151,12 @@ public class BookingRoomRequestAvro extends org.apache.avro.specific.SpecificRec
       new org.apache.avro.Conversions.UUIDConversion(),
       new org.apache.avro.Conversions.UUIDConversion(),
       null,
-      new org.apache.avro.data.TimeConversions.TimestampMillisConversion(),
       null,
       null,
       null,
       null,
-      new org.apache.avro.Conversions.DecimalConversion(),
+      null,
+      null,
       null,
       null
   };
@@ -250,7 +250,7 @@ public class BookingRoomRequestAvro extends org.apache.avro.specific.SpecificRec
    * @param value the value to set.
    */
   public void setCreatedAt(java.time.Instant value) {
-    this.createdAt = value.truncatedTo(java.time.temporal.ChronoUnit.MILLIS);
+    this.createdAt = value;
   }
 
   /**
@@ -644,7 +644,7 @@ public class BookingRoomRequestAvro extends org.apache.avro.specific.SpecificRec
       */
     public com.poly.booking.management.domain.kafka.model.BookingRoomRequestAvro.Builder setCreatedAt(java.time.Instant value) {
       validate(fields()[3], value);
-      this.createdAt = value.truncatedTo(java.time.temporal.ChronoUnit.MILLIS);
+      this.createdAt = value;
       fieldSetFlags()[3] = true;
       return this;
     }
@@ -663,6 +663,7 @@ public class BookingRoomRequestAvro extends org.apache.avro.specific.SpecificRec
       * @return This builder.
       */
     public com.poly.booking.management.domain.kafka.model.BookingRoomRequestAvro.Builder clearCreatedAt() {
+      createdAt = null;
       fieldSetFlags()[3] = false;
       return this;
     }

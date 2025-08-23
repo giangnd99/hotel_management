@@ -1,5 +1,6 @@
 package com.poly.booking.management.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.poly.domain.valueobject.BookingStatus;
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookingDto {
     private UUID bookingId;
     private UUID customerId;
@@ -22,8 +24,8 @@ public class BookingDto {
     private LocalDate checkOutDate;
     private Integer numberOfGuests;
     private BigDecimal totalAmount;
-    private String status; // PENDING, CONFIRMED, CHECKED_IN, CHECKED_OUT, CANCELLED
-    private String paymentStatus; // PENDING, PAID, FAILED
+    private String status;
+    private String paymentStatus; 
     private String specialRequests;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

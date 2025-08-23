@@ -1,7 +1,5 @@
 package com.poly.payment.management.domain.service.impl;
 
-import com.poly.domain.valueobject.PaymentMethod;
-import com.poly.domain.valueobject.PaymentStatus;
 import com.poly.domain.valueobject.ReferenceId;
 import com.poly.payment.management.domain.value_object.*;
 import com.poly.payment.management.domain.dto.request.CreatePaymentDepositCommand;
@@ -16,10 +14,14 @@ import com.poly.payment.management.domain.model.InvoicePayment;
 import com.poly.payment.management.domain.model.Payment;
 import com.poly.payment.management.domain.port.output.repository.InvoicePaymentRepository;
 import com.poly.payment.management.domain.port.output.repository.PaymentRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Component
+@RequiredArgsConstructor
 public class CreateDepositPaymentLinkUsecaseImpl implements CreateDepositPaymentLinkUsecase {
 
     private final PaymentRepository paymentRepository;
@@ -28,11 +30,6 @@ public class CreateDepositPaymentLinkUsecaseImpl implements CreateDepositPayment
 
     private final PaymentGateway payOSClient;
 
-    public CreateDepositPaymentLinkUsecaseImpl(PaymentRepository paymentRepository, InvoicePaymentRepository invoicePaymentRepository, PaymentGateway payOSClient) {
-        this.paymentRepository = paymentRepository;
-        this.invoicePaymentRepository = invoicePaymentRepository;
-        this.payOSClient = payOSClient;
-    }
 
     @Override
     public PaymentLinkResult createPaymentLinkUseCase(CreatePaymentDepositCommand command) throws Exception {
@@ -51,7 +48,7 @@ public class CreateDepositPaymentLinkUsecaseImpl implements CreateDepositPayment
             if (existedPayment.get().getStatus().equals(PaymentStatus.PAID)) {
                 throw new ApplicationServiceException("Payment Deposit already exists");
             }
-            if(existedPayment.get().getStatus().equals(PaymentStatus.CANCELED)) {
+            if(existedPayment.get().getStatus().equals(PaymentStatus.CANCELLED)) {
                 throw new ApplicationServiceException("Payment Deposit canceled");
             }
         }
@@ -98,10 +95,10 @@ public class CreateDepositPaymentLinkUsecaseImpl implements CreateDepositPayment
 
         // Set lại link thanh toán payment
         payment.setPaymentLink(result.getPaymentLink());
+        paymentRepository.save(payment);
 
         // Lưu lại payment vào cuối để tránh lỗi từ PayOS
         invoicePaymentRepository.save(invoicePayment);
-        paymentRepository.save(payment);
 //publish(message)
         // Result trả về: id payment, mã orderCode, link thanh toán , trạng thái
         return result;

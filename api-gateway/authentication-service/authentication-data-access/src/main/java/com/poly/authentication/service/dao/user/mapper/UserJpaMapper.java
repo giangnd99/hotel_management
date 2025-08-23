@@ -21,8 +21,10 @@ public class UserJpaMapper {
     private final RoleJpaMapper roleJpaMapper;
 
     public UserEntity toEntity(User user) {
+        UUID id = user.getId() == null ? UUID.randomUUID() : user.getId().getValue();
+
         return UserEntity.builder()
-                .id(UUID.randomUUID())
+                .id(id)
                 .email(user.getGmail())
                 .password(user.getPassword().getValue())
                 .phone(user.getPhone())

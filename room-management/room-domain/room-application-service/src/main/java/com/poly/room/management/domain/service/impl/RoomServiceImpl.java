@@ -111,7 +111,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Optional<RoomResponse> getRoomById(Long roomId) {
+    public Optional<RoomResponse> getRoomById(UUID roomId) {
         log.info("Getting room by ID: {}", roomId);
         
         Optional<Room> room = roomRepository.findById(roomId);
@@ -151,7 +151,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomResponse updateRoom(Long roomId, UpdateRoomRequest request) {
+    public RoomResponse updateRoom(UUID roomId, UpdateRoomRequest request) {
         log.info("Updating room: {}", roomId);
         
         Room existingRoom = roomRepository.findById(roomId)
@@ -174,7 +174,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void deleteRoom(Long roomId) {
+    public void deleteRoom(UUID roomId) {
         log.info("Deleting room: {}", roomId);
         
         Room room = roomRepository.findById(roomId)
@@ -226,8 +226,7 @@ public class RoomServiceImpl implements RoomService {
         log.info("Filtering rooms by type: {}", roomType);
         
         List<Room> rooms = roomRepository.findByRoomTypeId(
-                Integer.valueOf(roomType), page, size
-        );
+                roomType, page, size);
         
         return rooms.stream()
                 .map(roomDtoMapper::toResponse)
@@ -259,7 +258,7 @@ public class RoomServiceImpl implements RoomService {
     // ========== STATUS MANAGEMENT ==========
 
     @Override
-    public RoomResponse updateRoomStatus(Long roomId, String status) {
+    public RoomResponse updateRoomStatus(UUID roomId, String status) {
         log.info("Updating room status - roomId: {}, newStatus: {}", roomId, status);
         
         Room room = roomRepository.findById(roomId)
@@ -293,22 +292,22 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomResponse setRoomAvailable(Long roomId) {
+    public RoomResponse setRoomAvailable(UUID roomId) {
         return updateRoomStatus(roomId, "VACANT");
     }
 
     @Override
-    public RoomResponse setRoomOccupied(Long roomId) {
+    public RoomResponse setRoomOccupied(UUID roomId) {
         return updateRoomStatus(roomId, "CHECKED_IN");
     }
 
     @Override
-    public RoomResponse setRoomMaintenance(Long roomId) {
+    public RoomResponse setRoomMaintenance(UUID roomId) {
         return updateRoomStatus(roomId, "MAINTENANCE");
     }
 
     @Override
-    public RoomResponse setRoomCleaning(Long roomId) {
+    public RoomResponse setRoomCleaning(UUID roomId) {
         return updateRoomStatus(roomId, "CLEANING");
     }
 
@@ -326,10 +325,10 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Optional<RoomTypeDto> getRoomTypeById(Long typeId) {
+    public Optional<RoomTypeDto> getRoomTypeById(UUID typeId) {
         log.info("Getting room type by ID: {}", typeId);
         
-        Optional<RoomType> roomType = roomTypeRepository.findById(typeId.intValue());
+        Optional<RoomType> roomType = roomTypeRepository.findById(typeId);
         return roomType.map(this::convertToRoomTypeDto);
     }
 
@@ -343,7 +342,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomTypeDto updateRoomType(Long typeId, RoomTypeDto request) {
+    public RoomTypeDto updateRoomType(UUID typeId, RoomTypeDto request) {
         log.info("Updating room type: {}", typeId);
         
         // Implementation depends on RoomType entity structure
@@ -352,10 +351,10 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void deleteRoomType(Long typeId) {
+    public void deleteRoomType(UUID typeId) {
         log.info("Deleting room type: {}", typeId);
         
-        roomTypeRepository.deleteById(typeId.intValue());
+        roomTypeRepository.deleteById(typeId);
         
         log.info("Room type deleted successfully: {}", typeId);
     }
@@ -368,12 +367,12 @@ public class RoomServiceImpl implements RoomService {
         
         // Return all possible room statuses
         return List.of(
-                RoomStatusDto.builder().roomNumber("").status(RoomStatus.VACANT).build(),
-                RoomStatusDto.builder().roomNumber("").status(RoomStatus.BOOKED).build(),
-                RoomStatusDto.builder().roomNumber("").status(RoomStatus.CHECKED_IN).build(),
-                RoomStatusDto.builder().roomNumber("").status(RoomStatus.CHECKED_OUT).build(),
-                RoomStatusDto.builder().roomNumber("").status(RoomStatus.MAINTENANCE).build(),
-                RoomStatusDto.builder().roomNumber("").status(RoomStatus.CLEANING).build()
+                RoomStatusDto.builder().roomNumber("").status(RoomStatus.VACANT.name()).build(),
+                RoomStatusDto.builder().roomNumber("").status(RoomStatus.BOOKED.name()).build(),
+                RoomStatusDto.builder().roomNumber("").status(RoomStatus.CHECKED_IN.name()).build(),
+                RoomStatusDto.builder().roomNumber("").status(RoomStatus.CHECKED_OUT.name()).build(),
+                RoomStatusDto.builder().roomNumber("").status(RoomStatus.MAINTENANCE.name()).build(),
+                RoomStatusDto.builder().roomNumber("").status(RoomStatus.CLEANING.name()).build()
         );
     }
 
@@ -415,7 +414,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Boolean checkRoomAvailability(Long roomId) {
+    public Boolean checkRoomAvailability(UUID roomId) {
         log.info("Checking room availability: {}", roomId);
         
         return roomRepository.isRoomAvailable(UUID.fromString(roomId.toString()));
@@ -435,7 +434,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void scheduleRoomMaintenance(Long roomId, String maintenanceType, String description, String scheduledDate) {
+    public void scheduleRoomMaintenance(UUID roomId, String maintenanceType, String description, String scheduledDate) {
         log.info("Scheduling room maintenance - roomId: {}, type: {}, scheduledDate: {}", 
                 roomId, maintenanceType, scheduledDate);
         
@@ -449,7 +448,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomResponse completeRoomMaintenance(Long roomId) {
+    public RoomResponse completeRoomMaintenance(UUID roomId) {
         log.info("Completing room maintenance: {}", roomId);
         
         // Set room status back to VACANT after maintenance completion
@@ -470,7 +469,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomResponse completeRoomCleaning(Long roomId) {
+    public RoomResponse completeRoomCleaning(UUID roomId) {
         log.info("Completing room cleaning: {}", roomId);
         
         // Set room status back to VACANT after cleaning completion
@@ -500,7 +499,7 @@ public class RoomServiceImpl implements RoomService {
     // ========== PRICING MANAGEMENT ==========
 
     @Override
-    public RoomResponse updateRoomPrice(Long roomId, Double newPrice) {
+    public RoomResponse updateRoomPrice(UUID roomId, Double newPrice) {
         log.info("Updating room price - roomId: {}, newPrice: {}", roomId, newPrice);
         
         Room room = roomRepository.findById(roomId)
@@ -532,8 +531,9 @@ public class RoomServiceImpl implements RoomService {
     }
 
     private RoomTypeDto convertToRoomTypeDto(RoomType roomType) {
+
         return RoomTypeDto.builder()
-                .typeId(roomType.getId().getValue().longValue())
+                .typeId(roomType.getId().getValue())
                 .typeName(roomType.getTypeName())
                 .description(roomType.getDescription())
                 .basePrice(roomType.getBasePrice().getAmount())

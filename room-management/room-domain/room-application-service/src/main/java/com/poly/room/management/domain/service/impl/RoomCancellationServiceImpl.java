@@ -54,7 +54,7 @@ public class RoomCancellationServiceImpl implements RoomCancellationService {
         validateRoomCanBeCancelled(room);
 
         // Cập nhật trạng thái phòng
-        room.setVacantRoomStatus();
+        room.setRoomStatus(RoomStatus.VACANT);
 
         // Tạo domain event
         RoomCancellationEvent cancelledEvent = new RoomCancellationEvent(room, bookingId, cancellationReason);

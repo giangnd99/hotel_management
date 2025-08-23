@@ -1,7 +1,7 @@
 package com.poly.authentication.service.domain.handler.authentication;
 
-import com.poly.authentication.service.domain.dto.reponse.OutboundUserResponse;
-import com.poly.authentication.service.domain.dto.reponse.UserGGResponse;
+import com.poly.authentication.service.domain.dto.reponse.user.OutboundUserResponse;
+import com.poly.authentication.service.domain.dto.reponse.user.UserGGResponse;
 import com.poly.authentication.service.domain.port.out.repository.UserRepository;
 import com.poly.authentication.service.domain.entity.Role;
 import com.poly.authentication.service.domain.entity.User;

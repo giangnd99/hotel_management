@@ -1,51 +1,38 @@
 package com.poly.staff.dto.request;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Set;
+import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateStaffRequest {
-    @NotBlank(message = "User ID is required")
-    private String userId;
     
-    @NotNull(message = "Department ID is required")
-    private Long departmentId;
+    @NotBlank(message = "Staff ID is required")
+    @Pattern(regexp = "^[A-Z0-9]{3,10}$", message = "Staff ID must be 3-10 characters long and contain only uppercase letters and numbers")
+    private String staffId;
+    
+    @NotNull(message = "User ID is required")
+    private UUID userId;
     
     @NotBlank(message = "Name is required")
-    @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
     private String name;
     
     @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
+    @Email(message = "Email must be valid")
     private String email;
     
-    @NotBlank(message = "Phone is required")
-    @Pattern(regexp = "^[0-9]{10,11}$", message = "Invalid phone number format")
+    @Pattern(regexp = "^[0-9+\\-()\\s]{10,15}$", message = "Phone number must be 10-15 digits and can contain +, -, (), and spaces")
     private String phone;
     
-    @NotBlank(message = "Address is required")
-    private String address;
-    
-    private String bankName;
-    private String bankAccount;
-    private String avatar;
-    
-    @NotNull(message = "Hire date is required")
-    private LocalDate hireDate;
-    
-    @NotNull(message = "Base salary is required")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Salary must be greater than 0")
-    private BigDecimal baseSalary;
-    
-    private Set<String> permissions;
+    private String department;
 }

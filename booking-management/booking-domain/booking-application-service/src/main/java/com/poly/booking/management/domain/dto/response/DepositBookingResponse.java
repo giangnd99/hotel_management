@@ -1,6 +1,9 @@
 package com.poly.booking.management.domain.dto.response;
 
+import com.poly.booking.management.domain.entity.Booking;
 import lombok.*;
+
+import java.util.UUID;
 
 @Data
 @Builder
@@ -8,8 +11,6 @@ import lombok.*;
 @NoArgsConstructor
 public class DepositBookingResponse {
 
-    private String bookingId;
-    private String customerId;
-    private String customerName;
+    private UUID bookingId;
     private String urlPayment;
 }

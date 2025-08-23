@@ -8,7 +8,6 @@ import com.poly.booking.management.domain.message.reponse.PaymentMessageResponse
 import com.poly.booking.management.domain.message.reponse.RoomMessageResponse;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.service.BookingDomainService;
-import com.poly.domain.valueobject.BookingId;
 import com.poly.domain.valueobject.BookingStatus;
 import com.poly.saga.SagaStatus;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +28,8 @@ public class BookingSagaHelper {
     /**
      * Tìm booking theo ID
      */
-    public Booking findBooking(String bookingId) {
-        Optional<Booking> booking = bookingRepository.findById(new BookingId(UUID.fromString(bookingId)));
+    public Booking findBooking(UUID bookingId) {
+        Optional<Booking> booking = bookingRepository.findById(bookingId);
         if (booking.isEmpty()) {
             log.error("Booking with id: {} could not be found!", bookingId);
             throw new BookingDomainException("Booking with id " + bookingId + " could not be found!");
@@ -43,8 +42,8 @@ public class BookingSagaHelper {
      */
     public SagaStatus bookingStatusToSagaStatus(BookingStatus status) {
         return switch (status) {
-            case CONFIRMED, CHECKED_OUT, CHECKED_IN -> SagaStatus.PROCESSING;
-            case PAID -> SagaStatus.FINISHED;
+            case DEPOSITED, CONFIRMED, CHECKED_IN -> SagaStatus.PROCESSING;
+            case CHECKED_OUT -> SagaStatus.FINISHED;
             case CANCELLED -> SagaStatus.COMPENSATED;
             case CANCELLING -> SagaStatus.COMPENSATING;
             default -> SagaStatus.STARTED;

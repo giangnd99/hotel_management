@@ -13,7 +13,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WalkInCheckInRequest {
+public class  WalkInCheckInRequest {
     @NotNull(message = "Guest ID is required")
     private UUID guestId;
 

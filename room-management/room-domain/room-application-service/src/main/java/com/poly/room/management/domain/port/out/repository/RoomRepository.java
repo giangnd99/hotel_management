@@ -22,7 +22,7 @@ public interface RoomRepository {
     
     // Search and Filter operations
     List<Room> findByRoomNumberContaining(String roomNumber, int page, int size);
-    List<Room> findByRoomTypeId(Integer roomTypeId, int page, int size);
+    List<Room> findByRoomTypeId(String roomTypeId, int page, int size);
     List<Room> findByRoomStatus(String status, int page, int size);
     List<Room> findByFloor(Integer floor, int page, int size);
     List<Room> findByFloor(Integer floor);
@@ -40,7 +40,7 @@ public interface RoomRepository {
     
     // Statistics queries
     Long countByStatus(String status);
-    Long countByRoomTypeId(Integer roomTypeId);
+    Long countByRoomTypeId(UUID roomTypeId);
     Long countByFloor(Integer floor);
     
     // Floor management

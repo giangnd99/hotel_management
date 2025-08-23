@@ -1,12 +1,11 @@
 package com.poly.booking.management.dao.room.entity;
 
 import com.poly.booking.management.dao.booking.entity.BookingRoomEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.poly.domain.valueobject.RoomStatus;
+import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,18 +19,15 @@ import java.util.UUID;
 public class RoomEntity {
 
     @Id
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID id;
 
     private String roomNumber;
 
-    private String description;
+    private BigDecimal price;
 
-    private int price;
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "room_status")
+    private RoomStatus status;
 
-    private String status;
-
-    @OneToMany(mappedBy = "room",cascade = jakarta.persistence.CascadeType.ALL)
-    List<BookingRoomEntity> bookingRooms;
-
-    private int capacity;
 }

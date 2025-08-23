@@ -18,12 +18,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class UsecaseBeanConfig {
 
     @Bean
-    public CustomerUsecase customerUsecase(CustomerRepository customerRepo,
-                                           LoyaltyPointRepository loyaltyRepo) {
-        return new CustomerApplicationService(customerRepo, loyaltyRepo);
-    }
-
-    @Bean
     public LoyaltyUsecase loyaltyUsecase(CustomerRepository customerRepo,
                                          LoyaltyPointRepository loyaltyPointRepository,
                                          LoyaltyTransactionRepository loyaltyTransactionRepository, PromotionServicePort promotionServicePort) {

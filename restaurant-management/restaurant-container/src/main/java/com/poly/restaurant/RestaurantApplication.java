@@ -7,8 +7,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@EnableJpaRepositories(basePackages = "com.poly.restaurant.dataaccess")
-@EntityScan(basePackages = "com.poly.restaurant.dataaccess")
+@EnableJpaRepositories(basePackages = "com.poly")
+@EntityScan(basePackages = "com.poly")
 @SpringBootApplication(scanBasePackages = "com.poly")
 @EnableFeignClients(basePackages = "com.poly.restaurant.application.port")
 @EnableDiscoveryClient

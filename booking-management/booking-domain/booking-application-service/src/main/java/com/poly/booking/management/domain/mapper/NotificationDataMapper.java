@@ -4,6 +4,8 @@ import com.poly.booking.management.domain.event.BookingConfirmedEvent;
 import com.poly.booking.management.domain.outbox.payload.NotifiEventPayload;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class NotificationDataMapper {
 
@@ -25,6 +27,8 @@ public class NotificationDataMapper {
                 .createdAt(domainEvent.getCreatedAt().getValue())
                 .checkInTime(domainEvent.getBooking().getCheckInDate().getValue())
                 .bookingStatus(domainEvent.getBooking().getStatus())
+                .id(UUID.randomUUID())
+                .notificationStatus("PENDING")
                 .build();
     }
 }

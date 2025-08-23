@@ -7,6 +7,10 @@ import com.poly.booking.management.messaging.mapper.BookingMessageDataMapper;
 import com.poly.kafka.consumer.KafkaConsumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -61,7 +65,11 @@ public class BookingCancellationKafkaListener implements KafkaConsumer<BookingRo
      * @param messages Danh sách Avro messages từ Kafka topic
      */
     @Override
-    public void receive(List<BookingRoomResponseAvro> messages) {
+    @KafkaListener(topics = "room-cancel-response-topic",groupId = "booking-cancellation-group")
+    public void receive(@Payload List<BookingRoomResponseAvro> messages,
+                        @Header(KafkaHeaders.RECEIVED_KEY) List<String> keys,
+                        @Header(KafkaHeaders.RECEIVED_PARTITION) List<Integer> partitions,
+                        @Header(KafkaHeaders.OFFSET) List<Long> offsets) {
         log.info("Received {} booking cancellation messages from Kafka", messages.size());
 
         messages.forEach(message -> {
@@ -75,11 +83,11 @@ public class BookingCancellationKafkaListener implements KafkaConsumer<BookingRo
                 // Process cancellation based on message type
                 processCancellationBusinessLogic(roomMessageResponse, message);
 
-                log.info("Booking cancellation message processed successfully for booking: {}", 
+                log.info("Booking cancellation message processed successfully for booking: {}",
                         message.getBookingId());
 
             } catch (Exception e) {
-                log.error("Error processing booking cancellation message for booking: {}", 
+                log.error("Error processing booking cancellation message for booking: {}",
                         message.getBookingId(), e);
                 // TODO: Implement dead letter queue handling for failed messages
             }
@@ -143,13 +151,13 @@ public class BookingCancellationKafkaListener implements KafkaConsumer<BookingRo
      * Gọi business logic tương ứng với trạng thái cancellation
      *
      * @param roomMessageResponse RoomMessageResponse domain message
-     * @param avroMessage        BookingRoomResponseAvro original message
+     * @param avroMessage         BookingRoomResponseAvro original message
      */
-    private void processCancellationBusinessLogic(RoomMessageResponse roomMessageResponse, 
-                                                BookingRoomResponseAvro avroMessage) {
+    private void processCancellationBusinessLogic(RoomMessageResponse roomMessageResponse,
+                                                  BookingRoomResponseAvro avroMessage) {
         String reservationStatus = avroMessage.getReservationStatus();
 
-        log.info("Processing cancellation business logic for booking: {} with status: {}", 
+        log.info("Processing cancellation business logic for booking: {} with status: {}",
                 avroMessage.getBookingId(), reservationStatus);
 
         switch (reservationStatus) {
@@ -163,9 +171,11 @@ public class BookingCancellationKafkaListener implements KafkaConsumer<BookingRo
                 bookingCancellationListener.processBookingCancellationRollback(roomMessageResponse);
                 break;
             default:
-                log.warn("Unknown reservation status: {} for booking: {}", 
+                log.warn("Unknown reservation status: {} for booking: {}",
                         reservationStatus, avroMessage.getBookingId());
                 break;
         }
     }
+
+
 }

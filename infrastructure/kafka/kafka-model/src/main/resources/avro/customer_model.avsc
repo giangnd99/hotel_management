@@ -18,6 +18,10 @@
     {
       "name": "lastName",
       "type": "string"
+    },
+    {
+      "name": "isActive",
+      "type": "boolean"
     }
   ]
 }

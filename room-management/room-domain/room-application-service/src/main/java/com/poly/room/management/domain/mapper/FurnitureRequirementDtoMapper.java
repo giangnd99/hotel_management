@@ -2,6 +2,8 @@ package com.poly.room.management.domain.mapper;
 
 import com.poly.room.management.domain.dto.request.FurnitureRequirementRequest;
 import com.poly.room.management.domain.dto.response.FurnitureRequirementResponse;
+import com.poly.room.management.domain.dto.response.FurnitureResponse;
+import com.poly.room.management.domain.dto.response.RoomTypeResponse;
 import com.poly.room.management.domain.entity.Furniture;
 import com.poly.room.management.domain.entity.RoomType;
 import com.poly.room.management.domain.entity.RoomTypeFurniture;
@@ -33,10 +35,23 @@ public class FurnitureRequirementDtoMapper {
     }
 
     public FurnitureRequirementResponse toResponse(RoomTypeFurniture roomTypeFurniture) {
+
+        FurnitureResponse furniture = FurnitureResponse.builder()
+                .id(roomTypeFurniture.getFurniture().getId().getValue())
+                .name(roomTypeFurniture.getFurniture().getName())
+                .price(roomTypeFurniture.getFurniture().getPrice().getAmount().toString())
+                .build();
+        RoomTypeResponse roomTypeResponse = RoomTypeResponse.builder()
+                .id(roomTypeFurniture.getRoomType().getId().getValue())
+                .typeName(roomTypeFurniture.getRoomType().getTypeName())
+                .description(roomTypeFurniture.getRoomType().getDescription())
+                .basePrice(roomTypeFurniture.getRoomType().getBasePrice().getAmount().toString())
+                .maxOccupancy(roomTypeFurniture.getRoomType().getMaxOccupancy())
+                .build();
         return FurnitureRequirementResponse.builder()
-                .furniture(roomTypeFurniture.getFurniture())
+                .furniture(furniture)
                 .requiredQuantity(roomTypeFurniture.getRequiredQuantity())
-                .roomType(roomTypeFurniture.getRoomType())
+                .roomType(roomTypeResponse)
                 .build();
     }
 }

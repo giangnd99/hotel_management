@@ -213,4 +213,33 @@ public class NotificationService {
         }
         return emailStatus;
     }
+    /**
+     * Gửi thông tin tài khoản (email và mật khẩu) đến người dùng qua Email.
+     * Sử dụng template Confirm-account-email.html.
+     *
+     * @param userEmail Email của tài khoản mới.
+     * @param password Mật khẩu của tài khoản mới.
+     * @return Trạng thái gửi thông báo Email.
+     */
+    public String sendAccountInfo( String userEmail, String password, String userName, String loginLink) {
+        String emailStatus = "Email not sent.";
+        try {
+            Map<String, Object> emailVariables = new HashMap<>();
+            emailVariables.put("subject", "Thông Tin Tài Khoản Của Bạn Đã Được Tạo!");
+            emailVariables.put("userName", userName != null && !userName.isEmpty() ? userName : "Quý Khách"); // Sử dụng tên nếu có, nếu không thì dùng "Quý Khách"
+            emailVariables.put("email", userEmail);
+            emailVariables.put("password", password);
+            if (loginLink != null && !loginLink.isEmpty()) {
+                emailVariables.put("loginLink", loginLink);
+            }
+            // Tên template cần khớp với tên file HTML (không có phần mở rộng .html)
+            emailService.sendHtmlEmail(userEmail, (String) emailVariables.get("subject"), "Confirm-account-email", emailVariables);
+            emailStatus = "Email thông tin tài khoản đã được gửi đến " + userEmail;
+        } catch (Exception e) {
+            emailStatus = "Lỗi khi gửi email thông tin tài khoản: " + e.getMessage();
+            System.err.println(emailStatus);
+            e.printStackTrace();
+        }
+        return emailStatus;
+    }
 }

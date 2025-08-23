@@ -19,6 +19,7 @@ import java.util.UUID;
 public class GuestEntity {
     
     @Id
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID id;
     
     @Column(name = "first_name")

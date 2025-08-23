@@ -34,7 +34,7 @@ public class InventoryCheckHandlerImpl implements InventoryCheckHandler {
 
         saveInventoryPort.save(item);
 
-        dto.setTransactionType("CHECK");
+        dto.setTransactionType("ADJUSTMENT");
         dto.setTransactionDate(LocalDateTime.now());
 
         var domain = saveTransactionPort.save(toDomain(dto));

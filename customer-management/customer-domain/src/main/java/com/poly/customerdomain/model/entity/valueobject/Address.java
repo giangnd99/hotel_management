@@ -1,8 +1,5 @@
 package com.poly.customerdomain.model.entity.valueobject;
 
-import com.poly.customerdomain.model.exception.CustomerAddressLengthOutOfRangeException;
-import com.poly.customerdomain.model.exception.InvalidCustomerAddressException;
-
 public class Address {
 
     private String street;
@@ -10,59 +7,68 @@ public class Address {
     private String district;
     private String city;
 
-    private static final int MIN_ADDRESS_LENGTH = 3;
+    // Có thể giữ MIN để gợi ý UI, nhưng không ép buộc nữa
     private static final int MAX_ADDRESS_LENGTH = 100;
 
     public Address(String street, String ward, String district, String city) {
-        if (isNullOrBlank(street, ward, district, city)) {
-            throw new InvalidCustomerAddressException();
-        }
-        if (isLenghtOutOfRange(street, ward, district, city)) {
-            throw new CustomerAddressLengthOutOfRangeException(MIN_ADDRESS_LENGTH, MAX_ADDRESS_LENGTH);
-        }
-        this.street = street;
-        this.ward = ward;
-        this.district = district;
-        this.city = city;
+        this.street  = normalize(street);
+        this.ward    = normalize(ward);
+        this.district= normalize(district);
+        this.city    = normalize(city);
     }
 
-    private static boolean isNullOrBlank(String... values) {
-        for (String value : values) {
-            if (value == null || value.trim().isEmpty()) return true;
+    /** Cho phép null/blank, chỉ trim và giới hạn max length. */
+    private static String normalize(String s) {
+        if (s == null) return "";
+        String t = s.trim();
+        if (t.length() > MAX_ADDRESS_LENGTH) {
+            t = t.substring(0, MAX_ADDRESS_LENGTH);
         }
-        return false;
+        return t;
     }
 
-    private static boolean isLenghtOutOfRange(String... values) {
-        for (String value : values) {
-            if (value.trim().length() >= MIN_ADDRESS_LENGTH && value.trim().length() <= MAX_ADDRESS_LENGTH) return false;
-        }
-        return true;
-    }
-
+    /** Địa chỉ rỗng (tất cả phần đều trống) */
     public static Address empty() {
-        return new Address("Unnamed", "Unnamed", "Unnamed", "Unnamed");
+        return new Address("", "", "", "");
     }
 
+    /** Ghép các phần KHÔNG rỗng, ngăn cách bằng ", " */
     public String toFullAddress() {
-        return "%s, %s, %s, %s".formatted(street, ward, district, city);
+        StringBuilder sb = new StringBuilder();
+        appendIfNotBlank(sb, street);
+        appendIfNotBlank(sb, ward);
+        appendIfNotBlank(sb, district);
+        appendIfNotBlank(sb, city);
+        return sb.length() == 0 ? "" : sb.substring(2); // bỏ ", " đầu tiên
     }
 
+    private static void appendIfNotBlank(StringBuilder sb, String part) {
+        if (part != null && !part.isBlank()) {
+            sb.append(", ").append(part);
+        }
+    }
+
+    /** Parse từ chuỗi đầy đủ. Cho phép thiếu phần, không ném lỗi. */
     public static Address from(String fullAddress) {
         if (fullAddress == null || fullAddress.isBlank()) {
             return Address.empty();
         }
         String[] parts = fullAddress.split(",\\s*");
-        String street = parts.length > 0 ? parts[0] : "";
-        String ward = parts.length > 1 ? parts[1] : "";
+        String street   = parts.length > 0 ? parts[0] : "";
+        String ward     = parts.length > 1 ? parts[1] : "";
         String district = parts.length > 2 ? parts[2] : "";
-        String city = parts.length > 3 ? parts[3] : "";
-
+        String city     = parts.length > 3 ? parts[3] : "";
         return new Address(street, ward, district, city);
     }
 
+    /** Factory cho trường hợp truyền rời từng phần (cho phép 1–4 phần). */
     public static Address from(String street, String ward, String district, String city) {
         return new Address(street, ward, district, city);
     }
 
+    // (Tùy chọn) Getter nếu cần map ra DTO/JPA
+    public String getStreet() { return street; }
+    public String getWard() { return ward; }
+    public String getDistrict() { return district; }
+    public String getCity() { return city; }
 }

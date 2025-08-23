@@ -1,6 +1,5 @@
 package com.poly.room.management.application.controller.rest;
 
-import com.poly.booking.management.domain.dto.RoomServiceDto;
 import com.poly.room.management.domain.dto.*;
 import com.poly.room.management.domain.dto.reception.*;
 import com.poly.room.management.domain.service.ReceptionService;
@@ -13,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -132,16 +132,6 @@ public class ReceptionController {
         return ResponseEntity.ok(todayCheckIns);
     }
 
-    @PostMapping("/checkin/{bookingId}")
-    @Operation(summary = "Thực hiện check-in")
-    public ResponseEntity<CheckInDto> performCheckIn(
-            @PathVariable UUID bookingId,
-            @Valid @RequestBody CheckInRequest request) {
-        log.info("Performing check-in for booking: {}", bookingId);
-        CheckInDto checkIn = receptionService.performCheckIn(bookingId, request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(checkIn);
-    }
-
     @PostMapping("/checkin/walk-in")
     @Operation(summary = "Check-in khách vãng lai")
     public ResponseEntity<CheckInDto> performWalkInCheckIn(@Valid @RequestBody WalkInCheckInRequest request) {
@@ -189,14 +179,13 @@ public class ReceptionController {
         return ResponseEntity.ok(todayCheckOuts);
     }
 
-    @PostMapping("/checkout/{checkInId}")
+    @PostMapping("/checkout/{bookingId}")
     @Operation(summary = "Thực hiện check-out")
-    public ResponseEntity<CheckOutDto> performCheckOut(
-            @PathVariable UUID checkInId,
-            @Valid @RequestBody CheckOutRequest request) {
-        log.info("Performing check-out for check-in: {}", checkInId);
-        CheckOutDto checkOut = receptionService.performCheckOut(checkInId, request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(checkOut);
+    public ResponseEntity<UUID> performCheckOut(
+            @PathVariable UUID bookingId) {
+        log.info("Performing check-out with booking id : {}", bookingId);
+        UUID bookingCheckedOut = receptionService.performCheckOut(bookingId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookingCheckedOut);
     }
 
     @PostMapping("/checkout/{checkInId}/early")
@@ -238,7 +227,7 @@ public class ReceptionController {
     @PostMapping("/guests/register")
     @Operation(summary = "Đăng ký khách mới")
     public ResponseEntity<GuestDto> registerGuest(@Valid @RequestBody GuestRegistrationRequest request) {
-        log.info("Registering new guest: {}", request.getName());
+        log.info("Registering new guest: {}", request.getFullName());
         GuestDto guest = receptionService.registerGuest(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(guest);
     }
@@ -277,19 +266,19 @@ public class ReceptionController {
 
     @GetMapping("/rooms/{roomNumber}/services")
     @Operation(summary = "Lấy danh sách dịch vụ của phòng")
-    public ResponseEntity<List<RoomServiceDto>> getRoomServices(@PathVariable String roomNumber) {
+    public ResponseEntity<List<com.poly.room.management.domain.dto.reception.RoomServiceDto>> getRoomServices(@PathVariable String roomNumber) {
         log.info("Getting services for room: {}", roomNumber);
-        List<RoomServiceDto> services = receptionService.getRoomServices(roomNumber);
+        List<com.poly.room.management.domain.dto.reception.RoomServiceDto> services = receptionService.getRoomServices(roomNumber);
         return ResponseEntity.ok(services);
     }
 
     @PostMapping("/rooms/{roomNumber}/services/request")
     @Operation(summary = "Yêu cầu dịch vụ cho phòng")
-    public ResponseEntity<RoomServiceDto> requestRoomService(
+    public ResponseEntity<com.poly.room.management.domain.dto.reception.RoomServiceDto> requestRoomService(
             @PathVariable String roomNumber,
             @Valid @RequestBody RoomServiceRequestDto request) {
         log.info("Requesting service for room: {}", roomNumber);
-        RoomServiceDto service = receptionService.requestRoomService(roomNumber, request);
+        com.poly.room.management.domain.dto.reception.RoomServiceDto service = receptionService.requestRoomService(roomNumber, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(service);
     }
 

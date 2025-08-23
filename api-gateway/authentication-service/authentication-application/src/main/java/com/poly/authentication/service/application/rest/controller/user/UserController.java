@@ -1,15 +1,14 @@
 package com.poly.authentication.service.application.rest.controller.user;
 
 import com.poly.authentication.service.domain.dto.ApiResponse;
-import com.poly.authentication.service.domain.dto.reponse.UserResponse;
-import com.poly.authentication.service.domain.dto.request.UserCreationRequest;
-import com.poly.authentication.service.domain.dto.request.UserUpdatedRequest;
+import com.poly.authentication.service.domain.dto.reponse.user.UserResponse;
+import com.poly.authentication.service.domain.dto.request.user.UserCreationRequest;
+import com.poly.authentication.service.domain.dto.request.user.UserUpdatedRequest;
 import com.poly.authentication.service.domain.port.in.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -49,7 +48,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UserUpdatedRequest request) {
+    ApiResponse<UserResponse> updateUser(@PathVariable String userId,@Valid @RequestBody UserUpdatedRequest request) {
         return ApiResponse.<UserResponse>builder().
                 result(userService.updateUser(UUID.fromString(userId), request)).
                 build();

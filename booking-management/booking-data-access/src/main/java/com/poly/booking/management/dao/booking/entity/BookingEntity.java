@@ -21,17 +21,19 @@ import java.util.UUID;
 public class BookingEntity {
 
     @Id
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID id;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer_id")
-    private CustomerEntity customer;
+    @Column(columnDefinition = "uuid",updatable = false)
+    private UUID customerId;
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
     private LocalDateTime actualCheckIn;
     private LocalDateTime actualCheckOut;
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL,fetch = FetchType.LAZY,targetEntity = BookingRoomEntity.class, orphanRemoval = true)
     private List<BookingRoomEntity> bookingRooms;
+    @Column(columnDefinition = "uuid",updatable = false)
     private UUID trackingId;
+    private Integer numberOfGuests;
     private BigDecimal totalPrice;
     private String status;
 }

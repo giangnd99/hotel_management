@@ -86,16 +86,10 @@ public class CheckInStep implements SagaStep<NotificationMessageResponse> {
             return;
         }
 
-        // Step 2: Tìm booking và validate trạng thái
         Booking booking = notificationSagaHelper.findBookingAndValidateStatus(notificationMessageResponse.getBookingId());
 
-        // Step 3: Thực hiện business logic check-in
         notificationSagaHelper.performCheckInBusinessLogic(booking, notificationMessageResponse);
 
-        // Step 4: Cập nhật saga status và lưu outbox messages
-//        notificationSagaHelper.updateSagaStatusAndOutboxMessages(booking, notificationMessageResponse, SagaStatus.PROCESSING);
-
-        // Step 5: Trigger next step (payment processing) nếu check-in thành công
         if (BookingStatus.CHECKED_IN.equals(notificationMessageResponse.getBookingStatus())) {
             notificationSagaHelper.triggerNextSagaStep(booking, notificationMessageResponse);
         }

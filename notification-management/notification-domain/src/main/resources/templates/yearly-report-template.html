@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo Hàng Năm - Luxury Hotel</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f6f7fb;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #6f42c1, #e83e8c);
+            color: #fff;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .header p {
+            margin: 5px 0 0;
+            font-size: 16px;
+        }
+        .content {
+            padding: 30px;
+        }
+        .report-year {
+            background: #f3e5f5;
+            border-left: 6px solid #6f42c1;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        .report-year h2 {
+            margin: 0;
+            color: #6f42c1;
+            font-size: 24px;
+        }
+        .section {
+            margin: 30px 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .section-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .section-header h3 {
+            margin: 0;
+            color: #333;
+            font-size: 18px;
+        }
+        .section-content {
+            padding: 20px;
+        }
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+        .metric-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #6f42c1;
+            margin-bottom: 5px;
+        }
+        .metric-label {
+            font-size: 11px;
+            color: #666;
+        }
+        .chart-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .chart-placeholder {
+            background: #e9ecef;
+            border: 2px dashed #6c757d;
+            border-radius: 8px;
+            padding: 40px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .summary-table th,
+        .summary-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .summary-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+        .highlight {
+            color: #6f42c1;
+            font-weight: bold;
+        }
+        .success {
+            color: #28a745;
+        }
+        .warning {
+            color: #ffc107;
+        }
+        .danger {
+            color: #dc3545;
+        }
+        .info {
+            color: #17a2b8;
+        }
+        .trend-up {
+            color: #28a745;
+        }
+        .trend-down {
+            color: #dc3545;
+        }
+        .trend-stable {
+            color: #6c757d;
+        }
+        .footer {
+            background: #f1f3f9;
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
+            color: #666;
+        }
+        .footer strong {
+            color: #333;
+        }
+        .comparison-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .comparison-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .quarterly-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .quarterly-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+        .quarterly-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+        }
+        .quarterly-header {
+            font-weight: bold;
+            color: #6f42c1;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .achievement-section {
+            background: #e8f5e8;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .achievement-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #28a745;
+            text-align: center;
+        }
+        .achievement-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <h1>🏨 Luxury Hotel</h1>
+        <p>Báo Cáo Hàng Năm - Hệ Thống Quản Lý</p>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <div class="report-year">
+            <h2>📊 Báo Cáo Năm: <span th:text="${reportYear}">2024</span></h2>
+            <p>Báo cáo được tạo tự động bởi AI vào lúc <span th:text="${generatedAt}">00:00</span></p>
+            <p>So sánh với năm trước: <span th:text="${previousYear}">2023</span></p>
+        </div>
+
+        <!-- Annual Executive Summary -->
+        <div class="section">
+            <div class="section-header">
+                <h3>📋 Tóm Tắt Điều Hành Năm</h3>
+            </div>
+            <div class="section-content">
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${annualSummary.totalRevenue}">0 VNĐ</div>
+                        <div class="metric-label">Tổng Doanh Thu</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${annualSummary.totalBookings}">0</div>
+                        <div class="metric-label">Tổng Đặt Phòng</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${annualSummary.averageOccupancyRate}">0%</div>
+                        <div class="metric-label">Tỷ Lệ Lấp Đầy TB</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${annualSummary.totalGuests}">0</div>
+                        <div class="metric-label">Tổng Khách Hàng</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${annualSummary.averageRating}">0.0</div>
+                        <div class="metric-label">Đánh Giá TB</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${annualSummary.repeatCustomerRate}">0%</div>
+                        <div class="metric-label">Tỷ Lệ Quay Lại</div>
+                    </div>
+                </div>
+                
+                <div class="comparison-section">
+                    <h4>📈 So Sánh Với Năm Trước:</h4>
+                    <div class="comparison-grid">
+                        <div class="comparison-item">
+                            <h5>Doanh Thu</h5>
+                            <p class="trend-up" th:text="${annualSummary.revenueGrowth}">+25%</p>
+                            <small>So với năm trước</small>
+                        </div>
+                        <div class="comparison-item">
+                            <h5>Đặt Phòng</h5>
+                            <p class="trend-up" th:text="${annualSummary.bookingGrowth}">+18%</p>
+                            <small>So với năm trước</small>
+                        </div>
+                        <div class="comparison-item">
+                            <h5>Tỷ Lệ Lấp Đầy</h5>
+                            <p class="trend-up" th:text="${annualSummary.occupancyGrowth}">+5%</p>
+                            <small>So với năm trước</small>
+                        </div>
+                        <div class="comparison-item">
+                            <h5>Khách Hàng Mới</h5>
+                            <p class="trend-up" th:text="${annualSummary.newCustomerGrowth}">+30%</p>
+                            <small>So với năm trước</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quarterly Performance -->
+        <div class="section">
+            <div class="section-header">
+                <h3>📅 Hiệu Suất Theo Quý</h3>
+            </div>
+            <div class="section-content">
+                <div class="quarterly-section">
+                    <div class="quarterly-grid">
+                        <div class="quarterly-item">
+                            <div class="quarterly-header">Q1 (Tháng 1-3)</div>
+                            <p><strong>Doanh Thu:</strong> <span th:text="${quarterlyPerformance.q1.revenue}">0 VNĐ</span></p>
+                            <p><strong>Đặt Phòng:</strong> <span th:text="${quarterlyPerformance.q1.bookings}">0</span></p>
+                            <p><strong>Tỷ Lệ Lấp Đầy:</strong> <span th:text="${quarterlyPerformance.q1.occupancyRate}">0%</span></p>
+                        </div>
+                        <div class="quarterly-item">
+                            <div class="quarterly-header">Q2 (Tháng 4-6)</div>
+                            <p><strong>Doanh Thu:</strong> <span th:text="${quarterlyPerformance.q2.revenue}">0 VNĐ</span></p>
+                            <p><strong>Đặt Phòng:</strong> <span th:text="${quarterlyPerformance.q2.bookings}">0</span></p>
+                            <p><strong>Tỷ Lệ Lấp Đầy:</strong> <span th:text="${quarterlyPerformance.q2.occupancyRate}">0%</span></p>
+                        </div>
+                        <div class="quarterly-item">
+                            <div class="quarterly-header">Q3 (Tháng 7-9)</div>
+                            <p><strong>Doanh Thu:</strong> <span th:text="${quarterlyPerformance.q3.revenue}">0 VNĐ</span></p>
+                            <p><strong>Đặt Phòng:</strong> <span th:text="${quarterlyPerformance.q3.bookings}">0</span></p>
+                            <p><strong>Tỷ Lệ Lấp Đầy:</strong> <span th:text="${quarterlyPerformance.q3.occupancyRate}">0%</span></p>
+                        </div>
+                        <div class="quarterly-item">
+                            <div class="quarterly-header">Q4 (Tháng 10-12)</div>
+                            <p><strong>Doanh Thu:</strong> <span th:text="${quarterlyPerformance.q4.revenue}">0 VNĐ</span></p>
+                            <p><strong>Đặt Phòng:</strong> <span th:text="${quarterlyPerformance.q4.bookings}">0</span></p>
+                            <p><strong>Tỷ Lệ Lấp Đầy:</strong> <span th:text="${quarterlyPerformance.q4.occupancyRate}">0%</span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <h4>📊 Biểu Đồ Xu Hướng Quý:</h4>
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        📈 Biểu đồ xu hướng doanh thu, đặt phòng và tỷ lệ lấp đầy theo quý
+                        <br>Phân tích mùa vụ và xu hướng kinh doanh
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Trends -->
+        <div class="section">
+            <div class="section-header">
+                <h3>📊 Xu Hướng Theo Tháng</h3>
+            </div>
+            <div class="section-content">
+                <h4>📅 Phân Tích Theo Tháng:</h4>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Tháng</th>
+                            <th>Doanh Thu</th>
+                            <th>Đặt Phòng</th>
+                            <th>Tỷ Lệ Lấp Đầy</th>
+                            <th>Khách Hàng Mới</th>
+                            <th>Xu Hướng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="month : ${monthlyTrends}">
+                            <td th:text="${month.monthName}">Tháng 1</td>
+                            <td th:text="${month.revenue}">0 VNĐ</td>
+                            <td th:text="${month.bookings}">0</td>
+                            <td th:text="${month.occupancyRate}">0%</td>
+                            <td th:text="${month.newCustomers}">0</td>
+                            <td th:text="${month.trend}">↗️</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Annual Payment Analysis -->
+        <div class="section">
+            <div class="section-header">
+                <h3>💳 Phân Tích Thanh Toán Năm</h3>
+            </div>
+            <div class="section-content">
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${paymentAnalysis.totalTransactions}">0</div>
+                        <div class="metric-label">Tổng Giao Dịch</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value success" th:text="${paymentAnalysis.successRate}">0%</div>
+                        <div class="metric-label">Tỷ Lệ Thành Công</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${paymentAnalysis.totalAmount}">0 VNĐ</div>
+                        <div class="metric-label">Tổng Số Tiền</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value info" th:text="${paymentAnalysis.averageTransactionValue}">0 VNĐ</div>
+                        <div class="metric-label">Giá Trị TB</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value warning" th:text="${paymentAnalysis.failedTransactions}">0</div>
+                        <div class="metric-label">Giao Dịch Thất Bại</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${paymentAnalysis.refundRate}">0%</div>
+                        <div class="metric-label">Tỷ Lệ Hoàn Tiền</div>
+                    </div>
+                </div>
+                
+                <h4>📊 Theo Phương Thức Thanh Toán:</h4>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Phương Thức</th>
+                            <th>Số Lượng</th>
+                            <th>Tổng Tiền</th>
+                            <th>Tỷ Lệ Thành Công</th>
+                            <th>Tỷ Lệ Sử Dụng</th>
+                            <th>Xu Hướng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="method : ${paymentAnalysis.paymentMethods}">
+                            <td th:text="${method.name}">PayOS</td>
+                            <td th:text="${method.count}">0</td>
+                            <td th:text="${method.amount}">0 VNĐ</td>
+                            <td th:text="${method.successRate}">0%</td>
+                            <td th:text="${method.usageRate}">0%</td>
+                            <td th:text="${method.trend}">↗️</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Annual Invoice Summary -->
+        <div class="section">
+            <div class="section-header">
+                <h3>🧾 Tổng Kết Hóa Đơn Năm</h3>
+            </div>
+            <div class="section-content">
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${invoiceSummary.totalInvoices}">0</div>
+                        <div class="metric-label">Tổng Hóa Đơn</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value success" th:text="${invoiceSummary.paidInvoices}">0</div>
+                        <div class="metric-label">Đã Thanh Toán</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value warning" th:text="${invoiceSummary.pendingInvoices}">0</div>
+                        <div class="metric-label">Chờ Thanh Toán</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${invoiceSummary.totalRevenue}">0 VNĐ</div>
+                        <div class="metric-label">Tổng Doanh Thu</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value info" th:text="${invoiceSummary.averageInvoiceValue}">0 VNĐ</div>
+                        <div class="metric-label">Giá Trị TB</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${invoiceSummary.collectionRate}">0%</div>
+                        <div class="metric-label">Tỷ Lệ Thu Tiền</div>
+                    </div>
+                </div>
+                
+                <h4>📈 Top 10 Hóa Đơn Cao Nhất:</h4>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Mã Hóa Đơn</th>
+                            <th>Khách Hàng</th>
+                            <th>Loại Phòng</th>
+                            <th>Số Tiền</th>
+                            <th>Quý</th>
+                            <th>Trạng Thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="invoice : ${invoiceSummary.topInvoices}">
+                            <td th:text="${invoice.invoiceId}">INV001</td>
+                            <td th:text="${invoice.customerName}">Nguyễn Văn A</td>
+                            <td th:text="${invoice.roomType}">Phòng Đôi</td>
+                            <td th:text="${invoice.amount}">1,000,000 VNĐ</td>
+                            <td th:text="${invoice.quarter}">Q1</td>
+                            <td th:text="${invoice.status}">Đã thanh toán</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Key Achievements -->
+        <div class="section">
+            <div class="section-header">
+                <h3>🏆 Thành Tựu Chính</h3>
+            </div>
+            <div class="section-content">
+                <div class="achievement-section">
+                    <div class="achievement-grid">
+                        <div class="achievement-item">
+                            <div class="achievement-icon">💰</div>
+                            <h4>Doanh Thu</h4>
+                            <p th:text="${keyAchievements.revenueAchievement}">Đạt mục tiêu doanh thu năm</p>
+                        </div>
+                        <div class="achievement-item">
+                            <div class="achievement-icon">👥</div>
+                            <h4>Khách Hàng</h4>
+                            <p th:text="${keyAchievements.customerAchievement}">Tăng số lượng khách hàng mới</p>
+                        </div>
+                        <div class="achievement-item">
+                            <div class="achievement-icon">⭐</div>
+                            <h4>Đánh Giá</h4>
+                            <p th:text="${keyAchievements.ratingAchievement}">Cải thiện điểm đánh giá</p>
+                        </div>
+                        <div class="achievement-item">
+                            <div class="achievement-icon">🔄</div>
+                            <h4>Quay Lại</h4>
+                            <p th:text="${keyAchievements.retentionAchievement}">Tăng tỷ lệ khách quay lại</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Strategic Insights -->
+        <div class="section">
+            <div class="section-header">
+                <h3>🤖 Phân Tích Chiến Lược AI</h3>
+            </div>
+            <div class="section-content">
+                <h4>💡 Phân Tích Tổng Quan Năm:</h4>
+                <p th:text="${aiStrategicInsights.yearOverview}">Phân tích tổng quan về hoạt động trong năm...</p>
+                
+                <h4>📊 Xu Hướng Chính:</h4>
+                <ul>
+                    <li th:each="trend : ${aiStrategicInsights.keyTrends}" th:text="${trend}">Xu hướng...</li>
+                </ul>
+                
+                <h4>🎯 Điểm Mạnh:</h4>
+                <ul>
+                    <li th:each="strength : ${aiStrategicInsights.strengths}" th:text="${strength}">Điểm mạnh...</li>
+                </ul>
+                
+                <h4>⚠️ Điểm Yếu & Thách Thức:</h4>
+                <ul>
+                    <li th:each="weakness : ${aiStrategicInsights.weaknesses}" th:text="${weakness}">Điểm yếu...</li>
+                </ul>
+                
+                <h4>🚀 Cơ Hội Cải Thiện:</h4>
+                <ul>
+                    <li th:each="opportunity : ${aiStrategicInsights.opportunities}" th:text="${opportunity}">Cơ hội...</li>
+                </ul>
+                
+                <h4>📈 Khuyến Nghị Chiến Lược Năm Tới:</h4>
+                <ul>
+                    <li th:each="strategy : ${aiStrategicInsights.strategicRecommendations}" th:text="${strategy}">Chiến lược...</li>
+                </ul>
+                
+                <h4>🎯 Mục Tiêu Năm Tới:</h4>
+                <ul>
+                    <li th:each="goal : ${aiStrategicInsights.nextYearGoals}" th:text="${goal}">Mục tiêu...</li>
+                </ul>
+            </div>
+        </div>
+
+        <p><strong>Lưu ý:</strong> Báo cáo này được tạo tự động bởi hệ thống AI. Vui lòng kiểm tra lại các số liệu quan trọng trước khi đưa ra quyết định chiến lược.</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Trân trọng,<br><strong>Hệ Thống AI - Luxury Hotel</strong></p>
+        <p>Báo cáo được gửi tự động vào lúc <span th:text="${generatedAt}">00:00</span><br>
+            Nếu có thắc mắc, vui lòng liên hệ với đội ngũ IT.</p>
+    </div>
+</div>
+</body>
+</html>

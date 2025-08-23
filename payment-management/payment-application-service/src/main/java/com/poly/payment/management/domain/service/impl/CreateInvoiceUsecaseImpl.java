@@ -15,12 +15,14 @@ import com.poly.payment.management.domain.value_object.StaffId;
 import com.poly.payment.management.domain.port.output.repository.InvoicePaymentRepository;
 import com.poly.payment.management.domain.port.output.repository.InvoiceRepository;
 import com.poly.payment.management.domain.port.output.repository.PaymentRepository;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Component
 public class CreateInvoiceUsecaseImpl implements CreateInvoiceUsecase {
 
     private final InvoiceRepository invoiceRepository;

@@ -1,0 +1,88 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001
+      author: linhpete
+      comment: Create initial staff management schema
+      changes:
+        - createTable:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  type: VARCHAR(10)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: phone
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: department
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+                    defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+                    defaultValueComputed: CURRENT_TIMESTAMP
+                    onUpdateDefault: CURRENT_TIMESTAMP
+      
+      - createIndex:
+          tableName: staffs
+          indexName: idx_staffs_user_id
+          columns:
+            - column:
+                name: user_id
+      
+      - createIndex:
+          tableName: staffs
+          indexName: idx_staffs_email
+          columns:
+            - column:
+                name: email
+      
+      - createIndex:
+          tableName: staffs
+          indexName: idx_staffs_department
+          columns:
+            - column:
+                name: department
+      
+      - createIndex:
+          tableName: staffs
+          indexName: idx_staffs_status
+          columns:
+            - column:
+                name: status

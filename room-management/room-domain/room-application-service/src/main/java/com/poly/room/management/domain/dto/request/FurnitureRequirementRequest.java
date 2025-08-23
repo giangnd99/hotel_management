@@ -7,17 +7,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class FurnitureRequirementRequest {
-    @NotNull(message = "Furniture ID is required")
-    private Integer furnitureId;
+    private UUID furnitureId;
 
-    @NotNull(message = "Room type ID is required")
-    private Integer roomTypeId;
+    private UUID roomTypeId;
 
-    @Min(value = 1, message = "Quantity must be at least 1")
     private int quantity;
 }

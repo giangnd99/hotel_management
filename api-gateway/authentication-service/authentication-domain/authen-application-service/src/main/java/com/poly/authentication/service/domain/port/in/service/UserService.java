@@ -1,8 +1,8 @@
 package com.poly.authentication.service.domain.port.in.service;
 
-import com.poly.authentication.service.domain.dto.reponse.UserResponse;
-import com.poly.authentication.service.domain.dto.request.UserCreationRequest;
-import com.poly.authentication.service.domain.dto.request.UserUpdatedRequest;
+import com.poly.authentication.service.domain.dto.reponse.user.UserResponse;
+import com.poly.authentication.service.domain.dto.request.user.UserCreationRequest;
+import com.poly.authentication.service.domain.dto.request.user.UserUpdatedRequest;
 import com.poly.authentication.service.domain.entity.User;
 import org.springframework.data.domain.Page;
 

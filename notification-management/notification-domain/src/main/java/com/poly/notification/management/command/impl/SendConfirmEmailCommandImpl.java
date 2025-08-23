@@ -5,6 +5,7 @@ import com.poly.notification.management.message.MessageStatus;
 import com.poly.notification.management.message.NotificationMessage;
 import com.poly.notification.management.port.out.publisher.BookingConfirmedEmailResponsePublisher;
 import com.poly.notification.management.service.BookingQrCodeService;
+import com.poly.notification.management.service.CloudinaryQrCodeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,8 +24,8 @@ public class SendConfirmEmailCommandImpl implements SendBookingConfirmCommand {
             log.info("Bắt đầu xử lý xác nhận đặt phòng cho booking id: {}", message.getBookingId());
 
             // Lấy thông tin từ notification
-            String bookingId = message.getBookingId(); // Giả sử message chứa bookingId
-            String userEmail = message.getCustomerEmail(); // Giả sử userId chứa email
+            String bookingId = message.getBookingId(); 
+            String userEmail = message.getCustomerEmail();
 
             // Tạo QR code và gửi email
             bookingQrCodeService.createQrCodeAndSendEmail(bookingId, userEmail);

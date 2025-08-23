@@ -16,7 +16,7 @@ public class LoyaltyTransactionDataMapper {
         entity.setPointChange(PointChanged.to(domain.getPointChanged()));
         entity.setTransactionType(domain.getTransactionType());
         entity.setTransactionDate(domain.getTransactionDate());
-        entity.setDescription(domain.getDescription().toString());
+        entity.setDescription(domain.getDescription().getValue());
         return entity;
     }
 

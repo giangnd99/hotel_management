@@ -1,6 +1,7 @@
 package com.poly.room.management.domain.service.impl;
 
 import com.poly.domain.valueobject.DateCustom;
+import com.poly.domain.valueobject.RoomStatus;
 import com.poly.room.management.domain.entity.Room;
 import com.poly.room.management.domain.event.*;
 import com.poly.room.management.domain.service.RoomEventService;
@@ -10,7 +11,7 @@ public class RoomEventServiceImpl implements RoomEventService {
     @Override
     public RoomCreatedEvent createdRoom(Room room) {
         room.validate();
-        room.setVacantRoomStatus();
+        room.setRoomStatus(RoomStatus.VACANT);
         return new RoomCreatedEvent(room, DateCustom.now());
     }
 
@@ -28,7 +29,7 @@ public class RoomEventServiceImpl implements RoomEventService {
 
     @Override
     public RoomVacatedEvent vacatedRoom(Room room) {
-        room.setVacantRoomStatus();
+        room.setRoomStatus(RoomStatus.VACANT);
         return new RoomVacatedEvent(room, DateCustom.now());
     }
 

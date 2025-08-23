@@ -1,38 +1,31 @@
 package com.poly.staff.dto.request;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-import java.util.Set;
+import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateStaffRequest {
-    private Long departmentId;
     
-    @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
+    private UUID userId;
+    
     private String name;
     
-    @Email(message = "Invalid email format")
+    @Email(message = "Email must be valid")
     private String email;
     
-    @Pattern(regexp = "^[0-9]{10,11}$", message = "Invalid phone number format")
+    @Pattern(regexp = "^[0-9+\\-()\\s]{10,15}$", message = "Phone number must be 10-15 digits and can contain +, -, (), and spaces")
     private String phone;
     
-    private String address;
-    private String bankName;
-    private String bankAccount;
-    private String avatar;
+    private String department;
     
-    @DecimalMin(value = "0.0", inclusive = false, message = "Salary must be greater than 0")
-    private BigDecimal baseSalary;
-    
-    private String status;
-    private Set<String> permissions;
+    private String status; // ACTIVE, INACTIVE, ON_LEAVE, TERMINATED
 }

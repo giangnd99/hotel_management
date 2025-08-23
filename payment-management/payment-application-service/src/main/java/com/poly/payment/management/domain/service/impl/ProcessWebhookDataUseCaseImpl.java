@@ -1,19 +1,28 @@
 package com.poly.payment.management.domain.service.impl;
 
-import com.poly.domain.valueobject.PaymentStatus;
+
 import com.poly.payment.management.domain.dto.request.ConfirmPaymentCommand;
+import com.poly.payment.management.domain.message.BookingPaymentResponse;
 import com.poly.payment.management.domain.port.input.service.ProcessWebhookDataUseCase;
 import com.poly.payment.management.domain.model.Invoice;
 import com.poly.payment.management.domain.model.InvoicePayment;
 import com.poly.payment.management.domain.model.Payment;
+import com.poly.payment.management.domain.port.output.publisher.BookingPaymentReplyPublisher;
 import com.poly.payment.management.domain.port.output.repository.InvoicePaymentRepository;
 import com.poly.payment.management.domain.port.output.repository.InvoiceRepository;
 import com.poly.payment.management.domain.port.output.repository.PaymentRepository;
+import com.poly.payment.management.domain.value_object.PaymentStatus;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Log4j2
+@Component
 public class ProcessWebhookDataUseCaseImpl implements ProcessWebhookDataUseCase {
 
     private final PaymentRepository paymentRepository;
@@ -21,6 +30,8 @@ public class ProcessWebhookDataUseCaseImpl implements ProcessWebhookDataUseCase 
     private final InvoiceRepository invoiceRepository;
 
     private final InvoicePaymentRepository invoicePaymentRepository;
+
+
 
     public ProcessWebhookDataUseCaseImpl(PaymentRepository paymentRepository, InvoiceRepository invoiceRepository, InvoicePaymentRepository invoicePaymentRepository) {
         this.paymentRepository = paymentRepository;
@@ -31,9 +42,10 @@ public class ProcessWebhookDataUseCaseImpl implements ProcessWebhookDataUseCase 
     @Override
     public void handleProcessWebhook(ConfirmPaymentCommand command) {
         Optional<Payment> paymentOpt = paymentRepository.findByOrderCode(command.getReferenceCode());
+        log.info("Payment {}: {}", paymentOpt.isPresent() ? paymentOpt.get().getId().getValue() : null, paymentOpt.isPresent() ? paymentOpt.get().getStatus() : null);
 
         if (paymentOpt.isEmpty()) return;
-        if (paymentOpt.get().getStatus().equals(PaymentStatus.PAID)) return ;
+        if (paymentOpt.get().getStatus().equals(PaymentStatus.PAID)) return;
 
         Payment payment = paymentOpt.get();
 
@@ -55,8 +67,10 @@ public class ProcessWebhookDataUseCaseImpl implements ProcessWebhookDataUseCase 
                     Invoice invoice = invoiceOpt.get();
                     // Cập nhật trạng thái invoice
                     if (command.isStatus()) {
+                        log.info("Payment {}: {}", invoice.getId().getValue(), invoice.getStatus());
                         invoice.markAsPaid(command.getTransactionDateTime());
                     } else {
+                        log.info("Payment {}: {}", invoice.getId().getValue(), invoice.getStatus());
                         invoice.markAsFailed(command.getTransactionDateTime());
                     }
                     invoiceRepository.save(invoice);
@@ -70,6 +84,6 @@ public class ProcessWebhookDataUseCaseImpl implements ProcessWebhookDataUseCase 
         }
 
         paymentRepository.save(payment);
-        //publish(message);
     }
+
 }

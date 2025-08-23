@@ -5,10 +5,12 @@ import com.poly.payment.management.domain.exception.ApplicationServiceException;
 import com.poly.payment.management.domain.port.input.service.RetrieveInvoiceUsecase;
 import com.poly.payment.management.domain.model.Invoice;
 import com.poly.payment.management.domain.port.output.repository.InvoiceRepository;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Component
 public class RetriveInvoiceUsecaseImpl implements RetrieveInvoiceUsecase {
 
     private final InvoiceRepository invoiceRepository;

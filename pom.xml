@@ -9,13 +9,13 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.poly</groupId>
-    <artifactId>hotel_management</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>pom</packaging>
+        <groupId>com.poly</groupId>
+        <artifactId>hotel_management</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <packaging>pom</packaging>
 
-    <name>hotel_management</name>
-    <description>hotel_management</description>
+        <name>hotel_management</name>
+        <description>hotel_management</description>
 
     <url/>
 
@@ -44,6 +44,7 @@
         <module>restaurant-management</module>
         <module>promotion-management</module>
         <module>service-management</module>
+        <module>cloudinary-service</module>
     </modules>
 
     <scm>
@@ -69,7 +70,7 @@
         <eureka-server.version>4.1.0</eureka-server.version>
         <spring-cloud.version>2024.0.1</spring-cloud.version>
         <openfeign.version>4.2.0</openfeign.version>
-        <springdoc-openapi.version>2.4.0</springdoc-openapi.version>
+        <springdoc-openapi.version>2.2.0</springdoc-openapi.version>
         <junitt.version>5.10.3</junitt.version>
     </properties>
 
@@ -284,8 +285,15 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- Spring Boot starter removed - should only be in modules that need it -->
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>java-dotenv</artifactId>
+            <version>5.2.2</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -301,7 +309,13 @@
 
     <build>
         <plugins>
-            <!-- Spring Boot plugin removed - should only be in container modules -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${maven-antrun-plugin.version}</version>
+                <configuration>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

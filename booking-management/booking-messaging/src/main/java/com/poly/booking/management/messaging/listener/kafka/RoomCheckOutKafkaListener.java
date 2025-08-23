@@ -8,6 +8,10 @@ import com.poly.domain.valueobject.RoomStatus;
 import com.poly.kafka.consumer.KafkaConsumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -64,7 +68,12 @@ public class RoomCheckOutKafkaListener implements KafkaConsumer<BookingRoomRespo
      * @param offsets    Danh sách offset values
      */
     @Override
-    public void receive(List<BookingRoomResponseAvro> messages, List<String> keys, List<Integer> partitions, List<Long> offsets) {
+    @KafkaListener(topics = "room-check-out-request",groupId = "room-check-out-group")
+    public void receive(
+            @Payload List<BookingRoomResponseAvro> messages,
+            @Header(KafkaHeaders.RECEIVED_KEY) List<String> keys,
+            @Header(KafkaHeaders.RECEIVED_PARTITION) List<Integer> partitions,
+            @Header(KafkaHeaders.OFFSET) List<Long> offsets) {
         log.info("Received {} room check out messages from Kafka topic", messages.size());
 
         try {

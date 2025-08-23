@@ -13,7 +13,6 @@ public class BookingServiceConfigData {
     private String paymentResponseTopicName;
     private String roomReserveRequestTopicName;
     private String roomReserveResponseTopicName;
-    private String roomCheckOutTopicName;
+    private String roomCheckInTopicName;
     private String bookingNotificationRequestTopicName;
-    private String bookingNotificationResponseTopicName;
 }

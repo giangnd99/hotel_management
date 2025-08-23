@@ -29,15 +29,15 @@
             },
             {
               "name": "roomNumber",
-              "type": "string"
+              "type": ["null","string"],"default": null
             },
             {
               "name": "basePrice",
-              "type": "string"
+              "type": ["null","string"],"default": null
             },
             {
               "name": "status",
-              "type": "string"
+              "type": ["null","string"],"default": null
             }
           ]
         }
@@ -54,11 +54,11 @@
     },
     {
       "name": "reason",
-      "type": "string"
+      "type": ["null","string"],"default": null
     },
     {
       "name": "reservationStatus",
-      "type": "string"
+      "type": ["null","string"],"default": null
     }
   ]
 }

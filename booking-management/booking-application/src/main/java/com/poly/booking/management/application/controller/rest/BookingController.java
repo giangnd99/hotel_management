@@ -3,6 +3,7 @@ package com.poly.booking.management.application.controller.rest;
 import com.poly.booking.management.domain.dto.*;
 import com.poly.booking.management.domain.dto.request.CreateBookingRequest;
 import com.poly.booking.management.domain.dto.request.UpdateBookingRequest;
+import com.poly.booking.management.domain.dto.response.DepositBookingResponse;
 import com.poly.booking.management.domain.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -122,16 +123,15 @@ public class BookingController {
     @GetMapping("/search")
     @Operation(summary = "Tìm kiếm booking")
     public ResponseEntity<List<BookingDto>> searchBookings(
-            @RequestParam(required = false) String customerName,
-            @RequestParam(required = false) String customerEmail,
-            @RequestParam(required = false) String roomNumber,
+            @RequestParam(required = false) UUID customerId,
+            @RequestParam(required = false) UUID roomId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         log.info("Searching bookings with filters");
         List<BookingDto> bookings = bookingService.searchBookings(
-                customerName, customerEmail, roomNumber, checkInDate, checkOutDate, page, size);
+                customerId, roomId, checkInDate, checkOutDate, page, size);
         return ResponseEntity.ok(bookings);
     }
 
@@ -220,17 +220,17 @@ public class BookingController {
 
     @PutMapping("/{bookingId}/check-in")
     @Operation(summary = "Check-in booking")
-    public ResponseEntity<BookingDto> checkInBooking(@PathVariable UUID bookingId) {
+    public ResponseEntity<List<UUID>> checkInBooking(@PathVariable UUID bookingId) {
         log.info("Checking in booking: {}", bookingId);
-        BookingDto checkedInBooking = bookingService.checkInBooking(bookingId);
+        List<UUID> checkedInBooking = bookingService.checkInBooking(bookingId);
         return ResponseEntity.ok(checkedInBooking);
     }
 
     @PutMapping("/{bookingId}/check-out")
     @Operation(summary = "Check-out booking")
-    public ResponseEntity<BookingDto> checkOutBooking(@PathVariable UUID bookingId) {
+    public ResponseEntity<List<UUID>> checkOutBooking(@PathVariable UUID bookingId) {
         log.info("Checking out booking: {}", bookingId);
-        BookingDto checkedOutBooking = bookingService.checkOutBooking(bookingId);
+        List<UUID> checkedOutBooking = bookingService.checkOutBooking(bookingId);
         return ResponseEntity.ok(checkedOutBooking);
     }
 
@@ -246,9 +246,9 @@ public class BookingController {
 
     @PutMapping("/{bookingId}/payment/confirm")
     @Operation(summary = "Xác nhận thanh toán booking")
-    public ResponseEntity<BookingDto> confirmBookingPayment(@PathVariable UUID bookingId) {
+    public ResponseEntity<DepositBookingResponse> confirmBookingPayment(@PathVariable UUID bookingId) {
         log.info("Confirming payment for booking: {}", bookingId);
-        BookingDto updatedBooking = bookingService.confirmBookingPayment(bookingId);
+        DepositBookingResponse updatedBooking = bookingService.confirmBookingPayment(bookingId);
         return ResponseEntity.ok(updatedBooking);
     }
 

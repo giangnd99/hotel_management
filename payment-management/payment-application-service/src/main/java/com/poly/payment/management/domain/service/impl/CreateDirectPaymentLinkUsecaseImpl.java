@@ -1,8 +1,6 @@
 package com.poly.payment.management.domain.service.impl;
 
 import com.poly.domain.valueobject.InvoiceId;
-import com.poly.domain.valueobject.PaymentMethod;
-import com.poly.domain.valueobject.PaymentStatus;
 import com.poly.domain.valueobject.ReferenceId;
 import com.poly.payment.management.domain.value_object.*;
 import com.poly.payment.management.domain.dto.request.CreateDirectPaymentCommand;
@@ -19,12 +17,13 @@ import com.poly.payment.management.domain.model.Payment;
 import com.poly.payment.management.domain.port.output.repository.InvoicePaymentRepository;
 import com.poly.payment.management.domain.port.output.repository.InvoiceRepository;
 import com.poly.payment.management.domain.port.output.repository.PaymentRepository;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Optional;
-
+@Component
 public class CreateDirectPaymentLinkUsecaseImpl implements CreateDirectPaymentLinkUsecase {
 
     private final InvoiceRepository invoiceRepository;
@@ -51,8 +50,8 @@ public class CreateDirectPaymentLinkUsecaseImpl implements CreateDirectPaymentLi
             existedPayment = paymentRepository.findByReferenceId(command.getReferenceId());
         }
 
-        if(existedPayment.isPresent()){
-            if(existedPayment.get().getStatus().equals(PaymentStatus.PENDING)) {
+        if (existedPayment.isPresent()) {
+            if (existedPayment.get().getStatus().equals(PaymentStatus.PENDING)) {
                 return PaymentLinkResult.builder()
                         .paymentId(existedPayment.get().getId().getValue())
                         .orderCode(existedPayment.get().getOrderCode().getValue())
@@ -63,7 +62,7 @@ public class CreateDirectPaymentLinkUsecaseImpl implements CreateDirectPaymentLi
             if (existedPayment.get().getStatus().equals(PaymentStatus.PAID)) {
                 throw new ApplicationServiceException("Payment Deposit already exists");
             }
-            if(existedPayment.get().getStatus().equals(PaymentStatus.CANCELED)) {
+            if (existedPayment.get().getStatus().equals(PaymentStatus.CANCELLED)) {
                 throw new ApplicationServiceException("Payment Deposit canceled");
             }
         }

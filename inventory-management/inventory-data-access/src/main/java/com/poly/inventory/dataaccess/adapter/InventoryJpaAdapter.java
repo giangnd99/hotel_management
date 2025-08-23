@@ -7,6 +7,7 @@ import com.poly.inventory.dataaccess.entity.InventoryEntity;
 import com.poly.inventory.dataaccess.mapper.InventoryEntityMapper;
 import com.poly.inventory.dataaccess.jpa.InventoryJpaRepository;
 import com.poly.inventory.domain.entity.InventoryItem;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public class InventoryJpaAdapter implements LoadInventoryPort, SaveInventoryPort
 
     @Override
     public List<InventoryItem> searchByName(String name) {
-        return inventoryRepository.findByItemNameContainingIgnoreCase(name)
+        return inventoryRepository.findByItemNameContainingIgnoreCase(name, Pageable.unpaged())
                 .stream()
                 .map(InventoryEntityMapper::toDomain)
                 .toList();
