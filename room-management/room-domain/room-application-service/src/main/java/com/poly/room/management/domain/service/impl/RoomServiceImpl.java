@@ -264,7 +264,6 @@ public class RoomServiceImpl implements RoomService {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RoomDomainException("Room not found: " + roomId));
         
-        // Update status based on the requested status
         switch (status.toUpperCase()) {
             case "VACANT":
                 room = roomDomainService.getRoomCommandService().setRoomVacant(room);
@@ -450,8 +449,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomResponse completeRoomMaintenance(UUID roomId) {
         log.info("Completing room maintenance: {}", roomId);
-        
-        // Set room status back to VACANT after maintenance completion
+
         return setRoomAvailable(roomId);
     }
 

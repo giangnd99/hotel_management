@@ -1,7 +1,8 @@
 package com.poly.restaurant.dataaccess.adapter;
 
-import com.poly.restaurant.application.port.out.repo.OrderRepositoryPort;
+import com.poly.restaurant.application.port.out.OrderRepositoryPort;
 import com.poly.restaurant.dataaccess.entity.OrderJpaEntity;
+import com.poly.restaurant.dataaccess.jpa.JpaMenuItemRepository;
 import com.poly.restaurant.dataaccess.jpa.JpaOrderRepository;
 import com.poly.restaurant.dataaccess.mapper.OrderEntityMapper;
 import com.poly.restaurant.domain.entity.Order;
@@ -17,10 +18,11 @@ import java.util.stream.Collectors;
 public class OrderRepositoryAdapter implements OrderRepositoryPort {
 
     private final JpaOrderRepository jpaOrderRepository;
+    private final JpaMenuItemRepository jpaMenuItemRepository;
 
     @Override
     public Order save(Order order) {
-        OrderJpaEntity entity = OrderEntityMapper.toEntity(order);
+        OrderJpaEntity entity = OrderEntityMapper.toEntity(order, jpaMenuItemRepository);
         OrderJpaEntity savedEntity = jpaOrderRepository.save(entity);
         return OrderEntityMapper.toDomain(savedEntity);
     }

@@ -63,28 +63,60 @@ CREATE TABLE IF NOT EXISTS order_items (
     );
 
 -- Create indexes for better performance
-CREATE INDEX idx_orders_customer_id ON orders(customer_id);
-CREATE INDEX idx_orders_room_id ON orders(room_id);
-CREATE INDEX idx_orders_status ON orders(status);
-CREATE INDEX idx_orders_created_at ON orders(created_at);
-CREATE INDEX idx_order_items_order_id ON order_items(order_id);
-CREATE INDEX idx_menu_items_category_id ON menu_items(category_id);
-CREATE INDEX idx_menu_items_available ON menu_items(is_available);
+-- CREATE INDEX idx_orders_customer_id ON orders(customer_id);
+-- CREATE INDEX idx_orders_room_id ON orders(room_id);
+-- CREATE INDEX idx_orders_status ON orders(status);
+-- CREATE INDEX idx_orders_created_at ON orders(created_at);
+-- CREATE INDEX idx_order_items_order_id ON order_items(order_id);
+-- CREATE INDEX idx_menu_items_category_id ON menu_items(category_id);
+-- CREATE INDEX idx_menu_items_available ON menu_items(is_available);
 
 -- Insert sample data for development
 INSERT IGNORE INTO categories (id, name, description) VALUES
-    (UUID(), 'Appetizers', 'Starters and small plates'),
-    (UUID(), 'Main Courses', 'Primary dishes'),
-    (UUID(), 'Desserts', 'Sweet endings'),
-    (UUID(), 'Beverages', 'Drinks and refreshments');
+    ('550e8400-e29b-41d4-a716-446655440010', 'Appetizers', 'Starters and small plates'),
+    ('550e8400-e29b-41d4-a716-446655440011', 'Main Courses', 'Primary dishes'),
+    ('550e8400-e29b-41d4-a716-446655440012', 'Desserts', 'Sweet endings'),
+    ('550e8400-e29b-41d4-a716-446655440013', 'Beverages', 'Drinks and refreshments');
 
 -- Insert sample menu items
 INSERT IGNORE INTO menu_items (id, name, description, price, category_id, preparation_time) VALUES
-    (UUID(), 'Caesar Salad', 'Fresh romaine lettuce with Caesar dressing', 12.99,
-     (SELECT id FROM categories WHERE name = 'Appetizers'), 10),
-    (UUID(), 'Grilled Salmon', 'Fresh salmon with seasonal vegetables', 28.99,
-     (SELECT id FROM categories WHERE name = 'Main Courses'), 25),
-    (UUID(), 'Chocolate Cake', 'Rich chocolate cake with vanilla ice cream', 8.99,
-     (SELECT id FROM categories WHERE name = 'Desserts'), 5),
-    (UUID(), 'Fresh Orange Juice', 'Freshly squeezed orange juice', 4.99,
-     (SELECT id FROM categories WHERE name = 'Beverages'), 3);
+    ('550e8400-e29b-41d4-a716-446655440000', 'Caesar Salad', 'Fresh romaine lettuce with Caesar dressing', 12.99,
+     '550e8400-e29b-41d4-a716-446655440010', 10),
+    ('550e8400-e29b-41d4-a716-446655440001', 'Grilled Salmon', 'Fresh salmon with seasonal vegetables', 28.99,
+     '550e8400-e29b-41d4-a716-446655440011', 25),
+    ('550e8400-e29b-41d4-a716-446655440002', 'Chocolate Cake', 'Rich chocolate cake with vanilla ice cream', 8.99,
+     '550e8400-e29b-41d4-a716-446655440012', 5),
+    ('550e8400-e29b-41d4-a716-446655440003', 'Fresh Orange Juice', 'Freshly squeezed orange juice', 4.99,
+     '550e8400-e29b-41d4-a716-446655440013', 3);
+
+-- Tables table (for dine-in tables)
+CREATE TABLE IF NOT EXISTS tables (
+  id VARCHAR(36) PRIMARY KEY,
+  number INT NOT NULL,
+  status VARCHAR(50) NOT NULL DEFAULT 'AVAILABLE'
+);
+
+-- Seed sample tables
+INSERT IGNORE INTO tables (id, number, status) VALUES
+  ('40a6c08f-80be-11f0-9513-0242ac150001', 1, 'AVAILABLE'),
+  ('40a6c08f-80be-11f0-9513-0242ac150002', 2, 'AVAILABLE'),
+  ('40a6c08f-80be-11f0-9513-0242ac150003', 3, 'RESERVED'),
+  ('40a6c08f-80be-11f0-9513-0242ac150004', 4, 'OCCUPIED'),
+  ('40a6c08f-80be-11f0-9513-0242ac150005', 5, 'AVAILABLE');
+
+-- Seed sample orders and order_items for API testing
+-- Using real customer IDs from customer-management service:
+-- '11111111-1111-1111-1111-111111111111' = Nguyen Van A (BRONZE level)
+-- '22222222-2222-2222-2222-222222222222' = Tran Thi B (SILVER level)
+INSERT IGNORE INTO orders (id, order_number, customer_id, room_id, total_amount, status, payment_status, order_type, special_instructions)
+VALUES
+  ('order_001', 'R-1001', '11111111-1111-1111-1111-111111111111', '40a6c08f-80be-11f0-9513-0242ac150001', 30.98, 'COMPLETED', 'PAID', 'DINE_IN', 'No spice'),
+  ('order_002', 'R-1002', '11111111-1111-1111-1111-111111111111', '40a6c08f-80be-11f0-9513-0242ac150002', 28.99, 'IN_PROGRESS', 'PENDING', 'DINE_IN', 'Extra napkins'),
+  ('order_003', 'R-1003', '22222222-2222-2222-2222-222222222222', '40a6c08f-80be-11f0-9513-0242ac150003', 8.99, 'NEW', 'PENDING', 'TAKEAWAY', NULL);
+
+INSERT IGNORE INTO order_items (id, order_id, menu_item_id, quantity, unit_price, total_price, special_instructions)
+VALUES
+  ('550e8400-e29b-41d4-a716-446655440100', 'order_001', '550e8400-e29b-41d4-a716-446655440000', 1, 12.99, 12.99, NULL),
+  ('550e8400-e29b-41d4-a716-446655440101', 'order_001', '550e8400-e29b-41d4-a716-446655440003', 2, 4.99, 9.98, NULL),
+  ('550e8400-e29b-41d4-a716-446655440102', 'order_002', '550e8400-e29b-41d4-a716-446655440001', 1, 28.99, 28.99, 'Well done'),
+  ('550e8400-e29b-41d4-a716-446655440103', 'order_003', '550e8400-e29b-41d4-a716-446655440002', 1, 8.99, 8.99, NULL);

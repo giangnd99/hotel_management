@@ -256,7 +256,8 @@ public class OrderProcessingHelper {
                 new java.util.ArrayList<>(), // TODO: Map order items
                 order.getStatus().name(),
                 order.getCreatedAt(),
-                order.getCustomerNote()
+                order.getCustomerNote(),
+                order.getOrderNumber()
         );
     }
 

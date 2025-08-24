@@ -55,7 +55,7 @@ public class CreateInvoiceUsecaseImpl implements CreateInvoiceUsecase {
                 .customerId(CustomerId.fromValue(command.getCustomerId()))
                 .staffId(StaffId.from(command.getStaffId()))
                 .subTotal(Money.from(command.getSubTotal()))
-                .totalAmount(calculateTotalAfterVoucherAndTax(command.getSubTotal(), command.getTax(),  command.getVoucherAmount()))
+                .totalAmount(calculateTotalAfterVoucherAndTax(command.getSubTotal().subtract(exisingPayment.get().getAmount().getValue()), command.getTax(),  command.getVoucherAmount()))
                 .taxRate(Money.from(command.getTax()))
                 .invoiceStatus(InvoiceStatus.PENDING)
                 .createdAt(LocalDateTime.now())
@@ -116,7 +116,7 @@ public class CreateInvoiceUsecaseImpl implements CreateInvoiceUsecase {
         BigDecimal taxAmount = BigDecimal.ZERO;
         if (taxRate != null && taxRate.compareTo(BigDecimal.ZERO) > 0) {
             taxAmount = discountedTotal.multiply(taxRate)
-                    .divide(new BigDecimal("99"), 2, RoundingMode.HALF_UP);
+                    .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
         }
 
         // 4. Tổng cuối cùng

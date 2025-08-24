@@ -1,4 +1,4 @@
-package com.poly.restaurant.application.port.out.repo;
+package com.poly.restaurant.application.port.out;
 
 import java.util.List;
 import java.util.Optional;
