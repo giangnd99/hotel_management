@@ -106,23 +106,8 @@ public class RoomController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    @Operation(summary = "Tạo phòng mới")
-    public ResponseEntity<RoomResponse> createRoom(@Valid @RequestBody CreateRoomRequest request) {
-        log.info("Creating new room: {}", request.getRoomNumber());
-        RoomResponse newRoom = roomService.createRoom(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newRoom);
-    }
 
-    @PutMapping("/{roomId}")
-    @Operation(summary = "Cập nhật thông tin phòng")
-    public ResponseEntity<RoomResponse> updateRoom(
-            @PathVariable UUID roomId,
-            @Valid @RequestBody UpdateRoomRequest request) {
-        log.info("Updating room: {}", roomId);
-        RoomResponse updatedRoom = roomService.updateRoom(roomId, request);
-        return ResponseEntity.ok(updatedRoom);
-    }
+
 
     @DeleteMapping("/{roomId}")
     @Operation(summary = "Xóa phòng")
@@ -259,13 +244,6 @@ public class RoomController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/types")
-    @Operation(summary = "Tạo loại phòng mới")
-    public ResponseEntity<RoomTypeDto> createRoomType(@Valid @RequestBody RoomTypeDto request) {
-        log.info("Creating new room type: {}", request.getTypeName());
-        RoomTypeDto newRoomType = roomService.createRoomType(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newRoomType);
-    }
 
     @PutMapping("/types/{typeId}")
     @Operation(summary = "Cập nhật loại phòng")

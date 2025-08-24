@@ -46,6 +46,17 @@ public class Room extends BaseEntity<RoomId> {
         validateRoomTypeAndStatus();
     }
 
+    public void setRoomPrice(Money roomPrice) {
+        this.roomPrice = roomPrice;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
 
     public void setRoomCosts(List<RoomCost> roomCosts) {
         this.roomCosts = roomCosts;

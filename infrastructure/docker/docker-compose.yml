@@ -1,3 +1,4 @@
+version: '3.8'
 services:
   eureka-service:
     image: com.poly/eureka.service:0.0.1-SNAPSHOT

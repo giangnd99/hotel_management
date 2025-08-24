@@ -30,7 +30,9 @@ public class Furniture extends BaseEntity<FurnitureId> {
         this.price = price;
     }
 
-    private Furniture(Builder builder) {
+    public Furniture() {}
+
+    public Furniture(Builder builder) {
         super.setId(builder.id);
         name = builder.name;
         price = builder.price;

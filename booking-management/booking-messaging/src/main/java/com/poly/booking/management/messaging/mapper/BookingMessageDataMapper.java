@@ -110,16 +110,7 @@ public class BookingMessageDataMapper {
                 .build();
     }
 
-    /**
-     * Chuyển đổi BookingNotifiEventPayload thành NotificationModelAvro
-     * <p>
-     * Mục đích: Tạo Avro model để gửi thông báo xác nhận booking đến notification service
-     * Sử dụng: Trong ConfirmedRequestKafkaPublisher để gửi message đến Kafka
-     *
-     * @param sagaId             Saga ID để theo dõi quy trình
-     * @param notifiEventPayload Thông tin notification cần gửi
-     * @return NotificationModelAvro model
-     */
+
     public NotificationMessageAvro bookingNotificationEventToNotificationModelAvro(String sagaId, NotifiEventPayload notifiEventPayload) {
         return NotificationMessageAvro.newBuilder()
                 .setId(notifiEventPayload.getId().toString())
@@ -127,6 +118,18 @@ public class BookingMessageDataMapper {
                 .setCustomerId(notifiEventPayload.getCustomerId().toString())
                 .setCustomerEmail(notifiEventPayload.getCustomerEmail())
                 .setNotificationType(NotificationType.BOOKING_CONFIRMATION)
+                .setMessageStatus(MessageStatus.PENDING)
+                .build();
+    }
+
+
+    public NotificationMessageAvro bookingCancelToNotificationModelAvro(String sagaId, NotifiEventPayload notifiEventPayload) {
+        return NotificationMessageAvro.newBuilder()
+                .setId(notifiEventPayload.getId().toString())
+                .setBookingId(notifiEventPayload.getBookingId().toString())
+                .setCustomerId(notifiEventPayload.getCustomerId().toString())
+                .setCustomerEmail(notifiEventPayload.getCustomerEmail())
+                .setNotificationType(NotificationType.BOOKING_CANCEL)
                 .setMessageStatus(MessageStatus.PENDING)
                 .build();
     }

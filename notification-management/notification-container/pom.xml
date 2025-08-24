@@ -25,7 +25,6 @@
             <groupId>com.poly</groupId>
             <artifactId>notification-messaging</artifactId>
         </dependency>
-        <!-- Eureka Client -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>

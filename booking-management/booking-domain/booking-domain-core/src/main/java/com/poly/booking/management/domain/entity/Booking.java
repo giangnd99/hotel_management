@@ -44,6 +44,13 @@ public class Booking extends AggregateRoot<BookingId> {
         numberOfGuests = builder.numberOfGuests;
     }
 
+    public void setCheckInDate(DateCustom checkInDate) {
+        this.checkInDate = checkInDate;
+    }
+
+    public void setCheckOutDate(DateCustom checkOutDate) {
+        this.checkOutDate = checkOutDate;
+    }
 
     public void setNumberOfGuests(Integer numberOfGuests) {
         this.numberOfGuests = numberOfGuests;

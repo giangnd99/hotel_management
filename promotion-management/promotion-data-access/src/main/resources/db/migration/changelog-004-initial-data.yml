@@ -1,0 +1,190 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004
+      author: system
+      comment: Insert initial data for voucher management system boot-up
+      
+      - insert:
+          tableName: voucher_packs
+          columns:
+            - column:
+                name: description
+                value: "Welcome Bonus - 10% Off First Stay"
+            - column:
+                name: discount_amount
+                value: 10.00
+            - column:
+                name: valid_range
+                value: "30 DAYS"
+            - column:
+                name: required_points
+                value: 100
+            - column:
+                name: quantity
+                value: 1000
+            - column:
+                name: valid_from
+                value: "2025-01-01"
+            - column:
+                name: valid_to
+                value: "2025-12-31"
+            - column:
+                name: status
+                value: "PUBLISHED"
+            - column:
+                name: created_at
+                value: "2025-01-01 00:00:00"
+            - column:
+                name: created_by
+                value: "SYSTEM"
+            - column:
+                name: version
+                value: 0
+                
+      - insert:
+          tableName: voucher_packs
+          columns:
+            - column:
+                name: description
+                value: "Loyalty Reward - 15% Off Weekend Stays"
+            - column:
+                name: discount_amount
+                value: 15.00
+            - column:
+                name: valid_range
+                value: "60 DAYS"
+            - column:
+                name: required_points
+                value: 250
+            - column:
+                name: quantity
+                value: 500
+            - column:
+                name: valid_from
+                value: "2025-01-01"
+            - column:
+                name: valid_to
+                value: "2025-12-31"
+            - column:
+                name: status
+                value: "PUBLISHED"
+            - column:
+                name: created_at
+                value: "2025-01-01 00:00:00"
+            - column:
+                name: created_by
+                value: "SYSTEM"
+            - column:
+                name: version
+                value: 0
+                
+      - insert:
+          tableName: voucher_packs
+          columns:
+            - column:
+                name: description
+                value: "Premium Member - 20% Off Luxury Suites"
+            - column:
+                name: discount_amount
+                value: 20.00
+            - column:
+                name: valid_range
+                value: "90 DAYS"
+            - column:
+                name: required_points
+                value: 500
+            - column:
+                name: quantity
+                value: 200
+            - column:
+                name: valid_from
+                value: "2025-01-01"
+            - column:
+                name: valid_to
+                value: "2025-12-31"
+            - column:
+                name: status
+                value: "PUBLISHED"
+            - column:
+                name: created_at
+                value: "2025-01-01 00:00:00"
+            - column:
+                name: created_by
+                value: "SYSTEM"
+            - column:
+                name: version
+                value: 0
+                
+      - insert:
+          tableName: voucher_packs
+          columns:
+            - column:
+                name: description
+                value: "Seasonal Special - 25% Off Holiday Bookings"
+            - column:
+                name: discount_amount
+                value: 25.00
+            - column:
+                name: valid_range
+                value: "120 DAYS"
+            - column:
+                name: required_points
+                value: 750
+            - column:
+                name: quantity
+                value: 100
+            - column:
+                name: valid_from
+                value: "2025-06-01"
+            - column:
+                name: valid_to
+                value: "2025-08-31"
+            - column:
+                name: status
+                value: "PENDING"
+            - column:
+                name: created_at
+                value: "2025-01-01 00:00:00"
+            - column:
+                name: created_by
+                value: "SYSTEM"
+            - column:
+                name: version
+                value: 0
+                
+      - insert:
+          tableName: voucher_packs
+          columns:
+            - column:
+                name: description
+                value: "Test Pack - 5% Off Development Testing"
+            - column:
+                name: discount_amount
+                value: 5.00
+            - column:
+                name: valid_range
+                value: "7 DAYS"
+            - column:
+                name: required_points
+                value: 50
+            - column:
+                name: quantity
+                value: 100
+            - column:
+                name: valid_from
+                value: "2025-01-01"
+            - column:
+                name: valid_to
+                value: "2025-12-31"
+            - column:
+                name: status
+                value: "PUBLISHED"
+            - column:
+                name: created_at
+                value: "2025-01-01 00:00:00"
+            - column:
+                name: created_by
+                value: "SYSTEM"
+            - column:
+                name: version
+                value: 0

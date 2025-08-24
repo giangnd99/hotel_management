@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "order_items")
@@ -15,8 +15,9 @@ import java.time.LocalDateTime;
 @Builder
 public class OrderItemJpaEntity {
     @Id
-    @Column(name = "id")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_item_id")
+    private Long orderItemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
@@ -29,15 +30,6 @@ public class OrderItemJpaEntity {
     @Column(name = "quantity")
     private int quantity;
 
-    @Column(name = "unit_price")
-    private BigDecimal unitPrice;
-
-    @Column(name = "total_price")
-    private BigDecimal totalPrice;
-
-    @Column(name = "special_instructions")
-    private String specialInstructions;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(name = "price")
+    private BigDecimal price;
 }

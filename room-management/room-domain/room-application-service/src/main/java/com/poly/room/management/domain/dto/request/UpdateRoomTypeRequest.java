@@ -17,7 +17,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateRoomTypeRequest {
-    private UUID roomTypeId;
 
     private String typeName;
 
@@ -27,7 +26,7 @@ public class UpdateRoomTypeRequest {
     private String basePrice;
 
     @Min(value = 1, message = "New max occupancy must be at least 1")
-    private int maxOccupancy;
+    private Integer maxOccupancy;
     @Nullable
     private List<FurnitureRequirementRequest> furnitureRequirements;
 }

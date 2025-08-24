@@ -54,6 +54,25 @@ public class ConfirmedRequestKafkaPublisher implements NotificationRequestMessag
         }
     }
 
+    @Override
+    public void sendNotifiCancel(NotifiOutboxMessage notifiOutboxMessage, BiConsumer<NotifiOutboxMessage, OutboxStatus> outboxCallback) {
+        validateInputParameters(notifiOutboxMessage, outboxCallback);
+        NotifiEventPayload notificationEventPayload = extractNotificationEventPayload(notifiOutboxMessage);
+        String sagaId = extractSagaId(notifiOutboxMessage);
+        logProcessingStart(notificationEventPayload, sagaId);
+        try {
+            NotificationMessageAvro notificationModelAvro = createNotificationModelAvro(sagaId, notificationEventPayload);
+            sendMessageToKafka(notificationModelAvro,
+                    sagaId,
+                    notifiOutboxMessage,
+                    outboxCallback,
+                    notificationEventPayload);
+            logProcessingSuccess(notificationEventPayload, sagaId);
+        } catch (Exception e) {
+            handleProcessingError(notificationEventPayload, sagaId, e);
+        }
+    }
+
     private void validateInputParameters(NotifiOutboxMessage notifiOutboxMessage,
                                          BiConsumer<NotifiOutboxMessage, OutboxStatus> outboxCallback) {
         Assert.notNull(notifiOutboxMessage, "BookingNotifiOutboxMessage không được null");
@@ -84,7 +103,7 @@ public class ConfirmedRequestKafkaPublisher implements NotificationRequestMessag
 
     private NotificationMessageAvro createNotificationModelAvro(String sagaId,
                                                                 NotifiEventPayload notificationEventPayload) {
-        return bookingDataMapper.bookingNotificationEventToNotificationModelAvro(sagaId, notificationEventPayload);
+        return bookingDataMapper.bookingCancelToNotificationModelAvro(sagaId, notificationEventPayload);
     }
 
     private void sendMessageToKafka(NotificationMessageAvro notificationModelAvro,
