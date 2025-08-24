@@ -124,9 +124,6 @@ public class Booking extends AggregateRoot<BookingId> {
         status = BookingStatus.CANCELLED;
     }
 
-    /**
-     * Check-out thành công, chuyển sang trạng thái CHECKED_OUT.
-     */
     public void checkOut() {
         status = BookingStatus.CHECKED_OUT;
     }
