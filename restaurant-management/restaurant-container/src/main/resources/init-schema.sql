@@ -104,11 +104,14 @@ INSERT IGNORE INTO tables (id, number, status) VALUES
   (UUID(), 4, 'OCCUPIED');
 
 -- Seed sample orders and order_items for API testing
+-- Using real customer IDs from customer-management service:
+-- '11111111-1111-1111-1111-111111111111' = Nguyen Van A (BRONZE level)
+-- '22222222-2222-2222-2222-222222222222' = Tran Thi B (SILVER level)
 INSERT IGNORE INTO orders (id, order_number, customer_id, room_id, total_amount, status, payment_status, order_type, special_instructions)
 VALUES
-  ('order_001', 'R-1001', 'customer_001', 'ROOM-101', 30.98, 'COMPLETED', 'PAID', 'DINE_IN', 'No spice'),
-  ('order_002', 'R-1002', 'customer_001', 'ROOM-102', 28.99, 'IN_PROGRESS', 'PENDING', 'DINE_IN', 'Extra napkins'),
-  ('order_003', 'R-1003', 'customer_002', 'ROOM-201', 8.99, 'NEW', 'PENDING', 'TAKEAWAY', NULL);
+  ('order_001', 'R-1001', '11111111-1111-1111-1111-111111111111', 'ROOM-101', 30.98, 'COMPLETED', 'PAID', 'DINE_IN', 'No spice'),
+  ('order_002', 'R-1002', '11111111-1111-1111-1111-111111111111', 'ROOM-102', 28.99, 'IN_PROGRESS', 'PENDING', 'DINE_IN', 'Extra napkins'),
+  ('order_003', 'R-1003', '22222222-2222-2222-2222-222222222222', 'ROOM-201', 8.99, 'NEW', 'PENDING', 'TAKEAWAY', NULL);
 
 INSERT IGNORE INTO order_items (id, order_id, menu_item_id, quantity, unit_price, total_price, special_instructions)
 VALUES

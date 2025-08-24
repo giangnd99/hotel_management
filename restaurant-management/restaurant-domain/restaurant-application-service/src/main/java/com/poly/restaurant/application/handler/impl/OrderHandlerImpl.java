@@ -252,7 +252,7 @@ public class OrderHandlerImpl extends AbstractGenericHandlerImpl<Order, String> 
     private void sendOrderNotification(Order order, CustomerDTO customer, PaymentResponseDTO paymentResponse) {
         try {
             NotificationRequestDTO notificationRequest = new NotificationRequestDTO(
-                customer.customerId(),
+                customer.getCustomerId().toString(),
                 "ORDER_CREATED",
                 "Đơn hàng mới",
                 String.format("Đơn hàng %s đã được tạo. Trạng thái thanh toán: %s",
@@ -269,7 +269,7 @@ public class OrderHandlerImpl extends AbstractGenericHandlerImpl<Order, String> 
     private void sendOrderStatusNotification(Order order, CustomerDTO customer, String status, String message) {
         try {
             NotificationRequestDTO notificationRequest = new NotificationRequestDTO(
-                customer.customerId(),
+                customer.getCustomerId().toString(),
                 "ORDER_STATUS_UPDATE",
                 "Cập nhật đơn hàng",
                 String.format("Đơn hàng %s: %s", order.getId(), message),
