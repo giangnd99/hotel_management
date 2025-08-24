@@ -62,32 +62,32 @@ CREATE TYPE service_status AS ENUM ('PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANC
 CREATE TABLE furniture
 (
     furniture_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name         VARCHAR(255)   NOT NULL,
-    price        DECIMAL(10, 2) NOT NULL
+    name         VARCHAR(255)    ,
+    price        DECIMAL(10, 2)
 );
 
 -- MAINTENANCE_TYPES
 CREATE TABLE maintenance_types
 (
-    maintenance_type_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name                VARCHAR(255) NOT NULL,
+    maintenance_type_id UUID PRIMARY KEY,
+    name                VARCHAR(255) ,
     description         TEXT
 );
 
 -- ROOM_TYPES
 CREATE TABLE room_types
 (
-    room_type_id  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    type_name     VARCHAR(255) NOT NULL,
+    room_type_id  UUID PRIMARY KEY ,
+    type_name     VARCHAR(255)  ,
     description   TEXT,
-    base_price    DECIMAL(10, 2) NOT NULL,
+    base_price    DECIMAL(10, 2) ,
     max_occupancy INT
 );
 
 -- ROOMS
 CREATE TABLE rooms
 (
-    room_id      UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    room_id      UUID PRIMARY KEY ,
     room_type_id UUID,
     room_number  VARCHAR(10) NOT NULL UNIQUE,
     floor        INT,
@@ -101,7 +101,7 @@ CREATE TABLE rooms
 -- ROOM_TYPE_FURNITURE
 CREATE TABLE room_type_furniture
 (
-    room_type_furniture_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    room_type_furniture_id UUID PRIMARY KEY,
     room_type_id           UUID,
     furniture_id           UUID,
     require_quantity       INT,
@@ -114,13 +114,13 @@ CREATE TABLE room_type_furniture
 -- ROOM_MAINTENANCE
 CREATE TABLE room_maintenance
 (
-    id                   UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    room_id              UUID                     NOT NULL,
-    maintenance_type_id  UUID                     NOT NULL,
-    room_number          VARCHAR(10)              NOT NULL,
-    issue_type           issue_type               NOT NULL,
-    priority             maintenance_priority     NOT NULL,
-    status               maintenance_status       NOT NULL,
+    id                   UUID PRIMARY KEY ,
+    room_id              UUID                      ,
+    maintenance_type_id  UUID                      ,
+    room_number          VARCHAR(10)               ,
+    issue_type           issue_type                ,
+    priority             maintenance_priority      ,
+    status               maintenance_status        ,
     description          TEXT,
     notes                TEXT,
     requested_by         VARCHAR(50),
@@ -133,8 +133,8 @@ CREATE TABLE room_maintenance
     actual_cost          DECIMAL(10, 2),
     is_urgent            BOOLEAN,
     special_instructions TEXT,
-    created_at           TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at           TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at           TIMESTAMP WITHOUT TIME ZONE  ,
+    updated_at           TIMESTAMP WITHOUT TIME ZONE  ,
     CONSTRAINT fk_room
         FOREIGN KEY (room_id) REFERENCES rooms (room_id),
     CONSTRAINT fk_maintenance_type
@@ -144,9 +144,9 @@ CREATE TABLE room_maintenance
 -- GUESTS
 CREATE TABLE guests
 (
-    id               UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    first_name       VARCHAR(255) NOT NULL,
-    last_name        VARCHAR(255) NOT NULL,
+    id               UUID PRIMARY KEY ,
+    first_name       VARCHAR(255)  ,
+    last_name        VARCHAR(255)  ,
     full_name        VARCHAR(255),
     phone            VARCHAR(20) UNIQUE,
     email            VARCHAR(255) UNIQUE,
@@ -165,12 +165,12 @@ CREATE TABLE guests
 -- CHECK_INS
 CREATE TABLE check_ins
 (
-    id               UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id               UUID PRIMARY KEY,
     booking_id       UUID,
-    guest_id         UUID                     NOT NULL,
-    room_id          UUID                     NOT NULL,
-    room_number      VARCHAR(10)              NOT NULL,
-    check_in_date    DATE                     NOT NULL,
+    guest_id         UUID                      ,
+    room_id          UUID                      ,
+    room_number      VARCHAR(10)               ,
+    check_in_date    DATE                      ,
     check_out_date   DATE,
     check_in_time    TIMESTAMP WITHOUT TIME ZONE,
     check_out_time   TIMESTAMP WITHOUT TIME ZONE,
@@ -180,8 +180,8 @@ CREATE TABLE check_ins
     checked_in_by    VARCHAR(50),
     checked_out_by   VARCHAR(50),
     notes            TEXT,
-    created_at       TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at       TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at       TIMESTAMP WITHOUT TIME ZONE  ,
+    updated_at       TIMESTAMP WITHOUT TIME ZONE ,
     CONSTRAINT fk_guest
         FOREIGN KEY (guest_id) REFERENCES guests (id),
     CONSTRAINT fk_room_checkin
@@ -191,12 +191,12 @@ CREATE TABLE check_ins
 -- ROOM_CLEANING
 CREATE TABLE room_cleaning
 (
-    id                   UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    room_id              UUID                     NOT NULL,
-    room_number          VARCHAR(10)              NOT NULL,
-    cleaning_type        cleaning_type            NOT NULL,
-    priority             cleaning_priority        NOT NULL,
-    status               cleaning_status          NOT NULL,
+    id                   UUID PRIMARY KEY ,
+    room_id              UUID                      ,
+    room_number          VARCHAR(10)               ,
+    cleaning_type        cleaning_type             ,
+    priority             cleaning_priority         ,
+    status               cleaning_status          ,
     description          TEXT,
     notes                TEXT,
     requested_by         VARCHAR(50),
@@ -207,8 +207,8 @@ CREATE TABLE room_cleaning
     completed_at         TIMESTAMP WITHOUT TIME ZONE,
     is_urgent            BOOLEAN,
     special_instructions TEXT,
-    created_at           TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at           TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at           TIMESTAMP WITHOUT TIME ZONE  ,
+    updated_at           TIMESTAMP WITHOUT TIME ZONE  ,
     CONSTRAINT fk_room_cleaning
         FOREIGN KEY (room_id) REFERENCES rooms (room_id)
 );
@@ -217,11 +217,11 @@ CREATE TABLE room_cleaning
 CREATE TABLE room_services
 (
     service_id           UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    room_number          VARCHAR(10) NOT NULL,
+    room_number          VARCHAR(10)  ,
     guest_id             UUID,
     guest_name           VARCHAR(255),
-    service_type         VARCHAR(255) NOT NULL,
-    service_name         VARCHAR(255) NOT NULL,
+    service_type         VARCHAR(255)  ,
+    service_name         VARCHAR(255)  ,
     description          TEXT,
     quantity             INT,
     unit_price           DECIMAL(10, 2),
@@ -233,8 +233,8 @@ CREATE TABLE room_services
     completed_by         VARCHAR(50),
     notes                TEXT,
     special_instructions TEXT,
-    created_at           TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at           TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at           TIMESTAMP WITHOUT TIME ZONE  ,
+    updated_at           TIMESTAMP WITHOUT TIME ZONE  ,
     CONSTRAINT fk_guest_service
         FOREIGN KEY (guest_id) REFERENCES guests (id)
 );

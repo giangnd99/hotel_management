@@ -44,9 +44,6 @@ public class BookingRepositoryImpl implements BookingRepository {
     @Override
     @Transactional
     public Optional<Booking> findById(UUID bookingId) {
-//        BookingEntity bookingEntity = bookingJpaRepository.findById(bookingId)
-//                .orElseThrow(() -> new EntityNotFoundException("Booking not found"));
-//        Hibernate.initialize(bookingEntity.getBookingRooms());
         return bookingJpaRepository.findById(bookingId).map(bookingDataAccessMapper::toDomainEntity);
     }
 

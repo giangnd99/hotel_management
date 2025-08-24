@@ -27,16 +27,16 @@ public class BookingCheckedInCommandImpl implements BookingCheckedInCommand {
     private final ReceptionClient receptionClient;
 
     @Override
-    public void processCheckInByQrCodeWithBookingId(String bookingId, String staffId) {
+    public void processCheckInByQrCodeWithBookingId(String bookingId) {
         try {
 
             QrCodeScanResponse response = qrCodeService.scanQrCodeAndMarkAsScanned(bookingId);
             log.info("Response from scanning qr code: {}", response);
             bookingConfirmedEmailResponsePublisher.publish(createMessageByQrCode(response));
-            CheckInDto responseFromRoom = receptionClient.performCheckIn(UUID.fromString(bookingId), createCheckInRequest(response, staffId)).getBody();
-            log.info("Response from reception client: {}", responseFromRoom);
+            String responseFromRoom = receptionClient.performCheckIn(UUID.fromString(bookingId));
+            log.info("Response from room service: {}", responseFromRoom);
             log.info("Successfully process check in by qr code with booking id: {}", bookingId);
-            
+
         } catch (Exception e) {
             log.error("failed to process check in by qr code with booking id: {} ", bookingId, e);
             throw new RuntimeException(e.getMessage(), e);
@@ -47,11 +47,9 @@ public class BookingCheckedInCommandImpl implements BookingCheckedInCommand {
         return NotificationMessage.builder()
                 .id(UUID.randomUUID().toString())
                 .messageStatus(MessageStatus.SUCCESS)
-                .customerEmail(response.getCustomerEmail())
                 .bookingId(response.getBookingId())
                 .notificationType(NotificationType.CHECK_IN)
                 .qrCode(response.getQrCodeId())
-                .customerId(response.getCustomerId())
                 .build();
     }
 

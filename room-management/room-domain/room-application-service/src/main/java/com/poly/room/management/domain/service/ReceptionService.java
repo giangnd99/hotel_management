@@ -3,7 +3,9 @@ package com.poly.room.management.domain.service;
 import com.poly.room.management.domain.dto.RoomStatusDto;
 import com.poly.room.management.domain.dto.reception.*;
 import com.poly.room.management.domain.dto.reception.RoomServiceDto;
+import com.poly.room.management.domain.entity.Room;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +29,7 @@ public interface ReceptionService {
     // Check-in Management
     List<CheckInPendingDto> getPendingCheckIns();
     List<CheckInDto> getTodayCheckIns();
-    CheckInDto performCheckIn(UUID bookingId, CheckInRequest request);
+    String performCheckIn(UUID bookingId);
     CheckInDto performWalkInCheckIn(WalkInCheckInRequest request);
     CheckInDto extendStay(UUID checkInId, LocalDate newCheckOutDate);
     CheckInDto changeRoom(UUID checkInId, String newRoomNumber, String reason);
@@ -35,7 +37,7 @@ public interface ReceptionService {
     // Check-out Management
     List<CheckOutPendingDto> getPendingCheckOuts();
     List<CheckOutDto> getTodayCheckOuts();
-    CheckOutDto performCheckOut(UUID checkInId, CheckOutRequest request);
+    UUID performCheckOut(UUID bookingID);
     CheckOutDto performEarlyCheckOut(UUID checkInId, String reason);
 
     // Guest Management

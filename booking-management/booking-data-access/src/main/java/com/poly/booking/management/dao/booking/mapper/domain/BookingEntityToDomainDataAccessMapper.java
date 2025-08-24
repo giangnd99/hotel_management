@@ -67,7 +67,8 @@ public class BookingEntityToDomainDataAccessMapper {
                 .status(be.getStatus() != null ? BookingStatus.valueOf(be.getStatus()) : null)
                 .actualCheckInDate(be.getActualCheckIn() != null ? DateCustom.of(be.getActualCheckIn()) : null)
                 .actualCheckOutDate(be.getActualCheckOut() != null ? DateCustom.of(be.getActualCheckOut()) : null)
-                .trackingId(be.getTrackingId() != null ? new TrackingId(be.getTrackingId()) : null);
+                .trackingId(be.getTrackingId() != null ? new TrackingId(be.getTrackingId()) : null)
+                .numberOfGuest(be.getNumberOfGuests() != null ? be.getNumberOfGuests() : 1);
 
         // map customer nếu có (file gốc dùng UUID cho customerId)
         if (be.getCustomerId() != null) {
@@ -77,7 +78,6 @@ public class BookingEntityToDomainDataAccessMapper {
             b.customer(customer);
         }
 
-        // Important: đặt danh sách rỗng ở placeholder để tránh null
         b.bookingRooms(Collections.emptyList());
         return b.build();
     }
@@ -173,6 +173,7 @@ public class BookingEntityToDomainDataAccessMapper {
                 .actualCheckInDate(placeholder.getActualCheckInDate())
                 .actualCheckOutDate(placeholder.getActualCheckOutDate())
                 .trackingId(placeholder.getTrackingId())
+                .numberOfGuest(placeholder.getNumberOfGuests() != null ? placeholder.getNumberOfGuests() : 1)
                 .bookingRooms(rooms);
 
         return fb.build();

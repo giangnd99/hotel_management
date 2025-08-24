@@ -101,13 +101,3 @@ openapi:
     title: Restaurant Service API
     version: 1.0.0
     server: http://localhost:8082
-
-# Logging configuration
-logging:
-  level:
-    com.poly.restaurant: DEBUG
-    feign: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.springframework.kafka: DEBUG
-    org.apache.kafka: DEBUG

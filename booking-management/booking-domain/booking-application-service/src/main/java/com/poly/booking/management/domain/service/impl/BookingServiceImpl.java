@@ -3,6 +3,7 @@ package com.poly.booking.management.domain.service.impl;
 import com.poly.booking.management.domain.dto.BookingDto;
 import com.poly.booking.management.domain.dto.BookingStatisticsDto;
 import com.poly.booking.management.domain.dto.request.CreateBookingRequest;
+import com.poly.booking.management.domain.dto.request.CreateCustomerCommand;
 import com.poly.booking.management.domain.dto.request.UpdateBookingRequest;
 import com.poly.booking.management.domain.dto.response.CustomerDto;
 import com.poly.booking.management.domain.dto.response.DepositBookingResponse;
@@ -12,7 +13,7 @@ import com.poly.booking.management.domain.port.out.client.CustomerClient;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.port.out.repository.CustomerRepository;
 
-import com.poly.booking.management.domain.saga.command.BookingCreateHelper;
+import com.poly.booking.management.domain.saga.create.BookingCreateHelper;
 import com.poly.booking.management.domain.service.BookingService;
 import com.poly.booking.management.domain.service.DepositBookingCommand;
 import com.poly.domain.valueobject.*;
@@ -109,30 +110,48 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingDto createBooking(CreateBookingRequest request) {
 
-        Customer customer = customerRepository.findByEmail(request.getCustomerEmail())
-                .orElseGet(() -> {
-                    CustomerDto response = customerClient.getCustomerById(request.getCustomerId());
-                    if (response == null) {
-                        log.error("Customer not found!");
-                        throw new RuntimeException("Customer not found!");
-                    }
-                    Customer newCustomer = mapToCustomer(response);
-                    newCustomer.setEmail(request.getCustomerEmail());
-                    newCustomer.setUsername(request.getCustomerEmail());
-                    return customerRepository.save(newCustomer);
-                });
+        Optional<Customer> existingCustomer = customerRepository.findByEmail(request.getCustomerEmail());
+
+        Customer customer;
+        if (existingCustomer.isPresent()) {
+            customer = existingCustomer.get();
+        } else {
+            try {
+                CustomerDto response = customerClient.getCustomerById(request.getCustomerId());
+                customer = mapToCustomer(response);
+                customer.setEmail(request.getCustomerEmail());
+                customer.setUsername(request.getCustomerEmail());
+                customer = customerRepository.save(customer);
+                log.info("Found and synchronized customer with id: {}", request.getCustomerId());
+            } catch (Exception e) {
+                log.warn("Customer with ID {} not found in customer service, creating new profile.", request.getCustomerId());
+                CreateCustomerCommand requestCustomer =
+                        CreateCustomerCommand.builder()
+                                .phone(request.getCustomerPhone())
+                                .email(request.getCustomerEmail())
+                                .sex("MALE")
+                                .build();
+
+                customerClient.createCustomer(requestCustomer);
+                customer = customerRepository.findByEmail(request.getCustomerEmail()).orElseThrow(() ->
+                        new RuntimeException("Customer not found after creating!"));
+                log.info("New customer profile created successfully with id: {}", customer.getId().getValue());
+            }
+        }
 
         Booking booking = bookingCreateHelper.initAndValidateBookingCreatedEvent(request, customer);
-
         return mapToDto(booking);
     }
 
     private Customer mapToCustomer(CustomerDto customerDto) {
 
+        String lastName = customerDto.getLastName() == null ? "Need to" : customerDto.getLastName();
+        String firstName = customerDto.getFirstName() == null ? "Change" : customerDto.getFirstName();
+        String name = lastName.concat(firstName);
         return Customer.Builder.builder()
                 .lastName(customerDto.getLastName())
                 .firstName(customerDto.getFirstName())
-                .name(customerDto.getLastName().concat(" ").concat(customerDto.getFirstName()))
+                .name(name)
                 .status(customerDto.isActive() ? Customer.CustomerStatus.ACTIVE : Customer.CustomerStatus.INACTIVE)
                 .id(new CustomerId(customerDto.getCustomerId()))
                 .build();
@@ -260,24 +279,26 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public BookingDto checkInBooking(UUID bookingId) {
+    public List<UUID> checkInBooking(UUID bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        booking.checkIn();
+        booking.setActualCheckInDate(DateCustom.now());
         Booking checkedInBooking = bookingRepository.save(booking);
-        return mapToDto(checkedInBooking);
+
+        return checkedInBooking.getBookingRooms().stream().map(
+                bookingRoom -> bookingRoom.getRoom().getId().getValue()).toList();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public BookingDto checkOutBooking(UUID bookingId) {
+    public List<UUID> checkOutBooking(UUID bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
-
         booking.checkOut();
         Booking checkedOutBooking = bookingRepository.save(booking);
-        return mapToDto(checkedOutBooking);
+        return checkedOutBooking.getBookingRooms().stream().map(bookingRoom ->
+                bookingRoom.getRoom().getId().getValue()).toList();
     }
 
     @Override
@@ -345,7 +366,7 @@ public class BookingServiceImpl implements BookingService {
 
         dto.setCreatedAt(LocalDateTime.now());
         dto.setUpdatedAt(LocalDateTime.now());
-
+        dto.setNumberOfGuests(booking.getNumberOfGuests() != null ? booking.getNumberOfGuests() : 1);
         // Set room information if available
         if (booking.getBookingRooms() != null && !booking.getBookingRooms().isEmpty()) {
             var firstRoom = booking.getBookingRooms().get(0);

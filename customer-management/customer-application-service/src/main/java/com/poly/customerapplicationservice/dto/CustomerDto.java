@@ -15,6 +15,7 @@ import java.util.UUID;
 @Getter
 public class CustomerDto {
     private UUID customerId;
+    private UUID userId;
     private String firstName;
     private String lastName;
     private String address;
@@ -40,6 +41,7 @@ public class CustomerDto {
         dto.setUpdatedDate(customer.getUpdatedAt());
         dto.setSex(customer.getSex().name());
         dto.setActive(customer.isActive());
+        dto.setUserId(customer.getUserId().getValue());
         return dto;
     }
 }

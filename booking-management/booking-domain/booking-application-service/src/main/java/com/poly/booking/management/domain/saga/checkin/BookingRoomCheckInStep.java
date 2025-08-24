@@ -14,19 +14,6 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Booking Check-In Saga Step - Xử lý business logic check-in trong saga pattern
- * <p>
- * CHỨC NĂNG:
- * - Thực hiện business logic check-in booking
- * - Quản lý outbox messages cho check-in process
- * - Đảm bảo tính nhất quán dữ liệu trong saga
- * <p>
- * MỤC ĐÍCH:
- * - Xử lý check-in thành công, thất bại và đang chờ
- * - Cập nhật trạng thái booking và outbox messages
- * - Trigger các bước tiếp theo trong saga nếu cần
- */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -36,21 +23,11 @@ public class BookingRoomCheckInStep {
     private final BookingRepository bookingRepository;
     private final RoomOutboxService roomOutboxService;
 
-    /**
-     * Xử lý check-in thành công
-     * <p>
-     * BUSINESS LOGIC:
-     * - Cập nhật trạng thái booking thành CHECKED_IN
-     * - Ghi log check-in thành công
-     * - Cập nhật outbox message status
-     *
-     * @param notificationMessageResponse Thông tin check-in từ notification service
-     */
+
     public void process(NotificationMessageResponse notificationMessageResponse) {
         log.info("Processing successful check-in for booking: {}", notificationMessageResponse.getBookingId());
 
         try {
-            // Tìm booking entity
             BookingId bookingId = new BookingId(UUID.fromString(notificationMessageResponse.getBookingId()));
             Optional<com.poly.booking.management.domain.entity.Booking> bookingOpt = 
                     bookingRepository.findById(bookingId.getValue());
@@ -62,13 +39,10 @@ public class BookingRoomCheckInStep {
 
             com.poly.booking.management.domain.entity.Booking booking = bookingOpt.get();
 
-            // Thực hiện business logic check-in
             bookingCheckInDomainService.checkInBooking(booking, notificationMessageResponse);
 
-            // Lưu trạng thái mới
             bookingRepository.save(booking);
 
-            // Cập nhật outbox message nếu có
             updateOutboxMessageForCheckIn(notificationMessageResponse);
 
             log.info("Check-in processed successfully for booking: {}", notificationMessageResponse.getBookingId());
@@ -79,26 +53,15 @@ public class BookingRoomCheckInStep {
         }
     }
 
-    /**
-     * Xử lý check-in thất bại
-     * <p>
-     * BUSINESS LOGIC:
-     * - Ghi log check-in thất bại
-     * - Cập nhật trạng thái booking nếu cần
-     * - Cập nhật outbox message status
-     *
-     * @param notificationMessageResponse Thông tin check-in thất bại
-     */
+
     public void processFailed(NotificationMessageResponse notificationMessageResponse) {
         log.info("Processing failed check-in for booking: {}", notificationMessageResponse.getBookingId());
 
         try {
-            // Ghi log thất bại
-            log.warn("Check-in failed for booking: {} with reason: {}", 
+            log.warn("Check-in failed for booking: {} with reason: {}",
                     notificationMessageResponse.getBookingId(), 
                     notificationMessageResponse.getFailureMessages());
 
-            // Cập nhật outbox message cho thất bại
             updateOutboxMessageForFailedCheckIn(notificationMessageResponse);
 
             log.info("Failed check-in processed for booking: {}", notificationMessageResponse.getBookingId());
@@ -110,16 +73,6 @@ public class BookingRoomCheckInStep {
         }
     }
 
-    /**
-     * Xử lý check-in đang chờ
-     * <p>
-     * BUSINESS LOGIC:
-     * - Ghi log check-in đang chờ
-     * - Cập nhật trạng thái booking thành PENDING_CHECKIN
-     * - Cập nhật outbox message status
-     *
-     * @param notificationMessageResponse Thông tin check-in đang chờ
-     */
     public void processPending(NotificationMessageResponse notificationMessageResponse) {
         log.info("Processing pending check-in for booking: {}", notificationMessageResponse.getBookingId());
 
@@ -136,13 +89,10 @@ public class BookingRoomCheckInStep {
 
             com.poly.booking.management.domain.entity.Booking booking = bookingOpt.get();
 
-            // Cập nhật trạng thái thành PENDING_CHECKIN
             bookingCheckInDomainService.setPendingCheckIn(booking, notificationMessageResponse);
-
-            // Lưu trạng thái mới
+            booking.checkIn();
             bookingRepository.save(booking);
 
-            // Cập nhật outbox message cho pending
             updateOutboxMessageForPendingCheckIn(notificationMessageResponse);
 
             log.info("Pending check-in processed for booking: {}", notificationMessageResponse.getBookingId());
@@ -154,9 +104,7 @@ public class BookingRoomCheckInStep {
         }
     }
 
-    /**
-     * Cập nhật outbox message cho check-in thành công
-     */
+
     private void updateOutboxMessageForCheckIn(NotificationMessageResponse notificationMessageResponse) {
         try {
             Optional<RoomOutboxMessage> outboxMessageOpt = 
@@ -179,9 +127,7 @@ public class BookingRoomCheckInStep {
         }
     }
 
-    /**
-     * Cập nhật outbox message cho check-in thất bại
-     */
+
     private void updateOutboxMessageForFailedCheckIn(NotificationMessageResponse notificationMessageResponse) {
         try {
             Optional<RoomOutboxMessage> outboxMessageOpt = 
@@ -204,9 +150,6 @@ public class BookingRoomCheckInStep {
         }
     }
 
-    /**
-     * Cập nhật outbox message cho check-in đang chờ
-     */
     private void updateOutboxMessageForPendingCheckIn(NotificationMessageResponse notificationMessageResponse) {
         try {
             Optional<RoomOutboxMessage> outboxMessageOpt = 

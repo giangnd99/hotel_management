@@ -9,6 +9,7 @@ import java.util.UUID;
 @Builder
 public class CreateInvoicePaymentCommand {
     private UUID invoiceId;
+    private UUID bookingId;
     private String method;
     private String description;
 }

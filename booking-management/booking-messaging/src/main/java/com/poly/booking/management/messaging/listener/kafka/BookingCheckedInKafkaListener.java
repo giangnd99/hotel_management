@@ -92,10 +92,6 @@ public class BookingCheckedInKafkaListener implements KafkaConsumer<Notification
             throw new IllegalArgumentException("Booking ID cannot be null or empty");
         }
 
-        if (message.getCustomerId() == null || message.getCustomerId().trim().isEmpty()) {
-            throw new IllegalArgumentException("Customer ID cannot be null or empty");
-        }
-
         if (message.getNotificationType() == null) {
             throw new IllegalArgumentException("Notification type cannot be null");
         }
@@ -123,7 +119,6 @@ public class BookingCheckedInKafkaListener implements KafkaConsumer<Notification
         return NotificationMessageResponse.builder()
                 .id(message.getId())
                 .bookingId(message.getBookingId())
-                .customerId(message.getCustomerId())
                 .qrCode(message.getQrCode())
                 .checkInTime(java.time.Instant.now()) // Sử dụng thời gian hiện tại
                 .notificationStatus(com.poly.domain.valueobject.NotificationStatus.valueOf(message.getMessageStatus().name()))

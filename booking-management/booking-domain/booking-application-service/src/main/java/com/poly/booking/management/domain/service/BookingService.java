@@ -45,8 +45,8 @@ public interface BookingService {
     // Status Management
     BookingDto cancelBooking(UUID bookingId);
     BookingDto confirmBooking(UUID bookingId);
-    BookingDto checkInBooking(UUID bookingId);
-    BookingDto checkOutBooking(UUID bookingId);
+    List<UUID> checkInBooking(UUID bookingId);
+    List<UUID> checkOutBooking(UUID bookingId);
 
     // Payment
     String getBookingPaymentStatus(UUID bookingId);

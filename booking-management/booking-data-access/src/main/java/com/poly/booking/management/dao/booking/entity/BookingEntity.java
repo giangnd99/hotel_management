@@ -33,6 +33,7 @@ public class BookingEntity {
     private List<BookingRoomEntity> bookingRooms;
     @Column(columnDefinition = "uuid",updatable = false)
     private UUID trackingId;
+    private Integer numberOfGuests;
     private BigDecimal totalPrice;
     private String status;
 }

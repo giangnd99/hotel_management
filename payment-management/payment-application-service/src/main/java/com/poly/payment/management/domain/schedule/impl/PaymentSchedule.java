@@ -2,6 +2,7 @@ package com.poly.payment.management.domain.schedule.impl;
 
 import com.poly.payment.management.domain.message.BookingPaymentResponse;
 import com.poly.payment.management.domain.model.Payment;
+import com.poly.payment.management.domain.port.output.publisher.BookingPaymentCheckoutReplyPublisher;
 import com.poly.payment.management.domain.port.output.publisher.BookingPaymentReplyPublisher;
 import com.poly.payment.management.domain.port.output.repository.PaymentRepository;
 import com.poly.payment.management.domain.schedule.PaymentExpiredSchedule;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -25,7 +27,9 @@ public class PaymentSchedule implements PaymentExpiredSchedule {
 
     private final PaymentGateway payOSClient;
     private final BookingPaymentReplyPublisher bookingPaymentReplyPublisher;
+    private final BookingPaymentCheckoutReplyPublisher bookingPaymentReplyCPublisher;
     private Set<String> paymentMap = new HashSet<>();
+    private Set<String> paymentCheckoutMap = new HashSet<>();
 
     @Override
     @Scheduled(fixedRate = 60000, initialDelay = 10000)
@@ -46,6 +50,7 @@ public class PaymentSchedule implements PaymentExpiredSchedule {
     }
 
     @Scheduled(fixedRate = 500, initialDelay = 10000)
+    @Transactional
     public void paymentDepositExpiredSchedule() throws Exception {
         List<Payment> depositedPayment = paymentRepository.findAll();
         depositedPayment.forEach(payment -> {
@@ -62,6 +67,25 @@ public class PaymentSchedule implements PaymentExpiredSchedule {
             }
         });
     }
+    @Scheduled(fixedRate = 500, initialDelay = 10000)
+    @Transactional
+    public void paymentCheckOutExpiredSchedule() throws Exception {
+        List<Payment> depositedPayment = paymentRepository.findAll();
+        depositedPayment.forEach(payment -> {
+            if (payment.getDescription().getValue().equalsIgnoreCase("checkout")
+                    && !paymentCheckoutMap.contains(payment.getId().getValue().toString())
+                    && payment.getStatus().equals(PaymentStatus.PAID)
+            ) {
+                log.info("Payment {}: {} description {}", payment.getId().getValue(), payment.getStatus(), payment.getDescription().getValue());
+                BookingPaymentResponse message = createBookingPaymentResponse(payment);
+                log.info("Payment {}: {}", payment.getId().getValue(), message);
+                bookingPaymentReplyCPublisher.publish(message);
+                paymentCheckoutMap.add(payment.getId().getValue().toString());
+                log.info("Payment {}: published", payment.getId().getValue());
+            }
+        });
+    }
+
 
 
     private BookingPaymentResponse createBookingPaymentResponse(Payment payment) {

@@ -12,12 +12,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RoomServiceResponse {
+    private String id;
     private String roomNumber;
     private String guestName;
     private String serviceType;
     private String serviceName;
     private String description;
-    private int quantity;
+    private Integer quantity;
     private String unitPrice;
     private String totalPrice;
     private String status;

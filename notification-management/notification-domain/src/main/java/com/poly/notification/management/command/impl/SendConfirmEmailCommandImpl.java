@@ -5,6 +5,7 @@ import com.poly.notification.management.message.MessageStatus;
 import com.poly.notification.management.message.NotificationMessage;
 import com.poly.notification.management.port.out.publisher.BookingConfirmedEmailResponsePublisher;
 import com.poly.notification.management.service.BookingQrCodeService;
+import com.poly.notification.management.service.CloudinaryQrCodeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

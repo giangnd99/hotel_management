@@ -23,11 +23,8 @@ import java.util.UUID;
 public class BookingSagaHelper {
     private final BookingRepository bookingRepository;
     private final BookingDomainService bookingDomainService;
-    private final RoomDataMapper roomDataMapper;
 
-    /**
-     * Tìm booking theo ID
-     */
+
     public Booking findBooking(UUID bookingId) {
         Optional<Booking> booking = bookingRepository.findById(bookingId);
         if (booking.isEmpty()) {
@@ -50,48 +47,34 @@ public class BookingSagaHelper {
         };
     }
 
-    /**
-     * Lưu booking
-     */
+
     public void saveBooking(Booking booking) {
         bookingRepository.save(booking);
     }
 
-    /**
-     * Xử lý khi thanh toán thành công
-     */
+
     public BookingPaidEvent processPaymentCompleted(Booking booking, PaymentMessageResponse paymentResponse) {
         log.info("Processing payment completed for booking id: {}", booking.getId().getValue());
         return bookingDomainService.payBooking(booking);
     }
 
-    /**
-     * Xử lý khi thanh toán thất bại
-     */
     public void processPaymentCancelled(Booking booking, String failureMessages) {
         log.warn("Cancelling booking id: {} due to payment failure: {}", booking.getId().getValue(), failureMessages);
         bookingDomainService.cancelBooking(booking);
     }
 
-    /**
-     * Xử lý khi Room service đã giữ phòng thành công
-     */
+
     public void processRoomLocked(Booking booking, RoomMessageResponse roomMessage) {
         log.info("Room locked for booking id: {}", booking.getId().getValue());
         bookingDomainService.confirmBooking(booking);
     }
 
-    /**
-     * Xử lý khi Room service không giữ được phòng
-     */
     public void processRoomLockFailed(Booking booking, String failureMessages) {
         log.warn("Room locking failed for booking id: {}, reason: {}", booking.getId().getValue(), failureMessages);
         bookingDomainService.cancelBooking(booking);
     }
 
-    /**
-     * Rollback Booking khi Saga gặp sự cố
-     */
+
     public void rollbackBooking(Booking booking, String reason) {
         log.error("Rolling back booking id: {} - Reason: {}", booking.getId().getValue(), reason);
         bookingDomainService.cancelBooking(booking);

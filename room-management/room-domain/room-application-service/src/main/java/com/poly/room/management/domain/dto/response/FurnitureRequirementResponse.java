@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FurnitureRequirementResponse {
-    private Furniture furniture;
-    private RoomType roomType;
-    private int requiredQuantity;
+    private FurnitureResponse furniture;
+    private RoomTypeResponse roomType;
+    private Integer requiredQuantity;
 }

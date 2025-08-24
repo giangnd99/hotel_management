@@ -15,7 +15,7 @@ public class UserMapper {
     public User toDomainEntity(UserCreationRequest userCreationRequest) {
         return User.Builder.builder()
                 .gmail(userCreationRequest.getEmail())
-                .password(new Password(userCreationRequest.getPassword() ))
+                .password(new Password(userCreationRequest.getPassword()))
                 .phone(userCreationRequest.getPhone())
                 .build();
     }

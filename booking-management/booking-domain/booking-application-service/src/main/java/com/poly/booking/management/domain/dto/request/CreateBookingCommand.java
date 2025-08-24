@@ -1,7 +1,7 @@
 package com.poly.booking.management.domain.dto.request;
 
 import com.poly.booking.management.domain.dto.RoomDto;
-import com.poly.domain.dto.response.room.RoomResponse;
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,5 +21,6 @@ public class CreateBookingCommand {
     private LocalDateTime checkInDate;
     private LocalDateTime checkOutDate;
     private int numberOfGuests;
+    @Nullable
     private String specialRequests;
 }

@@ -15,29 +15,21 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateMaintenanceRequest {
-    @NotNull(message = "Room ID is required")
     private String roomId;
 
     private String staffId; // StaffId có thể null
 
-    @NotNull(message = "Maintenance type ID is required")
     private Integer maintenanceTypeId;
 
-    @NotBlank(message = "Maintenance status is required")
     private String maintenanceStatus;
 
-    @NotBlank(message = "Actual start date is required")
     private LocalDateTime actualStartDate;
 
-    @NotBlank(message = "Completion date is required")
     private LocalDateTime completionDate;
 
-    @NotBlank(message = "Maintenance date is required")
     private LocalDateTime maintenanceDate;
 
-    @NotBlank(message = "Maintenance name is required")
     private String maintenanceName;
 
-    @NotBlank(message = "Description is required")
     private String description;
 }
