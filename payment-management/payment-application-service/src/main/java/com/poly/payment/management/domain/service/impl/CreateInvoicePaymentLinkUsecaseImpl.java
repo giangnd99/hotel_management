@@ -1,5 +1,6 @@
 package com.poly.payment.management.domain.service.impl;
 
+import com.poly.domain.valueobject.ReferenceId;
 import com.poly.payment.management.domain.dto.request.CreateInvoicePaymentCommand;
 import com.poly.payment.management.domain.dto.request.CreatePaymentLinkCommand;
 import com.poly.payment.management.domain.dto.response.PaymentLinkResult;
@@ -63,9 +64,10 @@ public class CreateInvoicePaymentLinkUsecaseImpl implements CreateInvoicePayment
                 .amount(invoice.getTotalAmount())
                 .method(PaymentMethod.valueOf(command.getMethod() != null ? command.getMethod() : PaymentMethod.PAYOS.name()))
                 .createdAt(LocalDateTime.now())
+                .referenceId(ReferenceId.from(command.getBookingId()))
                 .updatedAt(LocalDateTime.now())
                 .orderCode(OrderCode.generate())
-                .description(Description.from("invoice_payment"))
+                .description(Description.from("checkout"))
                 .build();
 
         InvoicePayment newInvoicePayment = InvoicePayment.builder()
