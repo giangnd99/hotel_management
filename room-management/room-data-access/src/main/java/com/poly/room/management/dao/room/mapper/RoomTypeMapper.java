@@ -8,9 +8,11 @@ import com.poly.room.management.domain.entity.Furniture;
 import com.poly.room.management.domain.entity.RoomType;
 import com.poly.room.management.domain.entity.RoomTypeFurniture;
 import com.poly.room.management.domain.valueobject.FurnitureId;
+import com.poly.room.management.domain.valueobject.FurnitureRequirementId;
 import com.poly.room.management.domain.valueobject.RoomTypeId;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -38,7 +40,7 @@ public class RoomTypeMapper {
                     roomTypeFurniture.setRoomType(roomType);
 
                     roomTypeFurniture.setRequiredQuantity(rtfEntity.getRequireQuantity());
-
+                    roomTypeFurniture.setId(new FurnitureRequirementId(rtfEntity.getRoomTypeFurnitureId()));
                     return roomTypeFurniture;
                 })
                 .collect(Collectors.toList()));
@@ -68,7 +70,8 @@ public class RoomTypeMapper {
                         RoomTypeEntity roomTypeEntity = new RoomTypeEntity();
                         roomTypeEntity.setRoomTypeId(domain.getId().getValue());
                         rtfEntity.setRoomType(roomTypeEntity);
-
+                        UUID rtfId = rtfDomain.getId() != null ? rtfDomain.getId().getValue() : null;
+                        rtfEntity.setRoomTypeFurnitureId(rtfId);
                         rtfEntity.setRequireQuantity(rtfDomain.getRequiredQuantity());
                         return rtfEntity;
                     })
