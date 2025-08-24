@@ -7,4 +7,5 @@ import java.util.UUID;
 @Getter
 public class CreateInvoicePaymentRequest {
     private UUID invoiceId;
+    private UUID bookingId;
 }

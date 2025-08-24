@@ -49,6 +49,7 @@
         public ResponseEntity createPaymentInvoiceLink(@RequestBody CreateInvoicePaymentRequest request) throws Exception {
             CreateInvoicePaymentCommand command = CreateInvoicePaymentCommand.builder()
                     .invoiceId(request.getInvoiceId())
+                    .bookingId(request.getBookingId())
                     .build();
             return ResponseEntity.ok().body(createInvoicePaymentLinkUsecase.createPaymentLinkUseCase(command));
         }

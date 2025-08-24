@@ -56,5 +56,9 @@
             <artifactId>javase</artifactId>
             <version>3.3.3</version>
         </dependency>
+        <dependency>
+            <groupId>com.poly</groupId>
+            <artifactId>common-application</artifactId>
+        </dependency>
     </dependencies>
 </project>
