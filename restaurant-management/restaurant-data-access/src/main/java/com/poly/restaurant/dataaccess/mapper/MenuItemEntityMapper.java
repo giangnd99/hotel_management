@@ -14,25 +14,34 @@ public class MenuItemEntityMapper {
         if (item == null) return null;
 
         return MenuItemJpaEntity.builder()
-                .id(item.getId().getValue())
+                .id(String.valueOf(item.getId().getValue()))
                 .name(item.getName())
                 .description(item.getDescription())
                 .price(item.getPrice())
-                .category(item.getCategory())
-                .quantity(item.getQuantity())
-                .status(item.getStatus())
+                .categoryId(null)
+                .isAvailable(item.isAvailable())
+                .imageUrl(null)
+                .preparationTime(null)
+                .createdAt(null)
+                .updatedAt(null)
                 .build();
     }
 
     public static MenuItem toDomain(MenuItemJpaEntity entity) {
         if (entity == null) return null;
+        int mappedId;
+        try {
+            mappedId = Integer.parseInt(entity.getId());
+        } catch (NumberFormatException ex) {
+            mappedId = Math.abs(entity.getId().hashCode());
+        }
         return new MenuItem(
-                new MenuItemId(entity.getId()),
+                new MenuItemId(mappedId),
                 entity.getName(),
                 entity.getDescription(),
                 entity.getPrice(),
-                entity.getCategory(),
-                entity.getQuantity()
+                entity.getCategoryId(),
+                0
         );
     }
 }

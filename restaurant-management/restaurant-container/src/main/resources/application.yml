@@ -75,7 +75,7 @@ payment:
 
 customer:
   service:
-    url: http://localhost:8093
+    url: http://localhost:8099
 
 notification:
   service:
@@ -93,6 +93,12 @@ feign:
         connectTimeout: 5000
         readTimeout: 10000
         loggerLevel: full
+      customer-management:
+        connectTimeout: 5000
+        readTimeout: 10000
+        loggerLevel: full
+  circuitbreaker:
+    enabled: true
 
 # OpenAPI Configuration
 openapi:

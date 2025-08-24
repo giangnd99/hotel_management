@@ -13,7 +13,7 @@ import lombok.*;
 @Table(name = "tables")
 public class TableJpaEntity {
     @Id
-    @Column(name = "table_id")
+    @Column(name = "id")
     private String id;
 
     @Column(name = "number")

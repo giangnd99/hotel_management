@@ -20,15 +20,13 @@ public class MenuItem {
             throw new IllegalArgumentException("Description must not be empty");
         if (price == null || price.compareTo(BigDecimal.ZERO) <= 0)
             throw new IllegalArgumentException("Price must be positive");
-        if (category == null || category.trim().isEmpty())
-            throw new IllegalArgumentException("Category must not be empty");
         if (quantity < 0) throw new IllegalArgumentException("Quantity cannot be negative");
 
         this.id = id;
         this.name = name.trim();
         this.description = description.trim();
         this.price = price;
-        this.category = category.trim();
+        this.category = category == null ? null : category.trim();
         this.quantity = quantity;
         this.status = quantity > 0 ? MenuItemStatus.AVAILABLE : MenuItemStatus.OUT_OF_STOCK;
     }

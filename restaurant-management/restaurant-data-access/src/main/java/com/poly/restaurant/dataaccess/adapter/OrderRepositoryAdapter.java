@@ -27,13 +27,13 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
 
     @Override
     public Optional<Order> findById(String id) {
-        return jpaOrderRepository.findById(id)
+        return jpaOrderRepository.findByIdWithItems(id)
                 .map(OrderEntityMapper::toDomain);
     }
 
     @Override
     public List<Order> findAll() {
-        return jpaOrderRepository.findAll().stream()
+        return jpaOrderRepository.findAllWithItems().stream()
                 .map(OrderEntityMapper::toDomain)
                 .collect(Collectors.toList());
     }

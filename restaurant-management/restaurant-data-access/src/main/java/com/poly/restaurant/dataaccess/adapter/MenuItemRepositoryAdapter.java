@@ -26,7 +26,23 @@ public class MenuItemRepositoryAdapter implements MenuItemRepositoryPort {
 
     @Override
     public Optional<MenuItem> findById(Integer id) {
-        return jpaMenuItemRepository.findById(id)
+        // First try direct match when the DB id is numeric string
+        Optional<MenuItem> direct = jpaMenuItemRepository.findById(String.valueOf(id))
+                .map(MenuItemEntityMapper::toDomain);
+        if (direct.isPresent()) {
+            return direct;
+        }
+
+        // Fallback: DB uses UUID ids, domain uses int. Match by stable hash mapping used in mapper
+        return jpaMenuItemRepository.findAll().stream()
+                .filter(e -> {
+                    try {
+                        return Integer.parseInt(e.getId()) == id;
+                    } catch (NumberFormatException ex) {
+                        return Math.abs(e.getId().hashCode()) == id;
+                    }
+                })
+                .findFirst()
                 .map(MenuItemEntityMapper::toDomain);
     }
 
@@ -39,12 +55,12 @@ public class MenuItemRepositoryAdapter implements MenuItemRepositoryPort {
 
     @Override
     public boolean existsById(Integer id) {
-        return jpaMenuItemRepository.existsById(id);
+        return jpaMenuItemRepository.existsById(String.valueOf(id));
     }
 
     @Override
     public void deleteById(Integer id) {
-        jpaMenuItemRepository.deleteById(id);
+        jpaMenuItemRepository.deleteById(String.valueOf(id));
     }
 
     @Override
