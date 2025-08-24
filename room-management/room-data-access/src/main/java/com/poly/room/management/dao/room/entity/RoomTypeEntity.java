@@ -22,7 +22,7 @@ public class RoomTypeEntity {
     @Column(columnDefinition = "uuid",updatable = false)
     private UUID roomTypeId;
 
-    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RoomEntity> rooms;
 
     private String typeName;
@@ -33,6 +33,6 @@ public class RoomTypeEntity {
 
     private int maxOccupancy;
 
-    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RoomTypeFurnitureEntity> furnituresRequirements;
 }

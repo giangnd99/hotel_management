@@ -17,4 +17,6 @@ public interface FurnitureRepository {
     void deleteById(UUID id);
 
     Furniture update(Furniture furniture);
+
+    List<Furniture> findAllByIdIn(List<UUID> furnitureIds);
 }

@@ -26,6 +26,6 @@ public class FurnitureEntity {
 
     private BigDecimal price;
 
-    @OneToMany(mappedBy = "furniture", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "furniture", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RoomTypeFurnitureEntity> roomTypeFurnitures;
 }

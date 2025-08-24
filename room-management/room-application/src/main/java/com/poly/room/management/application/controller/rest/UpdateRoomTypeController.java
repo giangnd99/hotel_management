@@ -1,6 +1,7 @@
 package com.poly.room.management.application.controller.rest;
 
 import com.poly.room.management.domain.dto.request.UpdateRoomTypeRequest;
+import com.poly.room.management.domain.dto.response.RoomTypeResponse;
 import com.poly.room.management.domain.entity.RoomType;
 import com.poly.room.management.domain.service.UpdateRoomTypeService;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,8 @@ public class UpdateRoomTypeController {
     private final UpdateRoomTypeService updateRoomTypeService;
 
     @PostMapping("/{roomTypeId}")
-    public RoomType updateRoomType(@PathVariable UUID roomTypeId,
-                                   @RequestBody UpdateRoomTypeRequest request) {
+    public RoomTypeResponse updateRoomType(@PathVariable UUID roomTypeId,
+                                           @RequestBody UpdateRoomTypeRequest request) {
 
         if (request == null) {
             throw new IllegalArgumentException("Update room type request cannot be null");
