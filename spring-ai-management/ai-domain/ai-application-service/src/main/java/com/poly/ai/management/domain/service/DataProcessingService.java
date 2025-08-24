@@ -14,9 +14,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-/**
- * Service xử lý dữ liệu nâng cao với caching và tối ưu hóa hiệu suất
- */
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -24,7 +22,7 @@ public class DataProcessingService {
 
     private final Map<String, Object> dataCache = new ConcurrentHashMap<>();
     private final Map<String, Long> cacheTimestamps = new ConcurrentHashMap<>();
-    private static final long CACHE_DURATION = 300000; // 5 phút
+    private static final long CACHE_DURATION = 300000;
 
     public Map<String, Object> processBookingDataAdvanced(List<BookingDto> bookingData) {
         String cacheKey = "booking_advanced_" + (bookingData != null ? bookingData.size() : 0);

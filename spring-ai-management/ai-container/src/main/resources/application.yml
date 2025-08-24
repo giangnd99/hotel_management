@@ -51,3 +51,6 @@ spring:
       host: localhost
       repositories:
         enabled: true
+
+booking:
+  room: ${BOOKING_URL:localhost://3000:/}

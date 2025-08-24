@@ -8,15 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-/**
- * Service xử lý dữ liệu sử dụng DL4J và các thư viện xử lý dữ liệu chuẩn cấu trúc
- * Tích hợp Machine Learning, Statistical Analysis và Data Mining với cải tiến
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -24,7 +19,7 @@ public class DL4JDataAnalysisService {
 
     private final Map<String, Object> mlCache = new ConcurrentHashMap<>();
     private final Map<String, Long> mlCacheTimestamps = new ConcurrentHashMap<>();
-    private static final long ML_CACHE_DURATION = 600000; // 10 phút
+    private static final long ML_CACHE_DURATION = 600000;
 
     public Map<String, Object> analyzeBookingWithML(List<BookingDto> bookingData) {
         String cacheKey = "ml_booking_" + (bookingData != null ? bookingData.size() : 0);

@@ -1,6 +1,7 @@
 package com.poly.ai.management.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ import java.util.UUID;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Builder
 public class BookingDto {
     private UUID bookingId;
     private UUID customerId;

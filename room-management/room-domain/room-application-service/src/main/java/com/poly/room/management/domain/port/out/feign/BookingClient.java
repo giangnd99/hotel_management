@@ -13,4 +13,7 @@ public interface BookingClient {
     @PutMapping(value = "/{bookingId}/check-in")
     List<UUID> findRoomIdBookingWhenCheckIn(@PathVariable UUID bookingId);
 
+    @PutMapping(value = "/{bookingId}/check-out")
+    List<UUID> findRoomIdBookingWhenCheckOut(@PathVariable UUID bookingId);
+
 }
