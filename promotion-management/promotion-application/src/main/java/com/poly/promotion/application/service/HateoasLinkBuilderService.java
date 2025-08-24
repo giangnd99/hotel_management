@@ -54,29 +54,7 @@ public class HateoasLinkBuilderService {
         };
     }
 
-    /**
-     * Builds HATEOAS links for monitoring health endpoints.
-     *
-     * @return array of HATEOAS links
-     */
-    public Link[] buildMonitoringHealthLinks() {
-        return new Link[]{
-                linkTo(methodOn(com.poly.promotion.application.controller.MonitoringHealthController.class)
-                        .getHealthStatus()).withRel("health"),
-                linkTo(methodOn(com.poly.promotion.application.controller.MonitoringHealthController.class)
-                        .getUnsyncedData()).withRel("unsyncedData"),
-                linkTo(methodOn(com.poly.promotion.application.controller.MonitoringHealthController.class)
-                        .triggerManualSync()).withRel("manualSync"),
-                linkTo(methodOn(com.poly.promotion.application.controller.MonitoringHealthController.class)
-                        .triggerManualCleanup()).withRel("manualCleanup"),
-                linkTo(methodOn(com.poly.promotion.application.controller.MonitoringHealthController.class)
-                        .getDataTypeStatistics("METHOD_EXECUTION_METRICS")).withRel("methodExecutionStats"),
-                linkTo(methodOn(com.poly.promotion.application.controller.MonitoringHealthController.class)
-                        .getDataTypeStatistics("PERFORMANCE_METRICS")).withRel("performanceStats"),
-                linkTo(methodOn(com.poly.promotion.application.controller.MonitoringHealthController.class)
-                        .getDataTypeStatistics("SYSTEM_HEALTH_METRICS")).withRel("systemHealthStats")
-        };
-    }
+
 
     /**
      * Builds HATEOAS links for collection endpoints.
@@ -89,10 +67,7 @@ public class HateoasLinkBuilderService {
                         .getAvailableVoucherPacks()).withRel("voucherPacks"),
                 linkTo(methodOn(com.poly.promotion.application.controller.VoucherController.class)
                         .getCustomerVouchers(null)).withRel("vouchers"),
-                linkTo(methodOn(com.poly.promotion.application.controller.MonitoringHealthController.class)
-                        .getHealthStatus()).withRel("monitoringHealth"),
-                linkTo(methodOn(com.poly.promotion.application.controller.MonitoringHealthController.class)
-                        .getHealthStatus()).withRel("actuator")
+                Link.of("/actuator/health").withRel("health")
         };
     }
 
@@ -107,10 +82,7 @@ public class HateoasLinkBuilderService {
                         .getAvailableVoucherPacks()).withRel("voucherPacks"),
                 linkTo(methodOn(com.poly.promotion.application.controller.VoucherController.class)
                         .getCustomerVouchers(null)).withRel("vouchers"),
-                linkTo(methodOn(com.poly.promotion.application.controller.MonitoringHealthController.class)
-                        .getHealthStatus()).withRel("monitoringHealth"),
-                linkTo(methodOn(com.poly.promotion.application.controller.MonitoringHealthController.class)
-                        .getHealthStatus()).withRel("actuator"),
+                Link.of("/actuator/health").withRel("health"),
                 Link.of("/actuator").withRel("actuator"),
                 Link.of("/swagger-ui.html").withRel("swagger-ui"),
                 Link.of("/v3/api-docs").withRel("openapi")

@@ -46,7 +46,7 @@ public class CentralizedLoggingAspect {
      *
      * @param joinPoint the join point representing the method execution
      */
-    @Before("@annotation(com.poly.promotion.application.annotation.LogMethodEntry) && !within(com.poly.promotion.application.service.impl.MonitoringServiceImpl) && !within(com.poly.promotion.application.service.impl.MonitoringDataServiceImpl)")
+    @Before("@annotation(com.poly.promotion.application.annotation.LogMethodEntry)")
     public void logMethodEntry(JoinPoint joinPoint) {
         try {
             MethodSignature signature = (MethodSignature) joinPoint.getSignature();
@@ -89,7 +89,7 @@ public class CentralizedLoggingAspect {
      * @return the result of the method execution
      * @throws Throwable if the method execution fails
      */
-    @Around("@annotation(com.poly.promotion.application.annotation.LogMethodExit) && !within(com.poly.promotion.application.service.impl.MonitoringServiceImpl) && !within(com.poly.promotion.application.service.impl.MonitoringDataServiceImpl)")
+    @Around("@annotation(com.poly.promotion.application.annotation.LogMethodExit)")
     public Object logMethodExit(ProceedingJoinPoint joinPoint) throws Throwable {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -115,7 +115,7 @@ public class CentralizedLoggingAspect {
      * @param throwable the exception that occurred
      */
     @AfterThrowing(
-        pointcut = "@annotation(com.poly.promotion.application.annotation.LogMethodError) && !within(com.poly.promotion.application.service.impl.MonitoringServiceImpl) && !within(com.poly.promotion.application.service.impl.MonitoringDataServiceImpl)",
+        pointcut = "@annotation(com.poly.promotion.application.annotation.LogMethodError)",
         throwing = "throwable"
     )
     public void logMethodError(JoinPoint joinPoint, Throwable throwable) {
@@ -168,7 +168,7 @@ public class CentralizedLoggingAspect {
      * @return the result of the method execution
      * @throws Throwable if the method execution fails
      */
-    @Around("@annotation(com.poly.promotion.application.annotation.LogBusinessOperation) && !within(com.poly.promotion.application.service.impl.MonitoringServiceImpl) && !within(com.poly.promotion.application.service.impl.MonitoringDataServiceImpl)")
+    @Around("@annotation(com.poly.promotion.application.annotation.LogBusinessOperation)")
     public Object logBusinessOperation(ProceedingJoinPoint joinPoint) throws Throwable {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

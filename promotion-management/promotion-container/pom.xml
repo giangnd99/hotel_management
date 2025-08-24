@@ -16,6 +16,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <springdoc-openapi.version>2.4.0</springdoc-openapi.version>
     </properties>
 
     <dependencies>

@@ -1,17 +1,21 @@
 package com.poly.promotion.application.exception;
 
+
 import com.poly.promotion.domain.core.exception.VoucherDomainException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.core.MethodParameter;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+
+import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,11 +53,14 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleValidationException_ShouldReturnBadRequestWithFieldErrors() {
+    void handleValidationException_ShouldReturnBadRequestWithFieldErrors() throws Exception {
         // Given
+        Method method = TestController.class.getMethod("testMethod", String.class);
+        MethodParameter parameter = new MethodParameter(method, 0);
         FieldError fieldError = new FieldError("object", "fieldName", "Field is required");
+        
         MethodArgumentNotValidException ex = new MethodArgumentNotValidException(
-                null, new BindException(new Object(), "object")
+                parameter, new BindException(new Object(), "object")
         );
         ex.getBindingResult().addError(fieldError);
 
@@ -69,6 +76,13 @@ class GlobalExceptionHandlerTest {
         assertEquals(400, response.getBody().getStatus());
         assertNotNull(response.getBody().getFieldErrors());
         assertEquals("Field is required", response.getBody().getFieldErrors().get("fieldName"));
+    }
+
+    // Helper class for testing
+    private static class TestController {
+        public void testMethod(String param) {
+            // Test method
+        }
     }
 
     @Test

@@ -1,7 +1,6 @@
 package com.poly.promotion.application.exception;
 
 import com.poly.promotion.domain.core.exception.VoucherDomainException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -31,7 +30,6 @@ import java.util.stream.Collectors;
  * @since 1.0.0
  */
 @RestControllerAdvice
-@Slf4j
 public class GlobalExceptionHandler {
 
     /**
@@ -41,9 +39,7 @@ public class GlobalExceptionHandler {
      * @return error response with BAD_REQUEST status
      */
     @ExceptionHandler(VoucherDomainException.class)
-    public ResponseEntity<ErrorResponse> handleVoucherDomainException(VoucherDomainException ex) {
-        log.error("Domain exception occurred: {}", ex.getMessage(), ex);
-        
+    public ResponseEntity<ErrorResponse> handleVoucherDomainException(VoucherDomainException ex) {      
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())
@@ -62,9 +58,7 @@ public class GlobalExceptionHandler {
      * @return error response with BAD_REQUEST status
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
-        log.error("Validation exception occurred: {}", ex.getMessage(), ex);
-        
+    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {        
         Map<String, String> fieldErrors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -93,9 +87,7 @@ public class GlobalExceptionHandler {
      * @return error response with BAD_REQUEST status
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
-        log.error("Constraint violation exception occurred: {}", ex.getMessage(), ex);
-        
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {        
         Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
         Map<String, String> fieldErrors = new HashMap<>();
         
@@ -124,9 +116,7 @@ public class GlobalExceptionHandler {
      * @return error response with BAD_REQUEST status
      */
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<ErrorResponse> handleBindException(BindException ex) {
-        log.error("Bind exception occurred: {}", ex.getMessage(), ex);
-        
+    public ResponseEntity<ErrorResponse> handleBindException(BindException ex) { 
         Map<String, String> fieldErrors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -156,9 +146,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ErrorResponse> handleMissingParameterException(MissingServletRequestParameterException ex) {
-        log.error("Missing parameter exception occurred: {}", ex.getMessage(), ex);
-        
-        ErrorResponse errorResponse = ErrorResponse.builder()
+              ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error("Missing Parameter")
@@ -176,9 +164,7 @@ public class GlobalExceptionHandler {
      * @return error response with BAD_REQUEST status
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorResponse> handleTypeMismatchException(MethodArgumentTypeMismatchException ex) {
-        log.error("Type mismatch exception occurred: {}", ex.getMessage(), ex);
-        
+    public ResponseEntity<ErrorResponse> handleTypeMismatchException(MethodArgumentTypeMismatchException ex) {        
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())
@@ -198,9 +184,7 @@ public class GlobalExceptionHandler {
      * @return error response with BAD_REQUEST status
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
-        log.error("HTTP message not readable exception occurred: {}", ex.getMessage(), ex);
-        
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {        
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())
@@ -220,7 +204,6 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<ErrorResponse> handleNoHandlerFoundException(NoHandlerFoundException ex) {
-        log.error("No handler found exception occurred: {}", ex.getMessage(), ex);
         
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
@@ -240,9 +223,7 @@ public class GlobalExceptionHandler {
      * @return error response with INTERNAL_SERVER_ERROR status
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
-        log.error("Unexpected exception occurred: {}", ex.getMessage(), ex);
-        
+    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {        
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
