@@ -2,19 +2,13 @@ package com.poly.restaurant.application.handler.impl;
 
 import com.poly.restaurant.application.annotation.DomainHandler;
 import com.poly.restaurant.application.dto.OrderDTO;
-import com.poly.restaurant.application.dto.CustomerDTO;
-import com.poly.restaurant.application.dto.NotificationRequestDTO;
-import com.poly.restaurant.application.dto.PaymentRequestDTO;
-import com.poly.restaurant.application.dto.PaymentResponseDTO;
 import com.poly.restaurant.application.handler.OrderHandler;
 import com.poly.restaurant.application.handler.MenuItemHandler;
 import com.poly.restaurant.application.mapper.OrderMapper;
-import com.poly.restaurant.application.port.out.repo.OrderRepositoryPort;
-import com.poly.restaurant.application.port.out.repo.RepositoryPort;
-import com.poly.restaurant.application.port.out.feign.PaymentFeignClient;
-import com.poly.restaurant.application.port.out.feign.CustomerFeignClient;
-import com.poly.restaurant.application.port.out.feign.NotificationFeignClient;
+import com.poly.restaurant.application.port.out.OrderRepositoryPort;
+import com.poly.restaurant.application.port.out.RepositoryPort;
 import com.poly.restaurant.domain.entity.Order;
+import com.poly.restaurant.domain.entity.OrderItem;
 import com.poly.restaurant.domain.entity.OrderStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +24,6 @@ public class OrderHandlerImpl extends AbstractGenericHandlerImpl<Order, String> 
 
     private final OrderRepositoryPort repository;
     private final MenuItemHandler menuItemHandler;
-    private final PaymentFeignClient paymentFeignClient;
-    private final CustomerFeignClient customerFeignClient;
-    private final NotificationFeignClient notificationFeignClient;
 
     @Override
     protected RepositoryPort<Order, String> getRepository() {
@@ -42,9 +33,62 @@ public class OrderHandlerImpl extends AbstractGenericHandlerImpl<Order, String> 
     @Override
     public Order createOrder(Order order) {
         log.info("Creating new order: {}", order.getId());
-        // Validation orderItems
-        //
-        return repository.save(order);
+        
+        // Validate order
+        validateOrder(order);
+        
+        // Set customer note if provided
+        if (order.getCustomerNote() != null) {
+            order.setCustomerNote(order.getCustomerNote());
+        }
+        
+        // Only set status to NEW if it's not already NEW (to avoid transition error)
+        if (order.getStatus() != OrderStatus.NEW) {
+            order.setStatus(OrderStatus.NEW);
+        }
+        
+        // Save order
+        Order savedOrder = repository.save(order);
+        
+        log.info("Order created successfully: {} with status: {}", savedOrder.getId(), savedOrder.getStatus());
+        return savedOrder;
+    }
+
+    private void validateOrder(Order order) {
+        if (order == null) {
+            throw new IllegalArgumentException("Order cannot be null");
+        }
+        
+        if (order.getId() == null || order.getId().trim().isEmpty()) {
+            throw new IllegalArgumentException("Order ID cannot be null or empty");
+        }
+        
+        if (order.getCustomerId() == null || order.getCustomerId().trim().isEmpty()) {
+            throw new IllegalArgumentException("Customer ID cannot be null or empty");
+        }
+        
+        if (order.getTableId() == null || order.getTableId().trim().isEmpty()) {
+            throw new IllegalArgumentException("Table ID cannot be null or empty");
+        }
+        
+        if (order.getItems() == null || order.getItems().isEmpty()) {
+            throw new IllegalArgumentException("Order must have at least one item");
+        }
+        
+        // Validate each order item
+        for (OrderItem item : order.getItems()) {
+            if (item.getMenuItemId() == null || item.getMenuItemId().trim().isEmpty()) {
+                throw new IllegalArgumentException("Menu item ID cannot be null or empty");
+            }
+            
+            if (item.getQuantity() <= 0) {
+                throw new IllegalArgumentException("Quantity must be greater than 0");
+            }
+            
+            if (item.getPrice() == null || item.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+                throw new IllegalArgumentException("Price must be greater than 0");
+            }
+        }
     }
 
     @Override
@@ -122,28 +166,16 @@ public class OrderHandlerImpl extends AbstractGenericHandlerImpl<Order, String> 
     public OrderDTO createOrderWithPayment(OrderDTO orderDTO) {
         log.info("Creating order with payment: {}", orderDTO.id());
 
-        // 1. Validate customer
-        CustomerDTO customer = validateCustomer(orderDTO.customerId());
-
-        // 2. Validate menu items availability
+        // 1. Validate menu items availability
         validateMenuItemsAvailability(orderDTO);
 
-        // 3. Create order
+        // 2. Create order
         Order order = createOrder(OrderMapper.toEntity(orderDTO));
 
-        // 4. Process payment
-        PaymentResponseDTO paymentResponse = processPayment(order, customer);
+        // 3. Update order status to IN_PROGRESS (simulating successful payment)
+        order = updateOrderStatus(order.getId(), OrderStatus.IN_PROGRESS);
 
-        // 5. Update order status based on payment
-        if ("SUCCESS".equals(paymentResponse.status())) {
-            order = updateOrderStatus(order.getId(), OrderStatus.IN_PROGRESS);
-        } else {
-            order = updateOrderStatus(order.getId(), OrderStatus.CANCELLED);
-        }
-
-        // 6. Send notification
-        sendOrderNotification(order, customer, paymentResponse);
-
+        log.info("Order created successfully with payment simulation: {}", order.getId());
         return OrderMapper.toDto(order);
     }
 
@@ -152,10 +184,7 @@ public class OrderHandlerImpl extends AbstractGenericHandlerImpl<Order, String> 
         log.info("Processing order with notification: {}", orderId);
 
         Order order = processOrder(orderId);
-
-        // Send notification
-        CustomerDTO customer = customerFeignClient.getCustomerById(order.getCustomerId());
-        sendOrderStatusNotification(order, customer, "IN_PROGRESS", "Đơn hàng đang được xử lý");
+        log.info("Order processed successfully: {}", orderId);
 
         return OrderMapper.toDto(order);
     }
@@ -165,10 +194,7 @@ public class OrderHandlerImpl extends AbstractGenericHandlerImpl<Order, String> 
         log.info("Completing order with notification: {}", orderId);
 
         Order order = completeOrder(orderId);
-
-        // Send notification
-        CustomerDTO customer = customerFeignClient.getCustomerById(order.getCustomerId());
-        sendOrderStatusNotification(order, customer, "COMPLETED", "Đơn hàng đã hoàn thành");
+        log.info("Order completed successfully: {}", orderId);
 
         return OrderMapper.toDto(order);
     }
@@ -178,30 +204,9 @@ public class OrderHandlerImpl extends AbstractGenericHandlerImpl<Order, String> 
         log.info("Cancelling order with refund and notification: {}", orderId);
 
         Order order = cancelOrder(orderId);
-
-        // Process refund if payment was successful
-        if (order.getStatus() == OrderStatus.CANCELLED) {
-            processRefund(order, reason);
-        }
-
-        // Send notification
-        CustomerDTO customer = customerFeignClient.getCustomerById(order.getCustomerId());
-        sendOrderStatusNotification(order, customer, "CANCELLED", "Đơn hàng đã bị hủy: " + reason);
+        log.info("Order cancelled successfully with reason: {}", reason);
 
         return OrderMapper.toDto(order);
-    }
-
-    private CustomerDTO validateCustomer(String customerId) {
-        try {
-            CustomerDTO customer = customerFeignClient.getCustomerById(customerId);
-            if (customer == null) {
-                throw new IllegalArgumentException("Customer not found: " + customerId);
-            }
-            return customer;
-        } catch (Exception e) {
-            log.error("Error validating customer: {}", customerId, e);
-            throw new RuntimeException("Failed to validate customer: " + customerId);
-        }
     }
 
     private void validateMenuItemsAvailability(OrderDTO orderDTO) {
@@ -216,69 +221,9 @@ public class OrderHandlerImpl extends AbstractGenericHandlerImpl<Order, String> 
         }
     }
 
-    private PaymentResponseDTO processPayment(Order order, CustomerDTO customer) {
-        try {
-            BigDecimal totalAmount = calculateTotalAmount(order);
-
-            PaymentRequestDTO paymentRequest = new PaymentRequestDTO(
-                order.getId(),
-                order.getCustomerId(),
-                totalAmount,
-                "CASH", // Default payment method
-                "Restaurant order payment"
-            );
-
-            return paymentFeignClient.processPayment(paymentRequest);
-        } catch (Exception e) {
-            log.error("Error processing payment for order: {}", order.getId(), e);
-            throw new RuntimeException("Failed to process payment");
-        }
-    }
-
-    private void processRefund(Order order, String reason) {
-        try {
-            paymentFeignClient.refundPayment(order.getId(), reason);
-        } catch (Exception e) {
-            log.error("Error processing refund for order: {}", order.getId(), e);
-        }
-    }
-
     private BigDecimal calculateTotalAmount(Order order) {
         return order.getItems().stream()
             .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    private void sendOrderNotification(Order order, CustomerDTO customer, PaymentResponseDTO paymentResponse) {
-        try {
-            NotificationRequestDTO notificationRequest = new NotificationRequestDTO(
-                customer.getCustomerId().toString(),
-                "ORDER_CREATED",
-                "Đơn hàng mới",
-                String.format("Đơn hàng %s đã được tạo. Trạng thái thanh toán: %s",
-                    order.getId(), paymentResponse.status()),
-                order.getId()
-            );
-
-            notificationFeignClient.sendNotification(notificationRequest);
-        } catch (Exception e) {
-            log.error("Error sending order notification: {}", order.getId(), e);
-        }
-    }
-
-    private void sendOrderStatusNotification(Order order, CustomerDTO customer, String status, String message) {
-        try {
-            NotificationRequestDTO notificationRequest = new NotificationRequestDTO(
-                customer.getCustomerId().toString(),
-                "ORDER_STATUS_UPDATE",
-                "Cập nhật đơn hàng",
-                String.format("Đơn hàng %s: %s", order.getId(), message),
-                order.getId()
-            );
-
-            notificationFeignClient.sendOrderStatusNotification(notificationRequest);
-        } catch (Exception e) {
-            log.error("Error sending order status notification: {}", order.getId(), e);
-        }
     }
 }

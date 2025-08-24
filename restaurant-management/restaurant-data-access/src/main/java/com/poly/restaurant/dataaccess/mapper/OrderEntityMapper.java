@@ -1,42 +1,62 @@
 package com.poly.restaurant.dataaccess.mapper;
 
+import com.poly.restaurant.dataaccess.entity.MenuItemJpaEntity;
 import com.poly.restaurant.dataaccess.entity.OrderItemJpaEntity;
 import com.poly.restaurant.dataaccess.entity.OrderJpaEntity;
+import com.poly.restaurant.dataaccess.jpa.JpaMenuItemRepository;
 import com.poly.restaurant.domain.entity.Order;
 import com.poly.restaurant.domain.entity.OrderItem;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class OrderEntityMapper {
 
-    public static OrderItemJpaEntity toEntity(OrderItem domainItem, OrderJpaEntity order) {
+    public static OrderItemJpaEntity toEntity(OrderItem domainItem, OrderJpaEntity order, JpaMenuItemRepository menuItemRepository) {
         BigDecimal unit = domainItem.getPrice();
         BigDecimal total = unit.multiply(BigDecimal.valueOf(domainItem.getQuantity()));
+        
+        // Fetch the menu item entity
+        MenuItemJpaEntity menuItem = menuItemRepository.findById(domainItem.getMenuItemId())
+                .orElseThrow(() -> new RuntimeException("Menu item not found: " + domainItem.getMenuItemId()));
+        
         return OrderItemJpaEntity.builder()
                 .id(UUID.randomUUID().toString())
                 .order(order)
-                .menuItemId(domainItem.getMenuItemId())
+                .menuItem(menuItem)
                 .quantity(domainItem.getQuantity())
                 .unitPrice(unit)
                 .totalPrice(total)
+                .createdAt(LocalDateTime.now()) // Set current timestamp
                 .build();
     }
 
-    public static OrderJpaEntity toEntity(Order domainOrder) {
+    public static OrderJpaEntity toEntity(Order domainOrder, JpaMenuItemRepository menuItemRepository) {
+        // Calculate total amount from order items
+        BigDecimal totalAmount = domainOrder.getItems().stream()
+                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
         OrderJpaEntity orderEntity = OrderJpaEntity.builder()
                 .id(domainOrder.getId())
                 .customerId(domainOrder.getCustomerId())
                 .roomId(domainOrder.getTableId())
+                .orderNumber(domainOrder.getOrderNumber())
+                .totalAmount(totalAmount)
                 .createdAt(domainOrder.getCreatedAt())
                 .status(domainOrder.getStatus())
+                .paymentStatus("PENDING") // Default payment status
+                .orderType("DINE_IN") // Default order type
                 .specialInstructions(domainOrder.getCustomerNote())
+                .updatedAt(new Timestamp(System.currentTimeMillis())) // Set current timestamp
                 .build();
 
         List<OrderItemJpaEntity> jpaItems = domainOrder.getItems().stream()
-                .map(item -> toEntity(item, orderEntity))
+                .map(item -> toEntity(item, orderEntity, menuItemRepository))
                 .collect(Collectors.toList());
         orderEntity.setItems(jpaItems);
         return orderEntity;
@@ -44,7 +64,7 @@ public class OrderEntityMapper {
 
     public static OrderItem toDomain(OrderItemJpaEntity jpaEntity) {
         return new OrderItem(
-                jpaEntity.getMenuItemId(),
+                jpaEntity.getMenuItem().getId(),
                 jpaEntity.getQuantity(),
                 jpaEntity.getUnitPrice()
         );
@@ -59,9 +79,11 @@ public class OrderEntityMapper {
                 jpaEntity.getCustomerId(),
                 jpaEntity.getRoomId(),
                 domainItems,
-                jpaEntity.getCreatedAt()
+                jpaEntity.getCreatedAt(),
+                jpaEntity.getOrderNumber() // Pass orderNumber to constructor
         );
         order.setCustomerNote(jpaEntity.getSpecialInstructions());
+        
         return order;
     }
 }

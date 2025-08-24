@@ -2,8 +2,8 @@ package com.poly.restaurant.application.handler.impl;
 
 import com.poly.restaurant.application.annotation.DomainHandler;
 import com.poly.restaurant.application.handler.MenuItemHandler;
-import com.poly.restaurant.application.port.out.repo.MenuItemRepositoryPort;
-import com.poly.restaurant.application.port.out.repo.RepositoryPort;
+import com.poly.restaurant.application.port.out.MenuItemRepositoryPort;
+import com.poly.restaurant.application.port.out.RepositoryPort;
 import com.poly.restaurant.domain.entity.MenuItem;
 import com.poly.restaurant.domain.entity.MenuItemStatus;
 import lombok.RequiredArgsConstructor;

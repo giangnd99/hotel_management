@@ -92,7 +92,8 @@ public class OrderProcessingHelper {
                 new ArrayList<>(),
                 order.getStatus().name(),
                 order.getCreatedAt(),
-                order.getCustomerNote()
+                order.getCustomerNote(),
+                order.getOrderNumber()
         );
     }
 
