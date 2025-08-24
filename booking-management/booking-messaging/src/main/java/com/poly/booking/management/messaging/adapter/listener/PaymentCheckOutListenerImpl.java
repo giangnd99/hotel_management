@@ -24,15 +24,16 @@ public class PaymentCheckOutListenerImpl implements PaymentCheckOutListener {
         log.info("Processing room check out completed event for booking: {}",
                 messageResponse.getBookingId());
         try {
-            if(messageResponse.getPaymentStatus().name().equalsIgnoreCase("COMPLETED")) {
+            if(messageResponse.getPaymentStatus().name().equalsIgnoreCase("PAID")) {
                 Booking bookingCheckingOut = bookingRepository.findById(UUID.fromString(messageResponse.getBookingId())).orElseThrow(() ->
                         new IllegalArgumentException("Can't check out. Booking not found for ID: " + messageResponse.getBookingId()));
                 bookingCheckingOut.checkOut();
                 bookingRepository.save(bookingCheckingOut);
+
+                roomClient.performCheckOut(bookingCheckingOut.getId().getValue());
                 log.info("Room check out completed for booking: {}", messageResponse.getBookingId());
                 log.info("Room check out completed successfully for booking: {}",
                         messageResponse.getBookingId());
-                roomClient.performCheckOut(bookingCheckingOut.getId().getValue());
             }
 
         } catch (Exception e) {
