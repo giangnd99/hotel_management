@@ -8,7 +8,6 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 
 -- ====================================================================================
--- Idempotent drops (đảm bảo chạy lại không lỗi)
 -- ====================================================================================
 DROP TABLE IF EXISTS room_type_furniture CASCADE;
 DROP TABLE IF EXISTS room_maintenance CASCADE;
@@ -61,7 +60,7 @@ CREATE TYPE service_status AS ENUM ('PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANC
 -- FURNITURE
 CREATE TABLE furniture
 (
-    furniture_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    furniture_id UUID PRIMARY KEY,
     name         VARCHAR(255)    ,
     price        DECIMAL(10, 2)
 );
@@ -216,7 +215,7 @@ CREATE TABLE room_cleaning
 -- ROOM_SERVICES
 CREATE TABLE room_services
 (
-    service_id           UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    service_id           UUID PRIMARY KEY,
     room_number          VARCHAR(10)  ,
     guest_id             UUID,
     guest_name           VARCHAR(255),

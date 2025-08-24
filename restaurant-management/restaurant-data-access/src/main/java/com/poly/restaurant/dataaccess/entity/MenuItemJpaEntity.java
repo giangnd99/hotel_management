@@ -1,4 +1,6 @@
 package com.poly.restaurant.dataaccess.entity;
+
+import com.poly.restaurant.domain.entity.MenuItemStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,33 +15,16 @@ import java.math.BigDecimal;
 @Table(name = "menu_items")
 public class MenuItemJpaEntity {
     @Id
-    @Column(name = "id")
-    private String id;
-
-    @Column(name = "name")
+    @Column(name = "menu_item_id")
+    private Integer id;
+    @Column(name = "item_name")
     private String name;
-
-    @Column(name = "description")
     private String description;
-
-    @Column(name = "price")
     private BigDecimal price;
-
-    @Column(name = "category_id")
-    private String categoryId;
-
-    @Column(name = "is_available")
-    private Boolean isAvailable;
-
-    @Column(name = "image_url")
-    private String imageUrl;
-
-    @Column(name = "preparation_time")
-    private Integer preparationTime;
-
-    @Column(name = "created_at")
-    private java.sql.Timestamp createdAt;
-
-    @Column(name = "updated_at")
-    private java.sql.Timestamp updatedAt;
+    private String category;
+    private Integer quantity;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private MenuItemStatus status;
 }

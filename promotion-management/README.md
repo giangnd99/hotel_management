@@ -26,47 +26,56 @@ A comprehensive voucher and promotion management service built with **Spring Boo
 ### **Prerequisites**
 - **Java 17** or higher
 - **Maven 3.9+**
-- **PostgreSQL 15+** (via centralized infrastructure)
+- **Docker & Docker Compose**
+- **PostgreSQL 15+** (or use Docker)
 
-### **Setup with Centralized Infrastructure**
+### **Option 1: Docker Compose (Recommended)**
 
-1. **Start Centralized Services**
+1. **Clone and Navigate**
    ```bash
-   cd infrastructure/docker
+   cd promotion-management
+   ```
+
+2. **Start Services**
+   ```bash
    docker compose up -d
    ```
    This will start:
-   - PostgreSQL database (pgvector) on port 5433
-   - Redis cache on port 6379
-   - Kafka cluster and related services
-   - Other infrastructure services
+   - PostgreSQL database
+   - Redis cache (optional)
+   - Your application
 
-2. **Verify Services**
+3. **Verify Services**
    ```bash
    docker compose ps
    ```
 
-3. **Check Database Connection**
+4. **Check Application Health**
    ```bash
-   # Test PostgreSQL connection
-   psql -h localhost -p 5433 -U postgres -d postgres
+   curl http://localhost:8080/promotion-management/actuator/health
    ```
 
-### **Local Development**
+### **Option 2: Local Development**
 
-1. **Build Project**
+1. **Setup Database**
+   ```bash
+   # Start PostgreSQL
+   docker run -d --name postgres \
+     -e POSTGRES_DB=promotiondb \
+     -e POSTGRES_USER=promotion \
+     -e POSTGRES_PASSWORD=promotion \
+     -p 5432:5432 \
+     postgres:15-alpine
+   ```
+
+2. **Build Project**
    ```bash
    mvn clean compile
    ```
 
-2. **Run Application**
+3. **Run Application**
    ```bash
    mvn spring-boot:run -pl promotion-container
-   ```
-
-3. **Check Application Health**
-   ```bash
-   curl http://localhost:8080/promotion-management/actuator/health
    ```
 
 ## 📁 Project Structure
@@ -79,6 +88,8 @@ promotion-management/
 ├── 🚀 promotion-application/           # REST controllers & DTOs
 ├── 💾 promotion-data-access/           # Database & external integrations
 ├── 🐳 promotion-container/             # Spring Boot configuration
+├── 🐳 Dockerfile                       # Multi-stage Docker build
+├── 🐳 docker-compose.yml               # Service orchestration
 └── 📚 README.md                        # This file
 ```
 
@@ -109,11 +120,11 @@ promotion-management/
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `PROMOTION_MANAGEMENT_PORT` | `8080` | Application port |
-| `DATABASE_URL` | `jdbc:postgresql://localhost:5433/postgres?currentSchema=promotion_management` | Centralized database connection |
-| `DATABASE_USERNAME` | `postgres` | Centralized database username |
-| `DATABASE_PASSWORD` | `admin` | Centralized database password |
-| `REDIS_HOST` | `localhost` | Redis host (centralized infrastructure) |
-| `REDIS_PORT` | `6379` | Redis port (centralized infrastructure) |
+| `DATABASE_URL` | `jdbc:postgresql://localhost:5432/promotiondb` | Database connection |
+| `DATABASE_USERNAME` | `promotion` | Database username |
+| `DATABASE_PASSWORD` | `promotion` | Database password |
+| `REDIS_HOST` | `localhost` | Redis host (optional) |
+| `REDIS_PORT` | `6379` | Redis port |
 
 ### **Application Properties**
 
@@ -219,6 +230,98 @@ promotion-data-access
 - **MapStruct**: Type-safe object mapping
 - **JUnit 5**: Unit testing framework
 - **Mockito**: Mocking framework
+
+## 🐳 Docker
+
+### **Building Image**
+```bash
+docker build -t promotion-management:latest .
+```
+
+### **Running with Docker Compose**
+```bash
+# Start all services
+docker compose up -d
+
+# View logs
+docker compose logs -f app
+
+# Stop services
+docker compose down
+
+# Rebuild and restart
+docker compose up -d --build
+```
+
+### **Service Ports**
+- **Application**: `8080`
+- **PostgreSQL**: `5432`
+- **Redis**: `6379`
+
+## 🧪 Testing
+
+### **Test Structure**
+```
+src/test/java/
+├── unit/           # Unit tests
+├── integration/    # Integration tests
+└── e2e/           # End-to-end tests
+```
+
+### **Running Tests**
+```bash
+# All tests
+mvn test
+
+# Specific module
+mvn test -pl promotion-domain-model
+
+# Integration tests only
+mvn verify -DskipUnitTests
+```
+
+## 🔍 Troubleshooting
+
+### **Common Issues**
+
+1. **Database Connection Failed**
+   ```bash
+   # Check PostgreSQL status
+   docker compose ps postgres
+   
+   # Check logs
+   docker compose logs postgres
+   ```
+
+2. **Port Already in Use**
+   ```bash
+   # Find process using port 8080
+   lsof -i :8080
+   
+   # Kill process
+   kill -9 <PID>
+   ```
+
+3. **Build Failures**
+   ```bash
+   # Clean and rebuild
+   mvn clean compile
+   
+   # Check Java version
+   java -version
+   ```
+
+### **Logs**
+```bash
+# Application logs
+docker compose logs -f app
+
+# Database logs
+docker compose logs -f postgres
+
+# All services
+docker compose logs -f
+```
 
 ## 📚 Additional Resources
 

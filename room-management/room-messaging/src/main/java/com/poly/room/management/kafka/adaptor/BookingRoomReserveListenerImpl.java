@@ -1,6 +1,6 @@
 package com.poly.room.management.kafka.adaptor;
 
-import com.poly.room.management.domain.command.RoomBookingCommand;
+import com.poly.room.management.domain.command.room.RoomBookingCommand;
 import com.poly.room.management.domain.port.in.listener.request.BookingRoomReserveListener;
 import com.poly.room.management.domain.message.BookingRoomRequestMessage;
 import lombok.RequiredArgsConstructor;

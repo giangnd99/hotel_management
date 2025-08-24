@@ -100,15 +100,6 @@ public class BookingController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newBooking);
     }
 
-    @PutMapping("/{bookingId}")
-    @Operation(summary = "Cập nhật booking")
-    public ResponseEntity<BookingDto> updateBooking(
-            @PathVariable UUID bookingId,
-            @Valid @RequestBody UpdateBookingRequest request) {
-        log.info("Updating booking: {}", bookingId);
-        BookingDto updatedBooking = bookingService.updateBooking(bookingId, request);
-        return ResponseEntity.ok(updatedBooking);
-    }
 
     @DeleteMapping("/{bookingId}")
     @Operation(summary = "Xóa booking")
@@ -202,13 +193,7 @@ public class BookingController {
 
     // ========== BOOKING STATUS MANAGEMENT ==========
 
-    @PutMapping("/{bookingId}/cancel")
-    @Operation(summary = "Hủy booking")
-    public ResponseEntity<BookingDto> cancelBooking(@PathVariable UUID bookingId) {
-        log.info("Cancelling booking: {}", bookingId);
-        BookingDto cancelledBooking = bookingService.cancelBooking(bookingId);
-        return ResponseEntity.ok(cancelledBooking);
-    }
+
 
     @PutMapping("/{bookingId}/confirm")
     @Operation(summary = "Xác nhận booking")

@@ -23,5 +23,5 @@ public class CreateRoomRequest {
     private BigDecimal basePrice;
 
     private String description;
-    private String amenities;
+    private String area;
 }

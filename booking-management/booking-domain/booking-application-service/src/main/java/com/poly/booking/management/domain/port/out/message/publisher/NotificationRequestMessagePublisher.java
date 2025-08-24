@@ -9,4 +9,7 @@ public interface NotificationRequestMessagePublisher {
 
     void sendNotifi(NotifiOutboxMessage notifiOutboxMessage,
                     BiConsumer<NotifiOutboxMessage, OutboxStatus> outboxCallback);
+
+    void sendNotifiCancel(NotifiOutboxMessage notifiOutboxMessage,
+                          BiConsumer<NotifiOutboxMessage, OutboxStatus> outboxCallback);
 }

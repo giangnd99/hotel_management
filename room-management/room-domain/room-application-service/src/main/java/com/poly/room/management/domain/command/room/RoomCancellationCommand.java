@@ -1,4 +1,4 @@
-package com.poly.room.management.domain.command;
+package com.poly.room.management.domain.command.room;
 
 import com.poly.room.management.domain.entity.Room;
 import com.poly.room.management.domain.event.RoomCancellationEvent;

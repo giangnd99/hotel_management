@@ -61,7 +61,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"id\": 107,\n    \"name\": \"Grilled Salmon\",\n    \"description\": \"Fresh salmon with herbs\",\n    \"price\": 25.99,\n    \"category\": null,\n    \"quantity\": 150,\n    \"isAvailable\": true,\n    \"preparationTime\": 20\n}"
+              "raw": "{\n    \"id\": 107,\n    \"name\": \"Grilled Salmon\",\n    \"description\": \"Fresh salmon with herbs\",\n    \"price\": 25.99,\n    \"category\": \"MAIN_COURSE\",\n    \"quantity\": 150,\n    \"isAvailable\": true,\n    \"preparationTime\": 20\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/restaurant/menu",
@@ -89,7 +89,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"id\": 107,\n    \"name\": \"Updated Grilled Salmon\",\n    \"description\": \"Fresh salmon with herbs and lemon\",\n    \"price\": 28.99,\n    \"category\": null,\n    \"isAvailable\": true,\n    \"quantity\": 15,\n    \"preparationTime\": 25\n}"
+              "raw": "{\n    \"id\": 107,\n    \"name\": \"Updated Grilled Salmon\",\n    \"description\": \"Fresh salmon with herbs and lemon\",\n    \"price\": 28.99,\n    \"category\": \"MAIN_COURSE\",\n    \"isAvailable\": true,\n    \"quantity\": 15,\n    \"preparationTime\": 25\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/restaurant/menu/107",
