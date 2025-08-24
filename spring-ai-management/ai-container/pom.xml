@@ -75,7 +75,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <image>
-                        <name>${project.groupId}/ai.service:${project.version}</name>
+                        <name>${project.groupId}/hotel-ai.service:${project.version}</name>
                     </image>
                 </configuration>
                 <executions>

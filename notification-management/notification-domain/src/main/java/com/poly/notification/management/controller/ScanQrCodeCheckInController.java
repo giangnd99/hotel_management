@@ -1,7 +1,6 @@
 package com.poly.notification.management.controller;
 
 import com.poly.notification.management.command.BookingCheckedInCommand;
-import com.poly.notification.management.dto.checkin.CheckInRequest;
 import com.poly.notification.management.dto.checkin.CheckInRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

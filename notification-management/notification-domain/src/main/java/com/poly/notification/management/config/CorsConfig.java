@@ -1,4 +1,4 @@
-package com.poly.payment.management.domain.config;
+package com.poly.notification.management.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

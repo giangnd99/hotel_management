@@ -1,6 +1,11 @@
 server:
   port: 8083
-
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 20000
 booking-service:
   payment-response-topic-name: booking-payment-response
   room-reserve-request-topic-name: room-approval-request

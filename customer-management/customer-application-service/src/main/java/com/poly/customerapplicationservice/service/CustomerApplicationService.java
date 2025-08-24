@@ -23,6 +23,7 @@ import com.poly.customerdomain.output.LoyaltyPointRepository;
 import com.poly.domain.valueobject.CustomerId;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,17 +41,18 @@ public class CustomerApplicationService implements CustomerUsecase {
 
     private final AuthenticationClient authenticationClient;
 
-    private final NotificationClient notificationClient;
+    private final CustomerAsyncService customerAsyncService;
 
-    public CustomerApplicationService(CustomerRepository customerRepo, LoyaltyPointRepository loyaltyRepo, CustomerCreationRequestPublisher customerCreationRequestPublisher, AuthenticationClient authenticationClient, NotificationClient notificationClient) {
+    public CustomerApplicationService(CustomerRepository customerRepo, LoyaltyPointRepository loyaltyRepo, CustomerCreationRequestPublisher customerCreationRequestPublisher, AuthenticationClient authenticationClient, CustomerAsyncService customerAsyncService) {
         this.customerRepository = customerRepo;
         this.loyaltyPointRepository = loyaltyRepo;
         this.customerCreationRequestPublisher = customerCreationRequestPublisher;
         this.authenticationClient = authenticationClient;
-        this.notificationClient = notificationClient;
+        this.customerAsyncService = customerAsyncService;
     }
 
     @Override
+    @Transactional
     public CustomerDto initializeCustomerProfile(CreateCustomerCommand command) {
 
         UserCreationRequest creationRequest = creationRequest(command);
@@ -84,19 +86,8 @@ public class CustomerApplicationService implements CustomerUsecase {
         log.info("User id created successfully: {} ", response.getId());
         log.info("Customer with id: {} created successfully", savedCustomer.getId().getValue().toString());
         customerCreationRequestPublisher.publish(creatMessage(savedCustomer, response));
-        notificationClient.sendAccountInfo(creationRequest.getEmail(), creationRequest.getPassword());
-        return CustomerDto.from(newCustomer);
-    }
-
-    private UserCreationRequest creationRequest(CreateCustomerCommand command) {
-        String email = command.getEmail() == null ? "needToChange@gmail.com" : command.getEmail().trim();
-        String phone = command.getPhone() == null ? "0123456789" : command.getPhone().trim();
-        String password = command.getPassword() == null ? "admin123" : command.getPassword().trim();
-        return UserCreationRequest.builder()
-                .email(email)
-                .password(email)
-                .phone(phone)
-                .build();
+        customerAsyncService.sendNotifications(creationRequest);
+        return CustomerDto.from(savedCustomer);
     }
 
     private CustomerBookingMessage creatMessage(Customer customer, UserResponse response) {
@@ -108,6 +99,17 @@ public class CustomerApplicationService implements CustomerUsecase {
                 .active(customer.isActive())
                 .build();
     }
+    private UserCreationRequest creationRequest(CreateCustomerCommand command) {
+        String email = command.getEmail() == null ? "needToChange@gmail.com" : command.getEmail().trim();
+        String phone = command.getPhone() == null ? "0123456789" : command.getPhone().trim();
+        String password = command.getPassword() == null ? "admin123" : command.getPassword().trim();
+        return UserCreationRequest.builder()
+                .email(email)
+                .password(password)
+                .phone(phone)
+                .build();
+    }
+
 
     @Override
     public CustomerDto retrieveCustomerProfile(RetrieveCustomerProfileCommand command) {

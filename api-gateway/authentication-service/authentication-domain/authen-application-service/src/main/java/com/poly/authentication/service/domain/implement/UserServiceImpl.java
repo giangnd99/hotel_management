@@ -83,16 +83,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @PostAuthorize("returnObject.email == authentication.name")
     public UserResponse getUserById(UUID id) {
-
         return userMapper.toUserResponse(userRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
 
     }
 
     @Override
-    @PostAuthorize("returnObject.email == authentication.name")
     @Transactional
     public UserResponse updateUser(UUID userId, UserUpdatedRequest request) {
 
