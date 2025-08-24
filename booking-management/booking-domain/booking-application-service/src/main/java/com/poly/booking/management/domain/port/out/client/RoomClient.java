@@ -1,6 +1,7 @@
 package com.poly.booking.management.domain.port.out.client;
 
-import com.poly.domain.dto.response.room.RoomResponse;
+
+import com.poly.booking.management.domain.dto.room.RoomResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -3,6 +3,7 @@
     import com.poly.payment.management.domain.dto.ItemData;
     import com.poly.payment.management.domain.dto.request.*;
 
+    import com.poly.payment.management.domain.model.Payment;
     import com.poly.payment.management.domain.port.input.service.*;
     import lombok.RequiredArgsConstructor;
     import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@
     import org.springframework.web.bind.annotation.*;
 
     import java.time.LocalDateTime;
+    import java.util.List;
     import java.util.stream.Collectors;
 
     @Slf4j
@@ -83,7 +85,7 @@
         }
 
         @GetMapping
-        public  ResponseEntity retrieveAllPayment() {
+        public  ResponseEntity<List<Payment>> retrieveAllPayment() {
             return ResponseEntity.ok(retrieveAllPaymentLinkUsecase.retrieveAllPayment());
         }
     }

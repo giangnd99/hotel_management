@@ -1,10 +1,11 @@
 package com.poly.payment.management.application.rest.controller;
 
 
-
 import com.poly.payment.management.domain.dto.request.CreateInvoiceCommand;
 import com.poly.payment.management.domain.dto.request.CreateInvoiceRequest;
 import com.poly.payment.management.domain.dto.request.InvoiceDetailRequest;
+import com.poly.payment.management.domain.dto.response.InvoiceResult;
+import com.poly.payment.management.domain.model.Invoice;
 import com.poly.payment.management.domain.port.input.service.CreateInvoiceUsecase;
 import com.poly.payment.management.domain.port.input.service.RetrieveAllInvoice;
 import com.poly.payment.management.domain.port.input.service.RetrieveInvoiceUsecase;
@@ -12,6 +13,8 @@ import com.poly.payment.management.domain.value_object.Description;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/invoice")
@@ -40,12 +43,12 @@ public class InvoiceController {
     }
 
     @PostMapping("/detail")
-    public ResponseEntity retrieveInvoice(@RequestBody InvoiceDetailRequest request) {
+    public ResponseEntity<InvoiceResult> retrieveInvoice(@RequestBody InvoiceDetailRequest request) {
         return ResponseEntity.ok().body(retrieveInvoiceUsecase.retrieveInvoice(request.getInvoiceId()));
     }
 
     @GetMapping
-    public ResponseEntity retrieveAllInvoice() {
+    public ResponseEntity<List<Invoice>> retrieveAllInvoice() {
         return ResponseEntity.ok(retrieveAllInvoice.retrieveAllInvoice());
     }
 }

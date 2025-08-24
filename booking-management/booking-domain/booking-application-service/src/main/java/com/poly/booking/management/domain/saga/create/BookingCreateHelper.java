@@ -1,6 +1,7 @@
 package com.poly.booking.management.domain.saga.create;
 
 import com.poly.booking.management.domain.dto.request.CreateBookingRequest;
+import com.poly.booking.management.domain.dto.room.RoomResponse;
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.entity.Customer;
 import com.poly.booking.management.domain.entity.Room;
@@ -10,7 +11,7 @@ import com.poly.booking.management.domain.port.out.client.RoomClient;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
 import com.poly.booking.management.domain.port.out.repository.RoomRepository;
 import com.poly.booking.management.domain.service.BookingDomainService;
-import com.poly.domain.dto.response.room.RoomResponse;
+
 import com.poly.domain.valueobject.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

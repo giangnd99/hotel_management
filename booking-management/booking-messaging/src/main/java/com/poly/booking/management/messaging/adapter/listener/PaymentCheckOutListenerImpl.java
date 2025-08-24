@@ -1,13 +1,10 @@
 package com.poly.booking.management.messaging.adapter.listener;
 
 import com.poly.booking.management.domain.entity.Booking;
-import com.poly.booking.management.domain.entity.Room;
 import com.poly.booking.management.domain.message.reponse.PaymentMessageResponse;
 import com.poly.booking.management.domain.port.in.message.listener.PaymentCheckOutListener;
-import com.poly.booking.management.domain.message.reponse.RoomMessageResponse;
 import com.poly.booking.management.domain.port.out.client.RoomClient;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
-import com.poly.booking.management.domain.saga.room.RoomCheckInStep;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

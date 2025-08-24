@@ -2,7 +2,6 @@ package com.poly.booking.management.messaging.listener.kafka;
 
 import com.poly.booking.management.domain.kafka.model.BookingPaymentResponseAvro;
 import com.poly.booking.management.domain.message.reponse.PaymentMessageResponse;
-import com.poly.booking.management.domain.message.reponse.RoomMessageResponse;
 import com.poly.booking.management.domain.port.in.message.listener.PaymentCheckOutListener;
 import com.poly.booking.management.messaging.mapper.BookingMessageDataMapper;
 import com.poly.kafka.consumer.KafkaConsumer;
