@@ -28,8 +28,6 @@ public class RoomController {
 
     private final RoomService roomService;
 
-    // ========== DASHBOARD & STATISTICS APIs ==========
-
     @GetMapping("/statistics")
     @Operation(summary = "Lấy thống kê phòng")
     public ResponseEntity<RoomStatisticsDto> getRoomStatistics() {
