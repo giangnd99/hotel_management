@@ -12,9 +12,9 @@ import java.util.Optional;
 @Repository
 public interface JpaOrderRepository extends JpaRepository<OrderJpaEntity, String> {
 
-    @Query("select distinct o from OrderJpaEntity o left join fetch o.items")
+    @Query("select distinct o from OrderJpaEntity o left join fetch o.items i left join fetch i.menuItem")
     List<OrderJpaEntity> findAllWithItems();
 
-    @Query("select o from OrderJpaEntity o left join fetch o.items where o.id = :id")
+    @Query("select o from OrderJpaEntity o left join fetch o.items i left join fetch i.menuItem where o.id = :id")
     Optional<OrderJpaEntity> findByIdWithItems(@Param("id") String id);
 }

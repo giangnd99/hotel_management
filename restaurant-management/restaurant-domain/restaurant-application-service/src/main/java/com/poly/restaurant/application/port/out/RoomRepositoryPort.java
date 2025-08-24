@@ -1,4 +1,4 @@
-package com.poly.restaurant.application.port.out.repo;
+package com.poly.restaurant.application.port.out;
 
 import com.poly.restaurant.domain.entity.Room;
 

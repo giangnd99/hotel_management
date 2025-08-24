@@ -18,12 +18,13 @@ public class OrderItemJpaEntity {
     @Column(name = "id")
     private String id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private OrderJpaEntity order;
 
-    @Column(name = "menu_item_id")
-    private String menuItemId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_item_id")
+    private MenuItemJpaEntity menuItem;
 
     @Column(name = "quantity")
     private int quantity;

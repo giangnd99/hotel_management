@@ -18,13 +18,21 @@ public class OrderMapper {
                 .map(OrderMapper::toEntity)
                 .collect(Collectors.toList());
 
-        return new Order(
+        Order order = new Order(
                 dto.id(),
                 dto.customerId(),
                 dto.tableId(),
                 items,
-                dto.createdAt() != null ? dto.createdAt() : LocalDateTime.now()
+                dto.createdAt() != null ? dto.createdAt() : LocalDateTime.now(),
+                dto.orderNumber() // Pass orderNumber to constructor
         );
+        
+        // Set customer note if provided
+        if (dto.customerNote() != null && !dto.customerNote().trim().isEmpty()) {
+            order.setCustomerNote(dto.customerNote().trim());
+        }
+        
+        return order;
     }
 
     public static OrderItem toEntity(OrderDTO.OrderItem dtoItem) {
@@ -48,7 +56,8 @@ public class OrderMapper {
                 dtoItems,
                 order.getStatus().name(),
                 order.getCreatedAt(),
-                order.getCustomerNote()
+                order.getCustomerNote(),
+                order.getOrderNumber()
         );
     }
 
