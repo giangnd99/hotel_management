@@ -1,0 +1,54 @@
+-- Create Database Change Log Table
+CREATE TABLE public.databasechangelog (ID VARCHAR(255) NOT NULL, AUTHOR VARCHAR(255) NOT NULL, FILENAME VARCHAR(255) NOT NULL, DATEEXECUTED TIMESTAMP WITHOUT TIME ZONE NOT NULL, ORDEREXECUTED INTEGER NOT NULL, EXECTYPE VARCHAR(10) NOT NULL, MD5SUM VARCHAR(35), DESCRIPTION VARCHAR(255), COMMENTS VARCHAR(255), TAG VARCHAR(255), LIQUIBASE VARCHAR(20), CONTEXTS VARCHAR(255), LABELS VARCHAR(255), DEPLOYMENT_ID VARCHAR(10));
+
+-- Create Database Lock Table
+CREATE TABLE public.databasechangeloglock (ID INTEGER NOT NULL, LOCKED BOOLEAN NOT NULL, LOCKGRANTED TIMESTAMP WITHOUT TIME ZONE, LOCKEDBY VARCHAR(255), CONSTRAINT databasechangeloglock_pkey PRIMARY KEY (ID));
+
+-- Initialize Database Lock Table
+DELETE FROM public.databasechangeloglock;
+
+INSERT INTO public.databasechangeloglock (ID, LOCKED) VALUES (1, FALSE);
+
+-- *********************************************************************
+-- SQL to roll back currently unexecuted changes
+-- *********************************************************************
+-- Change Log: db/migration/changelog-master.yml
+-- Ran at: 8/23/25, 6:30 AM
+-- Against: postgres@jdbc:postgresql://localhost:5433/postgres?currentSchema=promotion_management
+-- Liquibase version: 4.29.2
+-- *********************************************************************
+
+-- Lock Database
+UPDATE public.databasechangeloglock SET LOCKED = TRUE, LOCKEDBY = 'linhpete1215 (192.168.1.97)', LOCKGRANTED = NOW() WHERE ID = 1 AND LOCKED = FALSE;
+
+-- Rolling Back ChangeSet: db/migration/changelog-005-monitoring-data.yml::5::system
+DROP INDEX public.idx_monitoring_data_sync_attempts;
+
+DROP INDEX public.idx_monitoring_data_external_id;
+
+DROP INDEX public.idx_monitoring_data_created_at;
+
+DROP INDEX public.idx_monitoring_data_synced;
+
+DROP INDEX public.idx_monitoring_data_type;
+
+DROP TABLE public.monitoring_data;
+
+DELETE FROM public.databasechangelog WHERE ID = '5' AND AUTHOR = 'system' AND FILENAME = 'db/migration/changelog-005-monitoring-data.yml';
+
+-- Rolling Back ChangeSet: db/migration/changelog-004-batch-schema.yml::4::system
+DROP INDEX public.IDX_BATCH_STEP_EXECUTION_STEP_NAME;
+
+DROP INDEX public.IDX_BATCH_STEP_EXECUTION_JOB_EXECUTION_ID;
+
+DROP INDEX public.IDX_BATCH_JOB_EXECUTION_STATUS;
+
+DROP INDEX public.IDX_BATCH_JOB_EXECUTION_JOB_INSTANCE_ID;
+
+DROP INDEX public.IDX_BATCH_JOB_INSTANCE_JOB_NAME;
+
+DROP INDEX public.IDX_BATCH_JOB_INSTANCE_JOB_KEY;
+
+-- Release Database Lock
+UPDATE public.databasechangeloglock SET LOCKED = FALSE, LOCKEDBY = NULL, LOCKGRANTED = NULL WHERE ID = 1;
+

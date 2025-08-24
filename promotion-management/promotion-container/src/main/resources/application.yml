@@ -24,10 +24,11 @@ spring:
   
   # Database Configuration
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/hotel_management}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5433/postgres?currentSchema=promotion_management}
     username: ${DATABASE_USERNAME:postgres}
-    password: ${DATABASE_PASSWORD:password}
+    password: ${DATABASE_PASSWORD:admin}
     driver-class-name: org.postgresql.Driver
+    # Schema initialization handled by spring.sql.init configuration
     hikari:
       maximum-pool-size: 20
       minimum-idle: 5
@@ -38,32 +39,36 @@ spring:
   # JPA Configuration
   jpa:
     hibernate:
-      ddl-auto: ${JPA_DDL_AUTO:none}
+      ddl-auto: create-drop
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      transaction:
+        jta-platform: org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: ${HIBERNATE_FORMAT_SQL:false}
-        show_sql: ${HIBERNATE_SHOW_SQL:false}
+        format_sql: ${HIBERNATE_FORMAT_SQL:true}
+        show_sql: ${HIBERNATE_SHOW_SQL:true}
         jdbc:
           batch_size: 50
         order_inserts: true
         order_updates: true
         batch_versioned_data: true
+        hbm2ddl:
+          auto: create-drop
     open-in-view: false
   
   # Liquibase Configuration
   liquibase:
-    enabled: ${LIQUIBASE_ENABLED:true}
+    enabled: ${LIQUIBASE_ENABLED:false}
     change-log: classpath:db/migration/changelog-master.yml
     contexts: ${LIQUIBASE_CONTEXTS:}
     default-schema: ${LIQUIBASE_DEFAULT_SCHEMA:public}
     database-change-log-table: DATABASECHANGELOG
     database-change-log-lock-table: DATABASECHANGELOGLOCK
     drop-first: ${LIQUIBASE_DROP_FIRST:false}
-    rollback-file: ${LIQUIBASE_ROLLBACK_FILE:}
-    test-rollback-on-update: ${LIQUIBASE_TEST_ROLLBACK:false}
+    rollback-file: /dev/null
+    test-rollback-on-update: false
   
   # Jackson Configuration
   jackson:
@@ -79,15 +84,9 @@ spring:
   validation:
     enabled: true
   
-  # Batch Configuration
-  batch:
-    job:
-      enabled: ${BATCH_JOB_ENABLED:true}
-      name: ${BATCH_JOB_NAME:promotion-management-batch}
-    jdbc:
-      initialize-schema: ${BATCH_JDBC_INITIALIZE_SCHEMA:always}
-    job-repository:
-      table-prefix: ${BATCH_TABLE_PREFIX:BATCH_}
+
+  
+
   
   # Actuator Configuration
   management:
@@ -132,15 +131,11 @@ spring:
 # Swagger/OpenAPI Configuration
 springdoc:
   api-docs:
-    path: /api-docs
+    path: /v3/api-docs
     enabled: true
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
-    tags-sorter: alpha
-    operations-sorter: alpha
-    doc-expansion: none
-    disable-swagger-default-url: true
   packages-to-scan: com.poly.promotion.application.controller
 
 # Logging Configuration
@@ -148,7 +143,8 @@ logging:
   level:
     com.poly.promotion: ${LOG_LEVEL:INFO}
     org.springframework.web: ${SPRING_WEB_LOG_LEVEL:INFO}
-    org.hibernate.SQL: ${HIBERNATE_SQL_LOG:WARN}
+    org.hibernate.SQL: ${HIBERNATE_SQL_LOG:DEBUG}
+    org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.type.descriptor.sql.BasicBinder: ${HIBERNATE_BINDER_LOG:WARN}
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
@@ -226,29 +222,6 @@ management:
         descriptions: true
         step: 60s
 
-# External Monitoring Service Configuration
-monitoring:
-  service:
-    url: ${MONITORING_SERVICE_URL:http://localhost:8081}
-  data:
-    retention:
-      days: ${MONITORING_DATA_RETENTION_DAYS:30}
-      synced:
-        days: ${MONITORING_DATA_SYNCED_RETENTION_DAYS:7}
-    cleanup:
-      cron: ${MONITORING_DATA_CLEANUP_CRON:0 0 2 * * ?}
-      synced:
-        cron: ${MONITORING_DATA_SYNCED_CLEANUP_CRON:0 30 2 * * ?}
-  sync:
-    interval: ${MONITORING_SYNC_INTERVAL:60000}
-    max-retries: ${MONITORING_SYNC_MAX_RETRIES:3}
-
-# Batch Job Scheduling Configuration
-batch:
-  job:
-    expiration:
-      cron: ${BATCH_JOB_EXPIRATION_CRON:0 0 0 * * ?} # Daily at midnight
-
 # Environment-specific overrides
 ---
 # Development Environment
@@ -282,7 +255,7 @@ spring:
       on-profile: prod
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     show-sql: false
 logging:
   level:
@@ -299,7 +272,7 @@ spring:
       on-profile: test
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     show-sql: true
   datasource:
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE

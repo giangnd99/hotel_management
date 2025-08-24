@@ -10,6 +10,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
@@ -32,8 +33,9 @@ import java.util.stream.Collectors;
  * @author System
  * @since 1.0.0
  */
-@Aspect
-@Component
+// Temporarily disabled to fix StackOverflowError
+// @Aspect
+// @Component
 @Slf4j
 public class CentralizedLoggingAspect {
 
@@ -302,6 +304,11 @@ public class CentralizedLoggingAspect {
             return "null";
         }
         
+        // Detect AOP proxies to prevent recursive serialization
+        if (AopUtils.isAopProxy(param)) {
+            return "AOP_PROXY[" + param.getClass().getSimpleName() + "]";
+        }
+        
         try {
             if (param instanceof String || param instanceof Number || param instanceof Boolean) {
                 return param.toString();
@@ -324,6 +331,11 @@ public class CentralizedLoggingAspect {
     private String formatResult(Object result) {
         if (result == null) {
             return "null";
+        }
+        
+        // Detect AOP proxies to prevent recursive serialization
+        if (AopUtils.isAopProxy(result)) {
+            return "AOP_PROXY[" + result.getClass().getSimpleName() + "]";
         }
         
         try {

@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.scheduling.annotation.EnableScheduling;
+
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  *   <li><strong>Component Scanning:</strong> Scans for Spring components across all modules</li>
  *   <li><strong>Entity Scanning:</strong> Scans for JPA entities in the domain model</li>
  *   <li><strong>Repository Scanning:</strong> Scans for Spring Data repositories</li>
- *   <li><strong>Scheduling:</strong> Enables scheduled tasks for expiration management</li>
+
  *   <li><strong>Transaction Management:</strong> Enables declarative transaction management</li>
  * </ul>
  * 
@@ -60,7 +60,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaRepositories(basePackages = {
     "com.poly.promotion.data.access.jparepository"
 })
-@EnableScheduling
+
 @EnableTransactionManagement
 public class PromotionManagementApplication {
 
@@ -78,15 +78,15 @@ public class PromotionManagementApplication {
      *   <li>Initialize database connections</li>
      *   <li>Start embedded web server</li>
      *   <li>Register REST endpoints</li>
-     *   <li>Initialize scheduled tasks</li>
+    
      * </ol>
      * 
      * <p><strong>Access URLs:</strong></p>
      * <ul>
-     *   <li>Application: http://localhost:8080/promotion-management</li>
-     *   <li>Swagger UI: http://localhost:8080/promotion-management/swagger-ui.html</li>
-     *   <li>API Docs: http://localhost:8080/promotion-management/api-docs</li>
-     *   <li>Health Check: http://localhost:8080/promotion-management/actuator/health</li>
+     *   <li>Application: http://localhost:9999/promotion-management</li>
+     *   <li>Swagger UI: http://localhost:9999/promotion-management/swagger-ui.html</li>
+     *   <li>API Docs: http://localhost:9999/promotion-management/api-docs</li>
+     *   <li>Health Check: http://localhost:9999/promotion-management/actuator/health</li>
      * </ul>
      * 
      * @param args command line arguments passed to the application

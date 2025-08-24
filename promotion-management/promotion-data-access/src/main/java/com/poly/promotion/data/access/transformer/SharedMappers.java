@@ -2,6 +2,8 @@ package com.poly.promotion.data.access.transformer;
 
 import com.poly.promotion.domain.core.valueobject.*;
 import com.poly.domain.valueobject.CustomerId;
+import com.poly.domain.valueobject.Money;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
 
@@ -101,9 +103,8 @@ public class SharedMappers {
             if (amount.compareTo(BigDecimal.valueOf(100)) <= 0) {
                 return new DiscountPercentage(amount.doubleValue());
             } else {
-                // For fixed amount discounts, we'll use a default approach
-                // In practice, you might need to determine the discount type differently
-                return new DiscountPercentage(amount.doubleValue());
+                // For fixed amount discounts, create DiscountAmount
+                return new DiscountAmount(new Money(amount));
             }
         }
     }

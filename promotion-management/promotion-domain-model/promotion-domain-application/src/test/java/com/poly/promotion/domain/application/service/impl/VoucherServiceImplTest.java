@@ -240,10 +240,10 @@ class VoucherServiceImplTest {
 
     private VoucherPack createMockVoucherPack(Long packId) {
         VoucherPack pack = mock(VoucherPack.class);
-        when(pack.getId()).thenReturn(new VoucherPackId(packId));
-        when(pack.getDiscountAmount()).thenReturn(new DiscountPercentage(10.0));
-        when(pack.getVoucherValidRange()).thenReturn(new DateRange(30, ChronoUnit.DAYS));
-        when(pack.canRedeem(any())).thenReturn(true);
+        lenient().when(pack.getId()).thenReturn(new VoucherPackId(packId));
+        lenient().when(pack.getDiscountAmount()).thenReturn(new DiscountPercentage(10.0));
+        lenient().when(pack.getVoucherValidRange()).thenReturn(new DateRange(30, ChronoUnit.DAYS));
+        lenient().when(pack.canRedeem(any())).thenReturn(true);
         return pack;
     }
 }

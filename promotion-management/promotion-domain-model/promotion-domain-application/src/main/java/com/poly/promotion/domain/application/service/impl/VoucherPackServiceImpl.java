@@ -13,7 +13,11 @@ import java.util.Objects;
 
 public class VoucherPackServiceImpl implements VoucherPackService {
 
-    VoucherPackRepository voucherPackRepository;
+    private final VoucherPackRepository voucherPackRepository;
+
+    public VoucherPackServiceImpl(VoucherPackRepository voucherPackRepository) {
+        this.voucherPackRepository = voucherPackRepository;
+    }
 
     @Override
     public VoucherPack getVoucherPackById(Long voucherPackId) {
