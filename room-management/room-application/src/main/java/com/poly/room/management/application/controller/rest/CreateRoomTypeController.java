@@ -5,7 +5,6 @@ import com.poly.room.management.domain.dto.request.CreateRoomTypeRequest;
 import com.poly.room.management.domain.entity.RoomType;
 import com.poly.room.management.domain.service.CreationRoomTypeService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,7 +24,7 @@ public class CreateRoomTypeController {
 
     @PostMapping("/types")
     @Operation(summary = "Tạo loại phòng mới")
-    public ResponseEntity<RoomType> createRoomType(@Valid @RequestBody CreateRoomTypeRequest request) {
+    public ResponseEntity<RoomType> createRoomType( @RequestBody CreateRoomTypeRequest request) {
         log.info("Creating new room type: {}", request.getTypeName());
         RoomType newRoomType = roomService.createRoomType(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(newRoomType);

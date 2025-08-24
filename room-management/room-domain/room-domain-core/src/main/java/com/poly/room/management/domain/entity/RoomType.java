@@ -179,6 +179,18 @@ public class RoomType extends BaseEntity<RoomTypeId> {
         this.typeName = typeName;
     }
 
+    public void addFurnituresRequirement(List<RoomTypeFurniture> furnituresRequirements) {
+        this.furnituresRequirements = furnituresRequirements;
+    }
+    public List<RoomTypeFurniture> getRoomTypeFurnitures() {
+        return furnituresRequirements;
+    }
+    public void setRoomTypeFurnitures(List<RoomTypeFurniture> roomTypeFurnitures) {
+        this.furnituresRequirements = roomTypeFurnitures;
+    }
+    public void addFurnituresRequirement(RoomTypeFurniture furnituresRequirements) {
+        this.furnituresRequirements.add(furnituresRequirements);
+    }
     public void setDescription(String description) {
         this.description = description;
     }

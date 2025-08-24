@@ -11,11 +11,18 @@ import java.util.UUID;
 
 public interface RoomTypeService {
     RoomTypeResponse createRoomType(CreateRoomTypeRequest request) throws RoomDomainException;
-    RoomTypeResponse updateRoomType(UpdateRoomTypeRequest request) throws RoomDomainException;
+
+    RoomTypeResponse updateRoomType(UUID roomTypeId, UpdateRoomTypeRequest request) throws RoomDomainException;
+
     void deleteRoomType(UUID roomTypeId) throws RoomDomainException;
+
     RoomTypeResponse getRoomTypeById(UUID roomTypeId) throws RoomDomainException;
+
     List<RoomTypeResponse> getAllRoomTypes();
+
     RoomTypeResponse addFurnitureToRoomType(UUID roomTypeId, FurnitureRequirementRequest request) throws RoomDomainException;
+
     RoomTypeResponse removeFurnitureFromRoomType(UUID roomTypeId, Integer furnitureId) throws RoomDomainException;
+
     RoomTypeResponse updateFurnitureQuantityInRoomType(UUID roomTypeId, FurnitureRequirementRequest request) throws RoomDomainException;
 }

@@ -14,9 +14,20 @@ public class RoomTypeFurniture extends BaseEntity<FurnitureRequirementId> {
     private int requiredQuantity;
     public static final int DEFAULT_QUANTITY = 1;
 
+    public RoomTypeFurniture() {
+    }
+
     public RoomTypeFurniture(Furniture furnitureId, int requirementQuantity, RoomTypeId roomTypeId) {
         this.furniture = furnitureId;
         this.requiredQuantity = requirementQuantity;
+    }
+
+    public void setRoomType(RoomType roomType) {
+        if (roomType == null) {
+            throw new RoomDomainException("RoomType cannot be null for a RoomTypeFurniture.");
+        }
+        this.roomType = roomType;
+
     }
 
     private RoomTypeFurniture(Builder builder) {

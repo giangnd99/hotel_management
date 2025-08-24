@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -19,7 +20,7 @@ public class FurnitureRepositoryImpl implements FurnitureRepository {
     private final FurnitureMapper mapper;
 
     @Override
-    public Optional<Furniture> findById(Integer id) {
+    public Optional<Furniture> findById(UUID id) {
         return Optional.ofNullable(mapper.toDomainEntity(
                 jpaRepository.findById(id)
                         .orElseThrow(() -> new RoomDomainException("Furniture with id " + id + " not found"))));
@@ -40,7 +41,7 @@ public class FurnitureRepositoryImpl implements FurnitureRepository {
     }
 
     @Override
-    public void deleteById(Integer id) {
+    public void deleteById(UUID id) {
         jpaRepository.deleteById(id);
     }
 

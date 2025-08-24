@@ -1,14 +1,12 @@
 package com.poly.room.management.domain.dto.request;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.annotation.Nullable;
+import lombok.*;
 
 import java.util.UUID;
 
+@Getter
+@Setter
 @Data
 @Builder
 @NoArgsConstructor
@@ -16,7 +14,8 @@ import java.util.UUID;
 public class FurnitureRequirementRequest {
     private UUID furnitureId;
 
+    @Nullable
     private UUID roomTypeId;
 
-    private int quantity;
+    private Integer quantity;
 }

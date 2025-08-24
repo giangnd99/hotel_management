@@ -25,7 +25,7 @@ public class CreateRoomController {
 
     @PostMapping
     @Operation(summary = "Tạo phòng mới")
-    public ResponseEntity<Room> createRoom(@Valid @RequestBody CreateRoomRequest request) {
+    public ResponseEntity<Room> createRoom(@RequestBody CreateRoomRequest request) {
         log.info("Creating new room: {}", request.getRoomNumber());
         Room newRoom = createRoomService.processRoomCreation(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(newRoom);
