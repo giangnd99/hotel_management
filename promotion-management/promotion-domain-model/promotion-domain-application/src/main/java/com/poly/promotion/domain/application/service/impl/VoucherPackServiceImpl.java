@@ -40,9 +40,15 @@ public class VoucherPackServiceImpl implements VoucherPackService {
         if (createdBy == null || createdBy.isEmpty()) {
             throw new VoucherDomainException("Created by field cannot be null or empty.");
         }
+        
+        // Set audit fields
         voucherPack.setCreatedBy(createdBy);
         voucherPack.setCreatedAt(LocalDateTime.now());
-        voucherPack.setStatus(VoucherPackStatus.PENDING);
+        
+        // Calculate status based on validity dates
+        VoucherPackStatus calculatedStatus = voucherPack.calculateInitialStatus();
+        voucherPack.setStatus(calculatedStatus);
+        
         return voucherPackRepository.createVoucherPack(voucherPack);
     }
 
@@ -126,41 +132,67 @@ public class VoucherPackServiceImpl implements VoucherPackService {
     }
 
     @Override
+    public int markClosedVoucherPacks() {
+        // Get all voucher packs eligible for closure due to zero quantity
+        List<VoucherPack> eligiblePacks = voucherPackRepository.getVoucherPacksEligibleForClosure();
+        
+        int closedCount = 0;
+        for (VoucherPack pack : eligiblePacks) {
+            try {
+                // Update status to CLOSED
+                voucherPackRepository.updateVoucherPackStatus(pack.getId().getValue(), VoucherPackStatus.CLOSED);
+                closedCount++;
+            } catch (Exception e) {
+                // Log the error but continue with other packs
+                // In a production environment, you might want to use a proper logging framework
+                System.err.println("Failed to close voucher pack " + pack.getId().getValue() + ": " + e.getMessage());
+            }
+        }
+        
+        return closedCount;
+    }
+
+    @Override
+    public List<VoucherPack> getVoucherPacksEligibleForClosure() {
+        return voucherPackRepository.getVoucherPacksEligibleForClosure();
+    }
+
+    @Override
     public void updateVoucherPackStatus(Long voucherPackId, VoucherPackStatus newStatus) {
         // Validate that the voucher pack exists
         if (!voucherPackRepository.existsById(voucherPackId)) {
             throw new VoucherDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
         }
         
-        // Validate status transition (basic validation)
-        VoucherPack pack = voucherPackRepository.getVoucherPackById(voucherPackId);
-        if (!isValidStatusTransition(pack.getStatus(), newStatus)) {
-            throw new VoucherDomainException("Invalid status transition from " + pack.getStatus() + " to " + newStatus);
+        // Validate the status transition
+        VoucherPack existingPack = voucherPackRepository.getVoucherPackById(voucherPackId);
+        if (!existingPack.getStatus().canTransitionTo(newStatus)) {
+            throw new VoucherDomainException("Cannot transition voucher pack from " + existingPack.getStatus() + " to " + newStatus);
         }
         
+        // Update the status
         voucherPackRepository.updateVoucherPackStatus(voucherPackId, newStatus);
     }
 
-    /**
-     * Validates if a status transition is allowed.
-     * This is a basic validation - you might want to add more sophisticated rules.
-     */
-    private boolean isValidStatusTransition(VoucherPackStatus currentStatus, VoucherPackStatus newStatus) {
-        // Allow transition to EXPIRED from any status (for system operations)
-        if (newStatus == VoucherPackStatus.EXPIRED) {
-            return true;
+    @Override
+    public VoucherPack publishVoucherPack(Long voucherPackId) {
+        // Validate that the voucher pack exists
+        if (!voucherPackRepository.existsById(voucherPackId)) {
+            throw new VoucherDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
         }
         
-        // Allow transition to CLOSED from PENDING or PUBLISHED
-        if (newStatus == VoucherPackStatus.CLOSED) {
-            return currentStatus == VoucherPackStatus.PENDING || currentStatus == VoucherPackStatus.PUBLISHED;
+        // Get the existing voucher pack
+        VoucherPack existingPack = voucherPackRepository.getVoucherPackById(voucherPackId);
+        
+        // Validate that the pack is in PENDING status
+        if (existingPack.getStatus() != VoucherPackStatus.PENDING) {
+            throw new VoucherDomainException("Cannot publish voucher pack with status " + existingPack.getStatus() + ". Only PENDING packs can be published.");
         }
         
-        // Allow transition to PUBLISHED from PENDING
-        if (newStatus == VoucherPackStatus.PUBLISHED) {
-            return currentStatus == VoucherPackStatus.PENDING;
-        }
+        // Update the status to PUBLISHED
+        voucherPackRepository.updateVoucherPackStatus(voucherPackId, VoucherPackStatus.PUBLISHED);
         
-        return false;
+        // Return the updated pack
+        return voucherPackRepository.getVoucherPackById(voucherPackId);
     }
 }

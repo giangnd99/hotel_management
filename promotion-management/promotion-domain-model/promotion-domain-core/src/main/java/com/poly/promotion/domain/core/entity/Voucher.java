@@ -35,7 +35,7 @@ import com.poly.promotion.domain.core.exception.VoucherDomainException;
  * 
  * <p><strong>Business Rules:</strong></p>
  * <ul>
- *   <li>Vouchers are created with PENDING status during redemption</li>
+ *   <li>Vouchers are created with REDEEMED status during redemption</li>
  *   <li>Vouchers can only be used if they are in REDEEMED status and within validity period</li>
  *   <li>Vouchers automatically expire when they pass their validTo date</li>
  *   <li>Each voucher has a unique voucher code for identification</li>
@@ -43,8 +43,7 @@ import com.poly.promotion.domain.core.exception.VoucherDomainException;
  * 
  * <p><strong>Lifecycle:</strong></p>
  * <ol>
- *   <li><strong>PENDING:</strong> Created when customer redeems from pack</li>
- *   <li><strong>REDEEMED:</strong> Voucher is available for use</li>
+ *   <li><strong>REDEEMED:</strong> Created when customer redeems from pack</li>
  *   <li><strong>USED:</strong> Voucher has been applied to a transaction</li>
  *   <li><strong>EXPIRED:</strong> Voucher has passed its validity date</li>
  * </ol>
@@ -114,7 +113,7 @@ public class Voucher extends BaseEntity<VoucherId> {
      * 
      * <p>This factory method initializes a voucher with the following characteristics:</p>
      * <ul>
-     *   <li>Status set to PENDING</li>
+     *   <li>Status set to REDEEMED</li>
      *   <li>Redeemed timestamp set to current time</li>
      *   <li>Validity period calculated from the voucher pack's range</li>
      *   <li>Discount configuration inherited from the pack</li>
@@ -135,7 +134,7 @@ public class Voucher extends BaseEntity<VoucherId> {
                 .discount(discount)
                 .redeemedAt(LocalDateTime.now())
                 .validTo(LocalDateTime.now().plus(voucherValidRange.getValue(), voucherValidRange.getUnit()))
-                .voucherStatus(VoucherStatus.PENDING)
+                .voucherStatus(VoucherStatus.REDEEMED)
                 .build();
     }
 
@@ -144,7 +143,7 @@ public class Voucher extends BaseEntity<VoucherId> {
      * 
      * <p>A voucher is considered valid if it meets all of the following criteria:</p>
      * <ul>
-     *   <li>Status is REDEEMED (not PENDING, USED, or EXPIRED)</li>
+     *   <li>Status is REDEEMED (not USED or EXPIRED)</li>
      *   <li>Current time is before the validTo timestamp</li>
      * </ul>
      * 

@@ -27,4 +27,9 @@ public class ExpirationManagementServiceImpl implements ExpirationManagementServ
     public int markExpiredVouchers() {
         return voucherService.expireExpiredVouchers();
     }
+
+    @Override
+    public int markClosedVoucherPacks() {
+        return voucherPackService.markClosedVoucherPacks();
+    }
 }

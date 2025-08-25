@@ -140,4 +140,56 @@ public interface VoucherPackInternalApi {
      * @return a list of voucher packs with internal response format
      */
     List<VoucherPackInternalResponse> getAllVoucherPacks(String... status);
+
+    /**
+     * Retrieves a specific voucher pack by ID for administrative purposes.
+     * 
+     * <p>This method provides administrators with detailed information about
+     * a specific voucher pack, including all internal data and status information.</p>
+     * 
+     * @param voucherPackId the unique identifier of the voucher pack to retrieve
+     * @return the voucher pack with internal response format
+     * @throws IllegalArgumentException if the voucher pack ID is invalid
+     * @throws com.poly.promotion.domain.core.exception.PromotionDomainException if the voucher pack is not found
+     */
+    VoucherPackInternalResponse getVoucherPackById(Long voucherPackId);
+
+    /**
+     * Closes a voucher pack, making it unavailable for customer redemption.
+     * 
+     * <p>This method allows administrators to manually close voucher packs
+     * that are no longer needed or have been discontinued.</p>
+     * 
+     * <p><strong>Closure Rules:</strong></p>
+     * <ul>
+     *   <li>Only PENDING or PUBLISHED packs can be closed</li>
+     *   <li>CLOSED and EXPIRED packs cannot be closed again</li>
+     *   <li>Existing vouchers remain valid until their individual expiration</li>
+     * </ul>
+     * 
+     * @param voucherPackId the unique identifier of the voucher pack to close
+     * @throws IllegalArgumentException if the voucher pack ID is invalid
+     * @throws com.poly.promotion.domain.core.exception.PromotionDomainException if the voucher pack cannot be closed
+     */
+    void closeVoucherPack(Long voucherPackId);
+
+    /**
+     * Publishes a PENDING voucher pack, making it available for customer redemption.
+     * 
+     * <p>This method allows administrators to manually activate voucher packs
+     * that were created with future start dates or were kept in PENDING status.</p>
+     * 
+     * <p><strong>Publication Rules:</strong></p>
+     * <ul>
+     *   <li>Only PENDING packs can be published</li>
+     *   <li>Pack must have valid dates and configuration</li>
+     *   <li>Publication is immediate regardless of packValidFrom date</li>
+     * </ul>
+     * 
+     * @param voucherPackId the unique identifier of the voucher pack to publish
+     * @return the published voucher pack with internal response format
+     * @throws IllegalArgumentException if the voucher pack ID is invalid
+     * @throws com.poly.promotion.domain.core.exception.PromotionDomainException if the voucher pack cannot be published
+     */
+    VoucherPackInternalResponse publishVoucherPack(Long voucherPackId);
 }

@@ -37,9 +37,13 @@ spring:
       max-lifetime: 1800000
   
   # JPA Configuration
+  # Schema Creation Strategy:
+  # 1. Hibernate creates the schema and tables with create-drop
+  # 2. Liquibase then runs and can modify/update the schema as needed
+  # 3. This ensures the schema exists before Liquibase runs
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: ${HIBERNATE_DDL_AUTO:none}
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       transaction:
@@ -55,20 +59,25 @@ spring:
         order_updates: true
         batch_versioned_data: true
         hbm2ddl:
-          auto: create-drop
+          auto: ${HIBERNATE_DDL_AUTO:create-drop}
+        # Schema creation properties
+        default_schema: promotion_management
     open-in-view: false
   
   # Liquibase Configuration
+  # Re-enabled now that Hibernate has created the schema
   liquibase:
-    enabled: ${LIQUIBASE_ENABLED:false}
+    enabled: ${LIQUIBASE_ENABLED:true}
     change-log: classpath:db/migration/changelog-master.yml
     contexts: ${LIQUIBASE_CONTEXTS:}
-    default-schema: ${LIQUIBASE_DEFAULT_SCHEMA:public}
+    default-schema: ${LIQUIBASE_DEFAULT_SCHEMA:promotion_management}
     database-change-log-table: DATABASECHANGELOG
     database-change-log-lock-table: DATABASECHANGELOGLOCK
     drop-first: ${LIQUIBASE_DROP_FIRST:false}
     rollback-file: /dev/null
     test-rollback-on-update: false
+  
+  # Note: Spring SQL Init removed - Liquibase handles both schema and data
   
   # Jackson Configuration
   jackson:
@@ -237,8 +246,15 @@ spring:
       on-profile: dev
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
     show-sql: true
+    properties:
+      hibernate:
+        create_schemas: false
+        default_schema: promotion_management
+  liquibase:
+    enabled: true
+    drop-first: false
   h2:
     console:
       enabled: true
@@ -246,39 +262,8 @@ logging:
   level:
     com.poly.promotion: DEBUG
     org.springframework.web: DEBUG
+    org.liquibase: DEBUG
 
----
-# Production Profile
-spring:
-  config:
-    activate:
-      on-profile: prod
-  jpa:
-    hibernate:
-      ddl-auto: none
-    show-sql: false
-logging:
-  level:
-    com.poly.promotion: WARN
-    org.springframework.web: WARN
-  file:
-    name: /var/log/promotion-management/promotion-management.log
 
----
-# Testing Profile
-spring:
-  config:
-    activate:
-      on-profile: test
-  jpa:
-    hibernate:
-      ddl-auto: none
-    show-sql: true
-  datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: 
-logging:
-  level:
-    com.poly.promotion: DEBUG
+
+

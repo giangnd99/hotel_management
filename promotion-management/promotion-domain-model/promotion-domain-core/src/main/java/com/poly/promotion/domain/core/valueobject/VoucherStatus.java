@@ -14,8 +14,7 @@ import lombok.experimental.FieldDefaults;
  * 
  * <p><strong>Status Lifecycle:</strong></p>
  * <ol>
- *   <li><strong>PENDING:</strong> Voucher is created but not yet available for use</li>
- *   <li><strong>REDEEMED:</strong> Voucher is available for use by the customer</li>
+ *   <li><strong>REDEEMED:</strong> Voucher is created and available for use by the customer</li>
  *   <li><strong>USED:</strong> Voucher has been applied to a transaction</li>
  *   <li><strong>EXPIRED:</strong> Voucher has passed its validity period</li>
  * </ol>
@@ -30,7 +29,6 @@ import lombok.experimental.FieldDefaults;
  * 
  * <p><strong>Status Transitions:</strong></p>
  * <ul>
- *   <li>PENDING → REDEEMED: When voucher is activated</li>
  *   <li>REDEEMED → USED: When voucher is applied to a transaction</li>
  *   <li>REDEEMED → EXPIRED: When voucher passes its validity date</li>
  *   <li>Any status → EXPIRED: System can expire vouchers from any status</li>
@@ -48,8 +46,8 @@ public enum VoucherStatus {
     
     /**
      * Voucher is created but not yet available for use.
-     * This status is typically set when a voucher is first created during redemption
-     * from a voucher pack, but before it's activated for customer use.
+     * This status is reserved for future use cases where vouchers might need
+     * activation before use. Currently, vouchers are created directly as REDEEMED.
      */
     PENDING,
     
@@ -83,7 +81,6 @@ public enum VoucherStatus {
      * 
      * <p><strong>Examples:</strong></p>
      * <ul>
-     *   <li>"pending" → PENDING</li>
      *   <li>"REDEEMED" → REDEEMED</li>
      *   <li>"Used" → USED</li>
      *   <li>"expired" → EXPIRED</li>
@@ -108,13 +105,12 @@ public enum VoucherStatus {
      * <p>This method enforces business rules for status transitions, ensuring
      * that vouchers follow the proper lifecycle flow.</p>
      * 
-     * <p><strong>Valid Transitions:</strong></p>
-     * <ul>
-     *   <li>PENDING → REDEEMED: Voucher activation</li>
-     *   <li>REDEEMED → USED: Voucher usage</li>
-     *   <li>REDEEMED → EXPIRED: Voucher expiration</li>
-     *   <li>Any → EXPIRED: System expiration (always allowed)</li>
-     * </ul>
+      * <p><strong>Valid Transitions:</strong></p>
+ * <ul>
+ *   <li>REDEEMED → USED: Voucher usage</li>
+ *   <li>REDEEMED → EXPIRED: Voucher expiration</li>
+ *   <li>Any → EXPIRED: System expiration (always allowed)</li>
+ * </ul>
      * 
      * @param newStatus the target status for the transition
      * @return true if the transition is valid, false otherwise
@@ -127,7 +123,8 @@ public enum VoucherStatus {
         
         switch (this) {
             case PENDING:
-                return newStatus == REDEEMED;
+                // PENDING status is not used in current flow
+                return false;
             case REDEEMED:
                 return newStatus == USED;
             case USED:
@@ -145,7 +142,7 @@ public enum VoucherStatus {
      * Checks if this status represents an active voucher that can be used.
      * 
      * <p>Only REDEEMED vouchers are considered active and available for use.
-     * Other statuses (PENDING, USED, EXPIRED) are not available for transactions.</p>
+     * Other statuses (USED, EXPIRED) are not available for transactions.</p>
      * 
      * @return true if the voucher status allows usage, false otherwise
      */

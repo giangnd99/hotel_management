@@ -201,6 +201,25 @@ public class VoucherExternalApiImpl implements VoucherExternalApi {
         return convertToExternalResponse(redeemedVoucher);
     }
 
+    @Override
+    public VoucherExternalResponse applyVoucher(String voucherCode, String customerId) {
+        // Validate input parameters
+        if (voucherCode == null || voucherCode.trim().isEmpty()) {
+            throw new IllegalArgumentException("Voucher code cannot be null or empty");
+        }
+        
+        if (customerId == null || customerId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Customer ID cannot be null or empty");
+        }
+        
+        // Delegate to the domain service for business logic
+        // The service handles voucher validation, status checks, and business rule enforcement
+        Voucher usedVoucher = voucherService.applyVoucher(voucherCode, customerId);
+        
+        // Transform the result to external response format
+        return convertToExternalResponse(usedVoucher);
+    }
+
     /**
      * Validates the voucher redemption request data.
      * 

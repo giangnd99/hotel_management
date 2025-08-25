@@ -200,6 +200,19 @@ public interface VoucherPackJpaRepository extends JpaRepository<VoucherPackJpaEn
     int markExpiredVoucherPacks();
 
     /**
+     * Finds voucher packs that should be automatically closed due to zero quantity.
+     * 
+     * <p>This method finds voucher packs that are currently PUBLISHED or PENDING
+     * and have zero quantity. These packs should be automatically closed by the system.</p>
+     * 
+     * @return a list of voucher packs eligible for automatic closure
+     */
+    @Query("SELECT vp FROM VoucherPackJpaEntity vp " +
+           "WHERE vp.status IN ('PENDING', 'PUBLISHED') " +
+           "AND vp.quantity <= 0")
+    List<VoucherPackJpaEntity> findVoucherPacksEligibleForClosure();
+
+    /**
      * Updates the status of a specific voucher pack.
      * 
      * <p>This method provides a way to update the status of a voucher pack

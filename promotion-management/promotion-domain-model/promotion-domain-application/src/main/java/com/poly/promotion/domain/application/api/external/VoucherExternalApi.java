@@ -140,4 +140,53 @@ public interface VoucherExternalApi {
      * @throws com.poly.promotion.domain.core.exception.PromotionDomainException if business rules are violated
      */
     VoucherExternalResponse redeemVoucherFromPack(VoucherRedeemRequest request);
+    
+    /**
+     * Allows a customer to apply a voucher to a transaction.
+     * 
+     * <p>This method enables customers to use their redeemed vouchers during
+     * transactions. The application process includes validation of voucher
+     * eligibility, status, and ownership.</p>
+     * 
+     * <p><strong>Application Process:</strong></p>
+     * <ol>
+     *   <li>Validates customer authentication and authorization</li>
+     *   <li>Checks voucher status and validity</li>
+     *   <li>Verifies voucher ownership by customer</li>
+     *   <li>Marks voucher as used after successful application</li>
+     *   <li>Returns the updated voucher details</li>
+     * </ol>
+     * 
+     * <p><strong>Business Rules Enforced:</strong></p>
+     * <ul>
+     *   <li>Voucher must be in REDEEMED status</li>
+     *   <li>Voucher must not be expired</li>
+     *   <li>Voucher must belong to the customer</li>
+     *   <li>Voucher can only be used once</li>
+     * </ul>
+     * 
+     * <p><strong>Security Features:</strong></p>
+     * <ul>
+     *   <li>Customer authentication is required</li>
+     *   <li>Voucher ownership validation</li>
+     *   <li>Fraud prevention through status checks</li>
+     *   <li>Audit trail for all usage transactions</li>
+     * </ul>
+     * 
+     * <p><strong>Response Data:</strong></p>
+     * <ul>
+     *   <li>Updated voucher details</li>
+     *   <li>Voucher code for reference</li>
+     *   <li>Updated status (USED)</li>
+     *   <li>Application timestamp</li>
+     * </ul>
+     * 
+     * @param voucherCode the unique voucher code to apply
+     * @param customerId the customer's unique identifier
+     * @return the updated voucher details formatted for external consumption
+     * @throws IllegalArgumentException if the voucher code or customer ID is invalid
+     * @throws SecurityException if the customer is not authenticated or authorized
+     * @throws com.poly.promotion.domain.core.exception.PromotionDomainException if business rules are violated
+     */
+    VoucherExternalResponse applyVoucher(String voucherCode, String customerId);
 }

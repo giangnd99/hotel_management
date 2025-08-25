@@ -130,6 +130,68 @@ public class VoucherPack extends BaseEntity<VoucherPackId> {
     VoucherPackStatus status;
 
     /**
+     * Calculates the appropriate status based on pack validity dates.
+     * 
+     * <p>This method determines the initial status of a voucher pack based on its validity dates:</p>
+     * <ul>
+     *   <li>PENDING: When packValidFrom is in the future</li>
+     *   <li>PUBLISHED: When packValidFrom is today or in the past</li>
+     * </ul>
+     * 
+     * <p><strong>Status Logic:</strong></p>
+     * <ul>
+     *   <li>If packValidFrom is null: PUBLISHED (immediately available)</li>
+     *   <li>If packValidFrom is after today: PENDING (future availability)</li>
+     *   <li>If packValidFrom is today or before: PUBLISHED (currently available)</li>
+     * </ul>
+     * 
+     * @return the calculated VoucherPackStatus based on validity dates
+     */
+    public VoucherPackStatus calculateInitialStatus() {
+        if (packValidFrom == null) {
+            // No start date specified, make immediately available
+            return VoucherPackStatus.PUBLISHED;
+        }
+        
+        LocalDate today = LocalDate.now();
+        if (packValidFrom.isAfter(today)) {
+            // Start date is in the future
+            return VoucherPackStatus.PENDING;
+        } else {
+            // Start date is today or in the past
+            return VoucherPackStatus.PUBLISHED;
+        }
+    }
+
+    /**
+     * Checks if this pack should be automatically published based on its validity dates.
+     * 
+     * <p>This method is useful for scheduled tasks that check if PENDING packs
+     * should be automatically transitioned to PUBLISHED status.</p>
+     * 
+     * @return true if the pack should be published, false otherwise
+     */
+    public boolean shouldBePublished() {
+        return status == VoucherPackStatus.PENDING && 
+               packValidFrom != null && 
+               !packValidFrom.isAfter(LocalDate.now());
+    }
+
+    /**
+     * Checks if this pack should be automatically expired based on its validity dates.
+     * 
+     * <p>This method is useful for scheduled tasks that check if packs
+     * should be automatically marked as EXPIRED.</p>
+     * 
+     * @return true if the pack should be expired, false otherwise
+     */
+    public boolean shouldBeExpired() {
+        return packValidTo != null && 
+               packValidTo.isBefore(LocalDate.now()) && 
+               status != VoucherPackStatus.EXPIRED;
+    }
+
+    /**
      * Validates that the pack's validity dates are logically consistent.
      * 
      * <p>This method ensures that if both packValidFrom and packValidTo are set,

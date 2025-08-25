@@ -65,23 +65,26 @@ public interface ExpirationManagementService {
     int markExpiredVoucherPacks();
     
     /**
-     * Marks vouchers as expired that are past their validity date.
+     * Marks expired vouchers in the system.
      * 
-     * <p>This method identifies all vouchers that are currently REDEEMED
-     * and have passed their validTo date, then updates their status to EXPIRED.
-     * This operation is performed after voucher pack expiration to ensure proper coordination.</p>
-     * 
-     * <p><strong>Process:</strong></p>
-     * <ol>
-     *   <li>Identifies eligible vouchers (REDEEMED with expired validTo)</li>
-     *   <li>Updates each voucher's status to EXPIRED</li>
-     *   <li>Continues processing even if individual vouchers fail</li>
-     *   <li>Returns the count of successfully expired vouchers</li>
-     * </ol>
+     * <p>This method identifies all vouchers that have passed their individual
+     * validity date and marks them as expired. This is typically called by
+     * scheduled tasks or system maintenance processes.</p>
      * 
      * @return the number of vouchers that were marked as expired
      */
     int markExpiredVouchers();
+
+    /**
+     * Marks voucher packs as closed when they have zero quantity.
+     * 
+     * <p>This method identifies all voucher packs that are currently PUBLISHED or PENDING
+     * and have zero quantity, then updates their status to CLOSED.
+     * This is typically called by scheduled tasks or system maintenance processes.</p>
+     * 
+     * @return the number of voucher packs that were marked as closed
+     */
+    int markClosedVoucherPacks();
     
     /**
      * Performs a comprehensive expiration check on all vouchers and voucher packs.

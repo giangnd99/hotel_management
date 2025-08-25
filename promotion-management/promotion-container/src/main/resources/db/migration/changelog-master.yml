@@ -5,12 +5,6 @@ databaseChangeLog:
   - include:
       file: db/migration/changelog-002-add-indexes.yml
       relativeToChangelogFile: false
-#   - include:
-#       file: db/migration/changelog-003-initial-data.yml
-#       relativeToChangelogFile: false
   - include:
-      file: db/migration/changelog-004-batch-schema.yml
-      relativeToChangelogFile: false
-  - include:
-      file: db/migration/changelog-005-monitoring-data.yml
+      file: db/migration/changelog-003-initial-data.yml
       relativeToChangelogFile: false

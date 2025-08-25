@@ -238,10 +238,10 @@ public class VoucherPackInternalApiImpl implements VoucherPackInternalApi {
      */
     private VoucherPackInternalResponse convertToInternalResponse(VoucherPack voucherPack) {
         return VoucherPackInternalResponse.builder()
-                .id(voucherPack.getId().getValue())
+                .id(voucherPack.getId() != null ? voucherPack.getId().getValue() : null)
                 .description(voucherPack.getDescription())
-                .discountAmount(voucherPack.getDiscountAmount().getValue())
-                .validRange(voucherPack.getVoucherValidRange().toString())
+                .discountAmount(voucherPack.getDiscountAmount() != null ? voucherPack.getDiscountAmount().getValue() : null)
+                .validRange(voucherPack.getVoucherValidRange() != null ? voucherPack.getVoucherValidRange().toString() : null)
                 .requiredPoints(voucherPack.getRequiredPoints())
                 .quantity(voucherPack.getQuantity())
                 .validFrom(voucherPack.getPackValidFrom())
@@ -250,7 +250,24 @@ public class VoucherPackInternalApiImpl implements VoucherPackInternalApi {
                 .createdBy(voucherPack.getCreatedBy())
                 .updatedAt(voucherPack.getUpdatedAt())
                 .updatedBy(voucherPack.getUpdatedBy())
-                .status(voucherPack.getStatus().name())
+                .status(voucherPack.getStatus() != null ? voucherPack.getStatus().name() : null)
                 .build();
+    }
+
+    @Override
+    public VoucherPackInternalResponse getVoucherPackById(Long voucherPackId) {
+        VoucherPack voucherPack = voucherPackService.getVoucherPackById(voucherPackId);
+        return convertToInternalResponse(voucherPack);
+    }
+
+    @Override
+    public void closeVoucherPack(Long voucherPackId) {
+        voucherPackService.closeVoucherPack(voucherPackId);
+    }
+
+    @Override
+    public VoucherPackInternalResponse publishVoucherPack(Long voucherPackId) {
+        VoucherPack publishedPack = voucherPackService.publishVoucherPack(voucherPackId);
+        return convertToInternalResponse(publishedPack);
     }
 }

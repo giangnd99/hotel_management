@@ -153,13 +153,13 @@ public class VoucherPackExternalApiImpl implements VoucherPackExternalApi {
     private VoucherPackExternalResponse convertToExternalResponse(VoucherPack voucherPack) {
         return VoucherPackExternalResponse.builder()
                 .description(voucherPack.getDescription())
-                .discountAmount(voucherPack.getDiscountAmount().getValue())
-                .validRange(voucherPack.getVoucherValidRange().toString())
+                .discountAmount(voucherPack.getDiscountAmount() != null ? voucherPack.getDiscountAmount().getValue() : null)
+                .validRange(voucherPack.getVoucherValidRange() != null ? voucherPack.getVoucherValidRange().toString() : null)
                 .requiredPoints(voucherPack.getRequiredPoints())
                 .quantity(voucherPack.getQuantity())
                 .validFrom(voucherPack.getPackValidFrom())
                 .validTo(voucherPack.getPackValidTo())
-                .packStatus(voucherPack.getStatus().name())
+                .packStatus(voucherPack.getStatus() != null ? voucherPack.getStatus().name() : null)
                 .build();
     }
 

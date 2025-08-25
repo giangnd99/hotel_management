@@ -87,6 +87,11 @@ public class VoucherServiceImpl implements VoucherService {
             throw new VoucherDomainException("Cannot redeem " + quantity + " vouchers from pack " + voucherPackId);
         }
         
+        // Validate that the voucher pack is not expired
+        if (voucherPack.shouldBeExpired()) {
+            throw new VoucherDomainException("Cannot redeem vouchers from expired pack " + voucherPackId);
+        }
+        
         // Create vouchers for the requested quantity
         Voucher redeemedVoucher = null;
         for (int i = 0; i < quantity; i++) {
@@ -148,8 +153,11 @@ public class VoucherServiceImpl implements VoucherService {
             throw new VoucherDomainException("Voucher " + voucherCode + " does not belong to customer " + customerId);
         }
         
-        // Check if voucher can be used
+        // Check if voucher can be used (includes status and expiration validation)
         if (!voucher.canUse()) {
+            if (voucher.isExpired()) {
+                throw new VoucherDomainException("Voucher " + voucherCode + " has expired and cannot be used");
+            }
             throw new VoucherDomainException("Voucher " + voucherCode + " cannot be used. Status: " + voucher.getVoucherStatus());
         }
         
@@ -232,9 +240,9 @@ public class VoucherServiceImpl implements VoucherService {
             return currentStatus == VoucherStatus.REDEEMED;
         }
         
-        // Allow transition to REDEEMED from PENDING
+        // Allow transition to REDEEMED from PENDING (not used in current flow)
         if (newStatus == VoucherStatus.REDEEMED) {
-            return currentStatus == VoucherStatus.PENDING;
+            return false; // No transitions to REDEEMED in current flow
         }
         
         return false;

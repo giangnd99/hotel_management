@@ -208,4 +208,14 @@ public interface VoucherPackRepository {
      * @return a list of voucher packs eligible for expiration
      */
     List<VoucherPack> getVoucherPacksEligibleForExpiration();
+
+    /**
+     * Gets all voucher packs that should be automatically closed due to zero quantity.
+     * 
+     * <p>This method returns voucher packs that are currently PUBLISHED or PENDING
+     * and have zero quantity. These packs should be automatically closed by the system.</p>
+     * 
+     * @return a list of voucher packs eligible for automatic closure
+     */
+    List<VoucherPack> getVoucherPacksEligibleForClosure();
 }

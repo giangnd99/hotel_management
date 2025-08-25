@@ -121,4 +121,30 @@ public class VoucherRedeemRequest {
      * </ul>
      */
     Long voucherPackId;
+    
+    /**
+     * Quantity of vouchers to redeem from the voucher pack.
+     * 
+     * <p>This field specifies how many vouchers the customer wants to redeem
+     * from the selected voucher pack. The system will validate that the pack
+     * has sufficient quantity available and that the customer has enough
+     * loyalty points for the requested quantity.</p>
+     * 
+     * <p><strong>Validation Requirements:</strong></p>
+     * <ul>
+     *   <li>Must not be null</li>
+     *   <li>Must be a positive number</li>
+     *   <li>Must not exceed available pack quantity</li>
+     *   <li>Must not exceed customer redemption limits</li>
+     * </ul>
+     * 
+     * <p><strong>Business Logic:</strong></p>
+     * <ul>
+     *   <li>Determines total loyalty points required</li>
+     *   <li>Affects pack quantity reduction</li>
+     *   <li>Influences customer voucher portfolio size</li>
+     *   <li>May trigger pack closure if quantity reaches zero</li>
+     * </ul>
+     */
+    Integer quantity;
 }

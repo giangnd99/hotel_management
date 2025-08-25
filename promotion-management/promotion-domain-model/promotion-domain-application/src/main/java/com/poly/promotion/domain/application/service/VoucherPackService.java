@@ -152,6 +152,27 @@ public interface VoucherPackService {
     List<VoucherPack> getVoucherPacksEligibleForExpiration();
 
     /**
+     * Marks voucher packs as closed when they have zero quantity.
+     * 
+     * <p>This method identifies all voucher packs that are currently PUBLISHED or PENDING
+     * and have zero quantity, then updates their status to CLOSED.
+     * This is typically called by scheduled tasks or system maintenance processes.</p>
+     * 
+     * @return the number of voucher packs that were marked as closed
+     */
+    int markClosedVoucherPacks();
+
+    /**
+     * Gets all voucher packs that should be automatically closed due to zero quantity.
+     * 
+     * <p>This method returns voucher packs that are currently PUBLISHED or PENDING
+     * and have zero quantity. These packs should be automatically closed by the system.</p>
+     * 
+     * @return a list of voucher packs eligible for automatic closure
+     */
+    List<VoucherPack> getVoucherPacksEligibleForClosure();
+
+    /**
      * Updates the status of a voucher pack.
      * 
      * <p>This method should be used with caution and typically only for system operations
@@ -163,4 +184,17 @@ public interface VoucherPackService {
      * @throws com.poly.promotion.domain.core.exception.PromotionDomainException if the pack doesn't exist or the status transition is invalid
      */
     void updateVoucherPackStatus(Long voucherPackId, VoucherPackStatus newStatus);
+
+    /**
+     * Publishes a PENDING voucher pack, making it available for customer redemption.
+     * 
+     * <p>This method allows administrators to manually activate voucher packs
+     * that were created with future start dates or were kept in PENDING status.
+     * The pack will be immediately available regardless of its packValidFrom date.</p>
+     * 
+     * @param voucherPackId the ID of the voucher pack to publish
+     * @return the published voucher pack
+     * @throws com.poly.promotion.domain.core.exception.PromotionDomainException if the pack doesn't exist or is not in PENDING status
+     */
+    VoucherPack publishVoucherPack(Long voucherPackId);
 }

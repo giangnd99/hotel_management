@@ -398,6 +398,29 @@ public class VoucherPackRepositoryAdapter implements VoucherPackRepository {
     }
 
     /**
+     * Gets all voucher packs that should be automatically closed due to zero quantity.
+     * 
+     * @return a list of voucher packs eligible for automatic closure
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<VoucherPack> getVoucherPacksEligibleForClosure() {
+        log.debug("Finding voucher packs eligible for automatic closure due to zero quantity");
+        
+        try {
+            List<VoucherPackJpaEntity> jpaEntities = jpaRepository.findVoucherPacksEligibleForClosure();
+            List<VoucherPack> voucherPacks = transformer.toDomainEntities(jpaEntities);
+            
+            log.debug("Found {} voucher packs eligible for automatic closure", voucherPacks.size());
+            return voucherPacks;
+            
+        } catch (Exception e) {
+            log.error("Error finding voucher packs eligible for automatic closure", e);
+            throw new RuntimeException("Failed to find voucher packs eligible for automatic closure", e);
+        }
+    }
+
+    /**
      * Maps a domain VoucherPackStatus to its JPA equivalent.
      * 
      * @param domainStatus the domain status to map
