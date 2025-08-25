@@ -26,12 +26,10 @@
         <dependency>
             <groupId>com.poly</groupId>
             <artifactId>restaurant-application-service</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.poly</groupId>
             <artifactId>restaurant-data-access</artifactId>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 
