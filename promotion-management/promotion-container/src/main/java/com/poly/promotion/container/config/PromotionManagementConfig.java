@@ -55,7 +55,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
     "com.poly.promotion.domain.core.entity"
 })
 @EnableJpaRepositories(basePackages = {
-    "com.poly.promotion.data.access.repository"
+    "com.poly.promotion"
 })
 @EnableScheduling
 @EnableTransactionManagement

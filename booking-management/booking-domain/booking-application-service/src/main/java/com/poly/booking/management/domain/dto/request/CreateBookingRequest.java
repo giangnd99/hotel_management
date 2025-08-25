@@ -1,5 +1,6 @@
 package com.poly.booking.management.domain.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -20,14 +21,17 @@ public class CreateBookingRequest {
     private UUID customerId;
 
     @NotNull(message = "List Room ID is required")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private List<UUID> listRoomId;
 
     @NotNull(message = "Check-in date is required")
     @Future(message = "Check-in date must be in the future")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate checkInDate;
 
     @NotNull(message = "Check-out date is required")
     @Future(message = "Check-out date must be in the future")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate checkOutDate;
 
     @NotNull(message = "Number of guests is required")

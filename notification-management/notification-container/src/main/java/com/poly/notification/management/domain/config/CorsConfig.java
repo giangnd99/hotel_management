@@ -1,4 +1,4 @@
-package com.poly.booking.management.domain.config;
+package com.poly.notification.management.domain.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

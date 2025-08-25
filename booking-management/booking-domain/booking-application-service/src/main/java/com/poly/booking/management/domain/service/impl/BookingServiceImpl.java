@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -178,11 +179,11 @@ public class BookingServiceImpl implements BookingService {
 
         // Update fields if provided
         if (request.getCheckInDate() != null) {
-            builder.checkInDate(DateCustom.of(request.getCheckInDate()));
+            builder.checkInDate(DateCustom.of(LocalDateTime.of(request.getCheckInDate(), LocalTime.now())));
         }
 
         if (request.getCheckOutDate() != null) {
-            builder.checkOutDate(DateCustom.of(request.getCheckOutDate()));
+            builder.checkOutDate(DateCustom.of(LocalDateTime.of(request.getCheckOutDate(), LocalTime.now())));
         }
 
         // Build and save
@@ -367,7 +368,6 @@ public class BookingServiceImpl implements BookingService {
         dto.setCreatedAt(LocalDateTime.now());
         dto.setUpdatedAt(LocalDateTime.now());
         dto.setNumberOfGuests(booking.getNumberOfGuests() != null ? booking.getNumberOfGuests() : 1);
-        // Set room information if available
         if (booking.getBookingRooms() != null && !booking.getBookingRooms().isEmpty()) {
             var firstRoom = booking.getBookingRooms().get(0);
             if (firstRoom.getRoom() != null) {

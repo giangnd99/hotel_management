@@ -11,9 +11,11 @@ services:
     image: com.poly/authentication.service:1.0
     container_name: authentication-service
     ports:
-      - "8083:8083"
+      - "8092:8092"
     environment:
-      - AUTH_SECRET_KEY=your_authentication_secret_key
+      - GOOGLE_REDIRECT_URI=http://localhost:3000/auth/login
+      - GOOGLE_CLIENT_ID=384241258749-6i1gsdh3gge9hpc46pvm7um7grtafttc.apps.googleusercontent.com
+      - GOOGLE_CLIENT_SECRET=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
     networks:
       - hotel_network
   payment-service:
@@ -22,8 +24,9 @@ services:
     ports:
       - "8094:8094"
     environment:
-      - PAYMENT_GATEWAY_API_KEY=your_payment_api_key
-      - PAYMENT_GATEWAY_SECRET=your_payment_secret
+      - PAYOS_CLIENT_ID=d81f99f4-f1c5-4438-bd9d-7ad884c9c18a
+      - PAYOS_API_KEY=68e9fb54-5f64-4df0-9d98-007c32c58ab8
+      - PAYOS_CHECKSUM_KEY=003945057010a8b73a1a9b6127b9be3bad1f72340598328c0e5be3eb19b8332e
     networks:
       - hotel_network
   hotel-ai-service:
@@ -32,10 +35,8 @@ services:
     ports:
       - "8088:8088"
     environment:
-      - OPENAI_API_KEY=your_openai_api_key
-      - CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-      - CLOUDINARY_API_KEY=your_cloudinary_api_key
-      - CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+      - MODEL=gemma:2b
+      - BOOKING_URL=
     networks:
       - hotel_network
 
@@ -44,6 +45,17 @@ services:
     container_name: notification-service
     ports:
       - "8190:8190"
+    networks:
+      - hotel_network
+  cloudinary-service:
+    image: com.poly/cloudinary.service:1.0
+    container_name: cloudinary-service
+    ports:
+      - "8190:8190"
+    environment:
+      - CLOUD_NAME=dpbysnmcc
+      - API_KEY=652244894287299
+      - API_SECRET=VFXiAf6zQ0ygfdfe_t9Vm0eMOuc
     networks:
       - hotel_network
 

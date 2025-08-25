@@ -1,4 +1,4 @@
-package com.poly.notification.management.config;
+package com.poly.promotion.container.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
