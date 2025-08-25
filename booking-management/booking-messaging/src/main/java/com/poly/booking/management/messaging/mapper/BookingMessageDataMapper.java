@@ -44,7 +44,7 @@ public class BookingMessageDataMapper {
                 .id(bookingRoomResponseAvro.getId())
                 .bookingId(bookingRoomResponseAvro.getBookingId())
                 .reason(bookingRoomResponseAvro.getReason())
-                .roomResponseStatus(bookingRoomResponseAvro.getReservationStatus().equals("SUCCESS")? RoomStatus.BOOKED: RoomStatus.VACANT)
+                .roomResponseStatus(bookingRoomResponseAvro.getReservationStatus().equals("SUCCESS") ? RoomStatus.BOOKED : RoomStatus.VACANT)
                 .roomBookingStatus(RoomResponseStatus.SUCCESS)
                 .sagaId(bookingRoomResponseAvro.getSagaId())
                 .totalPrice(bookingRoomResponseAvro.getTotalPrice())
@@ -61,6 +61,7 @@ public class BookingMessageDataMapper {
                 .setStatus(RoomStatus.VACANT.name())
                 .build()).toList();
     }
+
     private List<com.poly.booking.management.domain.kafka.model.Room> roomsToRoomsCheckInAvro(List<RoomEventPayload> rooms) {
         return rooms.stream().map(room -> com.poly.booking.management.domain.kafka.model.Room.newBuilder()
                 .setId(room.getRoomId())
@@ -127,9 +128,9 @@ public class BookingMessageDataMapper {
         return NotificationMessageAvro.newBuilder()
                 .setId(notifiEventPayload.getId().toString())
                 .setBookingId(notifiEventPayload.getBookingId().toString())
+                .setNotificationType(NotificationType.BOOKING_CANCEL)
                 .setCustomerId(notifiEventPayload.getCustomerId().toString())
                 .setCustomerEmail(notifiEventPayload.getCustomerEmail())
-                .setNotificationType(NotificationType.BOOKING_CANCEL)
                 .setMessageStatus(MessageStatus.PENDING)
                 .build();
     }
