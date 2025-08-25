@@ -1,10 +1,85 @@
 version: '3.8'
 services:
   eureka-service:
-    image: com.poly/eureka.service:0.0.1-SNAPSHOT
+    image: com.poly/eureka.service:1.0
     container_name: eureka-service
     ports:
       - "8761:8761"
+    networks:
+      - hotel_network
+  authentication-service:
+    image: com.poly/authentication.service:1.0
+    container_name: authentication-service
+    ports:
+      - "8083:8083"
+    environment:
+      - AUTH_SECRET_KEY=your_authentication_secret_key
+    networks:
+      - hotel_network
+  payment-service:
+    image: com.poly/payment.service:1.0
+    container_name: payment-service
+    ports:
+      - "8094:8094"
+    environment:
+      - PAYMENT_GATEWAY_API_KEY=your_payment_api_key
+      - PAYMENT_GATEWAY_SECRET=your_payment_secret
+    networks:
+      - hotel_network
+  hotel-ai-service:
+    image: com.poly/hotel-ai.service:1.0
+    container_name: hotel-ai-service
+    ports:
+      - "8088:8088"
+    environment:
+      - OPENAI_API_KEY=your_openai_api_key
+      - CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+      - CLOUDINARY_API_KEY=your_cloudinary_api_key
+      - CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+    networks:
+      - hotel_network
+
+  notification-service:
+    image: com.poly/notification.service:1.0
+    container_name: notification-service
+    ports:
+      - "8190:8190"
+    networks:
+      - hotel_network
+
+  booking-service:
+    image: com.poly/booking.service:1.0
+    container_name: booking-service
+    ports:
+      - "8083:8083"
+    networks:
+      - hotel_network
+  room-service:
+    image: com.poly/room.service:1.0
+    container_name: room-service
+    ports:
+      - "8087:8087"
+    networks:
+      - hotel_network
+  security-service:
+    image: com.poly/security.service:1.0
+    container_name: security-service
+    ports:
+      - "8090:8090"
+    networks:
+      - hotel_network
+  customer-service:
+    image: com.poly/customer.service:1.0
+    container_name: customer-service
+    ports:
+      - "8099:8099"
+    networks:
+      - hotel_network
+  restaurant-service:
+    image: com.poly/restaurant.service:1.0
+    container_name: restaurant-service
+    ports:
+      - "8082:8082"
     networks:
       - hotel_network
 
