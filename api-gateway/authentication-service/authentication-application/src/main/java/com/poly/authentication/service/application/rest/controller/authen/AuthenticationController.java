@@ -10,14 +10,12 @@ import com.poly.authentication.service.domain.dto.request.auth.IntrospectRequest
 import com.poly.authentication.service.domain.dto.request.auth.LogoutRequest;
 import com.poly.authentication.service.domain.dto.request.auth.RefreshRequest;
 import com.poly.authentication.service.domain.port.in.service.AuthenticationService;
+import com.poly.authentication.service.domain.port.in.service.ForgotPasswordService;
 import com.poly.authentication.service.domain.port.in.service.GoogleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
@@ -29,6 +27,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
+    private final ForgotPasswordService forgotPasswordService;
     private final GoogleService googleService;
 
     @PostMapping("/token")

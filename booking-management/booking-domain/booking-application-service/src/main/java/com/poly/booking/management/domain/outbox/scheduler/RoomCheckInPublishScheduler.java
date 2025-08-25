@@ -2,7 +2,7 @@ package com.poly.booking.management.domain.outbox.scheduler;
 
 import com.poly.booking.management.domain.outbox.model.RoomOutboxMessage;
 import com.poly.booking.management.domain.outbox.service.RoomOutboxService;
-import com.poly.booking.management.domain.port.out.message.publisher.RoomCheckOutMessagePublisher;
+import com.poly.booking.management.domain.port.out.message.publisher.RoomCheckInMessagePublisher;
 import com.poly.domain.valueobject.BookingStatus;
 import com.poly.outbox.OutboxScheduler;
 import com.poly.outbox.OutboxStatus;
@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Room Check Out Publish Scheduler
@@ -41,22 +40,9 @@ import java.util.stream.Collectors;
 public class RoomCheckInPublishScheduler implements OutboxScheduler {
 
     private final RoomOutboxService roomOutboxService;
-    private final RoomCheckOutMessagePublisher roomCheckOutMessagePublisher;
+    private final RoomCheckInMessagePublisher roomCheckInMessagePublisher;
 
-    /**
-     * Xử lý outbox messages định kỳ
-     * <p>
-     * LOGIC FLOW:
-     * 1. Lấy danh sách outbox messages đang chờ xử lý
-     * 2. Gửi từng message đến Kafka topic
-     * 3. Cập nhật trạng thái outbox messages
-     * 4. Log kết quả xử lý
-     * <p>
-     * SCHEDULING:
-     * - Chạy định kỳ theo cấu hình trong application.yml
-     * - Xử lý batch messages để tối ưu hiệu suất
-     * - Đảm bảo transaction consistency
-     */
+
     @Override
     @Transactional
     @Scheduled(fixedDelayString = "${booking-service.outbox-scheduler-fixed-rate}",
@@ -76,7 +62,7 @@ public class RoomCheckInPublishScheduler implements OutboxScheduler {
                                     outboxMessages.size(),
                                     outboxMessage.getId().toString());
 
-                            roomCheckOutMessagePublisher.sendRoomCheckInRequest(outboxMessage, this::updateOutboxStatus);
+                            roomCheckInMessagePublisher.sendRoomCheckInRequest(outboxMessage, this::updateOutboxStatus);
 
                             log.info("{} RoomCheckOutOutboxMessage sent to message bus!", outboxMessages.size());
 

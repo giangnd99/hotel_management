@@ -23,7 +23,6 @@ public class ConfirmedRequestKafkaPublisher implements NotificationRequestMessag
 
     private final BookingMessageDataMapper bookingDataMapper;
     private final KafkaProducer<String, NotificationMessageAvro> kafkaProducer;
-    private final BookingServiceConfigData bookingServiceConfigData;
     private final KafkaMessageHelper kafkaMessageHelper;
 
 
@@ -112,7 +111,7 @@ public class ConfirmedRequestKafkaPublisher implements NotificationRequestMessag
                                     BiConsumer<NotifiOutboxMessage, OutboxStatus> outboxCallback,
                                     NotifiEventPayload notificationEventPayload) {
 
-        String topicName = bookingServiceConfigData.getBookingNotificationRequestTopicName();
+        String topicName = "booking-cancel-email-topic";
 
         kafkaProducer.send(
                 topicName,
@@ -124,7 +123,7 @@ public class ConfirmedRequestKafkaPublisher implements NotificationRequestMessag
                         notifiOutboxMessage,
                         outboxCallback,
                         notificationEventPayload.getBookingId().toString(),
-                        "BookingConfirmationNotificationAvroModel"
+                        "BookingNotificationAvroModel"
                 )
         );
     }

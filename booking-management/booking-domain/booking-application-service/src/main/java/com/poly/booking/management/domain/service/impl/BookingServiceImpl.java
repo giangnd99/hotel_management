@@ -178,11 +178,11 @@ public class BookingServiceImpl implements BookingService {
 
         // Update fields if provided
         if (request.getCheckInDate() != null) {
-            builder.checkInDate(DateCustom.of(request.getCheckInDate().atStartOfDay()));
+            builder.checkInDate(DateCustom.of(request.getCheckInDate()));
         }
 
         if (request.getCheckOutDate() != null) {
-            builder.checkOutDate(DateCustom.of(request.getCheckOutDate().atStartOfDay()));
+            builder.checkOutDate(DateCustom.of(request.getCheckOutDate()));
         }
 
         // Build and save

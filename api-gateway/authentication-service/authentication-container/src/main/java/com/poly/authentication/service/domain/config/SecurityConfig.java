@@ -48,7 +48,8 @@ public class SecurityConfig {
             "/auth/introspect",
             "/reset-password", "/reset-password/**",
             "/users",
-            "/auth/callback"
+            "/auth/callback",
+            "/users/change/password/**","/users/forgot/password/**","/users/forgot/password/valid/**"
     };
 
     @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
