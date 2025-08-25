@@ -42,10 +42,8 @@ public class OrderHandlerImpl extends AbstractGenericHandlerImpl<Order, String> 
             order.setCustomerNote(order.getCustomerNote());
         }
         
-        // Only set status to NEW if it's not already NEW (to avoid transition error)
-        if (order.getStatus() != OrderStatus.NEW) {
-            order.setStatus(OrderStatus.NEW);
-        }
+        // Set status to NEW for new orders
+        order.setStatus(OrderStatus.NEW);
         
         // Save order
         Order savedOrder = repository.save(order);

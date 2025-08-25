@@ -49,6 +49,24 @@ public class OrderController {
         return ResponseEntity.ok(completed);
     }
 
+    @PutMapping("/{id}/status")
+    @Operation(summary = "Cập nhật trạng thái đơn hàng")
+    public ResponseEntity<OrderDTO> updateOrderStatus(
+            @PathVariable String id,
+            @RequestParam String status) {
+        log.info("Updating order status: {} to {}", id, status);
+        OrderDTO updated = orderUseCase.updateOrderStatus(id, status);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PutMapping("/{id}/cancel")
+    @Operation(summary = "Hủy đơn hàng")
+    public ResponseEntity<OrderDTO> cancelOrder(@PathVariable String id) {
+        log.info("Cancelling order: {}", id);
+        OrderDTO cancelled = orderUseCase.cancelOrder(id);
+        return ResponseEntity.ok(cancelled);
+    }
+
     @DeleteMapping("/{id}")
     @Operation(summary = "Hủy đơn hàng với refund")
     public ResponseEntity<OrderDTO> cancelOrderWithRefund(
@@ -98,22 +116,4 @@ public class OrderController {
         List<OrderDTO> orders = orderUseCase.getOrdersByStatus(status);
         return ResponseEntity.ok(orders);
     }
-
-    // ========== NEW ORDER TYPES ==========
-//
-//    @PostMapping("/direct")
-//    @Operation(summary = "Tạo đơn hàng với thanh toán trực tiếp")
-//    public ResponseEntity<OrderDTO> createDirectOrder(@RequestBody @Valid OrderDTO request) {
-//        log.info("Creating direct order: {}", request.id());
-//        OrderDTO created = orderUseCase.createDirectOrder(request);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(created);
-//    }
-//
-//    @PostMapping("/room-attached")
-//    @Operation(summary = "Tạo đơn hàng đính kèm vào room")
-//    public ResponseEntity<OrderDTO> createRoomAttachedOrder(@RequestBody @Valid OrderDTO request) {
-//        log.info("Creating room attached order: {}", request.id());
-//        OrderDTO created = orderUseCase.createRoomAttachedOrder(request);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(created);
-//    }
 }

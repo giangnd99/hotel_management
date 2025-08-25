@@ -79,7 +79,8 @@ public class OrderEntityMapper {
                 jpaEntity.getRoomId(),
                 domainItems,
                 jpaEntity.getCreatedAt(),
-                jpaEntity.getOrderNumber() // Pass orderNumber to constructor
+                jpaEntity.getOrderNumber(), // Pass orderNumber to constructor
+                jpaEntity.getStatus() // Pass status directly to constructor
         );
         order.setCustomerNote(jpaEntity.getSpecialInstructions());
         

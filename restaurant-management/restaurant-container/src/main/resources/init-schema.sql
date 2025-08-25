@@ -102,7 +102,8 @@ INSERT IGNORE INTO orders (id, order_number, customer_id, room_id, total_amount,
 VALUES
   ('O001', 'R-1001', '11111111-1111-1111-1111-111111111111', 'T001', 205000, 'COMPLETED', 'PAID', 'DINE_IN', 'No spice'),
   ('O002', 'R-1002', '11111111-1111-1111-1111-111111111111', 'T002', 275000, 'IN_PROGRESS', 'PENDING', 'DINE_IN', 'Extra napkins'),
-  ('O003', 'R-1003', '22222222-2222-2222-2222-222222222222', 'T003', 95000, 'NEW', 'PENDING', 'TAKEAWAY', NULL);
+  ('O003', 'R-1003', '22222222-2222-2222-2222-222222222222', 'T003', 95000, 'NEW', 'PENDING', 'TAKEAWAY', NULL),
+  ('O004', 'R-1004', '11111111-1111-1111-1111-111111111111', 'T004', 130000, 'CANCELLED', 'REFUNDED', 'DINE_IN', 'Customer cancelled');
 
 -- Order items
 INSERT IGNORE INTO order_items (id, order_id, menu_item_id, quantity, unit_price, total_price, special_instructions)
@@ -110,4 +111,6 @@ VALUES
   ('OI001', 'O001', 'M001', 1, 85000, 85000, NULL),
   ('OI002', 'O001', 'M004', 2, 60000, 120000, NULL),
   ('OI003', 'O002', 'M002', 1, 275000, 275000, 'Well done'),
-  ('OI004', 'O003', 'M003', 1, 95000, 95000, NULL);
+  ('OI004', 'O003', 'M003', 1, 95000, 95000, NULL),
+  ('OI005', 'O004', 'M001', 1, 85000, 85000, NULL),
+  ('OI006', 'O004', 'M003', 1, 95000, 95000, NULL);
