@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class RoomResponse {
     private String id;
     private String roomNumber;
-    private int floor;
+    private Integer floor;
     private RoomTypeResponse roomType;
     private String roomStatus;
 }

@@ -1,6 +1,6 @@
 package com.poly.authentication.service.domain.port.out.httpclient;
 
-import com.poly.authentication.service.domain.dto.reponse.OutboundUserResponse;
+import com.poly.authentication.service.domain.dto.reponse.user.OutboundUserResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

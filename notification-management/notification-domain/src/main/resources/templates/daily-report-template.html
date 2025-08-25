@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo Hàng Ngày - Nikka Hotel</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f6f7fb;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #0061ff, #60efff);
+            color: #fff;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .header p {
+            margin: 5px 0 0;
+            font-size: 16px;
+        }
+        .content {
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .section {
+            background-color: #fcfcfc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e1e1e1;
+        }
+        .section-header {
+            border-bottom: 2px solid #0061ff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .section-header h3 {
+            margin: 0;
+            font-size: 20px;
+            color: #0061ff;
+        }
+        .section-header img {
+            height: 24px;
+            margin-right: 10px;
+        }
+        .summary-box {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .summary-card {
+            background-color: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 8px;
+            padding: 15px;
+            width: 30%;
+            text-align: center;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .summary-card h4 {
+            margin: 0 0 5px;
+            font-size: 14px;
+            color: #1a237e;
+        }
+        .summary-card p {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: #0d47a1;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #555;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #999;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Báo Cáo Hoạt Động Hàng Ngày</h1>
+        <p>Khách Sạn Nikka Hotel - Ngày <span th:text="${date}">24/08/2025</span></p>
+    </div>
+
+    <div class="content">
+        <div class="section">
+            <div class="section-header">
+                <h3>📊 Tổng Quan Hoạt Động</h3>
+            </div>
+            <div class="summary-box">
+                <div class="summary-card">
+                    <h4>Tổng Số Đặt Phòng</h4>
+                    <p th:text="${totalBookings}">150</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Đặt Phòng Thành Công</h4>
+                    <p th:text="${successfulBookings}">125</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Tỷ Lệ Thành Công</h4>
+                    <p th:text="${overallSuccessRate}">83.3%</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Tổng Doanh Thu</h4>
+                    <p th:text="${totalRevenue}">250.000.000 VNĐ</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Số Phòng Đã Thuê</h4>
+                    <p th:text="${occupiedRooms}">80</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Tỷ Lệ Lấp Đầy</h4>
+                    <p th:text="${occupancyRate}">65%</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h3>📈 Thống Kê Chi Tiết</h3>
+            </div>
+            <p th:if="${bookingDetails != null and !bookingDetails.isEmpty()}">Danh sách đặt phòng trong ngày:</p>
+            <table th:if="${bookingDetails != null and !bookingDetails.isEmpty()}">
+                <thead>
+                <tr>
+                    <th>Mã Đặt Phòng</th>
+                    <th>Khách Hàng</th>
+                    <th>Số Phòng</th>
+                    <th>Ngày Check-in</th>
+                    <th>Ngày Check-out</th>
+                    <th>Trạng Thái</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="booking : ${bookingDetails}">
+                    <td th:text="${booking.bookingId}">uuid</td>
+                    <td th:text="${booking.customerName}">Nguyễn Văn A</td>
+                    <td th:text="${booking.roomNumber}">101</td>
+                    <td th:text="${#temporals.format(booking.checkInDate, 'dd-MM-yyyy')}">dd-MM-yyyy</td>
+                    <td th:text="${#temporals.format(booking.checkOutDate, 'dd-MM-yyyy')}">dd-MM-yyyy</td>
+                    <td th:text="${booking.status}">Đã xác nhận</td>
+                </tr>
+                </tbody>
+            </table>
+            <p th:if="${paymentDetails != null and !paymentDetails.isEmpty()}">Danh sách thanh toán trong ngày:</p>
+            <table th:if="${paymentDetails != null and !paymentDetails.isEmpty()}">
+                <thead>
+                <tr>
+                    <th>Mã Thanh Toán</th>
+                    <th>Số Tiền</th>
+                    <th>Phương Thức</th>
+                    <th>Trạng Thái</th>
+                    <th>Ngày Thanh Toán</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="payment : ${paymentDetails}">
+                    <td th:text="${payment.orderCode}">uuid</td>
+                    <td th:text="${payment.amount}">1.500.000 VNĐ</td>
+                    <td th:text="${payment.method}">Tiền mặt</td>
+                    <td th:text="${payment.status}">Hoàn thành</td>
+                    <td th:text="${#temporals.format(payment.paidAt, 'HH:mm:ss dd-MM-yyyy')}">hh:mm:ss dd-MM-yyyy</td>
+                </tr>
+                </tbody>
+            </table>
+            <p th:if="${invoiceDetails != null and !invoiceDetails.isEmpty()}">Danh sách hóa đơn trong ngày:</p>
+            <table th:if="${invoiceDetails != null and !invoiceDetails.isEmpty()}">
+                <thead>
+                <tr>
+                    <th>Mã Hóa Đơn</th>
+                    <th>Tổng Tiền</th>
+                    <th>Trạng Thái</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="invoice : ${invoiceDetails}">
+                    <td th:text="${invoice.id}">uuid</td>
+                    <td th:text="${invoice.totalAmount}">2.000.000 VNĐ</td>
+                    <td th:text="${invoice.status}">Đã thanh toán</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h3>🤖 Phân Tích AI</h3>
+            </div>
+            <div class="section-content">
+                <h4>💡 Nhận Xét:</h4>
+                <div th:if="${aiInsights != null}">
+                    <h4>💡 Nhận Xét:</h4>
+                    <p th:text="${aiInsights.overview}">Phân tích tổng quan về hoạt động trong ngày...</p>
+                </div>
+                <div th:if="${aiInsights == null}">
+                    <p>Không thể tạo nhận xét phân tích AI do lỗi hệ thống.</p>
+                </div>
+            </div>
+        </div>
+
+        <p><strong>Lưu ý:</strong> Báo cáo này được tạo tự động bởi hệ thống AI. Vui lòng kiểm tra lại các số liệu quan trọng.</p>
+    </div>
+
+    <div class="footer">
+        <p>Trân trọng,<br><strong>Hệ Thống AI - Nikka Hotel</strong></p>
+        <p>Báo cáo được gửi tự động vào lúc <span th:text="${generatedAt}">00:00</span><br>
+            Nếu có thắc mắc, vui lòng liên hệ với đội ngũ IT.</p>
+    </div>
+</div>
+</body>
+</html>

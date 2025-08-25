@@ -2,8 +2,8 @@ package com.poly.authentication.service.domain.handler.authentication;
 
 import com.nimbusds.jose.JOSEException;
 
-import com.poly.authentication.service.domain.dto.reponse.IntrospectResponse;
-import com.poly.authentication.service.domain.dto.request.IntrospectRequest;
+import com.poly.authentication.service.domain.dto.reponse.authen.IntrospectResponse;
+import com.poly.authentication.service.domain.dto.request.auth.IntrospectRequest;
 import com.poly.authentication.service.domain.exception.AppException;
 import com.poly.authentication.service.domain.exception.AuthenException;
 import lombok.RequiredArgsConstructor;

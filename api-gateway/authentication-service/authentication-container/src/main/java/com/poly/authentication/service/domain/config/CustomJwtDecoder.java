@@ -1,11 +1,9 @@
 package com.poly.authentication.service.domain.config;
 
-import com.nimbusds.jose.JOSEException;
-import com.poly.authentication.service.domain.dto.request.IntrospectRequest;
+import com.poly.authentication.service.domain.dto.request.auth.IntrospectRequest;
 import com.poly.authentication.service.domain.port.in.service.AuthenticationService;
 import com.poly.domain.DomainConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -18,8 +16,6 @@ import java.util.Objects;
 
 @Component
 public class CustomJwtDecoder implements JwtDecoder {
-
-    private final String signerKey = DomainConstants.JWT_SECRET;
 
     @Autowired
     private AuthenticationService authenticationService;
@@ -39,6 +35,7 @@ public class CustomJwtDecoder implements JwtDecoder {
         }
 
         if (Objects.isNull(nimbusJwtDecoder)) {
+            String signerKey = DomainConstants.JWT_SECRET;
             SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HmacSHA512");
             nimbusJwtDecoder = NimbusJwtDecoder.withSecretKey(secretKeySpec)
                     .macAlgorithm(MacAlgorithm.HS512)

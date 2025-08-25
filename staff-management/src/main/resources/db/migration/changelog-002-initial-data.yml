@@ -1,0 +1,625 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002
+      author: linhpete
+      comment: Insert initial staff data with sample records for hotel departments
+      changes:
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST001"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440001"
+              - column:
+                  name: name
+                  value: "John Smith"
+              - column:
+                  name: email
+                  value: "john.smith@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0101"
+              - column:
+                  name: department
+                  value: "Receptionist"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST002"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440002"
+              - column:
+                  name: name
+                  value: "Sarah Johnson"
+              - column:
+                  name: email
+                  value: "sarah.johnson@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0102"
+              - column:
+                  name: department
+                  value: "House Keeper"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST003"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440003"
+              - column:
+                  name: name
+                  value: "Michael Chen"
+              - column:
+                  name: email
+                  value: "michael.chen@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0103"
+              - column:
+                  name: department
+                  value: "Cook"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST004"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440004"
+              - column:
+                  name: name
+                  value: "Emily Rodriguez"
+              - column:
+                  name: email
+                  value: "emily.rodriguez@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0104"
+              - column:
+                  name: department
+                  value: "Waiter"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST005"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440005"
+              - column:
+                  name: name
+                  value: "David Kim"
+              - column:
+                  name: email
+                  value: "david.kim@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0105"
+              - column:
+                  name: department
+                  value: "Receptionist"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST006"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440006"
+              - column:
+                  name: name
+                  value: "Lisa Thompson"
+              - column:
+                  name: email
+                  value: "lisa.thompson@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0106"
+              - column:
+                  name: department
+                  value: "House Keeper"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST007"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440007"
+              - column:
+                  name: name
+                  value: "Robert Wilson"
+              - column:
+                  name: email
+                  value: "robert.wilson@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0107"
+              - column:
+                  name: department
+                  value: "Cook"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST008"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440008"
+              - column:
+                  name: name
+                  value: "Maria Garcia"
+              - column:
+                  name: email
+                  value: "maria.garcia@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0108"
+              - column:
+                  name: department
+                  value: "Waiter"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST009"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440009"
+              - column:
+                  name: name
+                  value: "James Brown"
+              - column:
+                  name: email
+                  value: "james.brown@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0109"
+              - column:
+                  name: department
+                  value: "Receptionist"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST010"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440010"
+              - column:
+                  name: name
+                  value: "Jennifer Lee"
+              - column:
+                  name: email
+                  value: "jennifer.lee@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0110"
+              - column:
+                  name: department
+                  value: "House Keeper"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST011"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440011"
+              - column:
+                  name: name
+                  value: "Thomas Anderson"
+              - column:
+                  name: email
+                  value: "thomas.anderson@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0111"
+              - column:
+                  name: department
+                  value: "Cook"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST012"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440012"
+              - column:
+                  name: name
+                  value: "Amanda White"
+              - column:
+                  name: email
+                  value: "amanda.white@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0112"
+              - column:
+                  name: department
+                  value: "Waiter"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST013"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440013"
+              - column:
+                  name: name
+                  value: "Christopher Davis"
+              - column:
+                  name: email
+                  value: "christopher.davis@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0113"
+              - column:
+                  name: department
+                  value: "Receptionist"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST014"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440014"
+              - column:
+                  name: name
+                  value: "Jessica Martinez"
+              - column:
+                  name: email
+                  value: "jessica.martinez@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0114"
+              - column:
+                  name: department
+                  value: "House Keeper"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST015"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440015"
+              - column:
+                  name: name
+                  value: "Daniel Taylor"
+              - column:
+                  name: email
+                  value: "daniel.taylor@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0115"
+              - column:
+                  name: department
+                  value: "Cook"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST016"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440016"
+              - column:
+                  name: name
+                  value: "Rachel Green"
+              - column:
+                  name: email
+                  value: "rachel.green@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0116"
+              - column:
+                  name: department
+                  value: "Waiter"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST017"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440017"
+              - column:
+                  name: name
+                  value: "Kevin Johnson"
+              - column:
+                  name: email
+                  value: "kevin.johnson@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0117"
+              - column:
+                  name: department
+                  value: "Receptionist"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST018"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440018"
+              - column:
+                  name: name
+                  value: "Nicole Clark"
+              - column:
+                  name: email
+                  value: "nicole.clark@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0118"
+              - column:
+                  name: department
+                  value: "House Keeper"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST019"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440019"
+              - column:
+                  name: name
+                  value: "Steven Miller"
+              - column:
+                  name: email
+                  value: "steven.miller@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0119"
+              - column:
+                  name: department
+                  value: "Cook"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            tableName: staffs
+            columns:
+              - column:
+                  name: staff_id
+                  value: "ST020"
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440020"
+              - column:
+                  name: name
+                  value: "Michelle Adams"
+              - column:
+                  name: email
+                  value: "michelle.adams@hotel.com"
+              - column:
+                  name: phone
+                  value: "+1-555-0120"
+              - column:
+                  name: department
+                  value: "Waiter"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP

@@ -1,5 +1,6 @@
 package com.poly.payment.management.data.access.mapper;
 
+
 import com.poly.domain.valueobject.ReferenceId;
 import com.poly.payment.management.data.access.entity.PaymentEntity;
 import com.poly.payment.management.domain.value_object.PaymentMethod;
@@ -9,15 +10,17 @@ import com.poly.payment.management.domain.value_object.Description;
 import com.poly.payment.management.domain.value_object.Money;
 import com.poly.payment.management.domain.value_object.OrderCode;
 import com.poly.payment.management.domain.value_object.PaymentId;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PaymentMapper {
-    public static Payment toDomain(PaymentEntity entity) {
+    public Payment toDomain(PaymentEntity entity) {
         return Payment.builder()
                 .paymentId(PaymentId.from(entity.getId()))
-                .referenceId(ReferenceId.from(entity.getReferenceId()))
-                .status(com.poly.domain.valueobject.PaymentStatus.valueOf(entity.getStatus().name()))
+                .referenceId(new ReferenceId(entity.getReferenceId()))
+                .status(PaymentStatus.valueOf(entity.getStatus().name()))
                 .amount(Money.from(entity.getAmount()))
-                .method(com.poly.domain.valueobject.PaymentMethod.valueOf(entity.getMethod().name()))
+                .method(PaymentMethod.valueOf(entity.getMethod().name()))
                 .paidAt(entity.getPaidAt())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
@@ -27,7 +30,7 @@ public class PaymentMapper {
                 .build();
     }
 
-    public static PaymentEntity toEntity(Payment payment) {
+    public PaymentEntity toEntity(Payment payment) {
         return PaymentEntity.builder()
                 .id(payment.getId().getValue())
                 .referenceId(payment.getReferenceId() != null ? payment.getReferenceId().getValue() : null)

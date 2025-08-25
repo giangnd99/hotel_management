@@ -36,7 +36,7 @@ spring:
     ollama:
       base-url: http://localhost:11434
       chat:
-        model: gemma:2b
+        model: ${MODEL:gemma:2b}
       embedding:
         model: nomic-embed-text
         enabled: true
@@ -51,3 +51,6 @@ spring:
       host: localhost
       repositories:
         enabled: true
+
+booking:
+  room: ${BOOKING_URL:localhost://3000:/}

@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,8 +21,8 @@ public interface CheckInJpaRepository extends JpaRepository<CheckInEntity, UUID>
     List<CheckInEntity> findByBookingId(UUID bookingId);
     
     // Status-based queries
-    List<CheckInEntity> findByStatus(String status);
-    Page<CheckInEntity> findByStatus(String status, Pageable pageable);
+    List<CheckInEntity> findAllByStatus(CheckInEntity.CheckInStatus status);
+    Page<CheckInEntity> findAllByStatus(CheckInEntity.CheckInStatus status, Pageable pageable);
     
     // Date-based queries
     List<CheckInEntity> findByCheckInDate(LocalDate checkInDate);

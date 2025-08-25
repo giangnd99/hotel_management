@@ -15,16 +15,30 @@ import java.math.BigDecimal;
 @Table(name = "menu_items")
 public class MenuItemJpaEntity {
     @Id
-    @Column(name = "menu_item_id")
-    private Integer id;
-    @Column(name = "item_name")
+    @Column(name = "id")
+    private String id;
+    
+    @Column(name = "name")
     private String name;
+    
     private String description;
     private BigDecimal price;
-    private String category;
-    private Integer quantity;
     
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private MenuItemStatus status;
+    @Column(name = "category_id")
+    private String categoryId;
+    
+    @Column(name = "is_available")
+    private Boolean isAvailable;
+    
+    @Column(name = "image_url")
+    private String imageUrl;
+    
+    @Column(name = "preparation_time")
+    private Integer preparationTime;
+    
+    @Column(name = "created_at")
+    private java.time.LocalDateTime createdAt;
+    
+    @Column(name = "updated_at")
+    private java.time.LocalDateTime updatedAt;
 }

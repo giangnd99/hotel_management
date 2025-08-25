@@ -1,18 +1,106 @@
 version: '3.8'
 services:
-  ollama:
-    build: ./ollama
-    container_name: ollama
+  eureka-service:
+    image: com.poly/eureka.service:1.0
+    container_name: eureka-service
     ports:
-      - "11434:11434"
-    volumes:
-      - ollama_models:/root/.ollama
-    restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:11434/api/tags" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      - "8761:8761"
+    networks:
+      - hotel_network
+  authentication-service:
+    image: com.poly/authentication.service:1.0
+    container_name: authentication-service
+    ports:
+      - "8092:8092"
+    environment:
+      - GOOGLE_REDIRECT_URI=http://localhost:3000/auth/login
+      - GOOGLE_CLIENT_ID=384241258749-6i1gsdh3gge9hpc46pvm7um7grtafttc.apps.googleusercontent.com
+      - GOOGLE_CLIENT_SECRET=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
+    networks:
+      - hotel_network
+  payment-service:
+    image: com.poly/payment.service:1.0
+    container_name: payment-service
+    ports:
+      - "8094:8094"
+    environment:
+      - PAYOS_CLIENT_ID=d81f99f4-f1c5-4438-bd9d-7ad884c9c18a
+      - PAYOS_API_KEY=68e9fb54-5f64-4df0-9d98-007c32c58ab8
+      - PAYOS_CHECKSUM_KEY=003945057010a8b73a1a9b6127b9be3bad1f72340598328c0e5be3eb19b8332e
+    networks:
+      - hotel_network
+  hotel-ai-service:
+    image: com.poly/hotel-ai.service:1.0
+    container_name: hotel-ai-service
+    ports:
+      - "8088:8088"
+    environment:
+      - MODEL=gemma:2b
+      - BOOKING_URL=
+    networks:
+      - hotel_network
+
+  notification-service:
+    image: com.poly/notification.service:1.0
+    container_name: notification-service
+    ports:
+      - "8190:8190"
+    networks:
+      - hotel_network
+  cloudinary-service:
+    image: com.poly/cloudinary.service:1.0
+    container_name: cloudinary-service
+    ports:
+      - "8085:8085"
+    environment:
+      - CLOUD_NAME=dpbysnmcc
+      - API_KEY=652244894287299
+      - API_SECRET=VFXiAf6zQ0ygfdfe_t9Vm0eMOuc
+    networks:
+      - hotel_network
+
+  booking-service:
+    image: com.poly/booking.service:1.0
+    container_name: booking-service
+    ports:
+      - "8083:8083"
+    networks:
+      - hotel_network
+  room-service:
+    image: com.poly/room.service:1.0
+    container_name: room-service
+    ports:
+      - "8087:8087"
+    networks:
+      - hotel_network
+  security-service:
+    image: com.poly/security.service:1.0
+    container_name: security-service
+    ports:
+      - "8090:8090"
+    networks:
+      - hotel_network
+  customer-service:
+    image: com.poly/customer.service:1.0
+    container_name: customer-service
+    ports:
+      - "8099:8099"
+    networks:
+      - hotel_network
+  restaurant-service:
+    image: com.poly/restaurant.service:1.0
+    container_name: restaurant-service
+    ports:
+      - "8082:8082"
+    networks:
+      - hotel_network
+  inventory-service:
+    image: com.poly/restaurant.service:1.0
+    container_name: restaurant-service
+    ports:
+      - "8801:8801"
+    networks:
+      - hotel_network
 
   postgres:
     image: ankane/pgvector:latest
@@ -58,6 +146,7 @@ services:
       - 3307:3306
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
     healthcheck:
       test:
         - CMD
@@ -207,4 +296,6 @@ volumes:
   ollama_models:
 networks:
   kafka-net:
+    driver: bridge
+  hotel_network:
     driver: bridge

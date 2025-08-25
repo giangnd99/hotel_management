@@ -9,7 +9,6 @@ import com.poly.promotion.domain.core.entity.VoucherPack;
 import com.poly.promotion.domain.core.valueobject.VoucherPackStatus;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,7 +58,6 @@ import java.util.stream.Collectors;
  * @see VoucherPackUpdateRequest
  * @see VoucherPackInternalResponse
  */
-@Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VoucherPackInternalApiImpl implements VoucherPackInternalApi {
 
@@ -156,10 +154,7 @@ public class VoucherPackInternalApiImpl implements VoucherPackInternalApi {
      * @throws com.poly.promotion.domain.core.exception.PromotionDomainException if the pack cannot be updated
      */
     @Override
-    public VoucherPackInternalResponse updateVoucherPack(Long voucherPackId, VoucherPackUpdateRequest request) {
-        // Retrieve the existing voucher pack
-        VoucherPack existingPack = voucherPackService.getVoucherPackById(voucherPackId);
-        
+    public VoucherPackInternalResponse updateVoucherPack(Long voucherPackId, VoucherPackUpdateRequest request) {        
         // Apply the updates from the request
         VoucherPack updatedPack = request.toEntity();
         

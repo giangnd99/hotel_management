@@ -2,7 +2,7 @@ package com.poly.room.management.kafka.adaptor;
 
 import com.poly.room.management.domain.message.RoomCancellationResponseMessage;
 import com.poly.room.management.domain.port.in.message.listener.RoomCancellationListener;
-import com.poly.room.management.domain.saga.cancellation.RoomCancellation;
+import com.poly.room.management.domain.command.room.RoomCancellationCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class RoomCancellationListenerImpl implements RoomCancellationListener {
 
-    private final RoomCancellation roomCancellationStep;
+    private final RoomCancellationCommand roomCancellationCommandStep;
 
     /**
      * Xử lý room cancellation event

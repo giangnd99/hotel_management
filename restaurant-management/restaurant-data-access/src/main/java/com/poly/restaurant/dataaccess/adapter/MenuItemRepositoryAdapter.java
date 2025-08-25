@@ -1,6 +1,6 @@
 package com.poly.restaurant.dataaccess.adapter;
 
-import com.poly.restaurant.application.port.out.repo.MenuItemRepositoryPort;
+import com.poly.restaurant.application.port.out.MenuItemRepositoryPort;
 import com.poly.restaurant.dataaccess.entity.MenuItemJpaEntity;
 import com.poly.restaurant.dataaccess.jpa.JpaMenuItemRepository;
 import com.poly.restaurant.dataaccess.mapper.MenuItemEntityMapper;
@@ -25,7 +25,7 @@ public class MenuItemRepositoryAdapter implements MenuItemRepositoryPort {
     }
 
     @Override
-    public Optional<MenuItem> findById(Integer id) {
+    public Optional<MenuItem> findById(String id) {
         return jpaMenuItemRepository.findById(id)
                 .map(MenuItemEntityMapper::toDomain);
     }
@@ -38,12 +38,12 @@ public class MenuItemRepositoryAdapter implements MenuItemRepositoryPort {
     }
 
     @Override
-    public boolean existsById(Integer id) {
+    public boolean existsById(String id) {
         return jpaMenuItemRepository.existsById(id);
     }
 
     @Override
-    public void deleteById(Integer id) {
+    public void deleteById(String id) {
         jpaMenuItemRepository.deleteById(id);
     }
 

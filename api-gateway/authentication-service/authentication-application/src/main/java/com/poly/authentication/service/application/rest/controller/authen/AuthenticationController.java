@@ -2,22 +2,21 @@ package com.poly.authentication.service.application.rest.controller.authen;
 
 import com.nimbusds.jose.JOSEException;
 import com.poly.authentication.service.domain.dto.ApiResponse;
-import com.poly.authentication.service.domain.dto.reponse.AuthenticationResponse;
-import com.poly.authentication.service.domain.dto.reponse.IntrospectResponse;
-import com.poly.authentication.service.domain.dto.reponse.UserGGResponse;
-import com.poly.authentication.service.domain.dto.request.AuthenticationRequest;
-import com.poly.authentication.service.domain.dto.request.IntrospectRequest;
-import com.poly.authentication.service.domain.dto.request.LogoutRequest;
-import com.poly.authentication.service.domain.dto.request.RefreshRequest;
+import com.poly.authentication.service.domain.dto.reponse.authen.AuthenticationResponse;
+import com.poly.authentication.service.domain.dto.reponse.authen.IntrospectResponse;
+import com.poly.authentication.service.domain.dto.reponse.user.UserGGResponse;
+import com.poly.authentication.service.domain.dto.request.auth.AuthenticationRequest;
+import com.poly.authentication.service.domain.dto.request.auth.IntrospectRequest;
+import com.poly.authentication.service.domain.dto.request.auth.LogoutRequest;
+import com.poly.authentication.service.domain.dto.request.auth.RefreshRequest;
 import com.poly.authentication.service.domain.port.in.service.AuthenticationService;
+import com.poly.authentication.service.domain.port.in.service.ForgotPasswordService;
 import com.poly.authentication.service.domain.port.in.service.GoogleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.util.Map;
@@ -27,24 +26,24 @@ import java.util.Map;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
-
     private final AuthenticationService authenticationService;
+    private final ForgotPasswordService forgotPasswordService;
     private final GoogleService googleService;
 
     @PostMapping("/token")
     public ApiResponse<AuthenticationResponse> authenticationResponseApiResponse(@RequestBody AuthenticationRequest request) {
 
-        var result = authenticationService.authenticate(request);
+         AuthenticationResponse response = authenticationService.authenticate(request);
 
         return ApiResponse.<AuthenticationResponse>builder().
-                result(result).
+                result(response).
                 build();
     }
 
     @PostMapping("/introspect")
     ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request) throws ParseException, JOSEException {
 
-        var result = authenticationService.introspect(request);
+        IntrospectResponse result = authenticationService.introspect(request);
 
         return ApiResponse.<IntrospectResponse>builder().result(result).build();
     }
@@ -79,7 +78,7 @@ public class AuthenticationController {
 
         try {
             UserGGResponse user = googleService.getUserResponse(code);
-
+            //redirect ở đây được ko
             return ApiResponse.<String>builder()
                     .result(user.getToken())
                     .build();

@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.poly</groupId>
         <artifactId>booking-domain</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
 
     <artifactId>booking-application-service</artifactId>
@@ -15,10 +15,6 @@
         <dependency>
             <groupId>com.poly</groupId>
             <artifactId>common-domain</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.poly</groupId>
-            <artifactId>common-application</artifactId>
         </dependency>
         <dependency>
             <groupId>com.poly</groupId>

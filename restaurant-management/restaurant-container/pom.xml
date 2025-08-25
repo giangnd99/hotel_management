@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.poly</groupId>
         <artifactId>restaurant-management</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
 
     <artifactId>restaurant-container</artifactId>
@@ -52,26 +52,15 @@
         <dependency>
             <groupId>com.poly</groupId>
             <artifactId>restaurant-application</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.poly</groupId>
-            <artifactId>restaurant-domain</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>com.poly</groupId>
             <artifactId>restaurant-data-access</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.poly</groupId>
             <artifactId>restaurant-messaging</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <dependencyManagement>

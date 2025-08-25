@@ -7,7 +7,6 @@ import com.poly.promotion.domain.core.entity.VoucherPack;
 import com.poly.promotion.domain.core.valueobject.VoucherPackStatus;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,7 +54,6 @@ import java.util.stream.Collectors;
  * @see VoucherPackService
  * @see VoucherPackExternalResponse
  */
-@Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VoucherPackExternalApiImpl implements VoucherPackExternalApi {
 

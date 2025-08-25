@@ -1,9 +1,9 @@
 package com.poly.customerapplicationservice.port.input;
 
-import com.poly.customerapplicationservice.command.EarnPointLoyaltyCommand;
-import com.poly.customerapplicationservice.command.RetrieveLoyaltyProfileCommand;
-import com.poly.customerapplicationservice.command.RetrieveLoyaltyTransactionCommand;
-import com.poly.customerapplicationservice.command.RedeemPointLoyaltyCommand;
+import com.poly.customerapplicationservice.dto.command.EarnPointLoyaltyCommand;
+import com.poly.customerapplicationservice.dto.command.RetrieveLoyaltyProfileCommand;
+import com.poly.customerapplicationservice.dto.command.RetrieveLoyaltyTransactionCommand;
+import com.poly.customerapplicationservice.dto.command.RedeemPointLoyaltyCommand;
 import com.poly.customerapplicationservice.dto.LoyaltyPointDto;
 import com.poly.customerapplicationservice.dto.LoyaltyTransactionDto;
 

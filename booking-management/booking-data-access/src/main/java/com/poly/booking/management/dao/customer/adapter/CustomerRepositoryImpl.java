@@ -1,8 +1,10 @@
 package com.poly.booking.management.dao.customer.adapter;
 
+import com.poly.booking.management.dao.customer.entity.CustomerEntity;
 import com.poly.booking.management.dao.customer.mapper.CustomerDataAccessMapper;
 import com.poly.booking.management.dao.customer.repository.CustomerJpaRepository;
 import com.poly.booking.management.domain.entity.Customer;
+import com.poly.booking.management.domain.exception.BookingDomainException;
 import com.poly.booking.management.domain.port.out.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,8 +27,9 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     public Optional<Customer> findById(UUID customerId) {
-        return customerJpaRepository.findById(customerId)
-                .map(customerDataAccessMapper::customerEntityToCustomer);
+        CustomerEntity customerEntity = customerJpaRepository.findById(customerId).orElseThrow(() ->
+                new BookingDomainException("Customer not found"));
+        return Optional.of(customerDataAccessMapper.customerEntityToCustomer(customerEntity));
     }
 
     @Override

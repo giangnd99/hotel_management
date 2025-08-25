@@ -17,7 +17,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-import com.poly.promotion.domain.core.exception.PromotionDomainException;
+import com.poly.promotion.domain.core.exception.VoucherDomainException;
 
 /**
  * <h2>Voucher Entity</h2>
@@ -173,11 +173,11 @@ public class Voucher extends BaseEntity<VoucherId> {
      * <p>This method validates that the voucher can be used before changing its status.
      * Once used, a voucher cannot be used again.</p>
      * 
-     * @throws PromotionDomainException if the voucher cannot be used
+     * @throws VoucherDomainException if the voucher cannot be used
      */
     public void use() {
         if (!canUse()) {
-            throw new PromotionDomainException("Voucher cannot be used. Status: " + voucherStatus + ", Valid: " + isValid());
+            throw new VoucherDomainException("Voucher cannot be used. Status: " + voucherStatus + ", Valid: " + isValid());
         }
         this.voucherStatus = VoucherStatus.USED;
     }

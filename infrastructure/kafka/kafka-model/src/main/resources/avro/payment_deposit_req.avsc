@@ -11,15 +11,11 @@
     },
     {
       "name": "sagaId",
-      "type": {
-        "type": "string"
-      }
+      "type": ["null", "string"]
     },
     {
       "name": "customerId",
-      "type": {
-        "type": "string"
-      }
+      "type": ["null", "string"]
     },
     {
       "name": "bookingId",

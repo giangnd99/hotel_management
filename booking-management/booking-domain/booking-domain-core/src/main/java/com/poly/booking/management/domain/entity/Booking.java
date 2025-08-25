@@ -1,21 +1,17 @@
 package com.poly.booking.management.domain.entity;
 
 import com.poly.booking.management.domain.exception.BookingDomainException;
+import com.poly.booking.management.domain.valueobject.BookingRoomId;
 import com.poly.booking.management.domain.valueobject.TrackingId;
 import com.poly.domain.entity.AggregateRoot;
 import com.poly.domain.valueobject.*;
-import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-/**
- * Entity Booking đại diện cho một lượt đặt phòng khách sạn.
- * Quản lý trạng thái, thông tin khách hàng, phòng, dịch vụ, QR check-in, v.v.
- */
-@Slf4j
+
 public class Booking extends AggregateRoot<BookingId> {
 
     private Customer customer;
@@ -29,27 +25,44 @@ public class Booking extends AggregateRoot<BookingId> {
     private String upgradeSuggestion;
     private List<BookingRoom> bookingRooms;
     private List<String> failureMessages;
+    private Integer numberOfGuests;
     public static final String FAILURE_MESSAGE_DELIMITER = ",";
 
-    private Booking(Builder builder) {
+    public Booking(Builder builder) {
         super.setId(builder.id);
         customer = builder.customer;
         checkInDate = builder.checkInDate;
         checkOutDate = builder.checkOutDate;
         status = builder.status;
         trackingId = builder.trackingId;
-        setActualCheckInDate(builder.actualCheckInDate);
-        setActualCheckOutDate(builder.actualCheckOutDate);
-        setTotalPrice(builder.totalPrice);
+        actualCheckInDate = builder.actualCheckInDate;
+        actualCheckOutDate = builder.actualCheckOutDate;
+        totalPrice = builder.totalPrice;
         upgradeSuggestion = builder.upgradeSuggestion;
         bookingRooms = builder.bookingRooms;
         failureMessages = builder.failureMessages;
+        numberOfGuests = builder.numberOfGuests;
     }
 
+    public void setCheckInDate(DateCustom checkInDate) {
+        this.checkInDate = checkInDate;
+    }
+
+    public void setCheckOutDate(DateCustom checkOutDate) {
+        this.checkOutDate = checkOutDate;
+    }
+
+    public void setNumberOfGuests(Integer numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public Integer getNumberOfGuests() {
+        return numberOfGuests;
+    }
 
     public Money calculateDepositAmount() {
         Money depositAmount = totalPrice.multiply(new BigDecimal("0.3"));
-        log.info("Deposit amount: {}", depositAmount);
+        System.out.println("Deposit amount: "+ depositAmount.getAmount().toString());
         return depositAmount;
     }
 
@@ -61,6 +74,13 @@ public class Booking extends AggregateRoot<BookingId> {
         trackingId = new TrackingId(UUID.randomUUID());
         validateDateRange();
         status = BookingStatus.PENDING;
+        initializeBookingRooms();
+    }
+
+    public void initializeBookingRooms() {
+        for (BookingRoom bookingRoom : bookingRooms) {
+            bookingRoom.initialize(this, new BookingRoomId(UUID.randomUUID()));
+        }
     }
 
     /**
@@ -75,7 +95,7 @@ public class Booking extends AggregateRoot<BookingId> {
      * Xác nhận đặt cọc, chuyển sang trạng thái CONFIRMED.
      */
     public void confirmBooking() {
-        validateStatusForConfirmDeposit();
+//        validateStatusForConfirmDeposit();
         status = BookingStatus.CONFIRMED;
     }
 
@@ -83,7 +103,7 @@ public class Booking extends AggregateRoot<BookingId> {
      * Check-in thành công, chuyển sang trạng thái CHECKED_IN.
      */
     public void checkIn() {
-        validateStatusForCheckIn();
+//        validateStatusForCheckIn();
         status = BookingStatus.CHECKED_IN;
     }
 
@@ -111,11 +131,7 @@ public class Booking extends AggregateRoot<BookingId> {
         status = BookingStatus.CANCELLED;
     }
 
-    /**
-     * Check-out thành công, chuyển sang trạng thái CHECKED_OUT.
-     */
     public void checkOut() {
-        validateStatusForCheckOut();
         status = BookingStatus.CHECKED_OUT;
     }
 
@@ -143,6 +159,10 @@ public class Booking extends AggregateRoot<BookingId> {
         }
     }
 
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
     private void validateTotalPrice() {
         if (totalPrice == null || !totalPrice.isGreaterThanZero()) {
             throw new BookingDomainException("Total price must be greater than zero");
@@ -156,7 +176,7 @@ public class Booking extends AggregateRoot<BookingId> {
     }
 
     private void validateStatusForConfirmDeposit() {
-        if (!BookingStatus.PENDING.equals(status)) {
+        if (!BookingStatus.DEPOSITED.equals(status)) {
             throw new BookingDomainException("Booking is not pending for confirmation");
         }
     }
@@ -277,16 +297,23 @@ public class Booking extends AggregateRoot<BookingId> {
         private String upgradeSuggestion;
         private List<BookingRoom> bookingRooms;
         private List<String> failureMessages;
+        private Integer numberOfGuests;
 
         private Builder() {
         }
+
 
         public static Builder builder() {
             return new Builder();
         }
 
+
         public Builder id(BookingId val) {
             id = val;
+            return this;
+        }
+        public Builder numberOfGuest(Integer val) {
+            numberOfGuests = val;
             return this;
         }
 

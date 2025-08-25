@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.ExtendedModelMap;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,12 +31,7 @@ public class NotificationController {
     @Autowired
     private OtpService otpService;
 
-    /**
-     * Lấy tất cả các thông báo hiện có trong hệ thống (dữ liệu mẫu).
-     * http://localhost:8080/api/notifications
-     *
-     * @return ResponseEntity chứa danh sách các đối tượng Notification.
-     */
+
     @Operation(summary = "Get all existing notifications",
             description = "Retrieves a list of sample notifications currently in the system.",
             responses = {
@@ -48,14 +45,7 @@ public class NotificationController {
         return ResponseEntity.ok(notifications);
     }
 
-    /**
-     * Endpoint để gửi xác nhận đặt phòng qua email.
-     * http://localhost:8080/api/notifications/send-booking-confirmation?userId=1&userEmail=tai30799@gmail.com
-     *
-     * @param userId    ID của người dùng đặt phòng.
-     * @param userEmail Email của người dùng để gửi xác nhận.
-     * @return ResponseEntity chứa thông báo trạng thái gửi email.
-     */
+
     @Operation(summary = "Send booking confirmation email",
             description = "Sends a booking confirmation email to the specified user.",
             parameters = {
@@ -85,14 +75,7 @@ public class NotificationController {
         }
     }
 
-    /**
-     * Endpoint để gửi thông báo hủy đặt phòng qua email.
-     * http://localhost:8080/api/notifications/send-booking-cancellation?userId=123&userEmail=tai30799@gmail.com
-     *
-     * @param userId    ID của người dùng hủy đặt phòng.
-     * @param userEmail Email của người dùng để gửi thông báo hủy.
-     * @return ResponseEntity chứa thông báo trạng thái gửi email.
-     */
+
     @Operation(summary = "Send booking cancellation email",
             description = "Sends a booking cancellation email to the specified user.",
             parameters = {
@@ -109,7 +92,7 @@ public class NotificationController {
             })
     @PostMapping("/send-booking-cancellation")
     public ResponseEntity<Map<String, String>> sendBookingCancellation(
-            @RequestParam int userId,
+            @RequestParam String userId,
             @RequestParam String userEmail) {
         Map<String, String> response = new HashMap<>();
         try {
@@ -122,16 +105,7 @@ public class NotificationController {
         }
     }
 
-    /**
-     * Endpoint để gửi thông báo hoàn tiền qua email.
-     * http://localhost:8080/api/notifications/send-refund-notification?userId=123&userEmail=tai30799@gmail.com&amount=500.000 VNĐ&bookingId=BK12345
-     *
-     * @param userId    ID của người dùng được hoàn tiền.
-     * @param userEmail Email của người dùng để gửi thông báo hoàn tiền.
-     * @param amount    Số tiền đã hoàn.
-     * @param bookingId ID đặt phòng liên quan đến việc hoàn tiền.
-     * @return ResponseEntity chứa thông báo trạng thái gửi email.
-     */
+
     @Operation(summary = "Send refund notification email",
             description = "Sends a refund notification email to the specified user.",
             parameters = {
@@ -165,16 +139,7 @@ public class NotificationController {
         }
     }
 
-    /**
-     * Endpoint để gửi thông báo nhắc nhở đặt phòng sắp tới qua email.
-     * http://localhost:8080/api/notifications/send-booking-reminder?userId=123&userEmail=tai30799@gmail.com&bookingId=REMINDER6789&checkInDate=2024-12-31
-     *
-     * @param userId      ID của người dùng.
-     * @param userEmail   Email của người dùng.
-     * @param bookingId   ID đặt phòng.
-     * @param checkInDate Ngày nhận phòng.
-     * @return ResponseEntity chứa thông báo trạng thái gửi email.
-     */
+
     @Operation(summary = "Send booking reminder email",
             description = "Sends a reminder email for an upcoming booking to the specified user.",
             parameters = {
@@ -208,14 +173,7 @@ public class NotificationController {
         }
     }
 
-    /**
-     * Endpoint để gửi OTP đến email cho mục đích quên mật khẩu.
-     * Frontend sẽ gọi API này khi người dùng yêu cầu đặt lại mật khẩu.
-     * http://localhost:8080/api/notifications/send-otp-for-password-reset?userEmail=tai30799@gmail.com
-     *
-     * @param userEmail Email người dùng cần đặt lại mật khẩu.
-     * @return ResponseEntity với thông báo và OTP (chỉ trong môi trường dev/test).
-     */
+
     @Operation(summary = "Send OTP for password reset",
             description = "Generates and sends an OTP to the user's email for password reset purposes. OTP is returned in dev/test environments.",
             parameters = {
@@ -243,14 +201,6 @@ public class NotificationController {
         }
     }
 
-    /**
-     * Endpoint để gửi OTP đến email cho mục đích đổi mật khẩu (khi đã đăng nhập).
-     * Frontend sẽ gọi API này khi người dùng muốn đổi mật khẩu và cần xác minh.
-     * http://localhost:8080/api/notifications/send-otp-for-password-change?userEmail=tai30799@gmail.com
-     *
-     * @param userEmail Email người dùng đang đăng nhập.
-     * @return ResponseEntity với thông báo và OTP (chỉ trong môi trường dev/test).
-     */
     @Operation(summary = "Send OTP for password change",
             description = "Generates and sends an OTP to the user's email for password change verification. OTP is returned in dev/test environments.",
             parameters = {
@@ -278,12 +228,6 @@ public class NotificationController {
         }
     }
 
-    /**
-     * Endpoint để gửi OTP đến email.
-     *
-     * @param userEmail Email người dùng.
-     * @return ResponseEntity với thông báo và OTP (trong môi trường phát triển/test) hoặc chỉ thông báo.
-     */
     @Operation(summary = "Send generic OTP",
             description = "Generates and sends a generic OTP to the specified email address. OTP is returned in dev/test environments.",
             parameters = {
@@ -311,14 +255,7 @@ public class NotificationController {
         }
     }
 
-    /**
-     * Endpoint để xác thực OTP. API này có thể dùng chung cho cả quên mật khẩu và đổi mật khẩu.
-     * http://localhost:8080/api/notifications/verify-otp?userEmail=tai30799@gmail.com&otp=437923
-     *
-     * @param userEmail Email người dùng.
-     * @param otp       Mã OTP cần xác thực.
-     * @return ResponseEntity với kết quả xác thực.
-     */
+
     @Operation(summary = "Verify OTP",
             description = "Verifies the provided OTP for a given email address. Can be used for password reset or change.",
             parameters = {
@@ -345,14 +282,6 @@ public class NotificationController {
         }
     }
 
-    /**
-     * Endpoint để gửi thông báo xác nhận đặt lại mật khẩu thành công.
-     * API này sẽ được gọi sau khi người dùng đã đặt mật khẩu mới thành công.
-     *
-     * @param userId    ID của người dùng.
-     * @param userEmail Email của người dùng.
-     * @return ResponseEntity chứa thông báo trạng thái gửi email.
-     */
     @Operation(summary = "Send password reset success notification",
             description = "Sends an email notification confirming successful password reset.",
             parameters = {
@@ -382,14 +311,6 @@ public class NotificationController {
         }
     }
 
-    /**
-     * Endpoint để gửi thông báo xác nhận đổi mật khẩu thành công.
-     * API này sẽ được gọi sau khi người dùng đã đổi mật khẩu thành công (khi đã đăng nhập).
-     *
-     * @param userId    ID của người dùng.
-     * @param userEmail Email của người dùng.
-     * @return ResponseEntity chứa thông báo trạng thái gửi email.
-     */
     @Operation(summary = "Send password change success notification",
             description = "Sends an email notification confirming successful password change.",
             parameters = {
@@ -418,4 +339,19 @@ public class NotificationController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+    @PostMapping("/send-account-info")
+    public ResponseEntity<Map<String, String>> sendAccountInfo(
+            @RequestParam String userEmail,
+            @RequestParam String password) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            String statusMessage = notificationService.sendAccountInfo( userEmail, password, null, null);
+            response.put("message", statusMessage);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("message", "Lỗi khi gửi email thông tin tài khoản: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
 }

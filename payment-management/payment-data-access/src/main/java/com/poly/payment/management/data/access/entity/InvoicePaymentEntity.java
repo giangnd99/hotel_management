@@ -9,7 +9,7 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "invoice_payment")
+@Table(name = "invoice_payment", schema = "payment_db")
 @Getter
 @Setter
 @Builder

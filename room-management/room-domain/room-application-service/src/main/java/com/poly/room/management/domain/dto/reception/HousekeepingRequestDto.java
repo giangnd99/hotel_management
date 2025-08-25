@@ -15,17 +15,17 @@ import java.util.UUID;
 public class HousekeepingRequestDto {
     private UUID requestId;
     private String roomNumber;
-    private String guestName;
-    private String requestType; // DAILY_CLEANING, TURNDOWN, DEEP_CLEANING, LINEN_CHANGE
-    private String status; // REQUESTED, IN_PROGRESS, COMPLETED, CANCELLED
+    private String requestType; // DAILY, DEEP_CLEANING, POST_CHECKOUT, MAINTENANCE
     private String priority; // LOW, MEDIUM, HIGH, URGENT
-    private LocalDateTime requestedAt;
-    private LocalDateTime scheduledAt;
-    private LocalDateTime completedAt;
+    private String status; // REQUESTED, ASSIGNED, IN_PROGRESS, COMPLETED, CANCELLED
+    private String description;
+    private String notes;
     private String requestedBy;
     private String assignedTo;
-    private String completedBy;
-    private String notes;
-    private String specialInstructions;
+    private LocalDateTime requestedAt;
+    private LocalDateTime scheduledAt;
+    private LocalDateTime startedAt;
+    private LocalDateTime completedAt;
     private Boolean isUrgent;
+    private String specialInstructions;
 }

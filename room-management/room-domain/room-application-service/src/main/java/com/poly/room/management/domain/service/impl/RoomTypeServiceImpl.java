@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -56,12 +57,12 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public RoomTypeResponse updateRoomType(UpdateRoomTypeRequest request) throws RoomDomainException {
-        log.info("Updating room type: {}", request.getRoomTypeId());
+    public RoomTypeResponse updateRoomType(UUID roomTypeId,UpdateRoomTypeRequest request) throws RoomDomainException {
+        log.info("Updating room type: {}", roomTypeId);
         
         try {
-            RoomType existingRoomType = roomTypeRepository.findById(request.getRoomTypeId())
-                    .orElseThrow(() -> new RoomDomainException("Room type not found with ID: " + request.getRoomTypeId()));
+            RoomType existingRoomType = roomTypeRepository.findById(roomTypeId)
+                    .orElseThrow(() -> new RoomDomainException("Room type not found with ID: " + roomTypeId));
             
             // Cập nhật thông tin room type
             existingRoomType.setTypeName(request.getTypeName());
@@ -72,9 +73,9 @@ public class RoomTypeServiceImpl implements RoomTypeService {
             // Validate room type sau khi cập nhật
             existingRoomType.validateRoomType();
             
-            RoomType updatedRoomType = roomTypeRepository.update(existingRoomType, request.getRoomTypeId());
+            RoomType updatedRoomType = roomTypeRepository.update(existingRoomType, roomTypeId);
             
-            log.info("Room type updated successfully: {}", request.getRoomTypeId());
+            log.info("Room type updated successfully: {}", roomTypeId.toString());
             return roomTypeDtoMapper.toResponse(updatedRoomType);
             
         } catch (Exception e) {
@@ -84,7 +85,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public void deleteRoomType(Integer roomTypeId) throws RoomDomainException {
+    public void deleteRoomType(UUID roomTypeId) throws RoomDomainException {
         log.info("Deleting room type: {}", roomTypeId);
         
         try {
@@ -102,7 +103,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public RoomTypeResponse getRoomTypeById(Integer roomTypeId) throws RoomDomainException {
+    public RoomTypeResponse getRoomTypeById(UUID roomTypeId) throws RoomDomainException {
         log.info("Getting room type by ID: {}", roomTypeId);
         
         try {
@@ -135,7 +136,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public RoomTypeResponse addFurnitureToRoomType(Integer roomTypeId, FurnitureRequirementRequest request) throws RoomDomainException {
+    public RoomTypeResponse addFurnitureToRoomType(UUID roomTypeId, FurnitureRequirementRequest request) throws RoomDomainException {
         log.info("Adding furniture to room type: {}", roomTypeId);
         
         try {
@@ -153,7 +154,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public RoomTypeResponse removeFurnitureFromRoomType(Integer roomTypeId, Integer furnitureId) throws RoomDomainException {
+    public RoomTypeResponse removeFurnitureFromRoomType(UUID roomTypeId, Integer furnitureId) throws RoomDomainException {
         log.info("Removing furniture {} from room type: {}", furnitureId, roomTypeId);
         
         try {
@@ -171,7 +172,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public RoomTypeResponse updateFurnitureQuantityInRoomType(Integer roomTypeId, FurnitureRequirementRequest request) throws RoomDomainException {
+    public RoomTypeResponse updateFurnitureQuantityInRoomType(UUID roomTypeId, FurnitureRequirementRequest request) throws RoomDomainException {
         log.info("Updating furniture quantity in room type: {}", roomTypeId);
         
         try {

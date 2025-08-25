@@ -5,7 +5,7 @@ import com.poly.restaurant.domain.entity.MenuItemStatus;
 
 import java.util.List;
 
-public interface MenuItemHandler extends GenericHandler<MenuItem, Integer> {
+public interface MenuItemHandler extends GenericHandler<MenuItem, String> {
     
     /**
      * Tìm kiếm món ăn theo tên
@@ -28,37 +28,17 @@ public interface MenuItemHandler extends GenericHandler<MenuItem, Integer> {
     List<MenuItem> getOutOfStockItems();
     
     /**
-     * Cập nhật số lượng món ăn
-     */
-    MenuItem updateQuantity(Integer menuItemId, int newQuantity);
-    
-    /**
-     * Giảm số lượng món ăn (khi đặt hàng)
-     */
-    MenuItem reduceQuantity(Integer menuItemId, int amount);
-    
-    /**
-     * Tăng số lượng món ăn (khi nhập hàng)
-     */
-    MenuItem addQuantity(Integer menuItemId, int amount);
-    
-    /**
      * Cập nhật trạng thái món ăn
      */
-    MenuItem updateStatus(Integer menuItemId, MenuItemStatus status);
+    MenuItem updateStatus(String menuItemId, MenuItemStatus status);
     
     /**
      * Cập nhật giá món ăn
      */
-    MenuItem updatePrice(Integer menuItemId, java.math.BigDecimal newPrice);
+    MenuItem updatePrice(String menuItemId, java.math.BigDecimal newPrice);
     
     /**
      * Kiểm tra món ăn có sẵn không
      */
-    boolean isItemAvailable(Integer menuItemId);
-    
-    /**
-     * Kiểm tra số lượng đủ để đặt hàng
-     */
-    boolean hasSufficientQuantity(Integer menuItemId, int requestedQuantity);
+    boolean isItemAvailable(String menuItemId);
 }

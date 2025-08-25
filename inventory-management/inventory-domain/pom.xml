@@ -6,16 +6,14 @@
     <parent>
         <groupId>com.poly</groupId>
         <artifactId>inventory-management</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
 
     <artifactId>inventory-domain</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <!--entity, value object, repository interface-->
         <module>inventory-domain-core</module>
 
-        <!--use case, service, handle business logic-->
         <module>inventory-application-service</module>
     </modules>
 

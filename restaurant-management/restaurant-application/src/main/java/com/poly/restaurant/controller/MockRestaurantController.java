@@ -23,9 +23,9 @@ public class MockRestaurantController {
     @GetMapping("/tables")
     public ResponseEntity<List<Map<String, Object>>> getTables() {
         List<Map<String, Object>> tables = List.of(
-                Map.of("id", 1, "name", "Bàn 1", "status", "AVAILABLE"),
-                Map.of("id", 2, "name", "Bàn 2", "status", "OCCUPIED"),
-                Map.of("id", 3, "name", "Bàn 3", "status", "RESERVED")
+                Map.of("id", "T001", "name", "Bàn 1", "status", "AVAILABLE"),
+                Map.of("id", "T002", "name", "Bàn 2", "status", "OCCUPIED"),
+                Map.of("id", "T003", "name", "Bàn 3", "status", "RESERVED")
         );
         return ResponseEntity.ok(tables);
     }
@@ -35,9 +35,9 @@ public class MockRestaurantController {
     @GetMapping("/menu")
     public ResponseEntity<List<Map<String, Object>>> getMenu() {
         List<Map<String, Object>> menu = List.of(
-                Map.of("id", 101, "name", "Phở bò", "price", 50000, "category", "Món chính"),
-                Map.of("id", 102, "name", "Trà đá", "price", 5000, "category", "Đồ uống"),
-                Map.of("id", 103, "name", "Cà phê sữa", "price", 20000, "category", "Đồ uống")
+                Map.of("id", "M001", "name", "Phở bò", "price", 85000, "category", "Món chính"),
+                Map.of("id", "M002", "name", "Trà đá", "price", 35000, "category", "Đồ uống"),
+                Map.of("id", "M003", "name", "Cà phê sữa", "price", 45000, "category", "Đồ uống")
         );
         return ResponseEntity.ok(menu);
     }
@@ -47,7 +47,7 @@ public class MockRestaurantController {
     @PostMapping("/order")
     public ResponseEntity<Map<String, Object>> createOrder(@RequestBody Map<String, Object> orderRequest) {
         Map<String, Object> mockResponse = Map.of(
-                "orderId", 999,
+                "orderId", "O999",
                 "status", "CREATED",
                 "timestamp", LocalDateTime.now().toString(),
                 "details", orderRequest
@@ -61,19 +61,19 @@ public class MockRestaurantController {
     public ResponseEntity<List<Map<String, Object>>> getOrders() {
         List<Map<String, Object>> orders = List.of(
                 Map.of(
-                        "orderId", 1,
-                        "tableId", 1,
+                        "orderId", "O001",
+                        "tableId", "T001",
                         "items", List.of(
-                                Map.of("menuId", 101, "quantity", 2),
-                                Map.of("menuId", 102, "quantity", 2)
+                                Map.of("menuId", "M001", "quantity", 2),
+                                Map.of("menuId", "M002", "quantity", 2)
                         ),
                         "status", "COMPLETED"
                 ),
                 Map.of(
-                        "orderId", 2,
-                        "tableId", 2,
+                        "orderId", "O002",
+                        "tableId", "T002",
                         "items", List.of(
-                                Map.of("menuId", 103, "quantity", 1)
+                                Map.of("menuId", "M003", "quantity", 1)
                         ),
                         "status", "IN_PROGRESS"
                 )

@@ -1,19 +1,20 @@
 package com.poly.payment.management.application.rest.controller;
 
 
-
 import com.poly.payment.management.domain.dto.request.CreateInvoiceCommand;
 import com.poly.payment.management.domain.dto.request.CreateInvoiceRequest;
 import com.poly.payment.management.domain.dto.request.InvoiceDetailRequest;
+import com.poly.payment.management.domain.dto.response.InvoiceResult;
+import com.poly.payment.management.domain.model.Invoice;
 import com.poly.payment.management.domain.port.input.service.CreateInvoiceUsecase;
+import com.poly.payment.management.domain.port.input.service.RetrieveAllInvoice;
 import com.poly.payment.management.domain.port.input.service.RetrieveInvoiceUsecase;
 import com.poly.payment.management.domain.value_object.Description;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/invoice")
@@ -23,6 +24,8 @@ public class InvoiceController {
     private final CreateInvoiceUsecase createInvoiceUsecase;
 
     private final RetrieveInvoiceUsecase retrieveInvoiceUsecase;
+
+    private final RetrieveAllInvoice retrieveAllInvoice;
 
     @PostMapping("/create")
     public ResponseEntity createInvoice(@RequestBody CreateInvoiceRequest request) {
@@ -40,29 +43,12 @@ public class InvoiceController {
     }
 
     @PostMapping("/detail")
-    public ResponseEntity retrieveInvoice(@RequestBody InvoiceDetailRequest request) {
+    public ResponseEntity<InvoiceResult> retrieveInvoice(@RequestBody InvoiceDetailRequest request) {
         return ResponseEntity.ok().body(retrieveInvoiceUsecase.retrieveInvoice(request.getInvoiceId()));
     }
 
-//    @PostMapping("/create")
-//    public ResponseEntity createInvoice(@RequestBody CreateInvoiceRequest request) throws Exception {
-//        CreateInvoiceCommand command = CreateInvoiceCommand.builder()
-//                .bookingId(request.getBookingId())
-//                .customerId(request.getCustomerId())
-//                .staffIdCreated(request.getStaffIdCreated())
-//                .voucherId(request.getVoucherId())
-//                .amountVoucher(request.getAmountVoucher())
-//                .taxAmount(request.getTaxAmount())
-//                .invoiceItemCommandList(request.getInvoiceItems()
-//                        .stream()
-//                        .map(item -> CreateInvoiceItemCommand.builder()
-//                                .serviceId(item.getServiceId())
-//                                .description(item.getDescription())
-//                                .quantity(item.getQuantity())
-//                                .unitPrice(item.getUnitPrice())
-//                                .note(item.getNote())
-//                                .build()).collect(Collectors.toList()))
-//                .build();
-//        return ResponseEntity.ok().body(invoiceUsecase.makeInvoice(command));
-//    }
+    @GetMapping
+    public ResponseEntity<List<Invoice>> retrieveAllInvoice() {
+        return ResponseEntity.ok(retrieveAllInvoice.retrieveAllInvoice());
+    }
 }

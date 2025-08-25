@@ -19,7 +19,7 @@ public class LoyaltyTransactionEntity {
     @Column(name = "transaction_id", columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name = "loyalty_id", nullable = false)
+    @Column(name = "loyalty_id", columnDefinition = "BINARY(16)")
     private UUID loyaltyPointId;
 
     @Column(name = "points_changed", nullable = false)

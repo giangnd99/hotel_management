@@ -4,6 +4,7 @@ import com.poly.payment.management.domain.dto.request.CreatePaymentLinkCommand;
 import com.poly.payment.management.domain.service.PaymentGateway;
 import com.poly.payment.management.domain.dto.CheckoutResponseData;
 import com.poly.payment.management.data.access.mapper.PayOSMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import vn.payos.PayOS;
 import vn.payos.type.ItemData;
@@ -12,6 +13,7 @@ import vn.payos.type.PaymentData;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class PayOsPaymentGateway implements PaymentGateway {
 
     private static final String RETURN_URL = "https://nika.id.vn/return";
@@ -19,10 +21,8 @@ public class PayOsPaymentGateway implements PaymentGateway {
     private static final String CANCEL_URL = "https://nika.id.vn/cancel";
 
     private final PayOS payOS;
+    private final PayOSMapper payOSMapper;
 
-    public PayOsPaymentGateway(PayOS payOS) {
-        this.payOS = payOS;
-    }
 
     @Override
     public CheckoutResponseData createPaymentLink(CreatePaymentLinkCommand command) throws Exception {
@@ -44,7 +44,7 @@ public class PayOsPaymentGateway implements PaymentGateway {
                 .items(items)
                 .build();
 
-        return PayOSMapper.toCheckoutResponseData(payOS.createPaymentLink(paymentData));
+        return payOSMapper.toCheckoutResponseData(payOS.createPaymentLink(paymentData));
     }
 
     public void cancelPaymentLink(long referenceCode, String notice) throws Exception {

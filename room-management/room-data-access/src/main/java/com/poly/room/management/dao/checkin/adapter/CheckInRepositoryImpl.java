@@ -83,7 +83,7 @@ public class CheckInRepositoryImpl implements CheckInRepository {
 
     @Override
     public List<CheckIn> findByStatus(String status) {
-        return jpaRepository.findByStatus(status).stream()
+        return jpaRepository.findAllByStatus(CheckInEntity.CheckInStatus.valueOf(status)).stream()
                 .map(mapper::toDomain)
                 .toList();
     }
@@ -91,7 +91,7 @@ public class CheckInRepositoryImpl implements CheckInRepository {
     @Override
     public List<CheckIn> findByStatusWithPagination(String status, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return jpaRepository.findByStatus(status, pageable).getContent().stream()
+        return jpaRepository.findAllByStatus(CheckInEntity.CheckInStatus.valueOf(status), pageable).getContent().stream()
                 .map(mapper::toDomain)
                 .toList();
     }

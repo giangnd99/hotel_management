@@ -3,11 +3,8 @@ package com.poly.promotion.data.access.transformer;
 import com.poly.promotion.data.access.jpaentity.VoucherJpaEntity;
 import com.poly.promotion.domain.core.entity.Voucher;
 import com.poly.promotion.domain.core.valueobject.*;
-import com.poly.domain.valueobject.CustomerId;
 import org.mapstruct.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,11 +45,11 @@ import java.util.UUID;
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
     nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
     uses = {
-        VoucherIdMapper.class,
+        SharedMappers.VoucherIdMapper.class,
         VoucherStatusMapper.class,
-        DiscountMapper.class,
-        VoucherPackIdMapper.class,
-        CustomerIdMapper.class
+        SharedMappers.DiscountMapper.class,
+        SharedMappers.VoucherPackIdMapper.class,
+        SharedMappers.CustomerIdMapper.class
     }
 )
 public interface VoucherTransformer {
@@ -237,112 +234,8 @@ abstract class VoucherStatusMapper {
     }
 }
 
-/**
- * <h2>DiscountMapper Class</h2>
- * 
- * <p>Custom mapper for converting between Discount value objects and BigDecimal primitives.
- * This class handles the conversion between domain value objects and database primitives.</p>
- */
-@Mapper(componentModel = "spring")
-abstract class DiscountMapper {
 
-    /**
-     * Converts a Discount value object to a BigDecimal primitive.
-     * 
-     * @param discount the Discount value object
-     * @return the corresponding BigDecimal value
-     */
-    @Named("discountToBigDecimal")
-    public BigDecimal discountToBigDecimal(Discount discount) {
-        return discount != null ? discount.getValue() : null;
-    }
 
-    /**
-     * Converts a BigDecimal primitive to a Discount value object.
-     * Note: This is a simplified mapping - in practice, you might need to determine
-     * the discount type based on business logic or additional context.
-     * 
-     * @param amount the BigDecimal value
-     * @return the corresponding Discount value object
-     */
-    @Named("bigDecimalToDiscount")
-    public Discount bigDecimalToDiscount(BigDecimal amount) {
-        if (amount == null) {
-            return null;
-        }
-        
-        // Default to percentage discount for values <= 100
-        // This is a simplified approach - in practice, you might need more context
-        if (amount.compareTo(BigDecimal.valueOf(100)) <= 0) {
-            return new DiscountPercentage(amount.doubleValue());
-        } else {
-            // For fixed amount discounts, we'll use a default approach
-            // In practice, you might need to determine the discount type differently
-            return new DiscountPercentage(amount.doubleValue());
-        }
-    }
-}
 
-/**
- * <h2>VoucherPackIdMapper Class</h2>
- * 
- * <p>Custom mapper for converting between VoucherPackId value objects and Long primitives.
- * This class handles the conversion between domain value objects and database primitives.</p>
- */
-@Mapper(componentModel = "spring")
-abstract class VoucherPackIdMapper {
 
-    /**
-     * Converts a VoucherPackId value object to a Long primitive.
-     * 
-     * @param voucherPackId the VoucherPackId value object
-     * @return the corresponding Long value
-     */
-    @Named("voucherPackIdToLong")
-    public Long voucherPackIdToLong(VoucherPackId voucherPackId) {
-        return voucherPackId != null ? voucherPackId.getValue() : null;
-    }
 
-    /**
-     * Converts a Long primitive to a VoucherPackId value object.
-     * 
-     * @param id the Long value
-     * @return the corresponding VoucherPackId value object
-     */
-    @Named("longToVoucherPackId")
-    public VoucherPackId longToVoucherPackId(Long id) {
-        return id != null ? new VoucherPackId(id) : null;
-    }
-}
-
-/**
- * <h2>CustomerIdMapper Class</h2>
- * 
- * <p>Custom mapper for converting between CustomerId value objects and String primitives.
- * This class handles the conversion between domain value objects and database primitives.</p>
- */
-@Mapper(componentModel = "spring")
-abstract class CustomerIdMapper {
-
-    /**
-     * Converts a CustomerId value object to a String primitive.
-     * 
-     * @param customerId the CustomerId value object
-     * @return the corresponding String value
-     */
-    @Named("customerIdToString")
-    public String customerIdToString(CustomerId customerId) {
-        return customerId != null ? customerId.getValue().toString() : null;
-    }
-
-    /**
-     * Converts a String primitive to a CustomerId value object.
-     * 
-     * @param id the String value
-     * @return the corresponding CustomerId value object
-     */
-    @Named("stringToCustomerId")
-    public CustomerId stringToCustomerId(String id) {
-        return id != null ? new CustomerId(UUID.fromString(id)) : null;
-    }
-}

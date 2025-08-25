@@ -1,31 +1,25 @@
 package com.poly.staff.model;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.FieldDefaults;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
-@AllArgsConstructor
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class StaffModel {
-    String staffId;
-    String userId;
-    Integer departmentId;
-    Set<String> permissions;
-    String name;
-    String email;
-    String phone;
-    String address;
-    String bankName;
-    String bankAccount;
-    String avatar;
-    LocalDate hireDate;
-    Double baseSalary;
-    Integer status;
+    private String staffId;
+    private UUID userId;
+    private String name;
+    private String email;
+    private String phone;
+    private String department;
+    private String status; // ACTIVE, INACTIVE, ON_LEAVE, TERMINATED
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

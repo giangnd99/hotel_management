@@ -34,31 +34,25 @@ public class MaintenanceDtoMapper {
             throw new RoomDomainException("Room not found");
         }
         Room roomEntity = room.get();
-        return RoomMaintenance.Builder.builder()
-                .room(roomEntity)
-                .staffId(new StaffId(request.getStaffId()))
-                .scheduledDate(DateCustom.of(request.getMaintenanceDate()))
-                .maintenanceType(
-                        MaintenanceType.Builder.builder()
-                                .id(new MaintenanceTypeId(request.getMaintenanceTypeId()))
-                                .name(request.getMaintenanceName())
-                                .build())
+        return RoomMaintenance.builder()
+                .roomId(roomEntity.getId().getValue())
+                .assignedTo((request.getStaffId()))
+                .scheduledAt(request.getMaintenanceDate())
+                .issueType(request.getDescription())
                 .description(request.getDescription())
                 .build();
     }
 
     public RoomMaintenanceResponse toResponse(RoomMaintenance maintenance) {
         return RoomMaintenanceResponse.builder()
-                .id(maintenance.getId().getValue())
-                .roomId(maintenance.getRoom().getId().getValue().toString())
-                .staffId(maintenance.getStaffId().getValue())
-                .scheduledDate(Timestamp.valueOf(maintenance.getScheduledDate().getValue()))
-                .startDate(Timestamp.valueOf(maintenance.getStartDate().getValue()))
-                .completionDate(Timestamp.valueOf(maintenance.getCompletionDate().getValue()))
-                .maintenanceTypeId(maintenance.getMaintenanceType().getId().getValue())
-                .maintenanceTypeName(maintenance.getMaintenanceType().getName())
+                .id(maintenance.getId().toString())
+                .roomId(maintenance.getRoomId().toString())
+                .staffId(maintenance.getAssignedTo())
+                .scheduledDate(Timestamp.valueOf(maintenance.getScheduledAt()))
+                .startDate(Timestamp.valueOf(maintenance.getStartedAt()))
+                .completionDate(Timestamp.valueOf(maintenance.getCompletedAt()))
                 .description(maintenance.getDescription())
-                .maintenanceStatus(maintenance.getStatus().name())
+                .maintenanceStatus(maintenance.getStatus())
                 .build();
     }
 

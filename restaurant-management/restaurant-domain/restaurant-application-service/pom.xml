@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.poly</groupId>
         <artifactId>restaurant-domain</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
 
     <artifactId>restaurant-application-service</artifactId>
@@ -14,8 +14,6 @@
         <dependency>
             <groupId>com.poly</groupId>
             <artifactId>restaurant-domain-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -23,8 +21,8 @@
             <version>${openfeign.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.poly</groupId>
-            <artifactId>kafka-json-message</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
         </dependency>
     </dependencies>
 

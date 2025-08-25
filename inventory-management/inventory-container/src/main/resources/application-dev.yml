@@ -1,11 +1,11 @@
 server:
-  port: 8081
+  port: 8801
 
 spring:
   application:
     name: inventory-service
   datasource:
-    url: jdbc:mysql://localhost:3306/db_inventory
+    url: jdbc:mysql://localhost:3307/inventory_management
     username: root
     password: root
   jpa:
@@ -18,10 +18,4 @@ spring:
   sql:
     init:
       schema-locations: classpath:db_inventory.sql
-
-openapi:
-  service:
-    api-docs: inventory-service-docs
-    title: Inventory Service API
-    version: 1.0.0
-    server: http://localhost:8081
+      mode: always

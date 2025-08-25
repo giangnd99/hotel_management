@@ -3,7 +3,6 @@ package com.poly.promotion.domain.core.valueobject;
 import com.poly.domain.valueobject.Money;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 /**
  * <h2>DiscountPercentage Class</h2>

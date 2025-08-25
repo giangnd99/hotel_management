@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -18,15 +19,13 @@ public class GuestStatisticsDto {
     private Long totalGuests;
     private Long newGuests;
     private Long returningGuests;
-    private Long walkInGuests;
-    private Long groupGuests;
-    private Long corporateGuests;
-    private Long individualGuests;
-    private Double averageLengthOfStay;
-    private Integer maxLengthOfStay;
-    private Integer minLengthOfStay;
-    private List<GuestTypeStatisticsDto> guestTypeBreakdown;
-    private List<NationalityStatisticsDto> nationalityBreakdown;
-    private List<DailyGuestDto> dailyGuestData;
-    private List<GuestSatisfactionDto> satisfactionData;
+    private Long totalCheckIns;
+    private Long totalCheckOuts;
+    private Long totalNights;
+    private Double averageStayDuration;
+    private Map<String, Long> guestsByNationality;
+    private Map<String, Long> guestsByIdType;
+    private Map<String, Long> guestsByGender;
+    private List<String> topNationalities;
+    private List<String> notes;
 }

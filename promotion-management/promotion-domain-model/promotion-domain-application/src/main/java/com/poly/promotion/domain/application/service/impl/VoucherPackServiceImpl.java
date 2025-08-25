@@ -3,7 +3,7 @@ package com.poly.promotion.domain.application.service.impl;
 import com.poly.promotion.domain.application.service.VoucherPackService;
 import com.poly.promotion.domain.application.spi.repository.VoucherPackRepository;
 import com.poly.promotion.domain.core.entity.VoucherPack;
-import com.poly.promotion.domain.core.exception.PromotionDomainException;
+import com.poly.promotion.domain.core.exception.VoucherDomainException;
 import com.poly.promotion.domain.core.valueobject.VoucherPackStatus;
 import lombok.NonNull;
 
@@ -13,12 +13,16 @@ import java.util.Objects;
 
 public class VoucherPackServiceImpl implements VoucherPackService {
 
-    VoucherPackRepository voucherPackRepository;
+    private final VoucherPackRepository voucherPackRepository;
+
+    public VoucherPackServiceImpl(VoucherPackRepository voucherPackRepository) {
+        this.voucherPackRepository = voucherPackRepository;
+    }
 
     @Override
     public VoucherPack getVoucherPackById(Long voucherPackId) {
         if(!voucherPackRepository.existsById(voucherPackId)){
-            throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
+            throw new VoucherDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
         }
         return voucherPackRepository.getVoucherPackById(voucherPackId);
     }
@@ -31,10 +35,10 @@ public class VoucherPackServiceImpl implements VoucherPackService {
     @Override
     public VoucherPack createVoucherPack(@NonNull VoucherPack voucherPack, String createdBy) {
         if (!Objects.isNull(voucherPack.getId())) {
-            throw new PromotionDomainException("Creating a new voucher pack should not have an ID.");
+            throw new VoucherDomainException("Creating a new voucher pack should not have an ID.");
         }
         if (createdBy == null || createdBy.isEmpty()) {
-            throw new PromotionDomainException("Created by field cannot be null or empty.");
+            throw new VoucherDomainException("Created by field cannot be null or empty.");
         }
         voucherPack.setCreatedBy(createdBy);
         voucherPack.setCreatedAt(LocalDateTime.now());
@@ -45,10 +49,10 @@ public class VoucherPackServiceImpl implements VoucherPackService {
     @Override
     public VoucherPack updatePendingVoucherPack(Long voucherPackId, VoucherPack updatingVoucherPack, String updatedBy) {
         if(!voucherPackRepository.existsById(voucherPackId)){
-            throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
+            throw new VoucherDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
         }
         if(!voucherPackRepository.isOfStatus(voucherPackId, VoucherPackStatus.PENDING)){
-            throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " is not in PENDING status.");
+            throw new VoucherDomainException("Voucher pack with ID " + voucherPackId + " is not in PENDING status.");
         }
         VoucherPack updatedVoucherPack = voucherPackRepository.getVoucherPackById(voucherPackId);
         if(updatingVoucherPack.getDescription() != null) updatedVoucherPack.setDescription(updatingVoucherPack.getDescription());
@@ -67,11 +71,11 @@ public class VoucherPackServiceImpl implements VoucherPackService {
     @Override
     public void closeVoucherPack(Long voucherPackId) {
         if(!voucherPackRepository.existsById(voucherPackId)){
-            throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
+            throw new VoucherDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
         }
         if(voucherPackRepository.isOfStatus(voucherPackId, VoucherPackStatus.CLOSED) ||
         voucherPackRepository.isOfStatus(voucherPackId, VoucherPackStatus.EXPIRED)){
-            throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " is already closed or expired.");
+            throw new VoucherDomainException("Voucher pack with ID " + voucherPackId + " is already closed or expired.");
         }
         voucherPackRepository.closeVoucherPack(voucherPackId);
     }
@@ -79,14 +83,14 @@ public class VoucherPackServiceImpl implements VoucherPackService {
     @Override
     public void reduceVoucherPackStockAfterRedeem(Long voucherPackId, Integer quantity) {
         if(!voucherPackRepository.existsById(voucherPackId)){
-            throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
+            throw new VoucherDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
         }
         if(!voucherPackRepository.isOfStatus(voucherPackId, VoucherPackStatus.PUBLISHED)){
-            throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " is not yet published.");
+            throw new VoucherDomainException("Voucher pack with ID " + voucherPackId + " is not yet published.");
         }
         long currentQuantity = voucherPackRepository.getVoucherPackQuantity(voucherPackId);
         if (currentQuantity < quantity) {
-            throw new PromotionDomainException("Insufficient stock for voucher pack with ID " + voucherPackId + ". Current stock: " + currentQuantity);
+            throw new VoucherDomainException("Insufficient stock for voucher pack with ID " + voucherPackId + ". Current stock: " + currentQuantity);
         }
         voucherPackRepository.reduceVoucherPackStockAfterRedeem(voucherPackId, quantity);
         currentQuantity = voucherPackRepository.getVoucherPackQuantity(voucherPackId);
@@ -125,13 +129,13 @@ public class VoucherPackServiceImpl implements VoucherPackService {
     public void updateVoucherPackStatus(Long voucherPackId, VoucherPackStatus newStatus) {
         // Validate that the voucher pack exists
         if (!voucherPackRepository.existsById(voucherPackId)) {
-            throw new PromotionDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
+            throw new VoucherDomainException("Voucher pack with ID " + voucherPackId + " does not exist.");
         }
         
         // Validate status transition (basic validation)
         VoucherPack pack = voucherPackRepository.getVoucherPackById(voucherPackId);
         if (!isValidStatusTransition(pack.getStatus(), newStatus)) {
-            throw new PromotionDomainException("Invalid status transition from " + pack.getStatus() + " to " + newStatus);
+            throw new VoucherDomainException("Invalid status transition from " + pack.getStatus() + " to " + newStatus);
         }
         
         voucherPackRepository.updateVoucherPackStatus(voucherPackId, newStatus);

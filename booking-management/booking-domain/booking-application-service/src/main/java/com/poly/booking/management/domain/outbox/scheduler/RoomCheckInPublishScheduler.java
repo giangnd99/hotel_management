@@ -1,0 +1,88 @@
+package com.poly.booking.management.domain.outbox.scheduler;
+
+import com.poly.booking.management.domain.outbox.model.RoomOutboxMessage;
+import com.poly.booking.management.domain.outbox.service.RoomOutboxService;
+import com.poly.booking.management.domain.port.out.message.publisher.RoomCheckInMessagePublisher;
+import com.poly.domain.valueobject.BookingStatus;
+import com.poly.outbox.OutboxScheduler;
+import com.poly.outbox.OutboxStatus;
+import com.poly.saga.SagaStatus;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Room Check Out Publish Scheduler
+ * <p>
+ * CHỨC NĂNG:
+ * - Xử lý outbox messages cho room check out process
+ * - Gửi messages đến Kafka topic "room-check-out-topic"
+ * - Đảm bảo tính nhất quán dữ liệu thông qua Outbox Pattern
+ * <p>
+ * MỤC ĐÍCH:
+ * - Tự động xử lý các outbox messages đang chờ xử lý
+ * - Gửi thông tin checkout phòng đến room management service
+ * - Cập nhật trạng thái outbox messages sau khi gửi thành công
+ * <p>
+ * PATTERNS ÁP DỤNG:
+ * - Outbox Pattern: Đảm bảo message delivery reliability
+ * - Saga Pattern: Quản lý distributed transaction
+ * - Scheduled Task: Xử lý định kỳ các outbox messages
+ */
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class RoomCheckInPublishScheduler implements OutboxScheduler {
+
+    private final RoomOutboxService roomOutboxService;
+    private final RoomCheckInMessagePublisher roomCheckInMessagePublisher;
+
+
+    @Override
+    @Transactional
+    @Scheduled(fixedDelayString = "${booking-service.outbox-scheduler-fixed-rate}",
+            initialDelayString = "${booking-service.outbox-scheduler-initial-delay}")
+    public void processOutboxMessage() {
+        Optional<List<RoomOutboxMessage>> outboxMessagesResponse =
+                roomOutboxService.getRoomOutboxMessageByBookingIdAndStatus(
+                        OutboxStatus.STARTED,
+                        SagaStatus.PROCESSING);
+
+        if (outboxMessagesResponse.isPresent() && !outboxMessagesResponse.get().isEmpty()) {
+            List<RoomOutboxMessage> outboxMessages = outboxMessagesResponse.get();
+            outboxMessages.forEach(outboxMessage -> {
+
+                        if (outboxMessage.getBookingStatus().equals(BookingStatus.CHECKED_IN)) {
+                            log.info("Received {} RoomCheckOutOutboxMessage with ids: {}, sending to message bus!",
+                                    outboxMessages.size(),
+                                    outboxMessage.getId().toString());
+
+                            roomCheckInMessagePublisher.sendRoomCheckInRequest(outboxMessage, this::updateOutboxStatus);
+
+                            log.info("{} RoomCheckOutOutboxMessage sent to message bus!", outboxMessages.size());
+
+                        }
+                    }
+            );
+        }
+    }
+
+    /**
+     * Cập nhật trạng thái outbox message
+     * <p>
+     * Được gọi sau khi message được gửi thành công hoặc thất bại
+     *
+     * @param roomOutboxMessage Outbox message cần cập nhật
+     * @param outboxStatus      Trạng thái mới của outbox message
+     */
+    private void updateOutboxStatus(RoomOutboxMessage roomOutboxMessage, OutboxStatus outboxStatus) {
+        roomOutboxMessage.setOutboxStatus(outboxStatus);
+        roomOutboxService.save(roomOutboxMessage);
+        log.info("RoomCheckOutOutboxMessage is updated with outbox status: {}", outboxStatus.name());
+    }
+}

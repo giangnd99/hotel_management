@@ -1,11 +1,11 @@
 package com.poly.room.management.domain.dto.reception;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -13,12 +13,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CheckOutRequest {
-    @NotNull(message = "Check-out time is required")
-    private LocalDateTime checkOutTime;
-
-    private String paymentMethod;
-    private String notes;
     private String checkedOutBy;
-    private Boolean isEarlyCheckOut;
-    private String earlyCheckOutReason;
+    private LocalDateTime checkOutTime;
+    private String notes;
+    private BigDecimal additionalCharges;
+    private String paymentStatus;
 }

@@ -6,13 +6,13 @@ import com.poly.room.management.domain.service.FurnitureService;
 import com.poly.room.management.domain.port.out.repository.FurnitureRepository;
 import com.poly.room.management.domain.entity.Furniture;
 import com.poly.room.management.domain.mapper.FurnitureDtoMapper;
-import com.poly.room.management.domain.valueobject.FurnitureId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -24,50 +24,9 @@ public class FurnitureServiceImpl implements FurnitureService {
     private final FurnitureRepository furnitureRepository;
     private final FurnitureDtoMapper furnitureDtoMapper;
 
-    @Override
-    public FurnitureResponse createFurniture(String inventoryItemId) throws RoomDomainException {
-        log.info("Creating furniture with inventory item ID: {}", inventoryItemId);
-        
-        try {
-            // Tạo furniture mới sử dụng Builder pattern
-            Furniture furniture = Furniture.Builder.builder()
-                    .name("Furniture from " + inventoryItemId)
-                    .build();
-            
-            Furniture savedFurniture = furnitureRepository.save(furniture);
-            
-            log.info("Furniture created successfully with ID: {}", savedFurniture.getId().getValue());
-            return furnitureDtoMapper.toResponse(savedFurniture);
-            
-        } catch (Exception e) {
-            log.error("Error creating furniture: {}", e.getMessage());
-            throw new RoomDomainException("Failed to create furniture: " + e.getMessage());
-        }
-    }
 
     @Override
-    public FurnitureResponse updateFurnitureInventoryItem(Integer furnitureId, String inventoryItemId) throws RoomDomainException {
-        log.info("Updating furniture {} with new inventory item ID: {}", furnitureId, inventoryItemId);
-        
-        try {
-            Furniture furniture = furnitureRepository.findById(furnitureId)
-                    .orElseThrow(() -> new RoomDomainException("Furniture not found with ID: " + furnitureId));
-            
-            // Cập nhật tên furniture
-            furniture.setName("Furniture from " + inventoryItemId);
-            Furniture updatedFurniture = furnitureRepository.update(furniture);
-            
-            log.info("Furniture updated successfully: {}", furnitureId);
-            return furnitureDtoMapper.toResponse(updatedFurniture);
-            
-        } catch (Exception e) {
-            log.error("Error updating furniture: {}", e.getMessage());
-            throw new RoomDomainException("Failed to update furniture: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public void deleteFurniture(Integer furnitureId) throws RoomDomainException {
+    public void deleteFurniture(UUID furnitureId) throws RoomDomainException {
         log.info("Deleting furniture with ID: {}", furnitureId);
         
         try {
@@ -82,7 +41,7 @@ public class FurnitureServiceImpl implements FurnitureService {
     }
 
     @Override
-    public FurnitureResponse getFurnitureById(Integer furnitureId) throws RoomDomainException {
+    public FurnitureResponse getFurnitureById(UUID furnitureId) throws RoomDomainException {
         log.info("Getting furniture by ID: {}", furnitureId);
         
         try {
@@ -112,14 +71,5 @@ public class FurnitureServiceImpl implements FurnitureService {
             log.error("Error getting all furnitures: {}", e.getMessage());
             return List.of();
         }
-    }
-
-    @Override
-    public FurnitureResponse getFurnitureByInventoryItemId(String inventoryItemId) throws RoomDomainException {
-        log.info("Getting furniture by inventory item ID: {}", inventoryItemId);
-        
-        // Tìm furniture theo inventory item ID
-        // Cần implement method này trong repository
-        throw new UnsupportedOperationException("Method getFurnitureByInventoryItemId not yet implemented");
     }
 }

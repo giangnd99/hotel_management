@@ -2,9 +2,9 @@ package com.poly.authentication.service.domain.implement;
 
 
 import com.poly.authentication.service.domain.constant.Google;
-import com.poly.authentication.service.domain.dto.reponse.OutboundUserResponse;
-import com.poly.authentication.service.domain.dto.reponse.UserGGResponse;
-import com.poly.authentication.service.domain.dto.request.ExchangeTokenRequest;
+import com.poly.authentication.service.domain.dto.reponse.user.OutboundUserResponse;
+import com.poly.authentication.service.domain.dto.reponse.user.UserGGResponse;
+import com.poly.authentication.service.domain.dto.request.auth.ExchangeTokenRequest;
 import com.poly.authentication.service.domain.port.in.service.AuthenticationService;
 import com.poly.authentication.service.domain.port.in.service.GoogleService;
 import com.poly.authentication.service.domain.port.out.httpclient.OutboundIdentityClient;
@@ -21,15 +21,18 @@ public class GoogleServiceImpl implements GoogleService {
     private final OutboundIdentityClient outboundIdentityClient;
     private final OutboundUserClient outboundUserClient;
     private final AuthenticationService authenticationService;
+    private final Google google;
 
     public String getAccessToken(String code) {
-        var response = outboundIdentityClient.exchangeToken(ExchangeTokenRequest.builder()
-                .clientId(Google.CLIENT_ID)
-                .clientSecret(Google.CLIENT_SECRET)
-                .redirectUri(Google.REDIRECT_URI)
+        ExchangeTokenRequest request = ExchangeTokenRequest.builder()
+                .clientId(google.CLIENT_ID)
+                .clientSecret(google.CLIENT_SECRET)
+                .redirectUri(google.REDIRECT_URI)
                 .grantType(Google.GRANT_TYPE)
                 .code(code)
-                .build());
+                .build();
+
+        var response = outboundIdentityClient.exchangeToken(request);
 
         log.info("Access token: {}", response.getAccessToken());
         return response.getAccessToken();

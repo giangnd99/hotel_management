@@ -67,7 +67,7 @@ public class RoomServiceRepositoryImpl implements RoomServiceRepository {
 
     @Override
     public List<RoomService> findByRoomNumberAndStatus(String roomNumber, String status) {
-        return jpaRepository.findByRoomNumberAndStatus(roomNumber, status).stream()
+        return jpaRepository.findByRoomNumberAndStatus(roomNumber, RoomServiceEntity.ServiceStatus.valueOf(status)).stream()
                 .map(mapper::toDomain)
                 .toList();
     }
@@ -83,7 +83,7 @@ public class RoomServiceRepositoryImpl implements RoomServiceRepository {
 
     @Override
     public List<RoomService> findByGuestIdAndStatus(UUID guestId, String status) {
-        return jpaRepository.findByGuestIdAndStatus(guestId, status).stream()
+        return jpaRepository.findByGuestIdAndStatus(guestId, RoomServiceEntity.ServiceStatus.valueOf(status)).stream()
                 .map(mapper::toDomain)
                 .toList();
     }
@@ -99,7 +99,7 @@ public class RoomServiceRepositoryImpl implements RoomServiceRepository {
 
     @Override
     public List<RoomService> findByServiceTypeAndStatus(String serviceType, String status) {
-        return jpaRepository.findByServiceTypeAndStatus(serviceType, status).stream()
+        return jpaRepository.findByServiceTypeAndStatus(serviceType, RoomServiceEntity.ServiceStatus.valueOf(status)).stream()
                 .map(mapper::toDomain)
                 .toList();
     }
@@ -108,7 +108,7 @@ public class RoomServiceRepositoryImpl implements RoomServiceRepository {
 
     @Override
     public List<RoomService> findByStatus(String status) {
-        return jpaRepository.findByStatus(status).stream()
+        return jpaRepository.findByStatus(RoomServiceEntity.ServiceStatus.valueOf(status)).stream()
                 .map(mapper::toDomain)
                 .toList();
     }
@@ -116,7 +116,7 @@ public class RoomServiceRepositoryImpl implements RoomServiceRepository {
     @Override
     public List<RoomService> findByStatusWithPagination(String status, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return jpaRepository.findByStatus(status, pageable).getContent().stream()
+        return jpaRepository.findByStatus(RoomServiceEntity.ServiceStatus.valueOf(status), pageable).getContent().stream()
                 .map(mapper::toDomain)
                 .toList();
     }
@@ -125,28 +125,28 @@ public class RoomServiceRepositoryImpl implements RoomServiceRepository {
 
     @Override
     public List<RoomService> findByRequestedDate(LocalDateTime requestedDate) {
-        return jpaRepository.findByRequestedDate(requestedDate).stream()
+        return jpaRepository.findAllByCreatedAt(requestedDate).stream()
                 .map(mapper::toDomain)
                 .toList();
     }
 
     @Override
     public List<RoomService> findByRequestedDateBetween(LocalDateTime fromDate, LocalDateTime toDate) {
-        return jpaRepository.findByRequestedDateBetween(fromDate, toDate).stream()
+        return jpaRepository.findAllByCompletedAtBetween(fromDate, toDate).stream()
                 .map(mapper::toDomain)
                 .toList();
     }
 
     @Override
     public List<RoomService> findByCompletedDate(LocalDateTime completedDate) {
-        return jpaRepository.findByCompletedDate(completedDate).stream()
+        return jpaRepository.findAllByCompletedAt(completedDate).stream()
                 .map(mapper::toDomain)
                 .toList();
     }
 
     @Override
     public List<RoomService> findByCompletedDateBetween(LocalDateTime fromDate, LocalDateTime toDate) {
-        return jpaRepository.findByCompletedDateBetween(fromDate, toDate).stream()
+        return jpaRepository.findAllByCompletedAtBetween(fromDate, toDate).stream()
                 .map(mapper::toDomain)
                 .toList();
     }
@@ -169,7 +169,7 @@ public class RoomServiceRepositoryImpl implements RoomServiceRepository {
 
     @Override
     public List<RoomService> findByRequestedByAndStatus(String staffId, String status) {
-        return jpaRepository.findByRequestedByAndStatus(staffId, status).stream()
+        return jpaRepository.findAllByRequestedByAndStatus(staffId, RoomServiceEntity.ServiceStatus.valueOf(status)).stream()
                 .map(mapper::toDomain)
                 .toList();
     }

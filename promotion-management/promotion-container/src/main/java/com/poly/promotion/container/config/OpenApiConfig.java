@@ -1,10 +1,10 @@
 package com.poly.promotion.container.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.servers.Server;
+import io.swagger.v3.oas.models.tags.Tag;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -122,23 +122,20 @@ public class OpenApiConfig {
                                 <p>API endpoints are subject to rate limiting to ensure system stability and prevent abuse.</p>
                                 """)
                         .version("1.0.0")
-                        .contact(new Contact()
-                                .name("Hotel Management Development Team")
-                                .email("dev@hotelmanagement.com")
-                                .url("https://hotelmanagement.com/developers"))
                         .license(new License()
                                 .name("MIT License")
                                 .url("https://opensource.org/licenses/MIT")))
                 .servers(List.of(
                         new Server()
                                 .url("http://localhost:" + serverPort + contextPath)
-                                .description("Local Development Server"),
-                        new Server()
-                                .url("https://api.hotelmanagement.com" + contextPath)
-                                .description("Production Server"),
-                        new Server()
-                                .url("https://staging-api.hotelmanagement.com" + contextPath)
-                                .description("Staging Server")
+                                .description("Local Development Server")
+                ))
+                .tags(List.of(
+                        new Tag().name("Voucher Pack Management").description("APIs for managing voucher packs in the promotion system"),
+                        new Tag().name("Voucher Management").description("APIs for managing individual vouchers in the promotion system"),
+                        new Tag().name("Monitoring Health").description("APIs for monitoring system health and data synchronization"),
+                        new Tag().name("Root").description("Root endpoint with HATEOAS links to all available resources"),
+                        new Tag().name("Actuator").description("Spring Boot Actuator endpoints for system monitoring and management")
                 ));
     }
 }

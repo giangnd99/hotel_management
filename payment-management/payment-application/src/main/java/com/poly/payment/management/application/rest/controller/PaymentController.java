@@ -3,21 +3,20 @@
     import com.poly.payment.management.domain.dto.ItemData;
     import com.poly.payment.management.domain.dto.request.*;
 
-    import com.poly.payment.management.domain.port.input.service.CreateDepositPaymentLinkUsecase;
-    import com.poly.payment.management.domain.port.input.service.CreateDirectPaymentLinkUsecase;
-    import com.poly.payment.management.domain.port.input.service.CreateInvoicePaymentLinkUsecase;
-    import com.poly.payment.management.domain.port.input.service.ProcessWebhookDataUseCase;
+    import com.poly.payment.management.domain.model.Payment;
+    import com.poly.payment.management.domain.port.input.service.*;
     import lombok.RequiredArgsConstructor;
     import lombok.extern.slf4j.Slf4j;
     import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.*;
 
     import java.time.LocalDateTime;
+    import java.util.List;
     import java.util.stream.Collectors;
 
     @Slf4j
     @RestController
-    @RequestMapping("/api/payment")
+    @RequestMapping("/payment")
     @RequiredArgsConstructor
     public class PaymentController {
 
@@ -26,8 +25,9 @@
         private final ProcessWebhookDataUseCase processWebhookDataUseCase;
 
         private final CreateInvoicePaymentLinkUsecase createInvoicePaymentLinkUsecase;
-
         private final CreateDirectPaymentLinkUsecase createDirectPaymentLinkUsecase;
+
+        private final RetrieveAllPayment retrieveAllPaymentLinkUsecase;
 
         @PostMapping("/deposit")
         public ResponseEntity createDepositLink(@RequestBody CreateDepositRequest request) throws Exception {
@@ -49,6 +49,7 @@
         public ResponseEntity createPaymentInvoiceLink(@RequestBody CreateInvoicePaymentRequest request) throws Exception {
             CreateInvoicePaymentCommand command = CreateInvoicePaymentCommand.builder()
                     .invoiceId(request.getInvoiceId())
+                    .bookingId(request.getBookingId())
                     .build();
             return ResponseEntity.ok().body(createInvoicePaymentLinkUsecase.createPaymentLinkUseCase(command));
         }
@@ -82,5 +83,10 @@
                     .build();
             processWebhookDataUseCase.handleProcessWebhook(command);
             return ResponseEntity.ok().build();
+        }
+
+        @GetMapping
+        public  ResponseEntity<List<Payment>> retrieveAllPayment() {
+            return ResponseEntity.ok(retrieveAllPaymentLinkUsecase.retrieveAllPayment());
         }
     }

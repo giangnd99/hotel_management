@@ -1,8 +1,5 @@
--- Xóa schema cũ nếu tồn tại để tạo mới hoàn toàn
 DROP SCHEMA IF EXISTS booking CASCADE;
-
--- Tạo schema mới
-CREATE SCHEMA booking;
+CREATE SCHEMA IF NOT EXISTS booking;
 
 -- Tạo extension để hỗ trợ UUID
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -34,9 +31,10 @@ CREATE TABLE booking.bookings
     check_out TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     actual_check_in TIMESTAMP WITHOUT TIME ZONE,
     actual_check_out TIMESTAMP WITHOUT TIME ZONE,
-    tracking_id uuid NOT NULL,
+    tracking_id uuid ,
     total_price numeric(10,2) NOT NULL,
     status booking_status NOT NULL,
+    number_of_guests integer,
     CONSTRAINT bookings_pkey PRIMARY KEY (id),
     CONSTRAINT fk_customer FOREIGN KEY (customer_id) REFERENCES booking.customers (id) ON DELETE CASCADE
 
@@ -52,10 +50,8 @@ CREATE TABLE booking.rooms
 (
     id uuid NOT NULL,
     room_number varchar NOT NULL,
-    description varchar NOT NULL,
     price numeric(10,2) NOT NULL,
     status varchar NOT NULL,
-    capacity integer NULL,
     CONSTRAINT rooms_pkey PRIMARY KEY (id)
 );
 
@@ -68,9 +64,8 @@ CREATE TABLE booking.booking_room
     booking_id uuid NOT NULL,
     room_id uuid NOT NULL,
     price numeric(10,2) NOT NULL,
-    CONSTRAINT booking_room_pkey PRIMARY KEY (id),
-    CONSTRAINT FK_BOOKING_ID FOREIGN KEY (booking_id) REFERENCES booking.bookings (id) ON DELETE CASCADE,
-    CONSTRAINT FK_ROOM_ID FOREIGN KEY (room_id) REFERENCES booking.rooms (id)
+    CONSTRAINT booking_room_pkey PRIMARY KEY (id,booking_id),
+    CONSTRAINT FK_BOOKING_ID FOREIGN KEY (booking_id) REFERENCES booking.bookings (id) MATCH SIMPLE ON DELETE CASCADE  ON UPDATE NO ACTION
 );
 
 CREATE INDEX booking_room_booking_id ON booking.booking_room (booking_id);
@@ -86,29 +81,6 @@ DROP TYPE IF EXISTS outbox_status;
 CREATE TYPE outbox_status AS ENUM ('STARTED', 'COMPLETED', 'FAILED');
 
 -- =====================================================================================================================
--- Payment Outbox
--- =====================================================================================================================
-CREATE TABLE booking.payment_outbox
-(
-    id uuid NOT NULL,
-    saga_id uuid NOT NULL,
-    booking_id uuid NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    processed_at TIMESTAMP WITH TIME ZONE,
-    type varchar NOT NULL,
-    payload jsonb NOT NULL,
-    outbox_status outbox_status NOT NULL,
-    saga_status saga_status NOT NULL,
-    booking_status booking_status NOT NULL,
-    version integer NOT NULL,
-    CONSTRAINT payment_outbox_pkey PRIMARY KEY (id),
-    CONSTRAINT FK_PAYMENT_OUTBOX_BOOKING FOREIGN KEY (booking_id) REFERENCES booking.bookings (id)
-);
-
-CREATE INDEX payment_outbox_saga_status ON booking.payment_outbox (type, outbox_status, saga_status);
-CREATE INDEX payment_outbox_booking_id ON booking.payment_outbox (booking_id);
-
--- =====================================================================================================================
 -- Notification Outbox
 -- =====================================================================================================================
 CREATE TABLE booking.notification_outbox
@@ -120,16 +92,13 @@ CREATE TABLE booking.notification_outbox
     processed_at TIMESTAMP WITH TIME ZONE,
     type varchar NOT NULL,
     payload jsonb NOT NULL,
-    outbox_status outbox_status NOT NULL,
-    saga_status saga_status NOT NULL,
-    booking_status booking_status NOT NULL,
+    outbox_status outbox_status ,
+    saga_status saga_status ,
+    booking_status booking_status,
     version integer NOT NULL,
-    CONSTRAINT notification_outbox_pkey PRIMARY KEY (id),
-    CONSTRAINT FK_NOTIFICATION_OUTBOX_BOOKING FOREIGN KEY (booking_id) REFERENCES booking.bookings (id)
-);
+    CONSTRAINT notification_outbox_pkey PRIMARY KEY (id));
 
 CREATE INDEX notification_outbox_saga_status ON booking.notification_outbox (type, outbox_status, saga_status);
-CREATE INDEX notification_outbox_booking_id ON booking.notification_outbox (booking_id);
 
 -- =====================================================================================================================
 -- Room Outbox
@@ -147,9 +116,6 @@ CREATE TABLE booking.room_outbox
     saga_status saga_status NOT NULL,
     booking_status booking_status NOT NULL,
     version integer NOT NULL,
-    CONSTRAINT room_outbox_pkey PRIMARY KEY (id),
-    CONSTRAINT FK_ROOM_OUTBOX_BOOKING FOREIGN KEY (booking_id) REFERENCES booking.bookings (id)
-);
+    CONSTRAINT room_outbox_pkey PRIMARY KEY (id));
 
 CREATE INDEX room_outbox_saga_status ON booking.room_outbox (type, outbox_status, saga_status);
-CREATE INDEX room_outbox_booking_id ON booking.room_outbox (booking_id);

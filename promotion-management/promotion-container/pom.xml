@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.poly</groupId>
         <artifactId>promotion-management</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
 
     <groupId>com.poly.promotion.container</groupId>
@@ -22,17 +22,36 @@
         <dependency>
             <groupId>com.poly.promotion.domain.application</groupId>
             <artifactId>promotion-domain-application</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.poly.promotion.application</groupId>
             <artifactId>promotion-application</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.poly.promotion.data.access</groupId>
             <artifactId>promotion-data-access</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <image>
+                        <name>${project.groupId}/promotion.service:${project.version}</name>
+                    </image>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>build-image</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

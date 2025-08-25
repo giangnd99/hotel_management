@@ -1,5 +1,7 @@
 package com.poly.booking.management.domain.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -17,15 +20,18 @@ public class CreateBookingRequest {
     @NotNull(message = "Customer ID is required")
     private UUID customerId;
 
-    @NotNull(message = "Room ID is required")
-    private UUID roomId;
+    @NotNull(message = "List Room ID is required")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private List<UUID> listRoomId;
 
     @NotNull(message = "Check-in date is required")
     @Future(message = "Check-in date must be in the future")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate checkInDate;
 
     @NotNull(message = "Check-out date is required")
     @Future(message = "Check-out date must be in the future")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate checkOutDate;
 
     @NotNull(message = "Number of guests is required")
@@ -33,6 +39,7 @@ public class CreateBookingRequest {
     @Max(value = 10, message = "Number of guests cannot exceed 10")
     private Integer numberOfGuests;
 
+    @Nullable
     private String specialRequests;
 
     @Email(message = "Invalid email format")

@@ -10,7 +10,6 @@ import java.util.UUID;
 public class RoomCancellationRequestMessage {
 
     private UUID bookingId;
-
     private UUID roomId;
     private String cancellationReason;
     private UUID customerId;

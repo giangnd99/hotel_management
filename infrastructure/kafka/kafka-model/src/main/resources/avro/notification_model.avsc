@@ -15,12 +15,14 @@
     },
     {
       "name": "customerId",
-      "type": "string",
+      "type": ["null", "string"],
+      "default": null,
       "doc": "ID of the customer"
     },
     {
       "name": "customerEmail",
-      "type": "string",
+      "type": ["null", "string"],
+      "default": null,
       "doc": "Email address for sending the notification"
     },
     {
@@ -36,7 +38,8 @@
         "name": "NotificationType",
         "symbols": [
           "BOOKING_CONFIRMATION",
-          "CHECK_IN"
+          "CHECK_IN",
+          "BOOKING_CANCEL"
         ]
       },
       "doc": "Type of notification message"

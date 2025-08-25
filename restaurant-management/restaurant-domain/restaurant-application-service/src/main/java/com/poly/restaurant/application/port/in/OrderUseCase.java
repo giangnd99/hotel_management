@@ -115,27 +115,27 @@ public interface OrderUseCase {
      * @param orderDTO Thông tin đơn hàng
      * @return OrderDTO đã được tạo
      */
-    OrderDTO createDirectOrder(OrderDTO orderDTO);
-
-    /**
-     * Tạo đơn hàng đính kèm vào room
-     * 
-     * @param orderDTO Thông tin đơn hàng
-     * @return OrderDTO đã được tạo
-     */
-    OrderDTO createRoomAttachedOrder(OrderDTO orderDTO);
-
-    /**
-     * Kích hoạt payment request cho đơn hàng trực tiếp
-     * 
-     * @param orderDTO Thông tin đơn hàng
-     */
-    void triggerDirectPaymentRequest(OrderDTO orderDTO);
-
-    /**
-     * Kích hoạt payment request cho đơn hàng đính kèm room (khi checkout)
-     * 
-     * @param orderDTO Thông tin đơn hàng
-     */
-    void triggerRoomOrderPaymentRequest(OrderDTO orderDTO);
+//    OrderDTO createDirectOrder(OrderDTO orderDTO);
+//
+//    /**
+//     * Tạo đơn hàng đính kèm vào room
+//     *
+//     * @param orderDTO Thông tin đơn hàng
+//     * @return OrderDTO đã được tạo
+//     */
+//    OrderDTO createRoomAttachedOrder(OrderDTO orderDTO);
+//
+//    /**
+//     * Kích hoạt payment request cho đơn hàng trực tiếp
+//     *
+//     * @param orderDTO Thông tin đơn hàng
+//     */
+//    void triggerDirectPaymentRequest(OrderDTO orderDTO);
+//
+//    /**
+//     * Kích hoạt payment request cho đơn hàng đính kèm room (khi checkout)
+//     *
+//     * @param orderDTO Thông tin đơn hàng
+//     */
+//    void triggerRoomOrderPaymentRequest(OrderDTO orderDTO);
 }

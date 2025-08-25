@@ -4,7 +4,7 @@ import com.poly.promotion.domain.application.service.VoucherPackService;
 import com.poly.promotion.domain.application.spi.repository.VoucherRepository;
 import com.poly.promotion.domain.core.entity.Voucher;
 import com.poly.promotion.domain.core.entity.VoucherPack;
-import com.poly.promotion.domain.core.exception.PromotionDomainException;
+import com.poly.promotion.domain.core.exception.VoucherDomainException;
 import com.poly.promotion.domain.core.valueobject.DateRange;
 import com.poly.promotion.domain.core.valueobject.DiscountPercentage;
 import com.poly.promotion.domain.core.valueobject.VoucherId;
@@ -63,7 +63,7 @@ class VoucherServiceImplTest {
     @Test
     void testGetAllVouchersWithStatus_InvalidCustomerId_ThrowsException() {
         // Act & Assert
-        assertThrows(PromotionDomainException.class, () -> 
+        assertThrows(VoucherDomainException.class, () -> 
             voucherService.getAllVouchersWithStatus("invalid-uuid", VoucherStatus.PENDING));
     }
 
@@ -86,7 +86,7 @@ class VoucherServiceImplTest {
     @Test
     void testGetVoucherById_InvalidId_ThrowsException() {
         // Act & Assert
-        assertThrows(PromotionDomainException.class, () -> 
+        assertThrows(VoucherDomainException.class, () -> 
             voucherService.getVoucherById("invalid-uuid"));
     }
 
@@ -97,7 +97,7 @@ class VoucherServiceImplTest {
         when(voucherRepository.getVoucherById(voucherId)).thenReturn(null);
 
         // Act & Assert
-        assertThrows(PromotionDomainException.class, () -> 
+        assertThrows(VoucherDomainException.class, () -> 
             voucherService.getVoucherById(voucherId));
     }
 
@@ -132,14 +132,14 @@ class VoucherServiceImplTest {
     @Test
     void testRedeemVoucherFromPack_InvalidCustomerId_ThrowsException() {
         // Act & Assert
-        assertThrows(PromotionDomainException.class, () -> 
+        assertThrows(VoucherDomainException.class, () -> 
             voucherService.redeemVoucherFromPack(1L, "invalid-uuid", 1));
     }
 
     @Test
     void testRedeemVoucherFromPack_InvalidQuantity_ThrowsException() {
         // Act & Assert
-        assertThrows(PromotionDomainException.class, () -> 
+        assertThrows(VoucherDomainException.class, () -> 
             voucherService.redeemVoucherFromPack(1L, UUID.randomUUID().toString(), 0));
     }
 
@@ -155,7 +155,7 @@ class VoucherServiceImplTest {
         when(voucherPackService.getVoucherPackById(packId)).thenReturn(mockPack);
 
         // Act & Assert
-        assertThrows(PromotionDomainException.class, () -> 
+        assertThrows(VoucherDomainException.class, () -> 
             voucherService.redeemVoucherFromPack(packId, customerId, quantity));
     }
 
@@ -190,7 +190,7 @@ class VoucherServiceImplTest {
         when(voucherRepository.getVoucherByCode(voucherCode)).thenReturn(null);
 
         // Act & Assert
-        assertThrows(PromotionDomainException.class, () -> 
+        assertThrows(VoucherDomainException.class, () -> 
             voucherService.applyVoucher(voucherCode, UUID.randomUUID().toString()));
     }
 
@@ -204,7 +204,7 @@ class VoucherServiceImplTest {
         when(voucherRepository.getVoucherByCode(voucher.getVoucherCode())).thenReturn(voucher);
 
         // Act & Assert
-        assertThrows(PromotionDomainException.class, () -> 
+        assertThrows(VoucherDomainException.class, () -> 
             voucherService.applyVoucher(voucher.getVoucherCode(), wrongCustomerId));
     }
 
@@ -218,7 +218,7 @@ class VoucherServiceImplTest {
         when(voucherRepository.getVoucherByCode(voucher.getVoucherCode())).thenReturn(voucher);
 
         // Act & Assert
-        assertThrows(PromotionDomainException.class, () -> 
+        assertThrows(VoucherDomainException.class, () -> 
             voucherService.applyVoucher(voucher.getVoucherCode(), customerId));
     }
 
@@ -240,10 +240,10 @@ class VoucherServiceImplTest {
 
     private VoucherPack createMockVoucherPack(Long packId) {
         VoucherPack pack = mock(VoucherPack.class);
-        when(pack.getId()).thenReturn(new VoucherPackId(packId));
-        when(pack.getDiscountAmount()).thenReturn(new DiscountPercentage(10.0));
-        when(pack.getVoucherValidRange()).thenReturn(new DateRange(30, ChronoUnit.DAYS));
-        when(pack.canRedeem(any())).thenReturn(true);
+        lenient().when(pack.getId()).thenReturn(new VoucherPackId(packId));
+        lenient().when(pack.getDiscountAmount()).thenReturn(new DiscountPercentage(10.0));
+        lenient().when(pack.getVoucherValidRange()).thenReturn(new DateRange(30, ChronoUnit.DAYS));
+        lenient().when(pack.canRedeem(any())).thenReturn(true);
         return pack;
     }
 }

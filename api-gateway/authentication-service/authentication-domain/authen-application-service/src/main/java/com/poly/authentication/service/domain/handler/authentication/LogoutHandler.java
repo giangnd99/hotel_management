@@ -1,7 +1,7 @@
 package com.poly.authentication.service.domain.handler.authentication;
 
 import com.nimbusds.jose.JOSEException;
-import com.poly.authentication.service.domain.dto.request.LogoutRequest;
+import com.poly.authentication.service.domain.dto.request.auth.LogoutRequest;
 import com.poly.authentication.service.domain.exception.AppException;
 import com.poly.authentication.service.domain.exception.AuthenException;
 import com.poly.authentication.service.domain.port.out.repository.TokenRepository;

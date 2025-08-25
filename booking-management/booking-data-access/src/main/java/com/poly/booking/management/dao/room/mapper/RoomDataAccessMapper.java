@@ -21,6 +21,8 @@ public class RoomDataAccessMapper {
         return RoomEntity.builder()
                 .id(room.getId().getValue())
                 .roomNumber(room.getRoomNumber())
+                .price(room.getBasePrice().getAmount())
+                .status(room.getStatus())
                 .build();
     }
 
@@ -29,7 +31,7 @@ public class RoomDataAccessMapper {
                 .id(new RoomId(roomEntity.getId()))
                 .roomNumber(roomEntity.getRoomNumber())
                 .basePrice(new Money(roomEntity.getPrice()))
-                .status(RoomStatus.valueOf(roomEntity.getStatus()))
+                .status(roomEntity.getStatus())
                 .build();
     }
 }

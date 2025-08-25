@@ -7,7 +7,7 @@ import java.util.Optional;
 public interface ForgotPasswordService {
     Optional<Token> getForgotPasswordToken(String token);
 
-    Token createForgotPasswordToken(String email);
+    String createForgotPasswordToken(String email);
 
     boolean validateToken(String token);
 

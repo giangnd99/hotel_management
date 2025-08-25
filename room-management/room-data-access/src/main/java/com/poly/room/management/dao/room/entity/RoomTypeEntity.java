@@ -8,20 +8,22 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
+@Table(name = "room_types")
 public class RoomTypeEntity {
 
     @Id
-    private Integer roomTypeId;
+    @Column(columnDefinition = "uuid",updatable = false)
+    private UUID roomTypeId;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "room_id")
-    private RoomEntity room;
+    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<RoomEntity> rooms;
 
     private String typeName;
 
@@ -31,6 +33,6 @@ public class RoomTypeEntity {
 
     private int maxOccupancy;
 
-    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RoomTypeFurnitureEntity> furnituresRequirements;
 }

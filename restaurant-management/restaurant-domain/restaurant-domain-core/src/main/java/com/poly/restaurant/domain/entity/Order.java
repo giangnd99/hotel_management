@@ -17,6 +17,7 @@ public class Order {
     private OrderStatus status;
     private Money totalPrice;
     private String customerNote;
+    private String orderNumber; // Add order number field
 
     public Order(String id, String customerId, String tableId, List<OrderItem> items, LocalDateTime createdAt) {
         if (id == null || id.trim().isEmpty()) throw new IllegalArgumentException("Id must not be empty");
@@ -33,6 +34,26 @@ public class Order {
         this.items = new ArrayList<>(items);
         this.createdAt = createdAt;
         this.status = OrderStatus.NEW;
+        this.orderNumber = generateOrderNumber(); // Generate order number
+    }
+
+    // Constructor with status parameter for reconstruction from database
+    public Order(String id, String customerId, String tableId, List<OrderItem> items, LocalDateTime createdAt, String orderNumber, OrderStatus status) {
+        if (id == null || id.trim().isEmpty()) throw new IllegalArgumentException("Id must not be empty");
+        if (customerId == null || customerId.trim().isEmpty())
+            throw new IllegalArgumentException("CustomerId must not be empty");
+        if (tableId == null || tableId.trim().isEmpty())
+            throw new IllegalArgumentException("TableId must not be empty");
+        if (items == null || items.isEmpty()) throw new IllegalArgumentException("Order must have at least one item");
+        if (createdAt == null) throw new IllegalArgumentException("CreatedAt must not be null");
+
+        this.id = id.trim();
+        this.customerId = customerId.trim();
+        this.tableId = tableId.trim();
+        this.items = new ArrayList<>(items);
+        this.createdAt = createdAt;
+        this.status = status != null ? status : OrderStatus.NEW;
+        this.orderNumber = orderNumber != null ? orderNumber : generateOrderNumber();
     }
 
     public String getId() {
@@ -63,6 +84,9 @@ public class Order {
         return customerNote;
     }
 
+    public String getOrderNumber() {
+        return orderNumber;
+    }
 
     public Money getTotalPrice() {
         Optional<BigDecimal> total = items.stream().map(OrderItem::getPrice)
@@ -83,8 +107,17 @@ public class Order {
         this.status = newStatus;
     }
 
+    // Internal method to set status without validation (for reconstruction from database)
+    void setStatusInternal(OrderStatus newStatus) {
+        this.status = newStatus;
+    }
+
     public void setCustomerNote(String note) {
         this.customerNote = note != null ? note.trim() : null;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber != null ? orderNumber.trim() : null;
     }
 
     public void addItem(OrderItem item) {
@@ -104,14 +137,22 @@ public class Order {
     }
 
     private boolean isValidStatusTransition(OrderStatus current, OrderStatus newStatus) {
+        // Allow setting the same status (no-op)
+        if (current == newStatus) {
+            return true;
+        }
+        
         switch (current) {
             case NEW:
                 return newStatus == OrderStatus.IN_PROGRESS || newStatus == OrderStatus.CANCELLED;
             case IN_PROGRESS:
                 return newStatus == OrderStatus.COMPLETED || newStatus == OrderStatus.CANCELLED;
             case COMPLETED:
+                // Allow changing from COMPLETED to CANCELLED for refund scenarios
+                return newStatus == OrderStatus.CANCELLED;
             case CANCELLED:
-                return false; // Terminal states
+                // Allow changing from CANCELLED to NEW for reactivation scenarios
+                return newStatus == OrderStatus.NEW;
             default:
                 return false;
         }
@@ -127,5 +168,11 @@ public class Order {
 
     public boolean isCancelled() {
         return status == OrderStatus.CANCELLED;
+    }
+
+    private String generateOrderNumber() {
+        // This is a placeholder. In a real application, you would generate a unique order number.
+        // For example, you might use a sequence generator or a timestamp.
+        return "ORD-" + System.currentTimeMillis();
     }
 }

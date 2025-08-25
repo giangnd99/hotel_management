@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * <h2>PromotionManagementConfig Class</h2>
@@ -54,10 +55,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
     "com.poly.promotion.domain.core.entity"
 })
 @EnableJpaRepositories(basePackages = {
-    "com.poly.promotion.data.access.repository"
+    "com.poly.promotion"
 })
 @EnableScheduling
 @EnableTransactionManagement
+@EnableFeignClients(basePackages = "com.poly.promotion.application.client")
 public class PromotionManagementConfig {
 
     /**

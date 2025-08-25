@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "invoice")
+@Table(name = "invoice", schema = "payment_db")
 @Getter
 @Setter
 @Builder
@@ -40,10 +40,10 @@ public class InvoiceEntity {
     @Column(name = "status", nullable = false)
     private InvoiceStatus status;
 
-    @Column(name = "create_at")
+    @Column(name = "created_at")
     private LocalDateTime createdDate;
 
-    @Column(name = "update_at")
+    @Column(name = "updated_at")
     private LocalDateTime updatedDate;
 
     @Column(name = "note")

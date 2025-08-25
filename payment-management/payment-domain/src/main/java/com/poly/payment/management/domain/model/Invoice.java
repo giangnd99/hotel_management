@@ -40,6 +40,9 @@ public class Invoice extends AggregateRoot<InvoiceId> {
         if (this.status == InvoiceStatus.PAID) {
             return;
         }
+        if (this.status == InvoiceStatus.PENDING) {
+            this.status = InvoiceStatus.PAID;
+        }
         this.updatedAt = paidAt;
     }
 
@@ -47,6 +50,7 @@ public class Invoice extends AggregateRoot<InvoiceId> {
         if (this.status == InvoiceStatus.PAID) {
             return;
         }
+        this.status = InvoiceStatus.FAILED;
         this.updatedAt = failedAt;
     }
 }

@@ -1,17 +1,20 @@
 server:
   port: 8083
-
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 20000
 booking-service:
-  payment-request-topic-name: payment-request
-  payment-response-topic-name: payment-response
+  payment-response-topic-name: booking-payment-response
   room-reserve-request-topic-name: room-approval-request
   room-reserve-response-topic-name: room-approval-response
-  room-check-out-topic-name: room-check-out-topic
-  customer-topic-name: customer
+  room-check-in-topic-name: room-check-in-request
+  customer-topic-name: customer-booking-topic
   booking-notification-request-topic-name: notification-send-mail-request
-  booking-notification-response-topic-name: notification-send-mail-response
-  outbox-scheduler-fixed-rate: 10000
-  outbox-scheduler-initial-delay: 10000
+  outbox-scheduler-fixed-rate: 1000
+  outbox-scheduler-initial-delay: 1000
 spring:
   application:
     name: booking-management
@@ -36,7 +39,6 @@ spring:
     init:
       mode: ALWAYS
       schema-locations: classpath:init-schema.sql
-      data-locations: classpath:sample-data.sql
   data:
     redis:
       port: ${REDIS_PORT:6379} # Cổng Redis (mặc định 6379)

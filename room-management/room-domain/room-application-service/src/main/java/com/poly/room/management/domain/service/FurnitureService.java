@@ -4,12 +4,10 @@ import com.poly.room.management.domain.exception.RoomDomainException;
 import com.poly.room.management.domain.dto.response.FurnitureResponse;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface FurnitureService {
-    FurnitureResponse createFurniture(String inventoryItemId) throws RoomDomainException;
-    FurnitureResponse updateFurnitureInventoryItem(Integer furnitureId, String inventoryItemId) throws RoomDomainException;
-    void deleteFurniture(Integer furnitureId) throws RoomDomainException;
-    FurnitureResponse getFurnitureById(Integer furnitureId) throws RoomDomainException;
+    void deleteFurniture(UUID furnitureId) throws RoomDomainException;
+    FurnitureResponse getFurnitureById(UUID furnitureId) throws RoomDomainException;
     List<FurnitureResponse> getAllFurnitures();
-    FurnitureResponse getFurnitureByInventoryItemId(String inventoryItemId) throws RoomDomainException;
 }

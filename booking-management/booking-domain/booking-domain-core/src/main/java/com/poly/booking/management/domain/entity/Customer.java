@@ -83,8 +83,6 @@ public class Customer extends BaseEntity<CustomerId> {
         customer.setFirstName(firstName);
         customer.setLastName(lastName);
         customer.setName(firstName + " " + lastName);
-        customer.setCreatedAt(LocalDateTime.now());
-        customer.setUpdatedAt(LocalDateTime.now());
         customer.setStatus(CustomerStatus.ACTIVE);
 
         return customer;

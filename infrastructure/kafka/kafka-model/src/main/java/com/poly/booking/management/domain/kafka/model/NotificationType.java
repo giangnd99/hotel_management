@@ -6,8 +6,8 @@
 package com.poly.booking.management.domain.kafka.model;
 @org.apache.avro.specific.AvroGenerated
 public enum NotificationType implements org.apache.avro.generic.GenericEnumSymbol<NotificationType> {
-  BOOKING_CONFIRMATION, CHECK_IN  ;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"enum\",\"name\":\"NotificationType\",\"namespace\":\"com.poly.booking.management.domain.kafka.model\",\"symbols\":[\"BOOKING_CONFIRMATION\",\"CHECK_IN\"]}");
+  BOOKING_CONFIRMATION, CHECK_IN, BOOKING_CANCEL  ;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"enum\",\"name\":\"NotificationType\",\"namespace\":\"com.poly.booking.management.domain.kafka.model\",\"symbols\":[\"BOOKING_CONFIRMATION\",\"CHECK_IN\",\"BOOKING_CANCEL\"]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   @Override

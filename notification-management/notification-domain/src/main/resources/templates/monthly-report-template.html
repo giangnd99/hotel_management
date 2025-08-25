@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo Hàng Tháng - Luxury Hotel</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f6f7fb;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: #fff;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .header p {
+            margin: 5px 0 0;
+            font-size: 16px;
+        }
+        .content {
+            padding: 30px;
+        }
+        .report-period {
+            background: #e8f5e8;
+            border-left: 6px solid #28a745;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        .report-period h2 {
+            margin: 0;
+            color: #28a745;
+            font-size: 24px;
+        }
+        .section {
+            margin: 30px 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .section-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .section-header h3 {
+            margin: 0;
+            color: #333;
+            font-size: 18px;
+        }
+        .section-content {
+            padding: 20px;
+        }
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+        .metric-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 5px;
+        }
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+        }
+        .chart-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .chart-placeholder {
+            background: #e9ecef;
+            border: 2px dashed #6c757d;
+            border-radius: 8px;
+            padding: 40px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .summary-table th,
+        .summary-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .summary-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+        .highlight {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .success {
+            color: #28a745;
+        }
+        .warning {
+            color: #ffc107;
+        }
+        .danger {
+            color: #dc3545;
+        }
+        .info {
+            color: #17a2b8;
+        }
+        .trend-up {
+            color: #28a745;
+        }
+        .trend-down {
+            color: #dc3545;
+        }
+        .trend-stable {
+            color: #6c757d;
+        }
+        .footer {
+            background: #f1f3f9;
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
+            color: #666;
+        }
+        .footer strong {
+            color: #333;
+        }
+        .comparison-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .comparison-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <h1>🏨 Luxury Hotel</h1>
+        <p>Báo Cáo Hàng Tháng - Hệ Thống Quản Lý</p>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <div class="report-period">
+            <h2>📊 Báo Cáo Tháng: <span th:text="${reportMonth}">Tháng 1/2024</span></h2>
+            <p>Báo cáo được tạo tự động bởi AI vào lúc <span th:text="${generatedAt}">00:00</span></p>
+            <p>So sánh với tháng trước: <span th:text="${previousMonth}">Tháng 12/2023</span></p>
+        </div>
+
+        <!-- Executive Summary -->
+        <div class="section">
+            <div class="section-header">
+                <h3>📋 Tóm Tắt Điều Hành</h3>
+            </div>
+            <div class="section-content">
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${executiveSummary.totalRevenue}">0 VNĐ</div>
+                        <div class="metric-label">Tổng Doanh Thu</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${executiveSummary.totalBookings}">0</div>
+                        <div class="metric-label">Tổng Đặt Phòng</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${executiveSummary.occupancyRate}">0%</div>
+                        <div class="metric-label">Tỷ Lệ Lấp Đầy</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${executiveSummary.averageRating}">0.0</div>
+                        <div class="metric-label">Đánh Giá TB</div>
+                    </div>
+                </div>
+                
+                <div class="comparison-section">
+                    <h4>📈 So Sánh Với Tháng Trước:</h4>
+                    <div class="comparison-grid">
+                        <div class="comparison-item">
+                            <h5>Doanh Thu</h5>
+                            <p class="trend-up" th:text="${executiveSummary.revenueTrend}">+15%</p>
+                            <small>So với tháng trước</small>
+                        </div>
+                        <div class="comparison-item">
+                            <h5>Đặt Phòng</h5>
+                            <p class="trend-up" th:text="${executiveSummary.bookingTrend}">+8%</p>
+                            <small>So với tháng trước</small>
+                        </div>
+                        <div class="comparison-item">
+                            <h5>Tỷ Lệ Lấp Đầy</h5>
+                            <p class="trend-stable" th:text="${executiveSummary.occupancyTrend}">+2%</p>
+                            <small>So với tháng trước</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Trends Chart -->
+        <div class="section">
+            <div class="section-header">
+                <h3>📊 Biểu Đồ Xu Hướng Tháng</h3>
+            </div>
+            <div class="section-content">
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        📈 Biểu đồ xu hướng doanh thu, đặt phòng và tỷ lệ lấp đầy trong tháng
+                        <br>Dữ liệu được hiển thị theo từng tuần
+                    </div>
+                </div>
+                
+                <h4>📅 Phân Tích Theo Tuần:</h4>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Tuần</th>
+                            <th>Doanh Thu</th>
+                            <th>Đặt Phòng</th>
+                            <th>Tỷ Lệ Lấp Đầy</th>
+                            <th>Xu Hướng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="week : ${monthlyTrends.weeklyData}">
+                            <td th:text="${week.weekNumber}">Tuần 1</td>
+                            <td th:text="${week.revenue}">0 VNĐ</td>
+                            <td th:text="${week.bookings}">0</td>
+                            <td th:text="${week.occupancyRate}">0%</td>
+                            <td th:text="${week.trend}">↗️</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Detailed Statistics -->
+        <div class="section">
+            <div class="section-header">
+                <h3>📊 Thống Kê Chi Tiết</h3>
+            </div>
+            <div class="section-content">
+                <h4>🏨 Theo Loại Phòng:</h4>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Loại Phòng</th>
+                            <th>Số Lượng Đặt</th>
+                            <th>Doanh Thu</th>
+                            <th>Tỷ Lệ Lấp Đầy</th>
+                            <th>Đánh Giá TB</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="roomType : ${detailedStats.roomTypeStats}">
+                            <td th:text="${roomType.typeName}">Phòng Đôi</td>
+                            <td th:text="${roomType.bookingCount}">0</td>
+                            <td th:text="${roomType.revenue}">0 VNĐ</td>
+                            <td th:text="${roomType.occupancyRate}">0%</td>
+                            <td th:text="${roomType.averageRating}">0.0</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4>👥 Theo Loại Khách Hàng:</h4>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Loại Khách</th>
+                            <th>Số Lượng</th>
+                            <th>Đặt Phòng TB</th>
+                            <th>Chi Tiêu TB</th>
+                            <th>Tỷ Lệ Quay Lại</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="customerType : ${detailedStats.customerTypeStats}">
+                            <td th:text="${customerType.type}">Cá nhân</td>
+                            <td th:text="${customerType.count}">0</td>
+                            <td th:text="${customerType.avgBookings}">0</td>
+                            <td th:text="${customerType.avgSpending}">0 VNĐ</td>
+                            <td th:text="${customerType.returnRate}">0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Payment Analysis -->
+        <div class="section">
+            <div class="section-header">
+                <h3>💳 Phân Tích Thanh Toán</h3>
+            </div>
+            <div class="section-content">
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${paymentAnalysis.totalTransactions}">0</div>
+                        <div class="metric-label">Tổng Giao Dịch</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value success" th:text="${paymentAnalysis.successRate}">0%</div>
+                        <div class="metric-label">Tỷ Lệ Thành Công</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${paymentAnalysis.averageTransactionValue}">0 VNĐ</div>
+                        <div class="metric-label">Giá Trị TB</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value info" th:text="${paymentAnalysis.failedTransactions}">0</div>
+                        <div class="metric-label">Giao Dịch Thất Bại</div>
+                    </div>
+                </div>
+                
+                <h4>📊 Theo Phương Thức Thanh Toán:</h4>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Phương Thức</th>
+                            <th>Số Lượng</th>
+                            <th>Tổng Tiền</th>
+                            <th>Tỷ Lệ Thành Công</th>
+                            <th>Xu Hướng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="method : ${paymentAnalysis.paymentMethods}">
+                            <td th:text="${method.name}">PayOS</td>
+                            <td th:text="${method.count}">0</td>
+                            <td th:text="${method.amount}">0 VNĐ</td>
+                            <td th:text="${method.successRate}">0%</td>
+                            <td th:text="${method.trend}">↗️</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Invoice Summary -->
+        <div class="section">
+            <div class="section-header">
+                <h3>🧾 Tổng Kết Hóa Đơn</h3>
+            </div>
+            <div class="section-content">
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${invoiceSummary.totalInvoices}">0</div>
+                        <div class="metric-label">Tổng Hóa Đơn</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value success" th:text="${invoiceSummary.paidInvoices}">0</div>
+                        <div class="metric-label">Đã Thanh Toán</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value warning" th:text="${invoiceSummary.pendingInvoices}">0</div>
+                        <div class="metric-label">Chờ Thanh Toán</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" th:text="${invoiceSummary.totalRevenue}">0 VNĐ</div>
+                        <div class="metric-label">Tổng Doanh Thu</div>
+                    </div>
+                </div>
+                
+                <h4>📈 Top 5 Hóa Đơn Cao Nhất:</h4>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Mã Hóa Đơn</th>
+                            <th>Khách Hàng</th>
+                            <th>Loại Phòng</th>
+                            <th>Số Tiền</th>
+                            <th>Ngày Tạo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="invoice : ${invoiceSummary.topInvoices}">
+                            <td th:text="${invoice.invoiceId}">INV001</td>
+                            <td th:text="${invoice.customerName}">Nguyễn Văn A</td>
+                            <td th:text="${invoice.roomType}">Phòng Đôi</td>
+                            <td th:text="${invoice.amount}">1,000,000 VNĐ</td>
+                            <td th:text="${invoice.createdDate}">2024-01-01</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- AI Insights & Recommendations -->
+        <div class="section">
+            <div class="section-header">
+                <h3>🤖 Phân Tích AI & Khuyến Nghị</h3>
+            </div>
+            <div class="section-content">
+                <h4>💡 Phân Tích Tổng Quan:</h4>
+                <p th:text="${aiInsights.overview}">Phân tích tổng quan về hoạt động trong tháng...</p>
+                
+                <h4>📊 Xu Hướng Chính:</h4>
+                <ul>
+                    <li th:each="trend : ${aiInsights.keyTrends}" th:text="${trend}">Xu hướng...</li>
+                </ul>
+                
+                <h4>⚠️ Vấn Đề Cần Chú Ý:</h4>
+                <ul>
+                    <li th:each="issue : ${aiInsights.issues}" th:text="${issue}">Vấn đề...</li>
+                </ul>
+                
+                <h4>🚀 Khuyến Nghị Cải Thiện:</h4>
+                <ul>
+                    <li th:each="recommendation : ${aiInsights.recommendations}" th:text="${recommendation}">Khuyến nghị...</li>
+                </ul>
+                
+                <h4>🎯 Mục Tiêu Tháng Tới:</h4>
+                <ul>
+                    <li th:each="goal : ${aiInsights.nextMonthGoals}" th:text="${goal}">Mục tiêu...</li>
+                </ul>
+            </div>
+        </div>
+
+        <p><strong>Lưu ý:</strong> Báo cáo này được tạo tự động bởi hệ thống AI. Vui lòng kiểm tra lại các số liệu quan trọng trước khi đưa ra quyết định.</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Trân trọng,<br><strong>Hệ Thống AI - Luxury Hotel</strong></p>
+        <p>Báo cáo được gửi tự động vào lúc <span th:text="${generatedAt}">00:00</span><br>
+            Nếu có thắc mắc, vui lòng liên hệ với đội ngũ IT.</p>
+    </div>
+</div>
+</body>
+</html>

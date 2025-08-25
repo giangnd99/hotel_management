@@ -4,10 +4,12 @@ import com.poly.domain.valueobject.InvoiceId;
 import com.poly.payment.management.data.access.entity.InvoiceEntity;
 import com.poly.payment.management.domain.model.Invoice;
 import com.poly.payment.management.domain.value_object.*;
+import org.springframework.stereotype.Component;
 
+@Component
 public class InvoiceMapper {
 
-    public static Invoice toDomain(InvoiceEntity invoiceEntity) {
+    public Invoice toDomain(InvoiceEntity invoiceEntity) {
         return Invoice.builder()
                 .invoiceId(InvoiceId.from(invoiceEntity.getId()))
                 .customerId(CustomerId.fromValue(invoiceEntity.getCustomerId()))
@@ -22,7 +24,7 @@ public class InvoiceMapper {
                 .build();
     }
 
-    public static InvoiceEntity toEntity(Invoice invoice) {
+    public InvoiceEntity toEntity(Invoice invoice) {
         return InvoiceEntity.builder()
                 .id(invoice.getId().getValue())
                 .customerId(invoice.getCustomerId() != null ?  invoice.getCustomerId().getValue() : null)

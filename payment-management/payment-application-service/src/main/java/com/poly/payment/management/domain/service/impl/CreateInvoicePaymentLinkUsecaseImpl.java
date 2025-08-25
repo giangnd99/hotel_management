@@ -1,7 +1,6 @@
 package com.poly.payment.management.domain.service.impl;
 
-import com.poly.domain.valueobject.PaymentMethod;
-import com.poly.domain.valueobject.PaymentStatus;
+import com.poly.domain.valueobject.ReferenceId;
 import com.poly.payment.management.domain.dto.request.CreateInvoicePaymentCommand;
 import com.poly.payment.management.domain.dto.request.CreatePaymentLinkCommand;
 import com.poly.payment.management.domain.dto.response.PaymentLinkResult;
@@ -13,13 +12,11 @@ import com.poly.payment.management.domain.dto.ItemData;
 import com.poly.payment.management.domain.model.Invoice;
 import com.poly.payment.management.domain.model.InvoicePayment;
 import com.poly.payment.management.domain.model.Payment;
-import com.poly.payment.management.domain.value_object.Description;
-import com.poly.payment.management.domain.value_object.Money;
-import com.poly.payment.management.domain.value_object.OrderCode;
-import com.poly.payment.management.domain.value_object.PaymentId;
+import com.poly.payment.management.domain.value_object.*;
 import com.poly.payment.management.domain.port.output.repository.InvoicePaymentRepository;
 import com.poly.payment.management.domain.port.output.repository.InvoiceRepository;
 import com.poly.payment.management.domain.port.output.repository.PaymentRepository;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class CreateInvoicePaymentLinkUsecaseImpl implements CreateInvoicePaymentLinkUsecase {
 
     private final PaymentRepository paymentRepository;
@@ -46,6 +44,20 @@ public class CreateInvoicePaymentLinkUsecaseImpl implements CreateInvoicePayment
 
     @Override
     public PaymentLinkResult createPaymentLinkUseCase(CreateInvoicePaymentCommand command) throws Exception {
+
+        Optional<Payment> paymentExisted = paymentRepository.findByReferenceIdAndStatus(command.getBookingId(), PaymentStatus.PENDING);
+
+        if (paymentExisted.isPresent() && paymentExisted.get().getStatus().equals(PaymentStatus.PENDING)) {
+            Payment payment = paymentExisted.get();
+             PaymentLinkResult result = PaymentLinkResult.builder()
+                    .paymentId(payment.getId().getValue())
+                    .orderCode(payment.getOrderCode().getValue())
+                    .status(payment.getStatus().name())
+                    .paymentLink(payment.getPaymentLink())
+                    .build();
+             return result;
+        }
+
         Optional<Invoice> existedInvoice = invoiceRepository.findById(command.getInvoiceId());
 
         if (existedInvoice.isEmpty()) throw new Exception("Invoice not found");
@@ -66,9 +78,10 @@ public class CreateInvoicePaymentLinkUsecaseImpl implements CreateInvoicePayment
                 .amount(invoice.getTotalAmount())
                 .method(PaymentMethod.valueOf(command.getMethod() != null ? command.getMethod() : PaymentMethod.PAYOS.name()))
                 .createdAt(LocalDateTime.now())
+                .referenceId(ReferenceId.from(command.getBookingId()))
                 .updatedAt(LocalDateTime.now())
                 .orderCode(OrderCode.generate())
-                .description(Description.from("invoice_payment"))
+                .description(Description.from("checkout"))
                 .build();
 
         InvoicePayment newInvoicePayment = InvoicePayment.builder()

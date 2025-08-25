@@ -12,9 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RoomResponse {
-    private Integer id;
+    private String id;
     private String roomNumber;
     private int floor;
     private RoomTypeResponse roomType;
     private String roomStatus;
+    private String image_url;
 }

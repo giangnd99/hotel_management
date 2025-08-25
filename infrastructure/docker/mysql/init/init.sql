@@ -1,0 +1,2 @@
+CREATE DATABASE IF NOT EXISTS payment_db;
+CREATE DATABASE IF NOT EXISTS notification-management;

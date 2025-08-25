@@ -1,8 +1,8 @@
 package com.poly.customercontainer.controller;
 
-import com.poly.customerapplicationservice.command.CreateCustomerCommand;
-import com.poly.customerapplicationservice.command.RetrieveCustomerProfileCommand;
-import com.poly.customerapplicationservice.command.UpdateCustomerCommand;
+import com.poly.customerapplicationservice.dto.command.CreateCustomerCommand;
+import com.poly.customerapplicationservice.dto.command.RetrieveCustomerProfileCommand;
+import com.poly.customerapplicationservice.dto.command.UpdateCustomerCommand;
 import com.poly.customerapplicationservice.dto.CustomerDto;
 import com.poly.customerapplicationservice.dto.PageResult;
 import com.poly.customerapplicationservice.port.input.CustomerUsecase;
@@ -39,6 +39,14 @@ public class CustomerController {
         return ResponseEntity.ok(ApiResponse.success(dto));
     }
 
+    @GetMapping("/profile/customer/{customerId}")
+    public ResponseEntity<ApiResponse<CustomerDto>> retrieveCustomerProfileById(@PathVariable UUID customerId) {
+        RetrieveCustomerProfileCommand command = new RetrieveCustomerProfileCommand();
+        command.setUserId(customerId);
+        var dto = customerUsecase.retrieveCustomerProfileById(command);
+        return ResponseEntity.ok(ApiResponse.success(dto));
+    }
+
     @GetMapping()
     public ResponseEntity<ApiResponse<PageResult<CustomerDto>>> retrieveAllCustomers(@RequestParam int page, @RequestParam int size) {
         return ResponseEntity.ok(ApiResponse.success(customerUsecase.retrieveAllCustomers(page, size)));
@@ -46,25 +54,45 @@ public class CustomerController {
 
     @PostMapping()
     public ResponseEntity<ApiResponse<CustomerDto>> createCustomer(@RequestBody CreateCustomerCommand createCustomerCommand) {
-         var customerId = customerUsecase.initializeCustomerProfile(createCustomerCommand);
+        var customerId = customerUsecase.initializeCustomerProfile(createCustomerCommand);
         return ResponseEntity.ok(ApiResponse.success(customerId));
     }
 
-    @PutMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<CustomerDto>> updateCustomer(
-            @ModelAttribute UpdateCustomerCommand command,
-            @RequestPart(value = "imageRaw", required = false) MultipartFile imageFile) {
-
-        if (imageFile != null && !imageFile.isEmpty()) {
-            try {
-                byte[] imageBytes = imageFile.getBytes();
-                String imageLink = cloudinaryImage.upload(imageBytes);
-                command.setImage(imageLink);
-            } catch (IOException e) {
-                throw new RuntimeException("Không đọc được ảnh", e);
-            }
-        }
+    @PutMapping(value = "/profile")
+    public ResponseEntity<ApiResponse<CustomerDto>> updateCustomer(@RequestBody UpdateCustomerCommand command) {
         var customer = customerUsecase.ChangeCustomerInformation(command);
         return ResponseEntity.ok(ApiResponse.success(customer));
     }
+
+    @GetMapping(value = "/{customerId}")
+    public ResponseEntity<CustomerDto> getCustomerById(@PathVariable UUID customerId) {
+        try {
+            CustomerDto response = customerUsecase.findCustomerById(customerId);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Not found customer with id: {}", customerId);
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping(value = "/profile/{customerId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<CustomerDto>> updateCustomerAvatar(
+            @PathVariable String customerId,
+            @RequestPart("imageRaw") MultipartFile imageFile) {
+
+        if (imageFile == null || imageFile.isEmpty()) {
+            throw new RuntimeException("Ảnh không hợp lệ");
+        }
+
+        try {
+            byte[] imageBytes = imageFile.getBytes();
+            String imageLink = cloudinaryImage.upload(imageBytes);
+
+            var customer = customerUsecase.updateCustomerAvatar(customerId, imageLink);
+            return ResponseEntity.ok(ApiResponse.success(customer));
+        } catch (IOException e) {
+            throw new RuntimeException("Không đọc được ảnh", e);
+        }
+    }
+
 }

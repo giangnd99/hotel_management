@@ -6,22 +6,16 @@
     <parent>
         <groupId>com.poly</groupId>
         <artifactId>booking-domain</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
 
     <artifactId>booking-domain-core</artifactId>
-
 
     <dependencies>
         <dependency>
             <groupId>com.poly</groupId>
             <artifactId>common-domain</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.diffblue.cover</groupId>
-            <artifactId>cover-annotations</artifactId>
-            <version>1.6.0</version>
-            <scope>provided</scope>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

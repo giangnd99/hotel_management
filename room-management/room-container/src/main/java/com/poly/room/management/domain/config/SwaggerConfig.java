@@ -22,7 +22,7 @@ public class SwaggerConfig {
     public GroupedOpenApi publicApi(@Value("${openapi.service.api-docs}") String apiDocs) {
         return GroupedOpenApi.builder()
                 .group(apiDocs)
-                .packagesToScan("com.poly.restaurant.controller")
+                .packagesToScan("com.poly")
                 .build();
     }
 
