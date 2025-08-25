@@ -1,11 +1,13 @@
 package com.poly.booking.management.domain.port.out.client;
 
-import com.poly.domain.dto.response.room.RoomResponse;
+
+import com.poly.booking.management.domain.dto.room.RoomResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,4 +20,7 @@ public interface RoomClient {
 
     @PostMapping("/checkout/{bookingId}")
     ResponseEntity<UUID> performCheckOut(@PathVariable("bookingId") UUID bookingId);
+
+    @PostMapping("/cancel")
+    void cancelRoom(@RequestBody List<UUID> roomIds);
 }

@@ -1,5 +1,6 @@
 package com.poly.booking.management.domain.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.annotation.Nullable;
 
 import lombok.Builder;
@@ -24,5 +25,6 @@ public class CreateCustomerCommand {
     @Nullable
     private String address;
     private String sex;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 }

@@ -8,12 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -23,7 +25,8 @@ public class DataIngestionServiceImpl implements DataIngestionService {
 
     private final VectorStore vectorStore;
     private final RoomFeign roomFeign;
-
+    @Value("${booking.room}")
+    private String bookingRoomUrl;
     @Override
     public void ingestHotelData() {
         try {
@@ -42,6 +45,8 @@ public class DataIngestionServiceImpl implements DataIngestionService {
             ingestGuestData(allDocuments);
 
             ingestStatisticsData(allDocuments);
+
+            ingestAvailableRoomsAsDocuments(allDocuments);
 
             if (allDocuments.isEmpty()) {
                 log.warn("Không có dữ liệu nào để nạp vào Vector Store");
@@ -109,7 +114,6 @@ public class DataIngestionServiceImpl implements DataIngestionService {
             if (roomType != null) {
 
                 String cancellationRegular = "Chính sách hủy phòng: Khách hàng hủy trước 24 giờ sẽ được hoàn lại 100% tiền. Hủy trong vòng 24 giờ sẽ mất phí 30%";
-                String extension = "";
 
                 String content = String.format("""
                                 LOẠI PHÒNG KHÁCH SẠN 5 SAO VIỆT NAM
@@ -128,8 +132,11 @@ public class DataIngestionServiceImpl implements DataIngestionService {
 
                 Document document = new Document(content);
                 document.getMetadata().put("type", "room_type");
+                document.getMetadata().put("basePrice", String.valueOf(roomType.getBasePrice()));
+                document.getMetadata().put("description", roomType.getDescription());
                 document.getMetadata().put("typeName", roomType.getTypeName());
                 document.getMetadata().put("maxOccupancy", String.valueOf(roomType.getMaxOccupancy()));
+                document.getMetadata().put("cancellationRegular", cancellationRegular);
                 document.getMetadata().put("category", "room_type_information");
 
                 documents.add(document);
@@ -160,6 +167,55 @@ public class DataIngestionServiceImpl implements DataIngestionService {
 
         } catch (Exception e) {
             log.error("Lỗi khi nạp dữ liệu nội thất: {}", e.getMessage());
+        }
+    }
+
+    private void ingestAvailableRoomsAsDocuments(List<Document> allDocuments) {
+        try {
+            ResponseEntity<List<RoomResponse>> response = roomFeign.getAllRooms();
+            if (response.getBody() == null || response.getBody().isEmpty()) {
+                log.warn("Không có dữ liệu phòng để đưa vào documents.");
+                return;
+            }
+
+            List<RoomResponse> availableRooms = response.getBody().stream()
+                    .filter(room -> "VACANT".equals(room.getRoomStatus()))
+                    .toList();
+
+            if (availableRooms.isEmpty()) {
+                log.info("Không có phòng trống nào để nạp vào documents.");
+                return;
+            }
+
+            for (RoomResponse room : availableRooms) {
+                String content = String.format(
+                        "THÔNG TIN PHÒNG TRỐNG VÀ ĐẶT PHÒNG KHÁCH SẠN NIKKA 5 SAO VIỆT NAM\n" +
+                                "Phòng số: %s\n" +
+                                "Loại phòng: %s\n" +
+                                "Mô tả: %s\n" +
+                                "Giá: %s VND/đêm\n" +
+                                "Đường link đặt phòng: %s",
+                        room.getRoomNumber(),
+                        room.getRoomType().getTypeName(),
+                        room.getRoomType().getDescription(),
+                        room.getRoomType().getBasePrice(),
+                        bookingRoomUrl + room.getId()
+                );
+
+                Document document = new Document(content);
+                document.getMetadata().put("type", "booking_information");
+                document.getMetadata().put("roomNumber", room.getRoomNumber());
+                document.getMetadata().put("roomStatus", room.getRoomStatus());
+                document.getMetadata().put("basePrice", room.getRoomType().getBasePrice());
+                document.getMetadata().put("bookingUrl", bookingRoomUrl + room.getRoomNumber());
+                document.getMetadata().put("category", "booking_availability");
+
+                allDocuments.add(document);
+            }
+            log.info("Đã tạo thành công {} documents cho các phòng trống.", availableRooms.size());
+
+        } catch (Exception e) {
+            log.error("Lỗi khi nạp dữ liệu phòng trống: {}", e.getMessage(), e);
         }
     }
 
@@ -413,7 +469,8 @@ public class DataIngestionServiceImpl implements DataIngestionService {
                     - Dịch vụ giặt ủi trong ngày
                     - Dịch vụ đặt tour và vé máy bay
                     - Hỗ trợ đặc biệt cho khách hàng VIP
-                    #####Không được tiết lộ bất kì mã uuid nào hoặc Id
+                    *****cung cấp link booking khi được hỏi đến booking
+                    #####Không được tiết lộ bất kì mã uuid nào hoặc Id trực tiếp cho khách hàng #######
                     """;
 
             Document document = new Document(content);
@@ -426,7 +483,7 @@ public class DataIngestionServiceImpl implements DataIngestionService {
         }
     }
 
-    @Scheduled(fixedRate = 3600000) // Cập nhật mỗi giờ
+    @Scheduled(fixedRate = 3600000)
     public void scheduleIngestion() {
         log.info("Bắt đầu cập nhật dữ liệu vào Vector Store theo lịch trình...");
         ingestHotelData();

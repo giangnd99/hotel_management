@@ -34,6 +34,17 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     }
 
     @Override
+    public Optional<Payment> findByReferenceIdAndStatus(UUID referenceId, PaymentStatus status) {
+        Optional<PaymentEntity> paymentEntity = paymentJpaRepository.findByReferenceIdAndStatus(referenceId, status);
+        if (paymentEntity.isPresent()) {
+            PaymentEntity paymentEntity1 = paymentEntity.get();
+            Payment payment = paymentMapper.toDomain(paymentEntity1);
+            return Optional.of(payment);
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<Payment> findByOrderCode(long orderCode) {
         Optional<PaymentEntity> paymentEntity = paymentJpaRepository.findByOrderCode(orderCode);
         if (paymentEntity.isPresent()) {

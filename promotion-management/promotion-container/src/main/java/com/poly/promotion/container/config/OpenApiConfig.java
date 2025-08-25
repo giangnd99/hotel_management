@@ -44,7 +44,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfig {
 
-    @Value("${server.port:9999}")
+    @Value("${server.port:8080}")
     private String serverPort;
 
     @Value("${server.servlet.context-path:/promotion-management}")
@@ -76,18 +76,61 @@ public class OpenApiConfig {
      */
     @Bean
     public OpenAPI promotionManagementOpenAPI() {
-        try {
-            // Minimal configuration to avoid initialization issues
-            return new OpenAPI()
-                    .info(new Info()
-                            .title("Promotion Management API")
-                            .version("1.0.0"));
-        } catch (Exception e) {
-            // Fallback to basic configuration if there's an error
-            return new OpenAPI()
-                    .info(new Info()
-                            .title("Promotion Management API")
-                            .version("1.0.0"));
-        }
+        return new OpenAPI()
+                .info(new Info()
+                        .title("Promotion Management API")
+                        .description("""
+                                <h2>Hotel Promotion Management System</h2>
+                                
+                                <p>Comprehensive API for managing hotel promotions, voucher packs, and customer voucher operations.</p>
+                                
+                                <h3>System Overview</h3>
+                                <p>The Promotion Management System provides a complete solution for hotel marketing and customer loyalty programs, including:</p>
+                                <ul>
+                                    <li><strong>Voucher Pack Management:</strong> Create, update, and manage promotional voucher packs</li>
+                                    <li><strong>Customer Voucher Operations:</strong> Redeem vouchers using loyalty points</li>
+                                    <li><strong>Expiration Management:</strong> Automated handling of expired vouchers and packs</li>
+                                    <li><strong>Business Rule Enforcement:</strong> Validation of promotional rules and constraints</li>
+                                </ul>
+                                
+                                <h3>Key Features</h3>
+                                <ul>
+                                    <li><strong>Clean Architecture:</strong> Built using Domain-Driven Design principles</li>
+                                    <li><strong>Hexagonal Architecture:</strong> Separation of concerns with clear boundaries</li>
+                                    <li><strong>Business Rule Validation:</strong> Comprehensive validation of promotional rules</li>
+                                    <li><strong>Event-Driven Design:</strong> Domain events for system integration</li>
+                                    <li><strong>Audit Trail:</strong> Complete tracking of all promotional activities</li>
+                                </ul>
+                                
+                                <h3>API Categories</h3>
+                                <ul>
+                                    <li><strong>Voucher Packs:</strong> <code>/api/v1/voucher-packs</code> - Manage promotional voucher packs</li>
+                                    <li><strong>Vouchers:</strong> <code>/api/v1/vouchers</code> - Handle individual voucher operations</li>
+                                    <li><strong>Customer Operations:</strong> <code>/api/v1/vouchers/customer/{id}</code> - Customer-specific voucher access</li>
+                                    <li><strong>Redemption:</strong> <code>/api/v1/vouchers/redeem</code> - Process voucher redemptions</li>
+                                </ul>
+                                
+                                <h3>Authentication & Security</h3>
+                                <p>All endpoints require proper authentication and authorization. Customer endpoints are restricted to access only the authenticated customer's data.</p>
+                                
+                                <h3>Rate Limiting</h3>
+                                <p>API endpoints are subject to rate limiting to ensure system stability and prevent abuse.</p>
+                                """)
+                        .version("1.0.0")
+                        .license(new License()
+                                .name("MIT License")
+                                .url("https://opensource.org/licenses/MIT")))
+                .servers(List.of(
+                        new Server()
+                                .url("http://localhost:" + serverPort + contextPath)
+                                .description("Local Development Server")
+                ))
+                .tags(List.of(
+                        new Tag().name("Voucher Pack Management").description("APIs for managing voucher packs in the promotion system"),
+                        new Tag().name("Voucher Management").description("APIs for managing individual vouchers in the promotion system"),
+                        new Tag().name("Monitoring Health").description("APIs for monitoring system health and data synchronization"),
+                        new Tag().name("Root").description("Root endpoint with HATEOAS links to all available resources"),
+                        new Tag().name("Actuator").description("Spring Boot Actuator endpoints for system monitoring and management")
+                ));
     }
 }

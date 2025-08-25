@@ -2,7 +2,7 @@ package com.poly.room.management.kafka.adaptor;
 
 import com.poly.room.management.domain.message.RoomCancellationResponseMessage;
 import com.poly.room.management.domain.port.in.message.listener.RoomCancellationListener;
-import com.poly.room.management.domain.command.RoomCancellationCommand;
+import com.poly.room.management.domain.command.room.RoomCancellationCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

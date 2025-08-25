@@ -4,6 +4,7 @@ import com.poly.authentication.service.domain.dto.ApiResponse;
 import com.poly.authentication.service.domain.dto.reponse.user.UserResponse;
 import com.poly.authentication.service.domain.dto.request.user.UserCreationRequest;
 import com.poly.authentication.service.domain.dto.request.user.UserUpdatedRequest;
+import com.poly.authentication.service.domain.port.in.service.ForgotPasswordService;
 import com.poly.authentication.service.domain.port.in.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
+    private final ForgotPasswordService forgotPasswordService;
 
     @PostMapping
     ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
@@ -48,7 +50,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    ApiResponse<UserResponse> updateUser(@PathVariable String userId,@Valid @RequestBody UserUpdatedRequest request) {
+    ApiResponse<UserResponse> updateUser(@PathVariable String userId, @Valid @RequestBody UserUpdatedRequest request) {
         return ApiResponse.<UserResponse>builder().
                 result(userService.updateUser(UUID.fromString(userId), request)).
                 build();
@@ -61,12 +63,26 @@ public class UserController {
                 result("User deleted").
                 build();
     }
-//
-//    @PostMapping("/upload-avatar/{userId}")
-//    ApiResponse<?> uploadAvatar(@PathVariable Integer userId, @RequestParam MultipartFile avatar) {
-//        userService.uploadAvatar(userId, avatar);
-//        return ApiResponse.<String>builder()
-//                .result("Upload avatar successfully")
-//                .build();
-//    }
+
+    @PostMapping("/change/password/{email}")
+    Boolean changePassword(@PathVariable String email, @RequestBody String password) {
+        try {
+            userService.updatePassword(email, password);
+            log.info("Password updated successfully for user: {}", email);
+            return true;
+        } catch (Exception e) {
+            log.error("Password update failed for user: {}", email, e);
+            return false;
+        }
+    }
+
+    @PostMapping("/forgot/password/{email}")
+    String forgotPassword(@PathVariable String email) {
+        return forgotPasswordService.createForgotPasswordToken(email);
+    }
+
+    @PostMapping("/forgot/password/valid/{token}")
+    Boolean validToken(@PathVariable String token) {
+        return forgotPasswordService.validateToken(token);
+    }
 }

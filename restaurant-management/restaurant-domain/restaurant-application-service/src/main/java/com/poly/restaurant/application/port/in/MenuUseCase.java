@@ -27,14 +27,14 @@ public interface MenuUseCase {
      * @param id      the ID of the menu item to update
      * @param request the MenuDTO containing updated details
      */
-    void updateMenu(Integer id, MenuDTO request);
+    void updateMenu(String id, MenuDTO request);
 
     /**
      * Deletes a menu item.
      *
      * @param id the ID of the menu item to delete
      */
-    void deleteMenu(Integer id);
+    void deleteMenu(String id);
 
     /**
      * Adds a review to a menu item.
@@ -42,7 +42,7 @@ public interface MenuUseCase {
      * @param menuId  the ID of the menu item
      * @param request the ReviewDTO containing review details
      */
-    void addReview(Long menuId, ReviewDTO request);
+    void addReview(String menuId, ReviewDTO request);
 
     /**
      * Retrieves reviews for a menu item.
@@ -50,8 +50,9 @@ public interface MenuUseCase {
      * @param menuId the ID of the menu item
      * @return an Object containing the reviews for the menu item
      */
-    Object getReviews(Long menuId);
+    Object getReviews(String menuId);
 
-    MenuDTO getMenuItemById(Integer id);
+    MenuDTO getMenuItemById(String id);
+
     List<MenuDTO> getMenuItemsByCategory(String category);
 }

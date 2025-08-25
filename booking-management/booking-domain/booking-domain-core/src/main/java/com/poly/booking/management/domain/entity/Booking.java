@@ -44,6 +44,13 @@ public class Booking extends AggregateRoot<BookingId> {
         numberOfGuests = builder.numberOfGuests;
     }
 
+    public void setCheckInDate(DateCustom checkInDate) {
+        this.checkInDate = checkInDate;
+    }
+
+    public void setCheckOutDate(DateCustom checkOutDate) {
+        this.checkOutDate = checkOutDate;
+    }
 
     public void setNumberOfGuests(Integer numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
@@ -124,9 +131,6 @@ public class Booking extends AggregateRoot<BookingId> {
         status = BookingStatus.CANCELLED;
     }
 
-    /**
-     * Check-out thành công, chuyển sang trạng thái CHECKED_OUT.
-     */
     public void checkOut() {
         status = BookingStatus.CHECKED_OUT;
     }

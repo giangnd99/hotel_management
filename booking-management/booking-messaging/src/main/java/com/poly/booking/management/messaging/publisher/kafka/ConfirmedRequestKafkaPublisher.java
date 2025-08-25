@@ -23,7 +23,6 @@ public class ConfirmedRequestKafkaPublisher implements NotificationRequestMessag
 
     private final BookingMessageDataMapper bookingDataMapper;
     private final KafkaProducer<String, NotificationMessageAvro> kafkaProducer;
-    private final BookingServiceConfigData bookingServiceConfigData;
     private final KafkaMessageHelper kafkaMessageHelper;
 
 
@@ -49,6 +48,25 @@ public class ConfirmedRequestKafkaPublisher implements NotificationRequestMessag
 
             logProcessingSuccess(notificationEventPayload, sagaId);
 
+        } catch (Exception e) {
+            handleProcessingError(notificationEventPayload, sagaId, e);
+        }
+    }
+
+    @Override
+    public void sendNotifiCancel(NotifiOutboxMessage notifiOutboxMessage, BiConsumer<NotifiOutboxMessage, OutboxStatus> outboxCallback) {
+        validateInputParameters(notifiOutboxMessage, outboxCallback);
+        NotifiEventPayload notificationEventPayload = extractNotificationEventPayload(notifiOutboxMessage);
+        String sagaId = extractSagaId(notifiOutboxMessage);
+        logProcessingStart(notificationEventPayload, sagaId);
+        try {
+            NotificationMessageAvro notificationModelAvro = createNotificationModelAvro(sagaId, notificationEventPayload);
+            sendMessageToKafka(notificationModelAvro,
+                    sagaId,
+                    notifiOutboxMessage,
+                    outboxCallback,
+                    notificationEventPayload);
+            logProcessingSuccess(notificationEventPayload, sagaId);
         } catch (Exception e) {
             handleProcessingError(notificationEventPayload, sagaId, e);
         }
@@ -84,7 +102,7 @@ public class ConfirmedRequestKafkaPublisher implements NotificationRequestMessag
 
     private NotificationMessageAvro createNotificationModelAvro(String sagaId,
                                                                 NotifiEventPayload notificationEventPayload) {
-        return bookingDataMapper.bookingNotificationEventToNotificationModelAvro(sagaId, notificationEventPayload);
+        return bookingDataMapper.bookingCancelToNotificationModelAvro(sagaId, notificationEventPayload);
     }
 
     private void sendMessageToKafka(NotificationMessageAvro notificationModelAvro,
@@ -93,7 +111,7 @@ public class ConfirmedRequestKafkaPublisher implements NotificationRequestMessag
                                     BiConsumer<NotifiOutboxMessage, OutboxStatus> outboxCallback,
                                     NotifiEventPayload notificationEventPayload) {
 
-        String topicName = bookingServiceConfigData.getBookingNotificationRequestTopicName();
+        String topicName = "booking-cancel-email-topic";
 
         kafkaProducer.send(
                 topicName,
@@ -105,7 +123,7 @@ public class ConfirmedRequestKafkaPublisher implements NotificationRequestMessag
                         notifiOutboxMessage,
                         outboxCallback,
                         notificationEventPayload.getBookingId().toString(),
-                        "BookingConfirmationNotificationAvroModel"
+                        "BookingNotificationAvroModel"
                 )
         );
     }

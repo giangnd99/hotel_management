@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-@FeignClient(name = "payment-service" , url = "localhost:8094/payment")
+@FeignClient(name = "payment-service" , url = "localhost:8094")
 public interface PaymentClient {
 
-    @GetMapping
+    @GetMapping(value = "/payment")
     List<PaymentDto> getAll();
 
-    @GetMapping
+    @GetMapping(value = "/api/invoice")
     List<InvoiceDto> getInvoice();
 }

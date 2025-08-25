@@ -210,13 +210,8 @@ public class VoucherPackRepositoryAdapter implements VoucherPackRepository {
         
         try {
             VoucherPackJpaEntity jpaEntity = transformer.toJpaEntity(voucherPack);
-            log.debug("JPA entity before save - ID: {}", jpaEntity.getId());
-            
             VoucherPackJpaEntity savedEntity = jpaRepository.save(jpaEntity);
-            log.debug("JPA entity after save - ID: {}", savedEntity.getId());
-            
             VoucherPack savedVoucherPack = transformer.toDomainEntity(savedEntity);
-            log.debug("Domain entity after transform - ID: {}", savedVoucherPack.getId());
             
             log.debug("Successfully created voucher pack with ID: {}", savedVoucherPack.getId());
             return savedVoucherPack;

@@ -6,6 +6,9 @@ import com.poly.ai.management.domain.dto.PaymentDto;
 import com.poly.ai.management.domain.dto.InvoiceDto;
 import com.poly.ai.management.domain.port.output.feign.BookingFeign;
 import com.poly.ai.management.domain.port.output.feign.PaymentClient;
+import com.poly.domain.valueobject.PaymentMethod;
+import com.poly.domain.valueobject.PaymentStatus;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,9 +22,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,19 +47,47 @@ public class AIReportService {
             Hãy tạo báo cáo có cấu trúc rõ ràng, dễ đọc và có thể hành động được.
             """;
 
-    /**
-     * Tạo báo cáo hàng ngày với phân tích nâng cao
-     */
-    public Map<String, Object> generateDailyReport(Object payment, Object booking, Object invoice) {
+
+    public Map<String, Object> generateDailyReport() {
         log.info("Generating daily report with AI and advanced data processing...");
 
         try {
-            // Lấy dữ liệu thực từ các service
-            List<BookingDto> bookingData = fetchBookingData();
-            List<PaymentDto> paymentData = fetchPaymentData();
-            List<InvoiceDto> invoiceData = fetchInvoiceData();
+            List<BookingDto> bookingData;
+            List<PaymentDto> paymentData;
+            List<InvoiceDto> invoiceData;
+            try {
+                bookingData = bookingFeign.getAll();
+                if (bookingData == null || bookingData.isEmpty()) {
+                    log.warn("Không có dữ liệu bookings từ Feign Client. Sử dụng dữ liệu giả lập.");
+                    bookingData = createMockBookings();
+                }
+            } catch (FeignException e) {
+                log.error("Lỗi khi lấy dữ liệu booking từ Feign Client: {}", e.getMessage());
+                bookingData = createMockBookings();
+            }
 
-            // Xử lý dữ liệu thông qua DataProcessingService và DL4JDataAnalysisService
+            try {
+                paymentData = paymentClient.getAll();
+                if (paymentData == null || paymentData.isEmpty()) {
+                    log.warn("Không có dữ liệu payments từ Feign Client. Sử dụng dữ liệu giả lập.");
+                    paymentData = createMockPayments();
+                }
+            } catch (FeignException e) {
+                log.error("Lỗi khi lấy dữ liệu thanh toán từ Feign Client: {}", e.getMessage());
+                paymentData = createMockPayments();
+            }
+
+            try {
+                invoiceData = paymentClient.getInvoice();
+                if (invoiceData == null || invoiceData.isEmpty()) {
+                    log.warn("Không có dữ liệu invoices từ Feign Client. Sử dụng dữ liệu giả lập.");
+                    invoiceData = createMockInvoices();
+                }
+            } catch (FeignException e) {
+                log.error("Lỗi khi lấy dữ liệu hóa đơn từ Feign Client: {}", e.getMessage());
+                invoiceData = createMockInvoices();
+            }
+
             Map<String, Object> processedData = processDataForAdvancedReport(bookingData, paymentData, invoiceData);
 
             String prompt = buildAdvancedDailyReportPrompt(processedData);
@@ -71,19 +100,20 @@ public class AIReportService {
         }
     }
 
-    /**
-     * Tạo báo cáo hàng tháng với phân tích nâng cao
-     */
     public Map<String, Object> generateMonthlyReport(int month, int year) {
         log.info("Generating monthly report for {}/{} with AI and advanced data processing...", month, year);
 
         try {
-            // Lấy dữ liệu thực từ các service
             List<BookingDto> bookingData = fetchBookingData();
             List<PaymentDto> paymentData = fetchPaymentData();
             List<InvoiceDto> invoiceData = fetchInvoiceData();
 
-            // Xử lý dữ liệu thông qua DataProcessingService và DL4JDataAnalysisService
+            if (bookingData.isEmpty() || paymentData.isEmpty() || invoiceData.isEmpty()) {
+                bookingData = createMockBookings();
+                paymentData = createMockPayments();
+                invoiceData = createMockInvoices();
+            }
+
             Map<String, Object> processedData = processDataForAdvancedReport(bookingData, paymentData, invoiceData);
 
             String prompt = buildAdvancedMonthlyReportPrompt(processedData, month, year);
@@ -96,19 +126,15 @@ public class AIReportService {
         }
     }
 
-    /**
-     * Tạo báo cáo hàng năm với phân tích nâng cao
-     */
+
     public Map<String, Object> generateYearlyReport(int year) {
         log.info("Generating yearly report for {} with AI and advanced data processing...", year);
 
         try {
-            // Lấy dữ liệu thực từ các service
             List<BookingDto> bookingData = fetchBookingData();
             List<PaymentDto> paymentData = fetchPaymentData();
             List<InvoiceDto> invoiceData = fetchInvoiceData();
 
-            // Xử lý dữ liệu thông qua DataProcessingService và DL4JDataAnalysisService
             Map<String, Object> processedData = processDataForAdvancedReport(bookingData, paymentData, invoiceData);
 
             String prompt = buildAdvancedYearlyReportPrompt(processedData, year);
@@ -121,49 +147,38 @@ public class AIReportService {
         }
     }
 
-    /**
-     * Xử lý dữ liệu cho báo cáo nâng cao với tích hợp DataProcessingService và DL4JDataAnalysisService
-     */
-    private Map<String, Object> processDataForAdvancedReport(List<BookingDto> bookingData, 
-                                                           List<PaymentDto> paymentData, 
-                                                           List<InvoiceDto> invoiceData) {
+    private Map<String, Object> processDataForAdvancedReport(List<BookingDto> bookingData,
+                                                             List<PaymentDto> paymentData,
+                                                             List<InvoiceDto> invoiceData) {
         Map<String, Object> processedData = new LinkedHashMap<>();
-        
+
         try {
-            // Xử lý dữ liệu Booking với phân tích nâng cao
             Map<String, Object> advancedBookingStats = dataProcessingService.processBookingDataAdvanced(bookingData);
             processedData.put("advancedBookingStats", advancedBookingStats);
 
-            // Xử lý dữ liệu Payment với phân tích nâng cao
             Map<String, Object> advancedPaymentStats = dataProcessingService.processPaymentDataAdvanced(paymentData);
             processedData.put("advancedPaymentStats", advancedPaymentStats);
 
-            // Xử lý dữ liệu Invoice với phân tích nâng cao
             Map<String, Object> advancedInvoiceStats = dataProcessingService.processInvoiceDataAdvanced(invoiceData);
             processedData.put("advancedInvoiceStats", advancedInvoiceStats);
 
-            // Phân tích ML với DL4JDataAnalysisService
             Map<String, Object> mlAnalysis = performMLAnalysis(bookingData, paymentData, invoiceData);
             processedData.put("mlAnalysis", mlAnalysis);
 
-            // Tính toán tổng hợp nâng cao
             Map<String, Object> advancedSummaryStats = calculateAdvancedSummaryStatistics(
-                advancedBookingStats, advancedPaymentStats, advancedInvoiceStats, mlAnalysis);
+                    advancedBookingStats, advancedPaymentStats, advancedInvoiceStats, mlAnalysis);
             processedData.put("advancedSummaryStats", advancedSummaryStats);
 
-            // Phân tích tương quan và xu hướng
             Map<String, Object> correlationAnalysis = performCorrelationAnalysis(
-                advancedBookingStats, advancedPaymentStats, advancedInvoiceStats, mlAnalysis);
+                    advancedBookingStats, advancedPaymentStats, advancedInvoiceStats, mlAnalysis);
             processedData.put("correlationAnalysis", correlationAnalysis);
 
-            // Dự đoán và forecasting
             Map<String, Object> forecastingAnalysis = performForecastingAnalysis(
-                advancedBookingStats, advancedPaymentStats, advancedInvoiceStats, mlAnalysis);
+                    advancedBookingStats, advancedPaymentStats, advancedInvoiceStats, mlAnalysis);
             processedData.put("forecastingAnalysis", forecastingAnalysis);
 
         } catch (Exception e) {
             log.error("Error processing advanced data for report: ", e);
-            // Trả về dữ liệu mặc định nếu xử lý thất bại
             processedData.put("advancedBookingStats", createAdvancedMockBookingStats());
             processedData.put("advancedPaymentStats", createAdvancedMockPaymentStats());
             processedData.put("advancedInvoiceStats", createAdvancedMockInvoiceStats());
@@ -176,82 +191,66 @@ public class AIReportService {
         return processedData;
     }
 
-    /**
-     * Thực hiện phân tích ML với DL4JDataAnalysisService
-     */
-    private Map<String, Object> performMLAnalysis(List<BookingDto> bookingData, 
-                                                 List<PaymentDto> paymentData, 
-                                                 List<InvoiceDto> invoiceData) {
+    private Map<String, Object> performMLAnalysis(List<BookingDto> bookingData,
+                                                  List<PaymentDto> paymentData,
+                                                  List<InvoiceDto> invoiceData) {
         Map<String, Object> mlAnalysis = new LinkedHashMap<>();
-        
+
         try {
-            // Phân tích Booking với ML
             Map<String, Object> bookingML = dl4jDataAnalysisService.analyzeBookingWithML(bookingData);
             mlAnalysis.put("bookingML", bookingML);
-            
-            // Phân tích Payment với ML
+
             Map<String, Object> paymentML = dl4jDataAnalysisService.analyzePaymentWithML(paymentData);
             mlAnalysis.put("paymentML", paymentML);
-            
-            // Phân tích Invoice với ML
+
             Map<String, Object> invoiceML = dl4jDataAnalysisService.analyzeInvoiceWithML(invoiceData);
             mlAnalysis.put("invoiceML", invoiceML);
-            
-            // Tổng hợp kết quả ML
+
             mlAnalysis.put("mlSummary", createMLSummary(bookingML, paymentML, invoiceML));
-            
+
         } catch (Exception e) {
             log.error("Error performing ML analysis: ", e);
             mlAnalysis.put("error", "ML analysis failed: " + e.getMessage());
             mlAnalysis.put("fallback", createMockMLAnalysis());
         }
-        
+
         return mlAnalysis;
     }
 
-    /**
-     * Tạo tổng hợp kết quả ML
-     */
-    private Map<String, Object> createMLSummary(Map<String, Object> bookingML, 
-                                               Map<String, Object> paymentML, 
-                                               Map<String, Object> invoiceML) {
+    private Map<String, Object> createMLSummary(Map<String, Object> bookingML,
+                                                Map<String, Object> paymentML,
+                                                Map<String, Object> invoiceML) {
         Map<String, Object> mlSummary = new LinkedHashMap<>();
-        
+
         try {
-            // Tính điểm ML tổng hợp
             double mlScore = calculateMLScore(bookingML, paymentML, invoiceML);
             mlSummary.put("overallMLScore", mlScore);
             mlSummary.put("mlGrade", getMLGrade(mlScore));
-            
-            // Đánh giá chất lượng dữ liệu
+
             double dataQualityScore = calculateDataQualityScore(bookingML, paymentML, invoiceML);
             mlSummary.put("dataQualityScore", dataQualityScore);
             mlSummary.put("dataQualityLevel", getDataQualityLevel(dataQualityScore));
-            
-            // Đánh giá độ tin cậy của dự đoán
+
             double predictionConfidence = calculatePredictionConfidence(bookingML, paymentML, invoiceML);
             mlSummary.put("predictionConfidence", predictionConfidence);
             mlSummary.put("confidenceLevel", getConfidenceLevel(predictionConfidence));
-            
+
         } catch (Exception e) {
             log.error("Error creating ML summary: ", e);
             mlSummary.put("error", "ML summary creation failed");
         }
-        
+
         return mlSummary;
     }
 
-    /**
-     * Tính điểm ML tổng hợp
-     */
-    private double calculateMLScore(Map<String, Object> bookingML, 
-                                  Map<String, Object> paymentML, 
-                                  Map<String, Object> invoiceML) {
+    private double calculateMLScore(Map<String, Object> bookingML,
+                                    Map<String, Object> paymentML,
+                                    Map<String, Object> invoiceML) {
         try {
             double bookingScore = getMLScoreFromData(bookingML);
             double paymentScore = getMLScoreFromData(paymentML);
             double invoiceScore = getMLScoreFromData(invoiceML);
-            
+
             return (bookingScore + paymentScore + invoiceScore) / 3.0;
         } catch (Exception e) {
             log.error("Error calculating ML score: ", e);
@@ -259,44 +258,38 @@ public class AIReportService {
         }
     }
 
-    /**
-     * Lấy điểm ML từ dữ liệu
-     */
     private double getMLScoreFromData(Map<String, Object> mlData) {
         try {
             if (mlData.containsKey("error")) {
                 return 0.5; // Low score if error
             }
-            
-            // Kiểm tra các metrics quan trọng
+
             boolean hasTimeSeries = mlData.containsKey("timeSeriesAnalysis");
             boolean hasClustering = mlData.containsKey("clusteringAnalysis");
             boolean hasPrediction = mlData.containsKey("predictionAnalysis");
             boolean hasAnomaly = mlData.containsKey("anomalyAnalysis");
-            
+
             double score = 0.0;
             if (hasTimeSeries) score += 0.25;
             if (hasClustering) score += 0.25;
             if (hasPrediction) score += 0.25;
             if (hasAnomaly) score += 0.25;
-            
+
             return score;
         } catch (Exception e) {
             return 0.5;
         }
     }
 
-    /**
-     * Tính điểm chất lượng dữ liệu
-     */
-    private double calculateDataQualityScore(Map<String, Object> bookingML, 
-                                           Map<String, Object> paymentML, 
-                                           Map<String, Object> invoiceML) {
+
+    private double calculateDataQualityScore(Map<String, Object> bookingML,
+                                             Map<String, Object> paymentML,
+                                             Map<String, Object> invoiceML) {
         try {
             double bookingQuality = getDataQualityFromML(bookingML);
             double paymentQuality = getDataQualityFromML(paymentML);
             double invoiceQuality = getDataQualityFromML(invoiceML);
-            
+
             return (bookingQuality + paymentQuality + invoiceQuality) / 3.0;
         } catch (Exception e) {
             log.error("Error calculating data quality score: ", e);
@@ -304,37 +297,31 @@ public class AIReportService {
         }
     }
 
-    /**
-     * Lấy điểm chất lượng dữ liệu từ ML data
-     */
+
     private double getDataQualityFromML(Map<String, Object> mlData) {
         try {
             if (mlData.containsKey("dataQualityScore")) {
                 return (Double) mlData.get("dataQualityScore");
             }
-            
-            // Fallback calculation
+
             if (mlData.containsKey("mlEnhanced") && (Boolean) mlData.get("mlEnhanced")) {
                 return 0.85;
             }
-            
+
             return 0.7;
         } catch (Exception e) {
             return 0.7;
         }
     }
 
-    /**
-     * Tính độ tin cậy của dự đoán
-     */
-    private double calculatePredictionConfidence(Map<String, Object> bookingML, 
-                                               Map<String, Object> paymentML, 
-                                               Map<String, Object> invoiceML) {
+    private double calculatePredictionConfidence(Map<String, Object> bookingML,
+                                                 Map<String, Object> paymentML,
+                                                 Map<String, Object> invoiceML) {
         try {
             double bookingConfidence = getPredictionConfidenceFromML(bookingML);
             double paymentConfidence = getPredictionConfidenceFromML(paymentML);
             double invoiceConfidence = getPredictionConfidenceFromML(invoiceML);
-            
+
             return (bookingConfidence + paymentConfidence + invoiceConfidence) / 3.0;
         } catch (Exception e) {
             log.error("Error calculating prediction confidence: ", e);
@@ -342,9 +329,7 @@ public class AIReportService {
         }
     }
 
-    /**
-     * Lấy độ tin cậy dự đoán từ ML data
-     */
+
     private double getPredictionConfidenceFromML(Map<String, Object> mlData) {
         try {
             if (mlData.containsKey("predictionAnalysis")) {
@@ -353,16 +338,14 @@ public class AIReportService {
                     return (Double) prediction.get("overallConfidence");
                 }
             }
-            
+
             return 0.75; // Default confidence
         } catch (Exception e) {
             return 0.75;
         }
     }
 
-    /**
-     * Lấy grade ML
-     */
+
     private String getMLGrade(double score) {
         if (score >= 0.9) return "Xuất sắc";
         else if (score >= 0.8) return "Tốt";
@@ -371,9 +354,6 @@ public class AIReportService {
         else return "Cần cải thiện";
     }
 
-    /**
-     * Lấy level chất lượng dữ liệu
-     */
     private String getDataQualityLevel(double score) {
         if (score >= 0.9) return "Rất cao";
         else if (score >= 0.8) return "Cao";
@@ -381,9 +361,7 @@ public class AIReportService {
         else return "Thấp";
     }
 
-    /**
-     * Lấy level độ tin cậy
-     */
+
     private String getConfidenceLevel(double confidence) {
         if (confidence >= 0.9) return "Rất cao";
         else if (confidence >= 0.8) return "Cao";
@@ -391,41 +369,36 @@ public class AIReportService {
         else return "Thấp";
     }
 
-    // Các phương thức khác giữ nguyên từ phiên bản trước
-    private Map<String, Object> calculateAdvancedSummaryStatistics(Map<String, Object> advancedBookingStats, 
-                                                                 Map<String, Object> advancedPaymentStats, 
-                                                                 Map<String, Object> advancedInvoiceStats,
-                                                                 Map<String, Object> mlAnalysis) {
+    private Map<String, Object> calculateAdvancedSummaryStatistics(Map<String, Object> advancedBookingStats,
+                                                                   Map<String, Object> advancedPaymentStats,
+                                                                   Map<String, Object> advancedInvoiceStats,
+                                                                   Map<String, Object> mlAnalysis) {
         Map<String, Object> advancedSummary = new HashMap<>();
-        
+
         try {
-            // Tính tổng doanh thu từ tất cả nguồn
             BigDecimal bookingRevenue = (BigDecimal) advancedBookingStats.getOrDefault("totalRevenue", BigDecimal.ZERO);
             BigDecimal invoiceRevenue = (BigDecimal) advancedInvoiceStats.getOrDefault("totalRevenue", BigDecimal.ZERO);
             BigDecimal totalRevenue = bookingRevenue.add(invoiceRevenue);
             advancedSummary.put("totalRevenue", totalRevenue);
 
-            // Tính tỷ lệ thành công tổng thể
-            Long successfulBookings = (Long) advancedBookingStats.getOrDefault("successfulBookings", 0L);
-            Long totalBookings = (Long) advancedBookingStats.getOrDefault("totalBookings", 0L);
-            double successRate = totalBookings > 0 ? (double) successfulBookings / totalBookings * 100 : 0.0;
+            Number successfulBookings = (Number) advancedBookingStats.getOrDefault("successfulBookings", 0L);
+
+            Number totalBookings = (Number) advancedBookingStats.getOrDefault("totalBookings", 0L);
+            double successRate = totalBookings.longValue() > 0 ? (double) successfulBookings.longValue() / totalBookings.longValue() * 100 : 0.0;
             advancedSummary.put("overallSuccessRate", String.format("%.1f%%", successRate));
 
-            // Tính tỷ lệ thanh toán thành công
-            Long successfulPayments = (Long) advancedPaymentStats.getOrDefault("successfulPayments", 0L);
-            Long totalPayments = (Long) advancedPaymentStats.getOrDefault("totalTransactions", 0L);
-            double paymentSuccessRate = totalPayments > 0 ? (double) successfulPayments / totalPayments * 100 : 0.0;
+            Number successfulPayments = (Number) advancedPaymentStats.getOrDefault("successfulPayments", 0L);
+            Number totalPayments = (Number) advancedPaymentStats.getOrDefault("totalTransactions", 0L);
+            double paymentSuccessRate = totalPayments.longValue() > 0 ? (double) successfulPayments.longValue() / totalPayments.longValue() * 100 : 0.0;
             advancedSummary.put("paymentSuccessRate", String.format("%.1f%%", paymentSuccessRate));
 
-            // Tính hiệu quả tổng thể
             double overallEfficiency = (successRate + paymentSuccessRate) / 2.0;
             advancedSummary.put("overallEfficiency", String.format("%.1f%%", overallEfficiency));
-            advancedSummary.put("efficiencyGrade", 
-                overallEfficiency >= 95 ? "Xuất sắc" : 
-                overallEfficiency >= 90 ? "Tốt" : 
-                overallEfficiency >= 80 ? "Khá" : "Cần cải thiện");
+            advancedSummary.put("efficiencyGrade",
+                    overallEfficiency >= 95 ? "Xuất sắc" :
+                            overallEfficiency >= 90 ? "Tốt" :
+                                    overallEfficiency >= 80 ? "Khá" : "Cần cải thiện");
 
-            // Thêm thông tin ML
             if (mlAnalysis != null && mlAnalysis.containsKey("mlSummary")) {
                 Map<String, Object> mlSummary = (Map<String, Object>) mlAnalysis.get("mlSummary");
                 advancedSummary.put("mlScore", mlSummary.get("overallMLScore"));
@@ -445,7 +418,6 @@ public class AIReportService {
         return advancedSummary;
     }
 
-    // Placeholder methods for other functionality
     private Map<String, Object> performCorrelationAnalysis(Map<String, Object>... data) {
         Map<String, Object> correlation = new HashMap<>();
         correlation.put("correlationStrength", "Trung bình");
@@ -460,7 +432,6 @@ public class AIReportService {
         return forecasting;
     }
 
-    // Mock data methods
     private Map<String, Object> createAdvancedMockBookingStats() {
         Map<String, Object> stats = new HashMap<>();
         stats.put("totalBookings", 45);
@@ -516,7 +487,6 @@ public class AIReportService {
         return forecasting;
     }
 
-    // Data fetching methods
     private List<BookingDto> fetchBookingData() {
         try {
             return bookingFeign.getAll();
@@ -550,13 +520,13 @@ public class AIReportService {
             Message systemMessage = new SystemMessage(SYSTEM_PROMPT);
             Message userMessage = new UserMessage(prompt);
             Prompt aiPrompt = new Prompt(Arrays.asList(systemMessage, userMessage));
-            
+
             String response = chatClient.prompt(aiPrompt).call().content();
-            
+
             AIResponse aiResponse = new AIResponse();
             aiResponse.setValue(response);
             aiResponse.setSessionId(UUID.randomUUID().toString());
-            
+
             return aiResponse;
         } catch (Exception e) {
             log.error("Error processing with AI: ", e);
@@ -569,85 +539,142 @@ public class AIReportService {
     // Prompt building methods
     private String buildAdvancedDailyReportPrompt(Map<String, Object> processedData) {
         return String.format("""
-            Tạo báo cáo hàng ngày chi tiết dựa trên dữ liệu sau:
-            
-            Dữ liệu Booking: %s
-            Dữ liệu Payment: %s
-            Dữ liệu Invoice: %s
-            Phân tích ML: %s
-            
-            Hãy tạo báo cáo có cấu trúc rõ ràng với:
-            1. Tóm tắt tổng quan
-            2. Phân tích chi tiết từng lĩnh vực
-            3. Insights từ AI và ML
-            4. Khuyến nghị cải thiện
-            5. Dự đoán cho ngày tiếp theo
-            """, 
-            processedData.get("advancedBookingStats"),
-            processedData.get("advancedPaymentStats"),
-            processedData.get("advancedInvoiceStats"),
-            processedData.get("mlAnalysis")
+                        Tạo báo cáo hàng ngày chi tiết dựa trên dữ liệu sau:
+                        
+                        Dữ liệu Booking: %s
+                        Dữ liệu Payment: %s
+                        Dữ liệu Invoice: %s
+                        Phân tích ML: %s
+                        
+                        Hãy tạo báo cáo có cấu trúc rõ ràng với:
+                        1. Tóm tắt tổng quan
+                        2. Phân tích chi tiết từng lĩnh vực
+                        3. Insights từ AI và ML
+                        4. Khuyến nghị cải thiện
+                        5. Dự đoán cho ngày tiếp theo
+                        """,
+                processedData.get("advancedBookingStats"),
+                processedData.get("advancedPaymentStats"),
+                processedData.get("advancedInvoiceStats"),
+                processedData.get("mlAnalysis")
         );
     }
 
     private String buildAdvancedMonthlyReportPrompt(Map<String, Object> processedData, int month, int year) {
         return String.format("""
-            Tạo báo cáo hàng tháng %d/%d chi tiết dựa trên dữ liệu sau:
-            
-            Dữ liệu Booking: %s
-            Dữ liệu Payment: %s
-            Dữ liệu Invoice: %s
-            Phân tích ML: %s
-            
-            Hãy tạo báo cáo có cấu trúc rõ ràng với:
-            1. Tóm tắt tổng quan tháng
-            2. So sánh với tháng trước
-            3. Phân tích xu hướng
-            4. Insights từ AI và ML
-            5. Khuyến nghị cải thiện
-            6. Dự đoán cho tháng tiếp theo
-            """, 
-            month, year,
-            processedData.get("advancedBookingStats"),
-            processedData.get("advancedPaymentStats"),
-            processedData.get("advancedInvoiceStats"),
-            processedData.get("mlAnalysis")
+                        Tạo báo cáo hàng tháng %d/%d chi tiết dựa trên dữ liệu sau:
+                        
+                        Dữ liệu Booking: %s
+                        Dữ liệu Payment: %s
+                        Dữ liệu Invoice: %s
+                        Phân tích ML: %s
+                        
+                        Hãy tạo báo cáo có cấu trúc rõ ràng với:
+                        1. Tóm tắt tổng quan tháng
+                        2. So sánh với tháng trước
+                        3. Phân tích xu hướng
+                        4. Insights từ AI và ML
+                        5. Khuyến nghị cải thiện
+                        6. Dự đoán cho tháng tiếp theo
+                        """,
+                month, year,
+                processedData.get("advancedBookingStats"),
+                processedData.get("advancedPaymentStats"),
+                processedData.get("advancedInvoiceStats"),
+                processedData.get("mlAnalysis")
         );
     }
 
     private String buildAdvancedYearlyReportPrompt(Map<String, Object> processedData, int year) {
         return String.format("""
-            Tạo báo cáo hàng năm %d chi tiết dựa trên dữ liệu sau:
-            
-            Dữ liệu Booking: %s
-            Dữ liệu Payment: %s
-            Dữ liệu Invoice: %s
-            Phân tích ML: %s
-            
-            Hãy tạo báo cáo có cấu trúc rõ ràng với:
-            1. Tóm tắt tổng quan năm
-            2. So sánh với năm trước
-            3. Phân tích xu hướng dài hạn
-            4. Insights từ AI và ML
-            5. Khuyến nghị chiến lược
-            6. Dự đoán cho năm tiếp theo
-            """, 
-            year,
-            processedData.get("advancedBookingStats"),
-            processedData.get("advancedPaymentStats"),
-            processedData.get("advancedInvoiceStats"),
-            processedData.get("mlAnalysis")
+                        Tạo báo cáo hàng năm %d chi tiết dựa trên dữ liệu sau:
+                        
+                        Dữ liệu Booking: %s
+                        Dữ liệu Payment: %s
+                        Dữ liệu Invoice: %s
+                        Phân tích ML: %s
+                        
+                        Hãy tạo báo cáo có cấu trúc rõ ràng với:
+                        1. Tóm tắt tổng quan năm
+                        2. So sánh với năm trước
+                        3. Phân tích xu hướng dài hạn
+                        4. Insights từ AI và ML
+                        5. Khuyến nghị chiến lược
+                        6. Dự đoán cho năm tiếp theo
+                        """,
+                year,
+                processedData.get("advancedBookingStats"),
+                processedData.get("advancedPaymentStats"),
+                processedData.get("advancedInvoiceStats"),
+                processedData.get("mlAnalysis")
         );
     }
 
-    // Report structure building methods
+    private List<BookingDto> createMockBookings() {
+        List<BookingDto> mockBookings = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 1; i <= 10; i++) {
+            mockBookings.add(BookingDto.builder()
+                    .bookingId(UUID.randomUUID())
+                    .customerId(UUID.randomUUID())
+                    .customerName("Guest " + i)
+                    .roomNumber("R-" + (100 + i))
+                    .roomType("Phòng Đơn")
+                    .checkInDate(LocalDate.now().minusDays(random.nextInt(10)))
+                    .checkOutDate(LocalDate.now().plusDays(random.nextInt(5)))
+                    .totalAmount(BigDecimal.valueOf(500000 + random.nextInt(1000000)))
+                    .status("CONFIRMED")
+                    .paymentStatus("PAID")
+                    .build());
+        }
+        return mockBookings;
+    }
+
+
+    private List<PaymentDto> createMockPayments() {
+        List<PaymentDto> mockPayments = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 1; i <= 10; i++) {
+            mockPayments.add(PaymentDto.builder()
+                    .id(UUID.randomUUID())
+                    .status(PaymentStatus.PAID)
+                    .amount(BigDecimal.valueOf(500000 + random.nextInt(1000000)))
+                    .method(PaymentMethod.PAYOS)
+                    .paidAt(LocalDateTime.now().minusHours(random.nextInt(24)))
+                    .orderCode(1000L + i)
+                    .build());
+        }
+        return mockPayments;
+    }
+
+    private List<InvoiceDto> createMockInvoices() {
+        List<InvoiceDto> mockInvoices = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 1; i <= 10; i++) {
+            mockInvoices.add(InvoiceDto.builder()
+                    .id(UUID.randomUUID())
+                    .customerId(UUID.randomUUID())
+                    .staffId(UUID.randomUUID())
+                    .totalAmount(BigDecimal.valueOf(600000 + random.nextInt(1200000)))
+                    .status("COMPLETED")
+                    .createdDate(LocalDateTime.now().minusDays(random.nextInt(5)))
+                    .build());
+        }
+        return mockInvoices;
+    }
+
     private Map<String, Object> buildAdvancedDailyReportStructure(AIResponse aiResponse, LocalDate date, Map<String, Object> processedData) {
         Map<String, Object> report = new LinkedHashMap<>();
         report.put("reportType", "DAILY");
         report.put("date", date);
-        report.put("aiContent", aiResponse.getValue());
+        report.put("aiInsights", new HashMap<String, String>() {{
+            put("overview", aiResponse.getValue());
+            put("warnings", Collections.emptyList().toString());
+            put("recommendations", Collections.emptyList().toString());
+        }});
         report.put("processedData", processedData);
         report.put("generatedAt", LocalDateTime.now());
+
         report.put("version", "2.0-Enhanced");
         return report;
     }
@@ -675,7 +702,6 @@ public class AIReportService {
         return report;
     }
 
-    // Fallback methods
     private Map<String, Object> createAdvancedFallbackDailyReport() {
         Map<String, Object> report = new LinkedHashMap<>();
         report.put("reportType", "DAILY");

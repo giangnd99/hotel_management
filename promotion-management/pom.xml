@@ -6,34 +6,20 @@
     <parent>
         <groupId>com.poly</groupId>
         <artifactId>hotel_management</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
 
     <artifactId>promotion-management</artifactId>
     <packaging>pom</packaging>
-    
-    <properties>
-        <springdoc-openapi.version>2.5.0</springdoc-openapi.version>
-    </properties>
-    
     <modules>
         <module>promotion-domain-model</module>
-        <module>promotion-data-access</module>
-        <module>promotion-application</module>
         <module>promotion-container</module>
+        <module>promotion-application</module>
+        <module>promotion-data-access</module>
     </modules>
 
     <dependencies>
 
     </dependencies>
-    
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-                <version>${springdoc-openapi.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+
 </project>

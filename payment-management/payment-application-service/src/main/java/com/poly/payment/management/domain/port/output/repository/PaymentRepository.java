@@ -12,6 +12,8 @@ import java.util.UUID;
 public interface PaymentRepository extends RepositoryGeneric<Payment, UUID> {
     Optional<Payment> findByReferenceId(UUID referenceId);
 
+    Optional<Payment> findByReferenceIdAndStatus(UUID referenceId, PaymentStatus status);
+
     Optional<Payment> findByOrderCode(long orderCode);
 
     List<Payment> findAllByStatusAndCreatedAtBefore(PaymentStatus status, LocalDateTime beforeTime);

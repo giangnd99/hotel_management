@@ -16,7 +16,7 @@ public class RoomType extends BaseEntity<RoomTypeId> {
     private String typeName;
     private String description;
     private Money basePrice;
-    private int maxOccupancy;
+    private Integer maxOccupancy;
     private List<RoomTypeFurniture> furnituresRequirements;
 
     private RoomType(Builder builder) {
@@ -171,7 +171,7 @@ public class RoomType extends BaseEntity<RoomTypeId> {
         return basePrice;
     }
 
-    public int getMaxOccupancy() {
+    public Integer getMaxOccupancy() {
         return maxOccupancy;
     }
 
@@ -179,6 +179,18 @@ public class RoomType extends BaseEntity<RoomTypeId> {
         this.typeName = typeName;
     }
 
+    public void addFurnituresRequirement(List<RoomTypeFurniture> furnituresRequirements) {
+        this.furnituresRequirements = furnituresRequirements;
+    }
+    public List<RoomTypeFurniture> getRoomTypeFurnitures() {
+        return furnituresRequirements;
+    }
+    public void setRoomTypeFurnitures(List<RoomTypeFurniture> roomTypeFurnitures) {
+        this.furnituresRequirements = roomTypeFurnitures;
+    }
+    public void addFurnituresRequirement(RoomTypeFurniture furnituresRequirements) {
+        this.furnituresRequirements.add(furnituresRequirements);
+    }
     public void setDescription(String description) {
         this.description = description;
     }
@@ -187,7 +199,7 @@ public class RoomType extends BaseEntity<RoomTypeId> {
         this.basePrice = basePrice;
     }
 
-    public void setMaxOccupancy(int maxOccupancy) {
+    public void setMaxOccupancy(Integer maxOccupancy) {
         this.maxOccupancy = maxOccupancy;
     }
 
@@ -196,7 +208,7 @@ public class RoomType extends BaseEntity<RoomTypeId> {
         private String typeName;
         private String description;
         private Money basePrice;
-        private int maxOccupancy;
+        private Integer maxOccupancy;
         private List<RoomTypeFurniture> furnitures;
 
         private Builder() {
@@ -226,7 +238,7 @@ public class RoomType extends BaseEntity<RoomTypeId> {
             return this;
         }
 
-        public Builder maxOccupancy(int val) {
+        public Builder maxOccupancy(Integer val) {
             maxOccupancy = val;
             return this;
         }

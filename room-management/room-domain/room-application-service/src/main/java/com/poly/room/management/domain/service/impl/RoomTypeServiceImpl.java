@@ -57,12 +57,12 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public RoomTypeResponse updateRoomType(UpdateRoomTypeRequest request) throws RoomDomainException {
-        log.info("Updating room type: {}", request.getRoomTypeId());
+    public RoomTypeResponse updateRoomType(UUID roomTypeId,UpdateRoomTypeRequest request) throws RoomDomainException {
+        log.info("Updating room type: {}", roomTypeId);
         
         try {
-            RoomType existingRoomType = roomTypeRepository.findById(request.getRoomTypeId())
-                    .orElseThrow(() -> new RoomDomainException("Room type not found with ID: " + request.getRoomTypeId()));
+            RoomType existingRoomType = roomTypeRepository.findById(roomTypeId)
+                    .orElseThrow(() -> new RoomDomainException("Room type not found with ID: " + roomTypeId));
             
             // Cập nhật thông tin room type
             existingRoomType.setTypeName(request.getTypeName());
@@ -73,9 +73,9 @@ public class RoomTypeServiceImpl implements RoomTypeService {
             // Validate room type sau khi cập nhật
             existingRoomType.validateRoomType();
             
-            RoomType updatedRoomType = roomTypeRepository.update(existingRoomType, request.getRoomTypeId());
+            RoomType updatedRoomType = roomTypeRepository.update(existingRoomType, roomTypeId);
             
-            log.info("Room type updated successfully: {}", request.getRoomTypeId());
+            log.info("Room type updated successfully: {}", roomTypeId.toString());
             return roomTypeDtoMapper.toResponse(updatedRoomType);
             
         } catch (Exception e) {

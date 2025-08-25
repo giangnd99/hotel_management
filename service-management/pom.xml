@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.poly</groupId>
         <artifactId>hotel_management</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
     <artifactId>service-management</artifactId>
 
@@ -70,12 +70,6 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.5.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka-test</artifactId>
-            <scope>test</scope>
         </dependency>
         
     </dependencies>

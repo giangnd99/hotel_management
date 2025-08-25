@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface JpaMenuItemRepository extends JpaRepository<MenuItemJpaEntity, Integer> {
+public interface JpaMenuItemRepository extends JpaRepository<MenuItemJpaEntity, String> {
     List<MenuItemJpaEntity> findByNameContainingIgnoreCase(String name);
 }

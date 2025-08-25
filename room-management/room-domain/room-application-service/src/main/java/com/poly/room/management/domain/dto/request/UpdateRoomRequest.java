@@ -27,6 +27,6 @@ public class UpdateRoomRequest {
     private BigDecimal basePrice;
 
     private String description;
-    private String amenities;
+    private String area;
     private String status;
 }

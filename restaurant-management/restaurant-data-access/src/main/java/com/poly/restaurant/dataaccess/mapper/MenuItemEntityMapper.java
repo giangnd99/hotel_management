@@ -18,21 +18,24 @@ public class MenuItemEntityMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .price(item.getPrice())
-                .category(item.getCategory())
-                .quantity(item.getQuantity())
-                .status(item.getStatus())
+                .categoryId(item.getCategoryId())
+                .isAvailable(item.isAvailable())
+                .imageUrl(null)
+                .preparationTime(null)
+                .createdAt(null)
+                .updatedAt(null)
                 .build();
     }
 
     public static MenuItem toDomain(MenuItemJpaEntity entity) {
         if (entity == null) return null;
+        
         return new MenuItem(
                 new MenuItemId(entity.getId()),
                 entity.getName(),
                 entity.getDescription(),
                 entity.getPrice(),
-                entity.getCategory(),
-                entity.getQuantity()
+                entity.getCategoryId()
         );
     }
 }

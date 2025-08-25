@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.poly</groupId>
         <artifactId>payment-management</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
 
     <artifactId>payment-messaging</artifactId>
@@ -35,7 +35,6 @@
         <dependency>
             <groupId>com.poly</groupId>
             <artifactId>payment-application-service</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

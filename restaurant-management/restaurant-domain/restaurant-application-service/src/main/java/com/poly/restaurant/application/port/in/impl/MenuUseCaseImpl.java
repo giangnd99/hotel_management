@@ -34,27 +34,27 @@ public class MenuUseCaseImpl implements MenuUseCase {
     }
 
     @Override
-    public void updateMenu(Integer id, MenuDTO request) {
+    public void updateMenu(String id, MenuDTO request) {
         menuItemHandler.update(id, MenuItemMapper.toEntity(request));
     }
 
     @Override
-    public void deleteMenu(Integer id) {
+    public void deleteMenu(String id) {
         menuItemHandler.delete(id);
     }
 
     @Override
-    public void addReview(Long menuId, ReviewDTO request) {
+    public void addReview(String menuId, ReviewDTO request) {
 
     }
 
     @Override
-    public Object getReviews(Long menuId) {
+    public Object getReviews(String menuId) {
         return null;
     }
 
     @Override
-    public MenuDTO getMenuItemById(Integer id) {
+    public MenuDTO getMenuItemById(String id) {
         MenuItem item = menuItemHandler.getById(id);
         return item != null ? MenuItemMapper.toDto(item) : null;
     }

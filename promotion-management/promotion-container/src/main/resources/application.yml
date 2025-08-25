@@ -28,7 +28,6 @@ spring:
     username: ${DATABASE_USERNAME:postgres}
     password: ${DATABASE_PASSWORD:admin}
     driver-class-name: org.postgresql.Driver
-    # Schema initialization handled by spring.sql.init configuration
     hikari:
       maximum-pool-size: 20
       minimum-idle: 5
@@ -51,8 +50,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: ${HIBERNATE_FORMAT_SQL:true}
-        show_sql: ${HIBERNATE_SHOW_SQL:true}
+        format_sql: ${HIBERNATE_FORMAT_SQL:false}
+        show_sql: ${HIBERNATE_SHOW_SQL:false}
         jdbc:
           batch_size: 50
         order_inserts: true
@@ -78,7 +77,7 @@ spring:
     test-rollback-on-update: false
   
   # Note: Spring SQL Init removed - Liquibase handles both schema and data
-  
+
   # Jackson Configuration
   jackson:
     default-property-inclusion: NON_NULL

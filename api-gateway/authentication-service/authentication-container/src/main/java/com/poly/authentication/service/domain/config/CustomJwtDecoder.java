@@ -17,8 +17,6 @@ import java.util.Objects;
 @Component
 public class CustomJwtDecoder implements JwtDecoder {
 
-    private final String signerKey = DomainConstants.JWT_SECRET;
-
     @Autowired
     private AuthenticationService authenticationService;
 
@@ -37,6 +35,7 @@ public class CustomJwtDecoder implements JwtDecoder {
         }
 
         if (Objects.isNull(nimbusJwtDecoder)) {
+            String signerKey = DomainConstants.JWT_SECRET;
             SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HmacSHA512");
             nimbusJwtDecoder = NimbusJwtDecoder.withSecretKey(secretKeySpec)
                     .macAlgorithm(MacAlgorithm.HS512)
