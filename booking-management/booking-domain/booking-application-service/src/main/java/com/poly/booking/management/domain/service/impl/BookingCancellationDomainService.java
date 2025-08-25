@@ -65,6 +65,7 @@ public class BookingCancellationDomainService {
                     .map(bookingRoom -> {
                         UUID roomId = bookingRoom.getRoom().getId().getValue();
                         Room room = roomRepository.findById(roomId).orElseThrow(() -> new BookingDomainException("Room not found"));
+                        log.info("Canceling room id: {}", roomId);
                         room.setStatus(RoomStatus.VACANT);
                         return room.getId().getValue();
                     })

@@ -15,9 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateBookingRequest {
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDate checkInDate;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDate checkOutDate;
 
     @Min(value = 1, message = "Number of guests must be at least 1")

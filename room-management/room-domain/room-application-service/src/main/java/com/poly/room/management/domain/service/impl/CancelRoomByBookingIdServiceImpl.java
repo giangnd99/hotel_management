@@ -1,7 +1,6 @@
 package com.poly.room.management.domain.service.impl;
 
 import com.poly.domain.valueobject.RoomStatus;
-import com.poly.room.management.domain.port.out.feign.BookingClient;
 import com.poly.room.management.domain.port.out.repository.RoomRepository;
 import com.poly.room.management.domain.service.CancelRoomByBookingIdService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ public class CancelRoomByBookingIdServiceImpl implements CancelRoomByBookingIdSe
 
     private final RoomRepository roomRepository;
     @Override
-    public List<UUID> cancelRoomByBookingId(List<UUID> uuidRoomList) {
+    public void cancelRoomByBookingId(List<UUID> uuidRoomList) {
 
         for (UUID roomId : uuidRoomList) {
             roomRepository.findById(roomId).ifPresent(room -> {
@@ -29,6 +28,5 @@ public class CancelRoomByBookingIdServiceImpl implements CancelRoomByBookingIdSe
             });
         }
 
-        return uuidRoomList;
     }
 }

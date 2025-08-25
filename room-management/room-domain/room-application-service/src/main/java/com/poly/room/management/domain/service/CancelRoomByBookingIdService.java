@@ -5,5 +5,5 @@ import java.util.UUID;
 
 public interface CancelRoomByBookingIdService {
 
-    List<UUID> cancelRoomByBookingId(List<UUID> bookingId);
+    void cancelRoomByBookingId(List<UUID> bookingId);
 }
