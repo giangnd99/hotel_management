@@ -21,12 +21,13 @@ public class CancelBookingController {
 
     @PostMapping("/{bookingId}/cancel")
     @Operation(summary = "Hủy booking")
-    public ResponseEntity<Booking> cancelBooking(@PathVariable UUID bookingId) {
+    public ResponseEntity<Booking> cancelBooking(@PathVariable UUID bookingId,
+                                                 @RequestParam(required = false) String reason) {
         log.info("Cancelling booking: {}", bookingId);
         if (bookingId == null) {
             throw new IllegalArgumentException("Invalid request");
         }
-        String cancelledBooking = bookingCancellationDomainService.cancelBooking();
+        Booking cancelledBooking = bookingCancellationDomainService.cancelBooking(bookingId,reason);
         return ResponseEntity.ok(cancelledBooking);
     }
 }

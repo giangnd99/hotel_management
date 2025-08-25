@@ -4,8 +4,6 @@ import com.poly.message.model.payment.PaymentRequestMessage;
 import com.poly.message.model.room.RoomRequestMessage;
 import com.poly.restaurant.application.dto.OrderDTO;
 import com.poly.restaurant.application.handler.OrderHandler;
-import com.poly.restaurant.application.port.out.message.publisher.PaymentRequestPublisher;
-import com.poly.restaurant.application.port.out.message.publisher.RoomRequestPublisher;
 import com.poly.restaurant.domain.entity.Order;
 import com.poly.restaurant.domain.entity.OrderStatus;
 import lombok.RequiredArgsConstructor;
@@ -35,8 +33,6 @@ import java.util.UUID;
 public class OrderProcessingHelper {
 
     private final OrderHandler orderHandler;
-    private final PaymentRequestPublisher paymentRequestPublisher;
-    private final RoomRequestPublisher roomOrderRequestPublisher;
 
     /**
      * Tạo order trực tiếp với thanh toán ngay
@@ -113,8 +109,6 @@ public class OrderProcessingHelper {
             );
 
             // 3. Publish payment request
-            paymentRequestPublisher.publish(paymentRequestMessage);
-
             // 4. Update order status to IN_PROGRESS
             orderHandler.updateOrderStatus(orderDTO.id(), OrderStatus.IN_PROGRESS);
 
@@ -143,7 +137,6 @@ public class OrderProcessingHelper {
             );
 
             // 3. Publish room order request
-            roomOrderRequestPublisher.publish(roomOrderRequestMessage);
 
             // 4. Update order status to NEW (waiting for room attachment)
             orderHandler.updateOrderStatus(orderDTO.id(), OrderStatus.NEW);
@@ -174,7 +167,7 @@ public class OrderProcessingHelper {
             );
 
             // 3. Publish payment request
-            paymentRequestPublisher.publish(paymentRequestMessage);
+
 
             // 4. Create detach order request
             RoomRequestMessage detachRequestMessage = createDetachOrderRequest(
@@ -184,7 +177,7 @@ public class OrderProcessingHelper {
             );
 
             // 5. Publish detach request
-            roomOrderRequestPublisher.publish(detachRequestMessage);
+
 
             log.info("Room order payment request triggered successfully for order: {} from room: {}", orderDTO.id(), roomId);
 

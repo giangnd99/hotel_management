@@ -92,7 +92,7 @@ public class NotificationController {
             })
     @PostMapping("/send-booking-cancellation")
     public ResponseEntity<Map<String, String>> sendBookingCancellation(
-            @RequestParam int userId,
+            @RequestParam String userId,
             @RequestParam String userEmail) {
         Map<String, String> response = new HashMap<>();
         try {

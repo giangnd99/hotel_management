@@ -18,4 +18,9 @@ public class BookingConfirmEmailRequestListenerImpl implements BookingConfirmEma
     public void onBookingConfirmEmailRequest(NotificationMessage message) {
         sendBookingConfirmCommand.sendEmailConfirm(message);
     }
+
+    @Override
+    public void onBookingCancelEmailRequest(NotificationMessage message) {
+
+    }
 }

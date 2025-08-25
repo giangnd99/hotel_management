@@ -1,25 +1,20 @@
 package com.poly.room.management.domain.command.roomtype;
 
 import com.poly.domain.valueobject.Money;
+import com.poly.room.management.domain.dto.RoomTypeDto;
 import com.poly.room.management.domain.dto.request.CreateRoomTypeRequest;
-import com.poly.room.management.domain.dto.request.FurnitureRequirementRequest;
-import com.poly.room.management.domain.entity.Furniture;
+import com.poly.room.management.domain.dto.response.RoomTypeResponse;
 import com.poly.room.management.domain.entity.RoomType;
-import com.poly.room.management.domain.entity.RoomTypeFurniture;
 import com.poly.room.management.domain.exception.RoomDomainException;
-import com.poly.room.management.domain.port.out.repository.FurnitureRepository;
+import com.poly.room.management.domain.mapper.RoomTypeDtoMapper;
 import com.poly.room.management.domain.port.out.repository.RoomTypeRepository;
 import com.poly.room.management.domain.service.CreationRoomTypeService;
 import com.poly.room.management.domain.valueobject.RoomTypeId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -28,74 +23,34 @@ import java.util.UUID;
 public class CreationRoomTypeServiceImpl implements CreationRoomTypeService {
 
     private final RoomTypeRepository repository;
-    private final FurnitureRepository furnitureRepository;
-
-
+    private final RoomTypeHelper roomTypeHelper;
+    private final RoomTypeDtoMapper mapper;
     @Override
     @Transactional
-    public RoomType createRoomType(CreateRoomTypeRequest request) {
+    public RoomTypeResponse createRoomType(CreateRoomTypeRequest request) {
         log.info("Executing room type creation for request: {}", request);
-        if (request.getTypeName() == null) {
+
+        if (request.getTypeName() == null || request.getTypeName().isBlank()) {
             throw new RoomDomainException("Room type name cannot be empty");
         }
-        if (request.getDescription() == null) {
+        if (request.getDescription() == null || request.getDescription().isBlank()) {
             throw new RoomDomainException("Room type description cannot be empty");
         }
-        String typeName = request.getTypeName();
-        String description = request.getDescription();
-        Integer maxOccupancy = request.getMaxOccupancy();
-        Money basePrice = Money.from(request.getBasePrice());
+
         RoomTypeId roomTypeId = new RoomTypeId(UUID.randomUUID());
+        Money basePrice = Money.from(request.getBasePrice());
+
         RoomType newRoomType = RoomType.Builder.builder()
                 .id(roomTypeId)
-                .typeName(typeName)
-                .description(description)
-                .maxOccupancy(maxOccupancy)
+                .typeName(request.getTypeName())
+                .description(request.getDescription())
+                .maxOccupancy(request.getMaxOccupancy())
                 .basePrice(basePrice)
                 .build();
-        List<Furniture> furnitures;
-        List<RoomTypeFurniture> furnitureRequirements = new ArrayList<>();
-        if (request.getFurnitureRequirements() != null) {
-            List<RoomTypeFurniture> newFurnitureRequirements = new ArrayList<>();
-            if (!request.getFurnitureRequirements().isEmpty()) {
-                furnitures = request.getFurnitureRequirements().stream()
-                        .map(furnitureRequirementRequest ->
-                                furnitureRepository.findById(furnitureRequirementRequest.getFurnitureId()))
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .toList();
-                if (furnitures.size() != request.getFurnitureRequirements().size()) {
-                    for (FurnitureRequirementRequest furnitureRequirementRequest : request.getFurnitureRequirements()) {
-                        Furniture furniture = furnitures.stream()
-                                .filter(f -> f.getId().getValue().equals(furnitureRequirementRequest.getFurnitureId()))
-                                .findFirst()
-                                .orElseThrow(() -> new RoomDomainException("Furniture with ID " + furnitureRequirementRequest.getFurnitureId() + " not found."));
-                        RoomTypeFurniture roomTypeFurniture = getRoomTypeFurniture(furnitureRequirementRequest, furniture, newRoomType);
-                        newFurnitureRequirements.add(roomTypeFurniture);
-                    }
-                }
-                newRoomType.setRoomTypeFurnitures(newFurnitureRequirements);
-                return repository.save(newRoomType);
-            }
-        }
 
-        return repository.save(newRoomType);
-    }
+        newRoomType.setRoomTypeFurnitures(roomTypeHelper.buildFurnitureRequirements(
+                request.getFurnitureRequirements(), newRoomType));
 
-    @NotNull
-    private static RoomTypeFurniture getRoomTypeFurniture(FurnitureRequirementRequest furnitureRequirementRequest, Furniture furniture, RoomType existingRoomType) {
-        RoomTypeFurniture roomTypeFurniture = new RoomTypeFurniture();
-
-        roomTypeFurniture.setFurniture(furniture);
-        roomTypeFurniture.setRoomType(existingRoomType);
-
-        if (furnitureRequirementRequest.getQuantity() < 0) {
-            roomTypeFurniture.setRequiredQuantity(1);
-        }
-        if (furnitureRequirementRequest.getQuantity() == 0) {
-            roomTypeFurniture.setRequiredQuantity(1);
-        }
-        roomTypeFurniture.setRequiredQuantity(furnitureRequirementRequest.getQuantity());
-        return roomTypeFurniture;
+        return mapper.toResponse(repository.save(newRoomType));
     }
 }

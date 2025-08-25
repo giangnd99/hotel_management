@@ -28,11 +28,7 @@ public class RoomTypeRepositoryImpl implements RoomTypeRepository {
 
     @Override
     public Optional<RoomType> findById(UUID id) {
-        return jpaRepository.findById(id)
-                .map(this::mapToRoomType)
-                .or(() -> {
-                    throw new RoomDomainException(String.format(ROOM_TYPE_NOT_FOUND, id));
-                });
+        return jpaRepository.findByIdWithFurnitures(id).map(this::mapToRoomType);
     }
 
     @Override

@@ -1,4 +1,5 @@
 package com.poly.authentication.service.domain.handler.authentication;
+
 import com.poly.authentication.service.domain.dto.reponse.authen.AuthenticationResponse;
 import com.poly.authentication.service.domain.dto.request.auth.AuthenticationRequest;
 import com.poly.authentication.service.domain.exception.AppException;
@@ -9,6 +10,8 @@ import com.poly.authentication.service.domain.service.AuthDomainService;
 import com.poly.authentication.service.domain.valueobject.Password;
 import com.poly.service.handler.BaseHandler;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,12 +26,14 @@ public class AuthenticationHandler extends BaseHandler<AuthDomainService, UserRe
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
-
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         User user = repository.findByEmail(authenticationRequest.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        user.checkPassword(new Password(authenticationRequest.getPassword()));
-
+        boolean authenticated = passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword().getValue());
+        if (!authenticated) {
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+        }
         var token = generateTokenHandler.generateToken(user);
 
         log.info("Token: {}", token);
