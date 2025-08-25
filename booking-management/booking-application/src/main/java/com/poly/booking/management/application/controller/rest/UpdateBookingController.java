@@ -2,6 +2,7 @@ package com.poly.booking.management.application.controller.rest;
 
 import com.poly.booking.management.domain.dto.BookingDto;
 import com.poly.booking.management.domain.dto.request.UpdateBookingRequest;
+import com.poly.booking.management.domain.dto.response.BookingCreatedResponse;
 import com.poly.booking.management.domain.entity.Booking;
 import com.poly.booking.management.domain.service.UpdateBookingService;
 import com.poly.domain.valueobject.BookingId;
@@ -24,14 +25,14 @@ public class UpdateBookingController {
 
     @PutMapping("/{bookingId}")
     @Operation(summary = "Cập nhật booking")
-    public ResponseEntity<Booking> updateBooking(@PathVariable UUID bookingId,
-                                                 @RequestBody UpdateBookingRequest request) {
+    public ResponseEntity<BookingCreatedResponse> updateBooking(@PathVariable UUID bookingId,
+                                                                @RequestBody UpdateBookingRequest request) {
         if (bookingId == null || request == null) {
             throw new IllegalArgumentException("Invalid request");
         }
         log.info("Updating booking: {}", bookingId);
 
-        Booking updatedBooking = bookingService.updateBooking(bookingId, request);
+        BookingCreatedResponse updatedBooking = bookingService.updateBooking(bookingId, request);
         return ResponseEntity.ok(updatedBooking);
     }
 }

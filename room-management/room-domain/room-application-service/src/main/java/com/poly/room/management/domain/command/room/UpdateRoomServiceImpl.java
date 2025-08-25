@@ -10,6 +10,7 @@ import com.poly.room.management.domain.service.UpdateRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -22,9 +23,9 @@ public class UpdateRoomServiceImpl implements UpdateRoomService {
     private final RoomTypeRepository roomTypeRepository;
 
     @Override
+    @Transactional
     public Room updatedRoom(UUID roomId, UpdateRoomRequest room) {
         try {
-
 
         if (roomId == null) {
             throw new RuntimeException("Room id cannot be empty");
