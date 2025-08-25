@@ -51,4 +51,9 @@ public class FurnitureRepositoryImpl implements FurnitureRepository {
                 jpaRepository.save(mapper.toEntity(furniture))
         );
     }
+
+    @Override
+    public List<Furniture> findAllByIdIn(List<UUID> furnitureIds) {
+        return jpaRepository.findAllById(furnitureIds).stream().map(mapper::toDomainEntity).collect(Collectors.toList());
+    }
 }

@@ -20,11 +20,11 @@ public class RoomTypeFurnitureEntity {
     @Column(columnDefinition = "uuid",updatable = false)
     private UUID roomTypeFurnitureId;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "room_type_id")
     private RoomTypeEntity roomType;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "furniture_id")
     private FurnitureEntity furniture;
 

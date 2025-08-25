@@ -1,9 +1,9 @@
 package com.poly.room.management.domain.service;
 
 import com.poly.room.management.domain.dto.request.CreateRoomTypeRequest;
-import com.poly.room.management.domain.entity.RoomType;
+import com.poly.room.management.domain.dto.response.RoomTypeResponse;
 
 public interface CreationRoomTypeService {
 
-    RoomType createRoomType(CreateRoomTypeRequest request);
+    RoomTypeResponse createRoomType(CreateRoomTypeRequest request);
 }

@@ -14,6 +14,12 @@ public class Furniture extends BaseEntity<FurnitureId> {
     private Money price;
     private List<RoomTypeFurniture> roomTypeFurnitures;
 
+    public List<RoomTypeFurniture> getRoomTypeFurnitures() {
+        return roomTypeFurnitures;
+    }
+    public void setRoomTypeFurnitures(List<RoomTypeFurniture> roomTypeFurnitures) {
+        this.roomTypeFurnitures = roomTypeFurnitures;
+    }
     public String getName() {
         return name;
     }

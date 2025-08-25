@@ -26,12 +26,12 @@
         <p th:text="${mainMessage}">Chúng tôi xin thông báo về dịch vụ của bạn.</p>
 
         <div th:if="${bookingDetails}">
-            <p>Dưới đây là chi tiết đặt phòng của bạn:</p>
+            <p>Dưới đây là thông tin đặt phòng của bạn:</p>
             <ul>
-                <li>Mã đặt phòng: <span class="highlight" th:text="${bookingDetails['Mã đặt phòng']}">#BOOK123</span></li>
-                <li>Ngày đặt: <span th:text="${bookingDetails['Ngày đặt']}">2023-10-26</span></li>
-                <li>Loại phòng: <span th:text="${bookingDetails['Loại phòng']}">Phòng Đôi</span></li>
-                <li>Tổng tiền: <span th:text="${bookingDetails['Tổng tiền']}">1.500.000 VNĐ</span></li>
+                <li th:if="${bookingDetails['Mã đặt phòng']}" th:text="|Mã đặt phòng: ${bookingDetails['Mã đặt phòng']}|">Mã đặt phòng: #BOOK123</li>
+                <li th:if="${bookingDetails['Ngày đặt']}" th:text="|Ngày đặt: ${bookingDetails['Ngày đặt']}|"></li>
+                <li th:if="${bookingDetails['Loại phòng']}" th:text="|Loại phòng: ${bookingDetails['Loại phòng']}|"></li>
+                <li th:if="${bookingDetails['Tổng tiền']}" th:text="|Tổng tiền: ${bookingDetails['Tổng tiền']}|"></li>
             </ul>
         </div>
 

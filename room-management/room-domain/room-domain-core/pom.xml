@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.poly</groupId>
         <artifactId>room-domain</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
 
     <artifactId>room-domain-core</artifactId>
