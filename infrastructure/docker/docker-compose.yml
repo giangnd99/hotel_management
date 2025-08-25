@@ -7,36 +7,57 @@ services:
       - "8761:8761"
     networks:
       - hotel_network
+
   authentication-service:
     image: com.poly/authentication.service:1.0
     container_name: authentication-service
     ports:
       - "8092:8092"
     environment:
-      - GOOGLE_REDIRECT_URI=http://localhost:3000/auth/login
-      - GOOGLE_CLIENT_ID=384241258749-6i1gsdh3gge9hpc46pvm7um7grtafttc.apps.googleusercontent.com
-      - GOOGLE_CLIENT_SECRET=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
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      DBMS_CONNECTION: jdbc:postgresql://pgvector-db:5432/postgres?currentSchema=authentication_service
+      DBMS_USERNAME: postgres
+      DBMS_PASSWORD: admin
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_HOST: ${REDIS_HOST}
+      EUREKA:
     networks:
       - hotel_network
+
   payment-service:
     image: com.poly/payment.service:1.0
     container_name: payment-service
     ports:
       - "8094:8094"
     environment:
-      - PAYOS_CLIENT_ID=d81f99f4-f1c5-4438-bd9d-7ad884c9c18a
-      - PAYOS_API_KEY=68e9fb54-5f64-4df0-9d98-007c32c58ab8
-      - PAYOS_CHECKSUM_KEY=003945057010a8b73a1a9b6127b9be3bad1f72340598328c0e5be3eb19b8332e
+      PAYOS_CLIENT_ID: ${PAYOS_CLIENT_ID}
+      PAYOS_API_KEY: ${PAYOS_API_KEY}
+      PAYOS_CHECKSUM_KEY: ${PAYOS_CHECKSUM_KEY}
+      DBMS_CONNECTION: jdbc:postgresql://pgvector-db:5432/postgres?currentSchema=payment_db&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
+      DBMS_USERNAME: postgres
+      DBMS_PASSWORD: admin
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092,kafka-3:9092
+      KAFKA_SCHEMA_REGISTRY_URL: http://schema-registry:8081
     networks:
       - hotel_network
+      - kafka-net
+
   hotel-ai-service:
     image: com.poly/hotel-ai.service:1.0
     container_name: hotel-ai-service
     ports:
       - "8088:8088"
     environment:
-      - MODEL=gemma:2b
-      - BOOKING_URL=
+      MODEL: ${MODEL}
+      BOOKING_URL: ${BOOKING_URL}
+      DBMS_CONNECTION: jdbc:postgresql://pgvector-db:5432/postgres?currentSchema=ai_management
+      DBMS_USERNAME: postgres
+      DBMS_PASSWORD: admin
+      OLLAMA_URL: http://localhost:11434
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
     networks:
       - hotel_network
 
@@ -45,17 +66,27 @@ services:
     container_name: notification-service
     ports:
       - "8190:8190"
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092,kafka-3:9092
+      KAFKA_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      DBMS_CONNECTION: jdbc:postgresql://pgvector-db:5432/postgres?currentSchema=notification_db
+      DBMS_USERNAME: postgres
+      DBMS_PASSWORD: admin
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
     networks:
       - hotel_network
+      - kafka-net
+
   cloudinary-service:
     image: com.poly/cloudinary.service:1.0
     container_name: cloudinary-service
     ports:
       - "8085:8085"
     environment:
-      - CLOUD_NAME=dpbysnmcc
-      - API_KEY=652244894287299
-      - API_SECRET=VFXiAf6zQ0ygfdfe_t9Vm0eMOuc
+      CLOUD_NAME: ${CLOUD_NAME}
+      API_KEY: ${API_KEY}
+      API_SECRET: ${API_SECRET}
     networks:
       - hotel_network
 
@@ -64,15 +95,35 @@ services:
     container_name: booking-service
     ports:
       - "8083:8083"
+    environment:
+      DBMS_CONNECTION: jdbc:postgresql://pgvector-db:5432/postgres?currentSchema=booking
+      DBMS_USERNAME: postgres
+      DBMS_PASSWORD: admin
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092,kafka-3:9092
+      KAFKA_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
     networks:
       - hotel_network
+      - kafka-net
+
   room-service:
     image: com.poly/room.service:1.0
     container_name: room-service
     ports:
       - "8087:8087"
+    environment:
+      DBMS_CONNECTION: jdbc:postgresql://pgvector-db:5432/postgres?currentSchema=room_management
+      DBMS_USERNAME: postgres
+      DBMS_PASSWORD: admin
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092,kafka-3:9092
+      KAFKA_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
     networks:
       - hotel_network
+      - kafka-net
+
   security-service:
     image: com.poly/security.service:1.0
     container_name: security-service
@@ -80,25 +131,43 @@ services:
       - "8090:8090"
     networks:
       - hotel_network
+
   customer-service:
     image: com.poly/customer.service:1.0
     container_name: customer-service
     ports:
       - "8099:8099"
+    environment:
+      DBMS_CONNECTION: jdbc:mysql://mysql:3306/customer_management
+      DBMS_USERNAME: root
+      DBMS_PASSWORD: root
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092,kafka-3:9092
+      KAFKA_SCHEMA_REGISTRY_URL: http://schema-registry:8081
     networks:
       - hotel_network
+      - kafka-net
+
   restaurant-service:
     image: com.poly/restaurant.service:1.0
     container_name: restaurant-service
     ports:
       - "8082:8082"
+    environment:
+      DBMS_CONNECTION: jdbc:mysql://mysql:3306/restaurant
+      DBMS_USERNAME: root
+      DBMS_PASSWORD: root
     networks:
       - hotel_network
+
   inventory-service:
-    image: com.poly/restaurant.service:1.0
-    container_name: restaurant-service
+    image: com.poly/inventory.service:1.0
+    container_name: inventory-service
     ports:
       - "8801:8801"
+    environment:
+      DBMS_CONNECTION: jdbc:mysql://mysql:3306/inventory_management
+      DBMS_USERNAME: root
+      DBMS_PASSWORD: root
     networks:
       - hotel_network
 
@@ -107,7 +176,7 @@ services:
     container_name: pgvector-db
     restart: unless-stopped
     ports:
-      - 5433:5432
+      - 5432:5432
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
@@ -122,6 +191,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - hotel_network
 
   redis:
     image: redis:7
@@ -136,6 +207,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - hotel_network
 
   mysql:
     image: mysql:8.0
@@ -143,7 +216,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - 3307:3306
+      - 3306:3306
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql/init:/docker-entrypoint-initdb.d
@@ -157,6 +230,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - hotel_network
 
   kafka-1:
     image: apache/kafka:3.7.0
@@ -294,6 +369,7 @@ volumes:
   kafka-data-2:
   kafka-data-3:
   ollama_models:
+
 networks:
   kafka-net:
     driver: bridge

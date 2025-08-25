@@ -14,9 +14,9 @@ spring:
     hibernate:
       ddl-auto: update
   datasource:
-    url: jdbc:postgresql://localhost:5433/postgres?currentSchema=ai_management
-    username: postgres
-    password: admin
+    url: ${DBMS_CONNECTION:jdbc:postgresql://localhost:5433/postgres?currentSchema=ai_management}
+    username: ${DBMS_USERNAME:postgres}
+    password: ${DBMS_PASSWORD:admin}
     driver-class-name: org.postgresql.Driver
   sql:
     init:
@@ -34,7 +34,7 @@ spring:
     name: spring-management
   ai:
     ollama:
-      base-url: http://localhost:11434
+      base-url: ${OLLAMA_URL:http://localhost:11434}
       chat:
         model: ${MODEL:gemma:2b}
       embedding:
@@ -43,12 +43,12 @@ spring:
   eureka:
     client:
       service-url:
-        defaultZone: http://localhost:8761/
+        defaultZone: ${EUREKA:http://localhost:8761/}
 
   data:
     redis:
-      port: 6379
-      host: localhost
+      port: ${REDIS_PORT:6379}
+      host: ${REDIS_HOST:localhost}
       repositories:
         enabled: true
 

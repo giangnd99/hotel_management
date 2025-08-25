@@ -13,7 +13,7 @@ spring:
   eureka:
     client:
       service-url:
-        defaultZone: http://localhost:8761/
+        defaultZone: ${EUREKA:http://localhost:8761/}
   jpa:
     open-in-view: false
     show-sql: true
@@ -22,9 +22,9 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   datasource:
-    url: jdbc:postgresql://localhost:5433/postgres?currentSchema=room_management&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
-    username: postgres
-    password: admin
+    url: ${DBMS_CONNECTION:jdbc:postgresql://localhost:5432/postgres?currentSchema=room_management&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified}
+    username: ${DBMS_USERNAME:postgres}
+    password: ${DBMS_PASSWORD:admin}
     driver-class-name: org.postgresql.Driver
   sql:
     init:
@@ -38,9 +38,9 @@ spring:
 
   # Kafka Configuration
 kafka-config:
-  bootstrap-servers: localhost:19092, localhost:29092, localhost:39092
+  bootstrap-servers:  ${KAFKA_BOOTSTRAP_SERVERS:kafka-1:9092,kafka-2:9092,kafka-3:9092}
   schema-registry-url-key: schema.registry.url
-  schema-registry-url: http://localhost:8081
+  schema-registry-url: ${KAFKA_SCHEMA_REGISTRY_URL:http://schema-registry:8081}
   num-of-partitions: 3
   replication-factor: 3
 
