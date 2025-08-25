@@ -44,6 +44,20 @@ public class CreateInvoicePaymentLinkUsecaseImpl implements CreateInvoicePayment
 
     @Override
     public PaymentLinkResult createPaymentLinkUseCase(CreateInvoicePaymentCommand command) throws Exception {
+
+        Optional<Payment> paymentExisted = paymentRepository.findByReferenceIdAndStatus(command.getBookingId(), PaymentStatus.PENDING);
+
+        if (paymentExisted.isPresent() && paymentExisted.get().getStatus().equals(PaymentStatus.PENDING)) {
+            Payment payment = paymentExisted.get();
+             PaymentLinkResult result = PaymentLinkResult.builder()
+                    .paymentId(payment.getId().getValue())
+                    .orderCode(payment.getOrderCode().getValue())
+                    .status(payment.getStatus().name())
+                    .paymentLink(payment.getPaymentLink())
+                    .build();
+             return result;
+        }
+
         Optional<Invoice> existedInvoice = invoiceRepository.findById(command.getInvoiceId());
 
         if (existedInvoice.isEmpty()) throw new Exception("Invoice not found");
