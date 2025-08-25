@@ -16,25 +16,25 @@ Content-Type: application/json
 **Request Body:**
 ```json
 {
-  "id": "order_004",
+  "id": "O004",
   "customerId": "11111111-1111-1111-1111-111111111111",
-  "tableId": "40a6c08f-80be-11f0-9513-0242ac150001",
+  "tableId": "T001",
   "items": [
     {
-      "menuItemId": "550e8400-e29b-41d4-a716-446655440000",
+      "menuItemId": "M001",
       "quantity": 2,
-      "price": 12.99
+      "price": 85000
     },
     {
-      "menuItemId": "550e8400-e29b-41d4-a716-446655440001", 
+      "menuItemId": "M002", 
       "quantity": 1,
-      "price": 28.99
+      "price": 275000
     }
   ],
   "status": "NEW",
   "createdAt": "2025-01-15T14:30:00",
   "customerNote": "No onions please, serve quickly",
-  "orderNumber": "ORD-1705312200000"
+  "orderNumber": "R-1004"
 }
 ```
 
@@ -101,25 +101,25 @@ Content-Type: application/json
 **Response Body:**
 ```json
 {
-  "id": "order_004",
+  "id": "O004",
   "customerId": "11111111-1111-1111-1111-111111111111",
-  "tableId": "40a6c08f-80be-11f0-9513-0242ac150001",
+  "tableId": "T001",
   "items": [
     {
-      "menuItemId": "550e8400-e29b-41d4-a716-446655440000",
+      "menuItemId": "M001",
       "quantity": 2,
-      "price": 12.99
+      "price": 85000
     },
     {
-      "menuItemId": "550e8400-e29b-41d4-a716-446655440001",
+      "menuItemId": "M002",
       "quantity": 1,
-      "price": 28.99
+      "price": 275000
     }
   ],
   "status": "NEW",
   "createdAt": "2025-01-15T14:30:00",
   "customerNote": "No onions please, serve quickly",
-  "orderNumber": "ORD-1705312200000"
+  "orderNumber": "R-1004"
 }
 ```
 
@@ -161,10 +161,10 @@ Use the **correct menu item IDs** from the database. The system now uses fixed U
 - `991894631` - Invalid ID
 
 **✅ CORRECT IDs (use these):**
-- `550e8400-e29b-41d4-a716-446655440000` - Caesar Salad ($12.99)
-- `550e8400-e29b-41d4-a716-446655440001` - Grilled Salmon ($28.99)
-- `550e8400-e29b-41d4-a716-446655440002` - Chocolate Cake ($8.99)
-- `550e8400-e29b-41d4-a716-446655440003` - Fresh Orange Juice ($4.99)
+- `M001` - Caesar Salad (85,000 VND)
+- `M002` - Grilled Salmon (275,000 VND)
+- `M003` - Chocolate Cake (95,000 VND)
+- `M004` - Fresh Orange Juice (35,000 VND)
 
 ### **7. Available Data for Testing**
 
@@ -188,42 +188,42 @@ Use the **correct menu item IDs** from the database. The system now uses fixed U
 
 #### **Menu Items (Database)**
 **Available Menu Items:**
-- Caesar Salad - $12.99 (ID: `550e8400-e29b-41d4-a716-446655440000`)
-- Grilled Salmon - $28.99 (ID: `550e8400-e29b-41d4-a716-446655440001`)  
-- Chocolate Cake - $8.99 (ID: `550e8400-e29b-41d4-a716-446655440002`)
-- Fresh Orange Juice - $4.99 (ID: `550e8400-e29b-41d4-a716-446655440003`)
+- Caesar Salad - 85,000 VND (ID: `M001`)
+- Grilled Salmon - 275,000 VND (ID: `M002`)  
+- Chocolate Cake - 95,000 VND (ID: `M003`)
+- Fresh Orange Juice - 35,000 VND (ID: `M004`)
 
 **Available Tables:**
-- Table 1 - AVAILABLE (ID: `40a6c08f-80be-11f0-9513-0242ac150001`)
-- Table 2 - AVAILABLE (ID: `40a6c08f-80be-11f0-9513-0242ac150002`)
-- Table 3 - RESERVED (ID: `40a6c08f-80be-11f0-9513-0242ac150003`)
-- Table 4 - OCCUPIED (ID: `40a6c08f-80be-11f0-9513-0242ac150004`)
-- Table 5 - AVAILABLE (ID: `40a6c08f-80be-11f0-9513-0242ac150005`)
+- Table 1 - AVAILABLE (ID: `T001`)
+- Table 2 - AVAILABLE (ID: `T002`)
+- Table 3 - RESERVED (ID: `T003`)
+- Table 4 - OCCUPIED (ID: `T004`)
+- Table 5 - AVAILABLE (ID: `T005`)
 
 ### **8. Testing Commands**
 
 #### **Create Order (PowerShell)**
 ```powershell
 $body = @{
-    id = "order_004"
+    id = "O004"
     customerId = "11111111-1111-1111-1111-111111111111"
-    tableId = "40a6c08f-80be-11f0-9513-0242ac150001"
+    tableId = "T001"
     items = @(
         @{
-            menuItemId = "550e8400-e29b-41d4-a716-446655440000"  # Caesar Salad
+            menuItemId = "M001"  # Caesar Salad
             quantity = 2
-            price = 12.99
+            price = 85000
         },
         @{
-            menuItemId = "550e8400-e29b-41d4-a716-446655440001"  # Grilled Salmon
+            menuItemId = "M002"  # Grilled Salmon
             quantity = 1
-            price = 28.99
+            price = 275000
         }
     )
     status = "NEW"
     createdAt = "2025-01-15T14:30:00"
     customerNote = "No onions please, serve quickly"
-    orderNumber = "ORD-1705312200000"
+    orderNumber = "R-1004"
 } | ConvertTo-Json -Depth 3
 
 Invoke-RestMethod -Uri "http://localhost:8082/api/restaurant/orders" -Method POST -Body $body -ContentType "application/json"
@@ -234,25 +234,25 @@ Invoke-RestMethod -Uri "http://localhost:8082/api/restaurant/orders" -Method POS
 curl -X POST http://localhost:8082/api/restaurant/orders \
   -H "Content-Type: application/json" \
   -d '{
-    "id": "order_004",
+    "id": "O004",
     "customerId": "11111111-1111-1111-1111-111111111111",
-    "tableId": "40a6c08f-80be-11f0-9513-0242ac150001",
+    "tableId": "T001",
     "items": [
       {
-        "menuItemId": "550e8400-e29b-41d4-a716-446655440000",
+        "menuItemId": "M001",
         "quantity": 2,
-        "price": 12.99
+        "price": 85000
       },
       {
-        "menuItemId": "550e8400-e29b-41d4-a716-446655440001",
+        "menuItemId": "M002",
         "quantity": 1,
-        "price": 28.99
+        "price": 275000
       }
     ],
     "status": "NEW",
     "createdAt": "2025-01-15T14:30:00",
     "customerNote": "No onions please, serve quickly",
-    "orderNumber": "ORD-1705312200000"
+    "orderNumber": "R-1004"
   }'
 ```
 
@@ -291,6 +291,6 @@ The order creation flow is now **simplified and robust**:
 5. **✅ Mock Data**: Ready-to-use test data
 6. **✅ Clean Architecture**: Proper separation of concerns
 
-**⚠️ IMPORTANT**: Use the **correct menu item IDs** from the database. The system now uses fixed UUIDs instead of random IDs.
+**⚠️ IMPORTANT**: Use the **correct menu item IDs** from the database. The system now uses short string IDs (M001, M002, etc.) and VND prices instead of USD.
 
 The system will successfully create orders with the provided request format and return the expected response with status "NEW"! 🎉

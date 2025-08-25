@@ -34,7 +34,7 @@ public class MenuController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Lấy món ăn theo ID")
-    public ResponseEntity<MenuDTO> getMenuItemById(@PathVariable Integer id) {
+    public ResponseEntity<MenuDTO> getMenuItemById(@PathVariable String id) {
         log.info("Getting menu item by id: {}", id);
         MenuDTO menuItem = useCase.getMenuItemById(id);
         if (menuItem != null) {
@@ -62,7 +62,7 @@ public class MenuController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Cập nhật món ăn")
-    public ResponseEntity<MenuDTO> updateMenuItem(@PathVariable Integer id, @RequestBody @Valid MenuDTO request) {
+    public ResponseEntity<MenuDTO> updateMenuItem(@PathVariable String id, @RequestBody @Valid MenuDTO request) {
         log.info("Updating menu item: {} with data: {}", id, request);
         useCase.updateMenu(id, request);
         return ResponseEntity.ok(request);
@@ -70,7 +70,7 @@ public class MenuController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Xóa món ăn")
-    public ResponseEntity<Void> deleteMenuItem(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteMenuItem(@PathVariable String id) {
         log.info("Deleting menu item: {}", id);
         useCase.deleteMenu(id);
         return ResponseEntity.noContent().build();
@@ -78,7 +78,7 @@ public class MenuController {
 
     @PostMapping("/{menuId}/review")
     @Operation(summary = "Thêm đánh giá cho món ăn")
-    public ResponseEntity<String> addReview(@PathVariable Long menuId, @RequestBody @Valid ReviewDTO request) {
+    public ResponseEntity<String> addReview(@PathVariable String menuId, @RequestBody @Valid ReviewDTO request) {
         log.info("Adding review for menu item: {}", menuId);
         useCase.addReview(menuId, request);
         return ResponseEntity.ok("Đánh giá đã được ghi nhận");
@@ -86,7 +86,7 @@ public class MenuController {
 
     @GetMapping("/{menuId}/reviews")
     @Operation(summary = "Lấy danh sách đánh giá của món ăn")
-    public ResponseEntity<?> getReviews(@PathVariable Long menuId) {
+    public ResponseEntity<?> getReviews(@PathVariable String menuId) {
         log.info("Getting reviews for menu item: {}", menuId);
         return ResponseEntity.ok(useCase.getReviews(menuId));
     }

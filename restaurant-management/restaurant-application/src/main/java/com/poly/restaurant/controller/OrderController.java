@@ -1,8 +1,7 @@
 package com.poly.restaurant.controller;
 
 import com.poly.restaurant.application.dto.OrderDTO;
-import com.poly.restaurant.application.handler.conmand.CreateOrderDirectlyCommand;
-import com.poly.restaurant.application.handler.conmand.CreateOrderWithRoomDetailCommand;
+
 import com.poly.restaurant.application.port.in.OrderUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -101,20 +100,20 @@ public class OrderController {
     }
 
     // ========== NEW ORDER TYPES ==========
-
-    @PostMapping("/direct")
-    @Operation(summary = "Tạo đơn hàng với thanh toán trực tiếp")
-    public ResponseEntity<OrderDTO> createDirectOrder(@RequestBody @Valid OrderDTO request) {
-        log.info("Creating direct order: {}", request.id());
-        OrderDTO created = orderUseCase.createDirectOrder(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
-    }
-
-    @PostMapping("/room-attached")
-    @Operation(summary = "Tạo đơn hàng đính kèm vào room")
-    public ResponseEntity<OrderDTO> createRoomAttachedOrder(@RequestBody @Valid OrderDTO request) {
-        log.info("Creating room attached order: {}", request.id());
-        OrderDTO created = orderUseCase.createRoomAttachedOrder(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
-    }
+//
+//    @PostMapping("/direct")
+//    @Operation(summary = "Tạo đơn hàng với thanh toán trực tiếp")
+//    public ResponseEntity<OrderDTO> createDirectOrder(@RequestBody @Valid OrderDTO request) {
+//        log.info("Creating direct order: {}", request.id());
+//        OrderDTO created = orderUseCase.createDirectOrder(request);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+//    }
+//
+//    @PostMapping("/room-attached")
+//    @Operation(summary = "Tạo đơn hàng đính kèm vào room")
+//    public ResponseEntity<OrderDTO> createRoomAttachedOrder(@RequestBody @Valid OrderDTO request) {
+//        log.info("Creating room attached order: {}", request.id());
+//        OrderDTO created = orderUseCase.createRoomAttachedOrder(request);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+//    }
 }

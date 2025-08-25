@@ -1,4 +1,6 @@
 package com.poly.restaurant.application.dto;
 
-public record ReviewDTO(Long customerId, int rating, String comment) {
+import java.util.UUID;
+
+public record ReviewDTO(UUID customerId, String rating, String comment) {
 }

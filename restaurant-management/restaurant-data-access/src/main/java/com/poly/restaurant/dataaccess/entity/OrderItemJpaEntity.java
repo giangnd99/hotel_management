@@ -15,9 +15,8 @@ import java.math.BigDecimal;
 @Builder
 public class OrderItemJpaEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_item_id")
-    private Long orderItemId;
+    @Column(name = "id")
+    private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
@@ -30,6 +29,15 @@ public class OrderItemJpaEntity {
     @Column(name = "quantity")
     private int quantity;
 
-    @Column(name = "price")
-    private BigDecimal price;
+    @Column(name = "unit_price")
+    private BigDecimal unitPrice;
+
+    @Column(name = "total_price")
+    private BigDecimal totalPrice;
+
+    @Column(name = "special_instructions")
+    private String specialInstructions;
+
+    @Column(name = "created_at")
+    private java.time.LocalDateTime createdAt;
 }

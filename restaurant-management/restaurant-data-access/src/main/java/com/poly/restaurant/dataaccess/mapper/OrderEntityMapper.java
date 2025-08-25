@@ -8,10 +8,8 @@ import com.poly.restaurant.domain.entity.Order;
 import com.poly.restaurant.domain.entity.OrderItem;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class OrderEntityMapper {
@@ -25,12 +23,13 @@ public class OrderEntityMapper {
                 .orElseThrow(() -> new RuntimeException("Menu item not found: " + domainItem.getMenuItemId()));
         
         return OrderItemJpaEntity.builder()
-                .id(UUID.randomUUID().toString())
+                .id("OI" + String.format("%03d", System.currentTimeMillis() % 1000)) // Generate simple ID like OI001
                 .order(order)
                 .menuItem(menuItem)
                 .quantity(domainItem.getQuantity())
                 .unitPrice(unit)
                 .totalPrice(total)
+                .specialInstructions(null)
                 .createdAt(LocalDateTime.now()) // Set current timestamp
                 .build();
     }
@@ -52,7 +51,7 @@ public class OrderEntityMapper {
                 .paymentStatus("PENDING") // Default payment status
                 .orderType("DINE_IN") // Default order type
                 .specialInstructions(domainOrder.getCustomerNote())
-                .updatedAt(new Timestamp(System.currentTimeMillis())) // Set current timestamp
+                .updatedAt(LocalDateTime.now()) // Set current timestamp
                 .build();
 
         List<OrderItemJpaEntity> jpaItems = domainOrder.getItems().stream()
