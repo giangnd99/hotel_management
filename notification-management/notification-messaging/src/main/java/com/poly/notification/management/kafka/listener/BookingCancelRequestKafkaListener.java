@@ -33,7 +33,7 @@ public class BookingCancelRequestKafkaListener implements KafkaConsumer<Notifica
         log.info("Received message: {}", messages);
         messages.forEach(message -> {
             log.info("Message for booking id: {}", message.getBookingId());
-            bookingConfirmEmailRequestListener.onBookingConfirmEmailRequest(notificationKafkaDataMapper.toEntity(message));
+            bookingConfirmEmailRequestListener.onBookingCancelEmailRequest(notificationKafkaDataMapper.toEntity(message));
         });
 
     }

@@ -94,6 +94,13 @@ services:
       - "8082:8082"
     networks:
       - hotel_network
+  inventory-service:
+    image: com.poly/restaurant.service:1.0
+    container_name: restaurant-service
+    ports:
+      - "8801:8801"
+    networks:
+      - hotel_network
 
   postgres:
     image: ankane/pgvector:latest

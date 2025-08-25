@@ -16,11 +16,13 @@
     {
       "name": "customerId",
       "type": ["null", "string"],
+      "default": null,
       "doc": "ID of the customer"
     },
     {
       "name": "customerEmail",
       "type": ["null", "string"],
+      "default": null,
       "doc": "Email address for sending the notification"
     },
     {

@@ -1,6 +1,7 @@
 package com.poly.booking.management.domain.service.impl;
 
 import com.poly.booking.management.domain.entity.Booking;
+import com.poly.booking.management.domain.entity.Customer;
 import com.poly.booking.management.domain.entity.Room;
 import com.poly.booking.management.domain.exception.BookingDomainException;
 import com.poly.booking.management.domain.outbox.model.NotifiOutboxMessage;
@@ -9,6 +10,7 @@ import com.poly.booking.management.domain.outbox.service.NotificationOutboxServi
 import com.poly.booking.management.domain.port.out.client.RoomClient;
 import com.poly.booking.management.domain.port.out.message.publisher.NotificationRequestMessagePublisher;
 import com.poly.booking.management.domain.port.out.repository.BookingRepository;
+import com.poly.booking.management.domain.port.out.repository.CustomerRepository;
 import com.poly.booking.management.domain.port.out.repository.RoomRepository;
 import com.poly.domain.valueobject.BookingStatus;
 import com.poly.domain.valueobject.DateCustom;
@@ -17,6 +19,7 @@ import com.poly.outbox.OutboxStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,7 +40,9 @@ public class BookingCancellationDomainService {
     private final NotificationOutboxService notificationOutboxService;
     private final RoomClient roomClient;
     private final RoomRepository roomRepository;
+    private final CustomerRepository customerRepository;
 
+    @Transactional
     public Booking cancelBooking(UUID bookingId, String cancellationReason) {
         try {
             log.info("Processing cancellation for booking: {} with reason: {}",
@@ -53,9 +58,8 @@ public class BookingCancellationDomainService {
 
             if (isRefundable) {
                 log.info("Booking cancellation is refundable: {}", bookingFounded.getId().getValue());
-                NotifiOutboxMessage notifiOutboxMessage = createNotifiOutboxMessage(bookingFounded);
-                notificationRequestMessagePublisher.sendNotifiCancel(notifiOutboxMessage
-                        , createBookingCancelledEventConsumer(bookingFounded));
+
+
             }
 
             bookingFounded.cancelBooking();
@@ -72,7 +76,11 @@ public class BookingCancellationDomainService {
                     .toList();
 
             roomClient.cancelRoom(roomIds);
-
+            Customer customer = customerRepository.findById(bookingFounded.getCustomer().getId().getValue()).orElseThrow(() -> new BookingDomainException("Customer not found"));
+            bookingFounded.setCustomer(customer);
+            NotifiOutboxMessage notifiOutboxMessage = createNotifiOutboxMessage(bookingFounded);
+            notificationRequestMessagePublisher.sendNotifiCancel(notifiOutboxMessage
+                    , createBookingCancelledEventConsumer(bookingFounded));
             log.info("Booking cancelled successfully: {}. Refundable: {}. Reason: {}",
                     bookingFounded.getId().getValue(), isRefundable, cancellationReason);
 
@@ -88,6 +96,7 @@ public class BookingCancellationDomainService {
                 .id(UUID.randomUUID())
                 .bookingId(booking.getId().getValue())
                 .bookingStatus(BookingStatus.CANCELLED)
+                .customerId(booking.getCustomer().getId().getValue())
                 .customerEmail(booking.getCustomer().getEmail())
                 .checkInTime(booking.getCheckInDate().getValue())
                 .createdAt(LocalDateTime.now())

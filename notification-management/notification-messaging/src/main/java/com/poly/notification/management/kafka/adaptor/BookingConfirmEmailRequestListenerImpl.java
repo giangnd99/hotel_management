@@ -1,5 +1,6 @@
 package com.poly.notification.management.kafka.adaptor;
 
+import com.poly.notification.management.command.SendBookingCancelCommand;
 import com.poly.notification.management.command.SendBookingConfirmCommand;
 import com.poly.notification.management.message.NotificationMessage;
 import com.poly.notification.management.port.in.listener.BookingConfirmEmailRequestListener;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 public class BookingConfirmEmailRequestListenerImpl implements BookingConfirmEmailRequestListener {
 
     private final SendBookingConfirmCommand sendBookingConfirmCommand;
+    private final SendBookingCancelCommand sendBookingCancelCommand;
 
     @Override
     public void onBookingConfirmEmailRequest(NotificationMessage message) {
@@ -21,6 +23,6 @@ public class BookingConfirmEmailRequestListenerImpl implements BookingConfirmEma
 
     @Override
     public void onBookingCancelEmailRequest(NotificationMessage message) {
-
+        sendBookingCancelCommand.sendEmailCancel(message);
     }
 }

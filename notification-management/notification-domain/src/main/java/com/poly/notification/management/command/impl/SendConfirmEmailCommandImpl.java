@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -17,16 +19,21 @@ public class SendConfirmEmailCommandImpl implements SendBookingConfirmCommand {
 
     private final BookingQrCodeService bookingQrCodeService;
     private final BookingConfirmedEmailResponsePublisher bookingConfirmedEmailResponsePublisher;
+    private final HashSet<String> emailConfirmList = new HashSet<>();
 
     @Override
     public void sendEmailConfirm(NotificationMessage message) {
         try {
             log.info("Bắt đầu xử lý xác nhận đặt phòng cho booking id: {}", message.getBookingId());
 
+            if (emailConfirmList.contains(message.getBookingId())) {
+                log.warn("Đã xử lý email cho booking id: {}", message.getBookingId());
+                return;
+            }
             // Lấy thông tin từ notification
             String bookingId = message.getBookingId(); 
             String userEmail = message.getCustomerEmail();
-
+            emailConfirmList.add(bookingId);
             // Tạo QR code và gửi email
             bookingQrCodeService.createQrCodeAndSendEmail(bookingId, userEmail);
 

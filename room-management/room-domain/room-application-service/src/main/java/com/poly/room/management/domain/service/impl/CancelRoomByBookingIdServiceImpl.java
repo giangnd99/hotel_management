@@ -6,6 +6,7 @@ import com.poly.room.management.domain.service.CancelRoomByBookingIdService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +18,7 @@ public class CancelRoomByBookingIdServiceImpl implements CancelRoomByBookingIdSe
 
     private final RoomRepository roomRepository;
     @Override
+    @Transactional
     public void cancelRoomByBookingId(List<UUID> uuidRoomList) {
 
         for (UUID roomId : uuidRoomList) {

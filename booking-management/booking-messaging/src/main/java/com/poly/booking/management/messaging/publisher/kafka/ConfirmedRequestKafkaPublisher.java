@@ -38,7 +38,7 @@ public class ConfirmedRequestKafkaPublisher implements NotificationRequestMessag
         logProcessingStart(notificationEventPayload, sagaId);
 
         try {
-            NotificationMessageAvro notificationModelAvro = createNotificationModelAvro(sagaId, notificationEventPayload);
+            NotificationMessageAvro notificationModelAvro = createNotificationConfirmModelAvro(sagaId, notificationEventPayload);
 
             sendMessageToKafka(notificationModelAvro,
                     sagaId,
@@ -60,7 +60,7 @@ public class ConfirmedRequestKafkaPublisher implements NotificationRequestMessag
         String sagaId = extractSagaId(notifiOutboxMessage);
         logProcessingStart(notificationEventPayload, sagaId);
         try {
-            NotificationMessageAvro notificationModelAvro = createNotificationModelAvro(sagaId, notificationEventPayload);
+            NotificationMessageAvro notificationModelAvro = createNotificationCancelModelAvro(sagaId, notificationEventPayload);
             sendMessageToKafka(notificationModelAvro,
                     sagaId,
                     notifiOutboxMessage,
@@ -100,7 +100,13 @@ public class ConfirmedRequestKafkaPublisher implements NotificationRequestMessag
                 sagaId);
     }
 
-    private NotificationMessageAvro createNotificationModelAvro(String sagaId,
+    private NotificationMessageAvro createNotificationConfirmModelAvro(String sagaId,
+                                                                NotifiEventPayload notificationEventPayload) {
+        return bookingDataMapper.bookingNotificationEventToNotificationModelAvro(sagaId, notificationEventPayload);
+    }
+
+
+    private NotificationMessageAvro createNotificationCancelModelAvro(String sagaId,
                                                                 NotifiEventPayload notificationEventPayload) {
         return bookingDataMapper.bookingCancelToNotificationModelAvro(sagaId, notificationEventPayload);
     }
