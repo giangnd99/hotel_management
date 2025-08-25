@@ -49,6 +49,7 @@ public class SecurityConfig {
             "/reset-password", "/reset-password/**",
             "/users",
             "/auth/callback",
+            "/auth/refresh",
             "/users/change/password/**","/users/forgot/password/**","/users/forgot/password/valid/**"
     };
 
