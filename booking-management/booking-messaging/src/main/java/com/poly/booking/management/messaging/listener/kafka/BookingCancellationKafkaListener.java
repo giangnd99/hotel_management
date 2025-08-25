@@ -62,15 +62,6 @@ public class BookingCancellationKafkaListener implements KafkaConsumer<Notificat
         if (message.getBookingId() == null || message.getBookingId().toString().trim().isEmpty()) {
             throw new IllegalArgumentException("Booking ID cannot be null or empty");
         }
-
-        if (message.getSagaId() == null || message.getSagaId().toString().trim().isEmpty()) {
-            throw new IllegalArgumentException("Saga ID cannot be null or empty");
-        }
-
-        if (message.getReservationStatus() == null || message.getReservationStatus().toString().trim().isEmpty()) {
-            throw new IllegalArgumentException("Reservation status cannot be null or empty");
-        }
-
         log.debug("Cancellation message validation passed for booking: {}", message.getBookingId());
     }
 

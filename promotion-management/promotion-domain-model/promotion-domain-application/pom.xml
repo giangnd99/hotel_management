@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.poly</groupId>
         <artifactId>promotion-domain-model</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
 
     <groupId>com.poly.promotion.domain.application</groupId>
@@ -22,7 +22,6 @@
         <dependency>
             <groupId>com.poly.promotion.domain.core</groupId>
             <artifactId>promotion-domain-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         
         <!-- Test Dependencies -->
