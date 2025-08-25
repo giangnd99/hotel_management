@@ -14,7 +14,6 @@
         <dependency>
             <groupId>com.poly</groupId>
             <artifactId>restaurant-domain-core</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -25,10 +24,6 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
         </dependency>
-        <!-- <dependency>
-            <groupId>com.poly</groupId>
-            <artifactId>kafka-json-message</artifactId>
-        </dependency> -->
     </dependencies>
 
 </project>

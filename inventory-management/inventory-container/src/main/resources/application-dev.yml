@@ -18,10 +18,4 @@ spring:
   sql:
     init:
       schema-locations: classpath:db_inventory.sql
-
-openapi:
-  service:
-    api-docs: inventory-service-docs
-    title: Inventory Service API
-    version: 1.0.0
-    server: http://localhost:8801
+      mode: always

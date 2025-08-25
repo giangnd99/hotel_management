@@ -51,7 +51,7 @@ services:
     image: com.poly/cloudinary.service:1.0
     container_name: cloudinary-service
     ports:
-      - "8190:8190"
+      - "8085:8085"
     environment:
       - CLOUD_NAME=dpbysnmcc
       - API_KEY=652244894287299
