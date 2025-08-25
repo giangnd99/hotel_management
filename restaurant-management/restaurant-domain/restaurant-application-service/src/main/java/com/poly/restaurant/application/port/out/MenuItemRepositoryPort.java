@@ -4,6 +4,6 @@ import com.poly.restaurant.domain.entity.MenuItem;
 
 import java.util.List;
 
-public interface MenuItemRepositoryPort extends RepositoryPort<MenuItem, Integer> {
+public interface MenuItemRepositoryPort extends RepositoryPort<MenuItem, String> {
     List<MenuItem> searchByName(String name);
 }

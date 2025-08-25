@@ -22,9 +22,13 @@
             <version>${openfeign.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <!-- <dependency>
             <groupId>com.poly</groupId>
             <artifactId>kafka-json-message</artifactId>
-        </dependency>
+        </dependency> -->
     </dependencies>
 
 </project>

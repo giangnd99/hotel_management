@@ -9,26 +9,23 @@ public class MenuItem {
     private final String name;
     private String description;
     private BigDecimal price;
-    private String category;
-    private int quantity;
+    private String categoryId;
     private MenuItemStatus status;
 
-    public MenuItem(MenuItemId id, String name, String description, BigDecimal price, String category, int quantity) {
+    public MenuItem(MenuItemId id, String name, String description, BigDecimal price, String categoryId) {
         if (id == null) throw new IllegalArgumentException("Id must not be null");
         if (name == null || name.trim().isEmpty()) throw new IllegalArgumentException("Name must not be empty");
         if (description == null || description.trim().isEmpty())
             throw new IllegalArgumentException("Description must not be empty");
         if (price == null || price.compareTo(BigDecimal.ZERO) <= 0)
             throw new IllegalArgumentException("Price must be positive");
-        if (quantity < 0) throw new IllegalArgumentException("Quantity cannot be negative");
 
         this.id = id;
         this.name = name.trim();
         this.description = description.trim();
         this.price = price;
-        this.category = category == null ? null : category.trim();
-        this.quantity = quantity;
-        this.status = quantity > 0 ? MenuItemStatus.AVAILABLE : MenuItemStatus.OUT_OF_STOCK;
+        this.categoryId = categoryId == null ? null : categoryId.trim();
+        this.status = MenuItemStatus.AVAILABLE;
     }
 
     public MenuItemId getId() {
@@ -47,12 +44,8 @@ public class MenuItem {
         return price;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
-    public int getQuantity() {
-        return quantity;
+    public String getCategoryId() {
+        return categoryId;
     }
 
     public MenuItemStatus getStatus() {
@@ -60,22 +53,6 @@ public class MenuItem {
     }
 
     // Business methods with validation
-    public void reduceQuantity(int amount) {
-        if (amount <= 0) throw new IllegalArgumentException("Amount must be positive");
-        if (quantity < amount)
-            throw new IllegalStateException("Not enough stock. Available: " + quantity + ", Requested: " + amount);
-        if (status != MenuItemStatus.AVAILABLE) throw new IllegalStateException("Item is not available for order");
-
-        this.quantity -= amount;
-        updateStatus();
-    }
-
-    public void addQuantity(int amount) {
-        if (amount <= 0) throw new IllegalArgumentException("Amount must be positive");
-        this.quantity += amount;
-        updateStatus();
-    }
-
     public void updatePrice(BigDecimal newPrice) {
         if (newPrice == null || newPrice.compareTo(BigDecimal.ZERO) <= 0)
             throw new IllegalArgumentException("Price must be positive");
@@ -87,15 +64,7 @@ public class MenuItem {
         this.status = newStatus;
     }
 
-    private void updateStatus() {
-        if (quantity == 0) {
-            this.status = MenuItemStatus.OUT_OF_STOCK;
-        } else if (status == MenuItemStatus.OUT_OF_STOCK) {
-            this.status = MenuItemStatus.AVAILABLE;
-        }
-    }
-
     public boolean isAvailable() {
-        return status == MenuItemStatus.AVAILABLE && quantity > 0;
+        return status == MenuItemStatus.AVAILABLE;
     }
 }

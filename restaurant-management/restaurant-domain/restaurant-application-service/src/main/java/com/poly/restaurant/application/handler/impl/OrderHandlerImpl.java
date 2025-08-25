@@ -42,10 +42,8 @@ public class OrderHandlerImpl extends AbstractGenericHandlerImpl<Order, String> 
             order.setCustomerNote(order.getCustomerNote());
         }
         
-        // Only set status to NEW if it's not already NEW (to avoid transition error)
-        if (order.getStatus() != OrderStatus.NEW) {
-            order.setStatus(OrderStatus.NEW);
-        }
+        // Set status to NEW for new orders
+        order.setStatus(OrderStatus.NEW);
         
         // Save order
         Order savedOrder = repository.save(order);
@@ -115,25 +113,19 @@ public class OrderHandlerImpl extends AbstractGenericHandlerImpl<Order, String> 
     @Override
     public List<Order> getOrdersByCustomer(String customerId) {
         log.info("Getting orders by customer: {}", customerId);
-        return repository.findAll().stream()
-                .filter(order -> order.getCustomerId().equals(customerId))
-                .collect(Collectors.toList());
+        return repository.findByCustomerId(customerId);
     }
 
     @Override
     public List<Order> getOrdersByTable(String tableId) {
         log.info("Getting orders by table: {}", tableId);
-        return repository.findAll().stream()
-                .filter(order -> order.getTableId().equals(tableId))
-                .collect(Collectors.toList());
+        return repository.findByTableId(tableId);
     }
 
     @Override
     public List<Order> getOrdersByStatus(OrderStatus status) {
         log.info("Getting orders by status: {}", status);
-        return repository.findAll().stream()
-                .filter(order -> order.getStatus() == status)
-                .collect(Collectors.toList());
+        return repository.findByStatus(status);
     }
 
     @Override
@@ -211,12 +203,8 @@ public class OrderHandlerImpl extends AbstractGenericHandlerImpl<Order, String> 
 
     private void validateMenuItemsAvailability(OrderDTO orderDTO) {
         for (OrderDTO.OrderItem item : orderDTO.items()) {
-            if (!menuItemHandler.isItemAvailable(Integer.parseInt(item.menuItemId()))) {
+            if (!menuItemHandler.isItemAvailable(item.menuItemId())) {
                 throw new IllegalStateException("Menu item not available: " + item.menuItemId());
-            }
-
-            if (!menuItemHandler.hasSufficientQuantity(Integer.parseInt(item.menuItemId()), item.quantity())) {
-                throw new IllegalStateException("Insufficient quantity for menu item: " + item.menuItemId());
             }
         }
     }

@@ -17,27 +17,39 @@ import java.util.List;
 @Builder
 public class OrderJpaEntity {
     @Id
-    @Column(name = "order_id")
+    @Column(name = "id")
     private String id;
+
+    @Column(name = "order_number")
+    private String orderNumber;
 
     @Column(name = "customer_id")
     private String customerId;
 
-    @Column(name = "table_id")
-    private String tableId;
+    @Column(name = "room_id")
+    private String roomId;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(name = "total_amount")
+    private BigDecimal totalAmount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private OrderStatus status;
 
-    @Column(name = "customer_note")
-    private String customerNote;
+    @Column(name = "payment_status")
+    private String paymentStatus;
 
-    @OneToMany(mappedBy = "order", cascade =  CascadeType.ALL)
-    private List<RoomOrderEntity> roomOrders;
+    @Column(name = "order_type")
+    private String orderType;
+
+    @Column(name = "special_instructions")
+    private String specialInstructions;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItemJpaEntity> items;

@@ -14,11 +14,11 @@ public class MenuItemEntityMapper {
         if (item == null) return null;
 
         return MenuItemJpaEntity.builder()
-                .id(String.valueOf(item.getId().getValue()))
+                .id(item.getId().getValue())
                 .name(item.getName())
                 .description(item.getDescription())
                 .price(item.getPrice())
-                .categoryId(null)
+                .categoryId(item.getCategoryId())
                 .isAvailable(item.isAvailable())
                 .imageUrl(null)
                 .preparationTime(null)
@@ -29,19 +29,13 @@ public class MenuItemEntityMapper {
 
     public static MenuItem toDomain(MenuItemJpaEntity entity) {
         if (entity == null) return null;
-        int mappedId;
-        try {
-            mappedId = Integer.parseInt(entity.getId());
-        } catch (NumberFormatException ex) {
-            mappedId = Math.abs(entity.getId().hashCode());
-        }
+        
         return new MenuItem(
-                new MenuItemId(mappedId),
+                new MenuItemId(entity.getId()),
                 entity.getName(),
                 entity.getDescription(),
                 entity.getPrice(),
-                entity.getCategoryId(),
-                0
+                entity.getCategoryId()
         );
     }
 }

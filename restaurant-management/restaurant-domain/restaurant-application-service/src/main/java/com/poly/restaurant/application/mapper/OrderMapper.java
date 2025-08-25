@@ -1,5 +1,6 @@
 package com.poly.restaurant.application.mapper;
 
+import com.poly.restaurant.domain.entity.OrderStatus;
 import com.poly.restaurant.application.dto.OrderDTO;
 import com.poly.restaurant.domain.entity.Order;
 import com.poly.restaurant.domain.entity.OrderItem;
@@ -20,11 +21,12 @@ public class OrderMapper {
 
         Order order = new Order(
                 dto.id(),
-                dto.customerId(),
+                dto.customerId(),   
                 dto.tableId(),
                 items,
                 dto.createdAt() != null ? dto.createdAt() : LocalDateTime.now(),
-                dto.orderNumber() // Pass orderNumber to constructor
+                dto.orderNumber(),
+                dto.status() != null ? OrderStatus.valueOf(dto.status()) : OrderStatus.NEW
         );
         
         // Set customer note if provided

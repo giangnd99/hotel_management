@@ -16,8 +16,7 @@ public class MenuItemMapper {
                 dto.name(),
                 dto.description(),
                 dto.price(),
-                dto.category(),
-                dto.quantity());
+                dto.categoryId());
     }
 
     public static MenuDTO toDto(MenuItem entity) {
@@ -28,8 +27,7 @@ public class MenuItemMapper {
                 entity.getName(),
                 entity.getDescription(),
                 entity.getPrice().abs(),
-                entity.getCategory(),
-                entity.getQuantity(),
+                entity.getCategoryId(),
                 entity.getStatus().name()
         );
     }

@@ -37,8 +37,8 @@ public class Order {
         this.orderNumber = generateOrderNumber(); // Generate order number
     }
 
-    // Constructor with orderNumber parameter
-    public Order(String id, String customerId, String tableId, List<OrderItem> items, LocalDateTime createdAt, String orderNumber) {
+    // Constructor with status parameter for reconstruction from database
+    public Order(String id, String customerId, String tableId, List<OrderItem> items, LocalDateTime createdAt, String orderNumber, OrderStatus status) {
         if (id == null || id.trim().isEmpty()) throw new IllegalArgumentException("Id must not be empty");
         if (customerId == null || customerId.trim().isEmpty())
             throw new IllegalArgumentException("CustomerId must not be empty");
@@ -52,7 +52,7 @@ public class Order {
         this.tableId = tableId.trim();
         this.items = new ArrayList<>(items);
         this.createdAt = createdAt;
-        this.status = OrderStatus.NEW;
+        this.status = status != null ? status : OrderStatus.NEW;
         this.orderNumber = orderNumber != null ? orderNumber : generateOrderNumber();
     }
 
@@ -107,6 +107,11 @@ public class Order {
         this.status = newStatus;
     }
 
+    // Internal method to set status without validation (for reconstruction from database)
+    void setStatusInternal(OrderStatus newStatus) {
+        this.status = newStatus;
+    }
+
     public void setCustomerNote(String note) {
         this.customerNote = note != null ? note.trim() : null;
     }
@@ -132,14 +137,22 @@ public class Order {
     }
 
     private boolean isValidStatusTransition(OrderStatus current, OrderStatus newStatus) {
+        // Allow setting the same status (no-op)
+        if (current == newStatus) {
+            return true;
+        }
+        
         switch (current) {
             case NEW:
                 return newStatus == OrderStatus.IN_PROGRESS || newStatus == OrderStatus.CANCELLED;
             case IN_PROGRESS:
                 return newStatus == OrderStatus.COMPLETED || newStatus == OrderStatus.CANCELLED;
             case COMPLETED:
+                // Allow changing from COMPLETED to CANCELLED for refund scenarios
+                return newStatus == OrderStatus.CANCELLED;
             case CANCELLED:
-                return false; // Terminal states
+                // Allow changing from CANCELLED to NEW for reactivation scenarios
+                return newStatus == OrderStatus.NEW;
             default:
                 return false;
         }
